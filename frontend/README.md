@@ -20,7 +20,7 @@ Here’s an improved version of your sentence for clarity and professionalism:
 ## Initial Setup
 
 For detailed instructions on the initial setup, please refer to this guide:
-[Step-by-Step Guide: React 19 + Vite + Tailwind CSS v4.1.5](https://medium.com/@kayydee/got-it-you-want-to-keep-your-react-vite-frontend-completely-separate-inside-a-frontend-folder-58569dc0c624b)
+[Step-by-Step Guide: React 19 + Vite + Tailwind CSS v4.1.5](https://medium.com/@kayydee/got-it-you-want-to-keep-your-react-vite-frontend-completely-separate-inside-a-frontend-folder-58569dc0c624)
 
 
 ## For Local Development:

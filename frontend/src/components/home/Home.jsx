@@ -16,9 +16,9 @@ const Home = () => {
     
     <div>
 
-<h1 className="text-2xl dark:text-yellow-300">
-  This should change color in dark mode
-</h1>
+      {/* <h1 className="text-2xl dark:text-yellow-300">
+        This should change color in dark mode
+      </h1> */}
 
       <h2 className="text-xl font-bold mb-4">Home</h2>
       {data ? (

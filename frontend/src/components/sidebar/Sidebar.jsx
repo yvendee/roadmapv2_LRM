@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faComments, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faComments, faClipboardList, faMap, faSyncAlt, faTachometerAlt, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import useUserStore from '../../store/userStore';
 
@@ -33,7 +33,7 @@ const Sidebar = ({ collapsed }) => {
         </NavLink>
 
         <NavLink
-          to="/review"
+          to="/one-page-strategic-plan"
           className={({ isActive }) =>
             `sidebar-item flex items-center gap-2 ${
               isActive
@@ -42,12 +42,12 @@ const Sidebar = ({ collapsed }) => {
             }`
           }
         >
-          <FontAwesomeIcon icon={faClipboardList} />
-          {!collapsed && <span>Review</span>}
+          <FontAwesomeIcon icon={faMap} />
+          {!collapsed && <span>One Page Strategic Plan</span>}
         </NavLink>
 
         <NavLink
-          to="/chat"
+          to="/flywheel"
           className={({ isActive }) =>
             `sidebar-item flex items-center gap-2 ${
               isActive
@@ -56,9 +56,38 @@ const Sidebar = ({ collapsed }) => {
             }`
           }
         >
-          <FontAwesomeIcon icon={faComments} />
-          {!collapsed && <span>Chat</span>}
+          <FontAwesomeIcon icon={faSyncAlt} />
+          {!collapsed && <span>Flywheel</span>}
         </NavLink>
+
+        <NavLink
+          to="/scoreboard"
+          className={({ isActive }) =>
+            `sidebar-item flex items-center gap-2 ${
+              isActive
+                ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+            }`
+          }
+        >
+          <FontAwesomeIcon icon={faTachometerAlt} />
+          {!collapsed && <span>Scoreboard</span>}
+        </NavLink>
+
+        <NavLink
+          to="/company-traction"
+          className={({ isActive }) =>
+            `sidebar-item flex items-center gap-2 ${
+              isActive
+                ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+            }`
+          }
+        >
+          <FontAwesomeIcon icon={faChartBar} />
+          {!collapsed && <span>Company Traction</span>}
+        </NavLink>
+
       </nav>
     </div>
   );

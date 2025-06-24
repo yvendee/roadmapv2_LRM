@@ -4,6 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/home/Home';
 import Review from './components/review/Review';
+import OnePageStrategicPlan from './components/one-page-strategic-plan/onePageStrategicPlan';
+import Flywheel from './components/flywheel/Flywheel';
+import Scoreboard from './components/scoreboard/Scoreboard';
+import CompanyTraction from './components/company-traction/companyTraction';
 import Chat from './components/chat/Chat';
 import ThemeToggle from './components/theme/ThemeToggle'; // adjust path if needed
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -87,6 +91,10 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/review" element={<Review />} />
+                <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />
+                <Route path="/flywheel" element={<Flywheel />} />
+                <Route path="/scoreboard" element={<Scoreboard />} />
+                <Route path="/company-traction" element={<CompanyTraction />} />
                 <Route path="/chat" element={<Chat />} />
               </Routes>
             </div>
