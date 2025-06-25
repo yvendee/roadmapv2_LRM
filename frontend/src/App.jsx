@@ -1,6 +1,5 @@
-// frontend/src/App.jsx
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/home/Home';
 import Review from './components/review/Review';
@@ -9,42 +8,33 @@ import Flywheel from './components/flywheel/Flywheel';
 import Scoreboard from './components/scoreboard/Scoreboard';
 import CompanyTraction from './components/company-traction/companyTraction';
 import Chat from './components/chat/Chat';
-import ThemeToggle from './components/theme/ThemeToggle'; // adjust path if needed
+import ThemeToggle from './components/theme/ThemeToggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle, faCog, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle, faCog, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import Login from './pages/login/Login';
 import './index.css';
 
-function App() {
-  const [isDark, setIsDark] = useState(
-    localStorage.getItem('theme') === 'dark'
-  );
-
-  const [collapsed, setCollapsed] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  }, [isDark]);
+function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/';
 
   return (
-    <div className={isDark ? 'dark' : ''}>
-      <Router>
-        <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white">
-
-          {/* Sidebar - fixed width, full height */}
+    // <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white"  style={{ border: '2px solid black' }}>
+    <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+      {!isLoginPage && (
+        <>
           <Sidebar isDark={isDark} setIsDark={setIsDark} collapsed={collapsed} />
-          
-          {/* Collapse Button - absolutely positioned */}
           <button
             onClick={() => setCollapsed(!collapsed)}
             style={{
               position: 'absolute',
               top: '1rem',
-              left: collapsed ? '64px' : '192px', // exact pixel position at the sidebar edge
-              transform: 'translateX(-50%)',      // centers the button over the edge
+              left: collapsed ? '64px' : '192px',
+              transform: 'translateX(-50%)',
               zIndex: 10,
               width: '30px',
               height: '40px',
-              backgroundColor: '#3B82F6', // blue
+              backgroundColor: '#3B82F6',
               color: 'white',
               display: 'flex',
               alignItems: 'center',
@@ -56,50 +46,77 @@ function App() {
             }}
             aria-label="Toggle Sidebar"
           >
-            <FontAwesomeIcon
-              icon={collapsed ? faAngleRight : faAngleLeft}
-              style={{
-                fontSize: '0.75rem',
-                color: 'white',
-              }}
-            />
+            <FontAwesomeIcon icon={collapsed ? faAngleRight : faAngleLeft} style={{ fontSize: '0.75rem' }} />
           </button>
+        </>
+      )}
 
-          {/* Right side - full height, vertical split */}
-          {/* <div className="flex flex-col flex-1 p-4 h-screen" style={{ border: '1px solid black' }}> */}
-          <div className="flex flex-col flex-1 p-4 h-screen">
-            {/* Upper portion: Account icon, settings, theme toggle */}
-            {/* <div className="flex justify-end items-center space-x-4 mb-6" style={{ border: '1px solid black' }}> */}
-            <div className="flex justify-end items-center space-x-4 mb-6">
-              <button
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                aria-label="Account"
-              >
-                <FontAwesomeIcon icon={faUserCircle} size="1x" />
-              </button>
-              <button
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                aria-label="Settings"
-              >
-                <FontAwesomeIcon icon={faCog} size="1x" />
-              </button>
-              <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-            </div>
-
-            {/* Lower portion: Routed page content, scrollable */}
-            <div className="flex-grow overflow-auto">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/review" element={<Review />} />
-                <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />
-                <Route path="/flywheel" element={<Flywheel />} />
-                <Route path="/scoreboard" element={<Scoreboard />} />
-                <Route path="/company-traction" element={<CompanyTraction />} />
-                <Route path="/chat" element={<Chat />} />
-              </Routes>
-            </div>
+      <div className={`flex flex-col flex-1 ${isLoginPage ? 'h-screen' : 'p-4 h-screen'}`}>
+        {!isLoginPage && (
+          <div className="flex justify-end items-center space-x-4 mb-6">
+            <button className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="Account">
+              <FontAwesomeIcon icon={faUserCircle} size="1x" />
+            </button>
+            <button className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="Settings">
+              <FontAwesomeIcon icon={faCog} size="1x" />
+            </button>
+            <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
           </div>
+        )}
+
+        <div className={`${isLoginPage ? '' : 'flex-grow overflow-auto'}`}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/review" element={<Review />} />
+            <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />
+            <Route path="/flywheel" element={<Flywheel />} />
+            <Route path="/scoreboard" element={<Scoreboard />} />
+            <Route path="/company-traction" element={<CompanyTraction />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [isDark, setIsDark] = useState(localStorage.getItem('theme') === 'dark');
+  const [collapsed, setCollapsed] = useState(false);
+
+  const isLoginPage = location.pathname === '/';
+
+  // Disable dark mode on login page regardless of user's setting
+  const effectiveDarkMode = isLoginPage ? false : isDark;
+
+  // useEffect(() => {
+  //   localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  // }, [isDark]);
+
+  useEffect(() => {
+    if (!isLoginPage) {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+  }, [isDark, isLoginPage]);
+
+  // force light mode on login page, this will set the state of the night mode icon
+  useEffect(() => {
+    if (isLoginPage) {
+      setIsDark(false);
+    }
+  }, [isLoginPage]);
+
+  return (
+    <div className={effectiveDarkMode ? 'dark' : ''}>
+      <Router>
+        <Layout
+          isDark={isDark}
+          setIsDark={setIsDark}
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+        />
       </Router>
     </div>
   );

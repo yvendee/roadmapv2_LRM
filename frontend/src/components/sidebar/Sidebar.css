@@ -10,13 +10,13 @@
     text-decoration: none; /* reset link underline */
   }
   
-  .sidebar-item:hover {
-    background-color: white;
-    color: #2563eb; /* Tailwind blue-700 */
-  }
-  
-  .dark .sidebar-item:hover {
-    background-color: white;
-    color: #2563eb; /* same hover color for dark mode */
-  }
+.sidebar-item:hover {
+  background-color: white;
+  color: #2563eb; /* Tailwind blue-700 */
+}
+
+.dark .sidebar-item:hover {
+  background-color: white;
+  color: #2563eb; /* same hover color for dark mode */
+}
   

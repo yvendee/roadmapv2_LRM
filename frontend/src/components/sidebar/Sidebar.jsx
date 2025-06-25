@@ -5,11 +5,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faComments, faClipboardList, faMap, faSyncAlt, faTachometerAlt, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import useUserStore from '../../store/userStore';
+import useLoginStore from '../../store/loginStore';
 
 const Sidebar = ({ collapsed }) => {
 
   const { user } = useUserStore();
   console.log(user?.name); // Will show "Sample User" after it's fetched in Review
+
+  const loggedUser = useLoginStore((state) => state.user);
+  const loggedSession = useLoginStore((state) => state.session_id);
+  console.log("Logged Email: ", loggedUser?.email);  
+  console.log("Logged Role: ",loggedUser?.role);   
+  console.log("Logged Group: ",loggedUser?.group);
+  console.log("Logged Session: ", loggedSession); 
 
   return (
     <div
@@ -19,7 +27,7 @@ const Sidebar = ({ collapsed }) => {
     >
       <nav className="mt-12 space-y-2">
         <NavLink
-          to="/"
+          to="/home"
           className={({ isActive }) =>
             `sidebar-item flex items-center gap-2 ${
               isActive
