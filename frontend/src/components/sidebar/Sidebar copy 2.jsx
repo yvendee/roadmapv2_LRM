@@ -8,9 +8,7 @@ import {
   faTachometerAlt,
   faChartBar,
   faChartLine,
-  faNetworkWired,
-  faTasks,
-  faCalendar
+  faNetworkWired 
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import useUserStore from '../../store/userStore';
@@ -161,13 +159,8 @@ const Sidebar = ({ collapsed }) => {
             {!collapsed && <span>Who What When</span>}
           </NavLink>
 
-          {/* Section: Meeting Hub */}
-          {!collapsed && (
-            <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Meeting Hub</p>
-          )}
-
           <NavLink
-            to="/session-dates"
+            to="/who-what-when"
             className={({ isActive }) =>
               `sidebar-item flex items-center gap-2 ${
                 isActive
@@ -176,22 +169,8 @@ const Sidebar = ({ collapsed }) => {
               }`
             }
           >
-            <FontAwesomeIcon icon={faTasks} />
-            {!collapsed && <span>Session Dates</span>}
-          </NavLink>
-
-          <NavLink
-            to="/meetings"
-            className={({ isActive }) =>
-              `sidebar-item flex items-center gap-2 ${
-                isActive
-                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
-                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
-              }`
-            }
-          >
-            <FontAwesomeIcon icon={faCalendar} />
-            {!collapsed && <span>Meetings</span>}
+            <FontAwesomeIcon icon={faNetworkWired} />
+            {!collapsed && <span>Who What When</span>}
           </NavLink>
           
       </nav>

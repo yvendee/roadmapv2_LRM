@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import Login from './pages/login/Login';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/home/Home';
 import Review from './components/review/Review';
@@ -7,11 +8,12 @@ import OnePageStrategicPlan from './components/one-page-strategic-plan/onePageSt
 import Flywheel from './components/flywheel/Flywheel';
 import Scoreboard from './components/scoreboard/Scoreboard';
 import CompanyTraction from './components/company-traction/companyTraction';
+import DepartmentTraction from './components/department-traction/departmentTraction';
+import WhoWhatWhen from './components/who-what-when/who-What-When';
 import Chat from './components/chat/Chat';
 import ThemeToggle from './components/theme/ThemeToggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faCog, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
-import Login from './pages/login/Login';
 import './index.css';
 
 function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
@@ -73,6 +75,8 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/flywheel" element={<Flywheel />} />
             <Route path="/scoreboard" element={<Scoreboard />} />
             <Route path="/company-traction" element={<CompanyTraction />} />
+            <Route path="/department-traction" element={<DepartmentTraction />} />
+            <Route path="/who-what-when" element={<WhoWhatWhen />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
