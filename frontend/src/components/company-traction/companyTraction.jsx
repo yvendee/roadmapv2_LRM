@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../../configs/config';
 import './companyTraction.css';
+
 
 
 const CompanyTraction = () => {
@@ -40,7 +42,7 @@ const CompanyTraction = () => {
 
 
   useEffect(() => {
-    fetch('/api/mock-response5', {
+    fetch(`${API_URL}/mock-response5`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

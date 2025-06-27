@@ -10,7 +10,12 @@ import {
   faChartLine,
   faNetworkWired,
   faTasks,
-  faCalendar
+  faCalendar,
+  faCheckCircle,
+  faWrench,
+  faFolder,
+  faBuilding,
+  faUserTie 
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import useUserStore from '../../store/userStore';
@@ -18,6 +23,9 @@ import useLoginStore from '../../store/loginStore';
 import logo from '../../assets/images/webp/momentum-logo.webp';
 
 const Sidebar = ({ collapsed }) => {
+
+  const user = useUserStore((state) => state.user);
+  console.log("Stored User Name:", user?.name);
 
   const loggedUser = useLoginStore((state) => state.user);
   const loggedSession = useLoginStore((state) => state.session_id);
@@ -193,7 +201,94 @@ const Sidebar = ({ collapsed }) => {
             <FontAwesomeIcon icon={faCalendar} />
             {!collapsed && <span>Meetings</span>}
           </NavLink>
+        
+          {/* Section: Coach's Corner */}
+          {!collapsed && (
+            <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Coach's Corner</p>
+          )}
+
+          <NavLink
+            to="/coaching-checklist"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+          >
+            <FontAwesomeIcon icon={faCheckCircle} />
+            {!collapsed && <span>Coaching Checklist</span>}
+          </NavLink>
+
+          <NavLink
+            to="/tools"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+          >
+            <FontAwesomeIcon icon={faWrench} />
+            {!collapsed && <span>Tools</span>}
+          </NavLink>
+
+          {/* Section: Document Vault */}
+          {!collapsed && (
+            <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Document Vault</p>
+          )}
           
+          <NavLink
+            to="/document-vault"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+          >
+            <FontAwesomeIcon icon={faFolder} />
+            {!collapsed && <span>Document Vault</span>}
+          </NavLink>
+
+
+          {/* Section: Members */}
+          {!collapsed && (
+            <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Members</p>
+          )}
+
+          <NavLink
+            to="/members-departments"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+          >
+            <FontAwesomeIcon icon={faBuilding} />
+            {!collapsed && <span>Member's Departments</span>}
+          </NavLink>
+
+          <NavLink
+            to="/members-directory"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+          >
+            <FontAwesomeIcon icon={faUserTie} />
+            {!collapsed && <span>Member's Directory</span>}
+          </NavLink>
+
+
       </nav>
 
     </div>

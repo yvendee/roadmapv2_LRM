@@ -1,36 +1,28 @@
-// frontend\src\components\scoreboard\Scoreboard.jsx
+//frontend\src\components\who-what-when\whoWhatWhen.jsx
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
-import './Scoreboard.css';
+import './whoWhatWhen.css';
 
-const Scoreboard = () => {
+const WhoWhatWhen = () => {
   const { user, setUser } = useUserStore();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   fetch('/api/mock-response4')
-  //     .then((res) => res.json())
-  //     .then((json) => setUser(json.data));
-  // }, [setUser]);
-
   useEffect(() => {
-    fetch(`${API_URL}/mock-response3`, {
+    fetch(`${API_URL}/mock-response5`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-    }
+      }
     })
     .then(async (res) => {
       const json = await res.json();
       if (res.ok) {
         setUser(json.data);
       } else if (res.status === 401) {
-        // Redirect to login page with error message
-        // navigate('/', { state: { loginError: json.message || 'Unauthorized' } });
         navigate('/', { state: {loginError: 'Session Expired'} });
       } else {
         setError(json.message || 'Failed to fetch user data');
@@ -40,11 +32,11 @@ const Scoreboard = () => {
       console.error('API error:', err);
       setError('Something went wrong.');
     });
-  }, [setUser]);
+  }, [setUser, navigate]);
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Scoreboard</h2>
+      <h2 className="text-xl font-bold mb-4">Who What When</h2>
       {error ? (
         <p className="text-red-500">{error}</p>
       ) : user ? (
@@ -61,4 +53,4 @@ const Scoreboard = () => {
   );
 };
 
-export default Scoreboard;
+export default WhoWhatWhen;

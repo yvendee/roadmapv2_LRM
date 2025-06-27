@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
+import API_URL from '../../configs/config';
 import './Home.css';
 
 const Home = () => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch('/api/mock-response1')
+    fetch(`${API_URL}/mock-response1`)
       .then(res => res.json())
       .then(json => setData(json.data));
   }, []);

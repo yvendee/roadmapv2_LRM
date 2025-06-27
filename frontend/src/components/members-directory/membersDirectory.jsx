@@ -1,16 +1,17 @@
-//frontend\src\components\who-what-when\who-What-When.jsx
+//frontend\src\components\members-directory\membersDirectory.jsx
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import { useNavigate } from 'react-router-dom';
-import './who-What-When.css';
+import API_URL from '../../configs/config';
+import './membersDirectory.css';
 
-const WhoWhatWhen = () => {
+const membersDirectory = () => {
   const { user, setUser } = useUserStore();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/mock-response5', {
+    fetch(`${API_URL}/mock-response4`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -35,7 +36,7 @@ const WhoWhatWhen = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Who What When</h2>
+      <h2 className="text-xl font-bold mb-4">Member's Directory</h2>
       {error ? (
         <p className="text-red-500">{error}</p>
       ) : user ? (
@@ -52,4 +53,4 @@ const WhoWhatWhen = () => {
   );
 };
 
-export default WhoWhatWhen;
+export default membersDirectory;

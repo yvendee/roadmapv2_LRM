@@ -1,12 +1,14 @@
+// frontend\src\components\flywheel\Flywheel.jsx
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
+import API_URL from '../../configs/config';
 import './Flywheel.css';
 
 const Flywheel = () => {
   const { user, setUser } = useUserStore();
 
   useEffect(() => {
-    fetch('/api/mock-response3')
+    fetch(`${API_URL}/mock-response4`)
       .then((res) => res.json())
       .then((json) => setUser(json.data));
   }, [setUser]);

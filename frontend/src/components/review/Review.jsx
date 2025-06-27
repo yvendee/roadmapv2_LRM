@@ -1,12 +1,14 @@
+// frontend\src\components\review\Review.jsx
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
+import API_URL from '../../configs/config';
 import './Review.css';
 
 const Review = () => {
   const { user, setUser } = useUserStore();
 
   useEffect(() => {
-    fetch('/api/mock-response2')
+    fetch(`${API_URL}/mock-response2`)
       .then((res) => res.json())
       .then((json) => setUser(json.data));
   }, [setUser]);
