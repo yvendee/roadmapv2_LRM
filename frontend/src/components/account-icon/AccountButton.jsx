@@ -6,6 +6,8 @@ import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import API_URL from '../../configs/config';
 // import useUserStore from '../../store/userStore';
 import useLoginStore from '../../store/loginStore';
+import './AccountButton.css';
+
 
 const AccountButton = () => {
   const [open, setOpen] = useState(false);
@@ -67,19 +69,22 @@ const AccountButton = () => {
             {user?.fullname ?? 'Unknown User'}
           </div>
           <div className="border-t border-gray-200 dark:border-gray-600 my-1" />
-          <button
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+
+          <div
+            className="dropdown-item"
             onClick={() => alert('Change password clicked')}
           >
             Change Password
-          </button>
-          <button
-            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900"
+          </div>
+          <div
+            className="custom-logout-item"
             onClick={handleLogout}
           >
             Logout
-          </button>
+          </div>
+
         </div>
+        
       )}
     </div>
   );

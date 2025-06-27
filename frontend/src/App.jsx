@@ -33,6 +33,15 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
   const isLoginPage = location.pathname === '/';
   useSessionKeepAlive();
 
+  // 👇 Force light mode on login page
+  useEffect(() => {
+    if (isLoginPage) {
+      setIsDark(false);
+    } else {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+  }, [isLoginPage, isDark]);
+
   return (
     // <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white"  style={{ border: '2px solid black' }}>
     <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white">

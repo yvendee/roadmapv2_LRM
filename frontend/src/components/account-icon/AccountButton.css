@@ -1,0 +1,54 @@
+/* src/components/account-icon/AccountButton.css */
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  color: #1a202c; /* text-gray-900 */
+  background-color: transparent;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dark .dropdown-item {
+  color: #d1d5db; /* text-gray-300 */
+  background-color: transparent;
+}
+
+/* Light mode hover */
+.dropdown-item:hover {
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+}
+
+/* Dark mode hover overrides */
+.dark .dropdown-item:hover {
+  background-color: white;
+  color: black;
+}
+
+
+.custom-logout-item {
+  color: #dc2626; /* red-600 for light mode */
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem; /* text-sm */
+  cursor: pointer;
+  text-align: left;
+}
+
+.custom-logout-item:hover {
+  background-color: #3b82f6; /* blue-500 */
+  color: white;
+}
+
+/* Dark mode support */
+.dark .custom-logout-item {
+  color: #f87171; /* red-400 */
+}
+
+.dark .custom-logout-item:hover {
+  background-color: white;
+  color: black;
+}
