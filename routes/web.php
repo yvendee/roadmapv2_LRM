@@ -136,6 +136,7 @@ Route::post('/api/login', function (Request $request) {
             'status' => 'success',
             'session_id' => $request->session()->getId(),
             'user' => [
+                'fullname' => $matchedUser['name'],
                 'email' => $matchedUser['email'],
                 'role' => $matchedUser['role'],
                 'group' => $matchedUser['group'],

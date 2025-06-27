@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import API_URL from '../../configs/config';
-import useUserStore from '../../store/userStore';
+// import useUserStore from '../../store/userStore';
+import useLoginStore from '../../store/loginStore';
 
 const AccountButton = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate(); 
-  const user = useUserStore((state) => state.user);
+  const user = useLoginStore((state) => state.user);
+  // const user = useUserStore((state) => state.user);
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -62,7 +64,7 @@ const AccountButton = () => {
       {open && (
         <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50">
           <div className="px-4 py-2 text-sm text-gray-900 dark:text-white font-semibold">
-            {user?.name ?? 'Unknown User'}
+            {user?.fullname ?? 'Unknown User'}
           </div>
           <div className="border-t border-gray-200 dark:border-gray-600 my-1" />
           <button

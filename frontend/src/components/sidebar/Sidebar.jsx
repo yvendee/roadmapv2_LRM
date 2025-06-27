@@ -18,14 +18,14 @@ import {
   faUserTie 
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
-import useUserStore from '../../store/userStore';
+// import useUserStore from '../../store/userStore';
 import useLoginStore from '../../store/loginStore';
 import logo from '../../assets/images/webp/momentum-logo.webp';
 
 const Sidebar = ({ collapsed }) => {
 
-  const user = useUserStore((state) => state.user);
-  console.log("Stored User Name:", user?.name);
+  const user = useLoginStore((state) => state.user);
+  console.log("Stored User Name:", user?.fullname);
 
   const loggedUser = useLoginStore((state) => state.user);
   const loggedSession = useLoginStore((state) => state.session_id);
