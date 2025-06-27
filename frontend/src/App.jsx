@@ -21,6 +21,7 @@ import MembersDirectory from './components/members-directory/membersDirectory';
 import Chat from './components/chat/Chat';
 import ThemeToggle from './components/theme-icon/ThemeToggle';
 import SettingsButton from './components/settings-icon/SettingsButton';
+import NotificationButton from './components/notification-icon/NotificationButton';
 import AccountButton from './components/account-icon/AccountButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
@@ -80,6 +81,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
           <div className="flex justify-end items-center space-x-4 mb-6">
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
             <SettingsButton />
+            <NotificationButton />
             <AccountButton />
           </div>
         )}
