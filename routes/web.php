@@ -117,6 +117,14 @@ Route::post('/api/login', function (Request $request) {
             'role' => 'manager',
             'group' => 'operations',
         ],
+        [
+            'email' => 'maricar@chuckgulledge.com',
+            'password' => 'Password123',
+            'id' => 2,
+            'name' => 'Maricar Aquino',
+            'role' => 'manager',
+            'group' => 'operations',
+        ],
     ];
 
     // 🔍 Find matching user
