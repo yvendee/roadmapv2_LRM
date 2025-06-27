@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../../configs/config';
 import './departmentTraction.css';
 
 const DepartmentTraction = () => {
@@ -10,7 +11,7 @@ const DepartmentTraction = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/mock-response5', {
+    fetch(`${API_URL}/mock-response4`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
