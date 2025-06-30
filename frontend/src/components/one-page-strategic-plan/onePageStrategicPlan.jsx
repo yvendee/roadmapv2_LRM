@@ -2,6 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import API_URL from '../../configs/config';
+import HeaderWithPrint from './0.HeaderWithPrint/HeaderWithPrint';
+import StrategicDriversTable from './1.StrategicDriversTable/StrategicDriversTable';
+import FoundationsSection from './2.FoundationsSection/FoundationsSection';
+import ThreeYearOutlook from './3.ThreeYearOutlook/ThreeYearOutlook';
+import PlayingToWin from './4.PlayingToWin/PlayingToWin';
+import CoreCapabilities from './5.CoreCapabilities/CoreCapabilities';
+import FourDecisions from './6.FourDecisions/FourDecisions';
+import ConstraintsTracker from './7.ConstraintsTracker/ConstraintsTracker';
 import './onePageStrategicPlan.css';
 
 const OnePageStrategicPlan = () => {
@@ -15,7 +23,8 @@ const OnePageStrategicPlan = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">One Page Strategic Plan</h2>
+      
+      {/* <h2 className="text-xl font-bold mb-4">One Page Strategic Plan</h2>
       {user ? (
         <table className="table-auto border-collapse border border-gray-400">
           <tbody>
@@ -25,7 +34,17 @@ const OnePageStrategicPlan = () => {
         </table>
       ) : (
         <p>Loading...</p>
-      )}
+      )} */}
+
+      <HeaderWithPrint />
+      <StrategicDriversTable />
+      <FoundationsSection />
+      <ThreeYearOutlook />
+      <PlayingToWin />
+      <CoreCapabilities />
+      <FourDecisions />
+      <ConstraintsTracker />
+
     </div>
   );
 };
