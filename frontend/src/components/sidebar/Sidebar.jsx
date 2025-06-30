@@ -23,7 +23,17 @@ import './Sidebar.css';
 import useLoginStore from '../../store/loginStore';
 import logo from '../../assets/images/webp/momentum-logo.webp';
 
-const Sidebar = ({ collapsed }) => {
+const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
+
+  const handleMouseEnter = (e, text) => {
+    const { top, left, height } = e.target.getBoundingClientRect();
+    const position = { top: top + height / 2, left: left + 32 }; // Adjust for icon and positioning
+    onShowTooltip(position, text);
+  };
+
+  const handleMouseLeave = () => {
+    onHideTooltip();
+  };
 
   const user = useLoginStore((state) => state.user);
   console.log("Stored User Name:", user?.fullname);
@@ -73,6 +83,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Home')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faHouse} />
             {!collapsed && <span>Home</span>}
@@ -91,6 +104,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'One Page Strategic Plan')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faMap} />
             {!collapsed && <span>One Page Strategic Plan</span>}
@@ -105,6 +121,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Flywheel')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faSyncAlt} />
             {!collapsed && <span>Flywheel</span>}
@@ -123,6 +142,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Score Board')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faTachometerAlt} />
             {!collapsed && <span>Scoreboard</span>}
@@ -137,6 +159,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Compay Traction')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faChartBar} />
             {!collapsed && <span>Company Traction</span>}
@@ -151,6 +176,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Department Traction')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faChartLine} />
             {!collapsed && <span>Department Traction</span>}
@@ -165,6 +193,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Who What When')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faNetworkWired} />
             {!collapsed && <span>Who What When</span>}
@@ -184,6 +215,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Session Dates')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faTasks} />
             {!collapsed && <span>Session Dates</span>}
@@ -198,6 +232,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Meetings')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faCalendar} />
             {!collapsed && <span>Meetings</span>}
@@ -217,6 +254,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Coaching Checklist')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faCheckCircle} />
             {!collapsed && <span>Coaching Checklist</span>}
@@ -231,6 +271,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Tools')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faWrench} />
             {!collapsed && <span>Tools</span>}
@@ -250,6 +293,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Document Vault')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faFolder} />
             {!collapsed && <span>Document Vault</span>}
@@ -270,6 +316,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Members Departments')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faBuilding} />
             {!collapsed && <span>Member's Departments</span>}
@@ -284,6 +333,9 @@ const Sidebar = ({ collapsed }) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Members Directory')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faUserTie} />
             {!collapsed && <span>Member's Directory</span>}

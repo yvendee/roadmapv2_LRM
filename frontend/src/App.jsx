@@ -23,6 +23,7 @@ import ThemeToggle from './components/theme-icon/ThemeToggle';
 import SettingsButton from './components/settings-icon/SettingsButton';
 import NotificationButton from './components/notification-icon/NotificationButton';
 import AccountButton from './components/account-icon/AccountButton';
+import Tooltip from './components/tooltip/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import useSessionKeepAlive from './hooks/KeepAlive';
@@ -43,12 +44,34 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
     }
   }, [isLoginPage, isDark]);
 
+
+
+  const [tooltip, setTooltip] = useState({ show: false, position: {}, text: '' });
+  
+  // Tooltip handling functions
+  const showTooltipHandler = (position, text) => {
+    setTooltip({ show: true, position, text });
+    // Automatically hide the tooltip after 3 seconds (3000 ms)
+    setTimeout(() => {
+      setTooltip({ show: false, position: {}, text: '' });
+    }, 5000); // 5000ms = 5 seconds
+  };
+  
+  const hideTooltipHandler = () => {
+    setTooltip({ show: false, position: {}, text: '' });
+  };
+
   return (
     // <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white"  style={{ border: '2px solid black' }}>
     <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       {!isLoginPage && (
         <>
-          <Sidebar isDark={isDark} setIsDark={setIsDark} collapsed={collapsed} />
+          <Sidebar isDark={isDark} setIsDark={setIsDark} collapsed={collapsed} 
+            onShowTooltip={showTooltipHandler} 
+            onHideTooltip={hideTooltipHandler} 
+          />
+           
+           {/* Collapse button */}
           <button
             onClick={() => setCollapsed(!collapsed)}
             style={{
@@ -109,6 +132,10 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
           </Routes>
         </div>
       </div>
+
+      {/* Tooltip - Rendered above everything else */}
+      {tooltip.show && <Tooltip position={tooltip.position} text={tooltip.text} collapsed={collapsed} />}
+      
     </div>
   );
 }
