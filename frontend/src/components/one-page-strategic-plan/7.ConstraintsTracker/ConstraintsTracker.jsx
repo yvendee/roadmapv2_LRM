@@ -1,7 +1,8 @@
+// frontend\src\components\one-page-strategic-plan\7.ConstraintsTracker\ConstraintsTracker.jsx
 import React from 'react';
 
 const ConstraintsTracker = () => (
-  <div className="p-4 bg-white rounded-lg shadow-md mt-6 overflow-x-auto">
+  <div className="p-4 bg-white rounded-lg shadow-md mt-6 overflow-x-auto mr-[15px]">
     <h5 className="text-sm font-semibold text-green-700 mb-2">Constraints Tracker</h5>
     <table className="min-w-full border border-gray-200 text-sm">
       <thead className="bg-gray-50 text-green-700">

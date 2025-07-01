@@ -1,7 +1,8 @@
+// frontend\src\components\one-page-strategic-plan\5.CoreCapabilities\CoreCapabilities.jsx
 import React from 'react';
 
 const CoreCapabilities = () => (
-  <div className="p-4 bg-white rounded-lg shadow-md mt-6 overflow-x-auto">
+  <div className="p-4 bg-white rounded-lg shadow-md mt-6 overflow-x-auto mr-[15px]">
     <h5 className="text-sm font-semibold text-center mb-2">Core Capabilities/Strengths</h5>
     <table className="min-w-full border border-gray-200 text-sm">
       <thead className="bg-gray-50 text-green-700">

@@ -1,3 +1,4 @@
+// frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
 import React from 'react';
 
 const strategicDrivers = [
@@ -29,7 +30,7 @@ const strategicDrivers = [
 
 const StrategicDriversTable = () => {
   return (
-    <div className="mt-6 p-4 bg-white rounded-lg shadow-md">
+    <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <h5 className="text-lg font-semibold mb-4">Strategic Drivers</h5>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left border border-gray-200">

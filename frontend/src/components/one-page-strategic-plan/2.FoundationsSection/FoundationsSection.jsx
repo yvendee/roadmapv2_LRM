@@ -1,3 +1,4 @@
+// frontend\src\components\one-page-strategic-plan\2.FoundationsSection\FoundationsSection.jsx
 import React from 'react';
 
 const foundations = [
@@ -35,7 +36,7 @@ Our organizational culture is designed so all team members win.`,
 
 const FoundationsSection = () => {
   return (
-    <div className="mt-6 p-4 bg-white rounded-lg shadow-md">
+    <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <h5 className="text-lg font-semibold mb-4">Foundations</h5>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {foundations.map((item, index) => (
