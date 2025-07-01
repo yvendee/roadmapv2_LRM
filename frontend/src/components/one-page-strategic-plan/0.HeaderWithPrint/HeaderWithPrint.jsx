@@ -1,3 +1,4 @@
+// frontend\src\components\one-page-strategic-plan\0.HeaderWithPrint\HeaderWithPrint.jsx
 import React from 'react';
 import crmBarChart from '../../../assets/images/webp/crm-bar-chart.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,19 +10,23 @@ const HeaderWithPrint = () => {
   
     return (
       <div className="row mb-1">
-        <div className="col">
-          <div className="card bg-100 shadow-none border">
-            <div className="row gx-0 flex-between-center">
-              <div className="col-sm-auto inline-center d-flex align-items-center gap-3 p-2">
+        <div className="col-md-12">
+          <div className="card bg-100 shadow-none border px-4 py-2 mr-[15px]">
+            <div className="flex items-center justify-between p-2 ms-2 w-full">
+              {/* Left: icon + title */}
+              <div className="flex items-center gap-3">
                 <img src={crmBarChart} alt="" width="90" />
                 <h4 className="fw-bold mb-0">One Page Strategic Plan -</h4>
               </div>
-              <div className="col-sm-auto p-2">
-                <button onClick={handlePrint} className="btn btn-dark btn-sm d-flex align-items-center gap-1">
-                  <FontAwesomeIcon icon={faPrint} />
-                  <span>Print</span>
-                </button>
-              </div>
+
+              {/* Right: print button */}
+              <button
+                onClick={handlePrint}
+                className="btn btn-dark btn-sm flex items-center gap-1 dark:text-black"
+              >
+                <FontAwesomeIcon icon={faPrint} />
+                <span>Print</span>
+              </button>
             </div>
           </div>
         </div>

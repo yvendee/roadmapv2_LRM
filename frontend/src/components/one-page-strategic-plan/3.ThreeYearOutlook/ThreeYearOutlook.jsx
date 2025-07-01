@@ -1,3 +1,4 @@
+// frontend\src\components\one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
 import React from 'react';
 
 const outlooks = [
@@ -7,7 +8,7 @@ const outlooks = [
 ];
 
 const ThreeYearOutlook = () => (
-  <div className="p-4 bg-white rounded-lg shadow-md mt-6">
+  <div className="p-4 bg-white rounded-lg shadow-md mt-6 mr-[15px]">
     <h5 className="text-md font-semibold text-green-700 mb-4">3 Year Outlook</h5>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {outlooks.map((item, index) => (
