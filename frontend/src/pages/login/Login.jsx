@@ -29,6 +29,16 @@ const Login = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const hasReloaded = sessionStorage.getItem('hasReloaded');
+  
+    if (!hasReloaded) {
+      sessionStorage.setItem('hasReloaded', 'true');
+      window.location.reload();
+    }
+  }, []);
+  
+
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -19,7 +19,7 @@ import {
   faUserTie 
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
-// import useUserStore from '../../store/userStore';
+import useUserStore from '../../store/userStore';
 import useLoginStore from '../../store/loginStore';
 import logo from '../../assets/images/webp/momentum-logo.webp';
 
@@ -35,7 +35,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
     onHideTooltip();
   };
 
-  const user = useLoginStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
   console.log("Stored User Name:", user?.fullname);
 
   const loggedUser = useLoginStore((state) => state.user);
@@ -43,6 +43,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
   console.log("Logged Email: ", loggedUser?.email);  
   console.log("Logged Role: ",loggedUser?.role);   
   console.log("Logged Group: ",loggedUser?.group);
+  console.log("Logged Organization: ",loggedUser?.organization);
   console.log("Logged Session: ", loggedSession); 
 
 

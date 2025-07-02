@@ -1,4 +1,5 @@
 // frontend\src\App.jsx
+// Layout file
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Login from './pages/login/Login';
@@ -19,8 +20,10 @@ import DocumentVault from './components/document-vault/documentVault';
 import MembersDepartments from './components/members-departments/membersDepartments';
 import MembersDirectory from './components/members-directory/membersDirectory';
 import Chat from './components/chat/Chat';
+import TopbarDropdown from './components/company-dropdown/TopbarDropdown';
 import ThemeToggle from './components/theme-icon/ThemeToggle';
 import SettingsButton from './components/settings-icon/SettingsButton';
+import MessageButton from './components/message-icon/MessageButton';
 import NotificationButton from './components/notification-icon/NotificationButton';
 import AccountButton from './components/account-icon/AccountButton';
 import Tooltip from './components/tooltip/Tooltip';
@@ -64,6 +67,8 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
   return (
     // <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white"  style={{ border: '2px solid black' }}>
     <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+      
+      {/* Right Content */}
       {!isLoginPage && (
         <>
           <Sidebar isDark={isDark} setIsDark={setIsDark} collapsed={collapsed} 
@@ -99,16 +104,33 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
         </>
       )}
 
+      {/* Left Upper Content */}
       <div className={`flex flex-col flex-1 ${isLoginPage ? 'h-screen' : 'p-4 h-screen'}`}>
         {!isLoginPage && (
-          <div className="flex justify-end items-center space-x-4 mb-6">
-            <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
+          // <div className="flex justify-end items-center space-x-4 mb-6">
+          <div className="flex justify-between items-center space-x-4 mb-6">
+            {/* <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
             <SettingsButton />
+            <MessageButton />
             <NotificationButton />
-            <AccountButton />
+            <AccountButton /> */}
+
+            {/* LEFT SIDE: Dropdown */}
+            <TopbarDropdown />
+
+            {/* RIGHT SIDE: Icons */}
+            <div className="flex items-center space-x-4">
+              <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
+              <SettingsButton />
+              <MessageButton />
+              <NotificationButton />
+              <AccountButton />
+            </div>
+            
           </div>
         )}
 
+        {/* Left Lower Content */}
         <div className={`${isLoginPage ? '' : 'flex-grow overflow-auto'}`}>
           <Routes>
             <Route path="/" element={<Login />} />

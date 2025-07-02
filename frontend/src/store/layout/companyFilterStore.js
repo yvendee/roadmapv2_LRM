@@ -1,0 +1,15 @@
+import { create } from 'zustand';
+
+export const useCompanyFilterStore = create((set) => ({
+  options: [
+    'Chuck Gulledge Advisors, LLC', 
+    'Collins Credit Union', 
+    'IH MVCU', 
+    'Ironclad',
+    'Seneca', 
+    'Texans Credit Union', 
+    'Kolb Grading'
+  ],
+  selected: 'Chuck Gulledge Advisors, LLC',
+  setSelected: (value) => set({ selected: value }),
+}));
