@@ -1,5 +1,7 @@
 // frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
-import React from 'react';
+import React, { useState } from 'react';
+import './StrategicDriversTable.css';
+import useLoginStore from '../../../store/loginStore';
 
 const strategicDrivers = [
   {
@@ -28,10 +30,42 @@ const strategicDrivers = [
   },
 ];
 
+
 const StrategicDriversTable = () => {
+
+  const [loading, setLoading] = useState(false);
+  const loggedUser = useLoginStore((state) => state.user);
+
+  const handleAddDriverClick = () => {
+    console.log('Add Strategic Drivers button clicked');
+    setLoading(true);
+  
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+
   return (
+    // <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
+    //   <h5 className="text-lg font-semibold mb-4">Strategic Drivers</h5>
+
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
-      <h5 className="text-lg font-semibold mb-4">Strategic Drivers</h5>
+      <div className="header-container">
+        <h5 className="text-lg font-semibold always-black">Strategic Drivers</h5>
+        {loggedUser?.role === 'superadmin' && (
+          <button className="pure-blue-btn" onClick={handleAddDriverClick} disabled={loading}>
+            {loading ? (
+              <div className="loader-bars">
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            ) : (
+              'Add Strategic Driver'
+            )}
+          </button>
+        )}
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-left border border-gray-200">
           <thead>

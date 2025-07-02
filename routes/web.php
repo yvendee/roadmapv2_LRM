@@ -108,22 +108,26 @@ Route::post('/api/login', function (Request $request) {
             'name' => 'Kay Dee',
             'role' => 'admin',
             'group' => 'executive',
+            'organization' => 'kay organization ',
+
         ],
         [
             'email' => 'uat@gmail.com',
             'password' => 'q',
             'id' => 2,
-            'name' => 'John Smith',
-            'role' => 'manager',
+            'name' => 'User Test',
+            'role' => 'testuser',
             'group' => 'operations',
+            'organization' => 'test organization',
         ],
         [
             'email' => 'maricar@chuckgulledge.com',
             'password' => 'Password123',
             'id' => 2,
             'name' => 'Maricar Aquino',
-            'role' => 'manager',
+            'role' => 'superadmin',
             'group' => 'operations',
+            'organization' => 'maricar organization',
         ],
     ];
 
@@ -148,6 +152,7 @@ Route::post('/api/login', function (Request $request) {
                 'email' => $matchedUser['email'],
                 'role' => $matchedUser['role'],
                 'group' => $matchedUser['group'],
+                'organization' => $matchedUser['organization'],
             ],
         ]);
     }

@@ -1,0 +1,69 @@
+/* frontend\src\components\company-dropdown\TopbarDropdown.css */
+  /* Scrollbar styles (already in use) */
+.dropdown-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.4);
+}
+
+.dropdown-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-scroll {
+  scrollbar-gutter: stable;
+}
+
+/* Hover highlight for dropdown items */
+.dropdown-item {
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap; /* 👈 Prevent text wrapping */
+}
+
+.dropdown-item:hover {
+  background-color: #bfdbfe; /* Tailwind blue-100 equivalent */
+  color: #1e40af;            /* Tailwind blue-800 for text */
+}
+
+/* Dark mode hover effect */
+.dark .dropdown-item:hover {
+  background-color: #1e3a8a; /* Tailwind blue-900 */
+  color: #ffffff;
+}
+
+
+.loader-balls {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+}
+
+.loader-balls div {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #3b82f6; /* Tailwind blue-500 */
+  animation: bounce 0.6s infinite alternate;
+}
+
+.loader-balls div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loader-balls div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  to {
+    transform: translateY(-6px);
+    opacity: 0.6;
+  }
+}
+
