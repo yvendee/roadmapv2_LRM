@@ -7,7 +7,8 @@ const SettingsButton = () => {
   const navigate = useNavigate(); // Initialize the navigate function
 
   const handleClick = () => {
-    navigate('/');  // Navigate to the home page ("/")
+    // navigate('/');  // Navigate to the home page ("/")
+    window.location.href = '/';
   };
 
   return (
