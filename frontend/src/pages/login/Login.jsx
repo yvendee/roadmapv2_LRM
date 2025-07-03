@@ -94,6 +94,7 @@ const Login = () => {
           }
 
           navigate('/home');
+          
         } else {
           setLoginError(data.message || 'Login failed');
         }
