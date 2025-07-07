@@ -1,5 +1,7 @@
 <?php
 
+// app\Docs\CsrfTokenDoc.php
+
 namespace App\Docs;
 
 use OpenApi\Annotations as OA;
