@@ -10,16 +10,48 @@ import PlayingToWin from './4.PlayingToWin/PlayingToWin';
 import CoreCapabilities from './5.CoreCapabilities/CoreCapabilities';
 import FourDecisions from './6.FourDecisions/FourDecisions';
 import ConstraintsTracker from './7.ConstraintsTracker/ConstraintsTracker';
+import useStrategicDriversStore from '../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
+import { useNavigate } from 'react-router-dom'; // Make sure this is imported
 import './onePageStrategicPlan.css';
 
 const OnePageStrategicPlan = () => {
   const { user, setUser } = useUserStore();
+  const loadStrategicDriversFromAPI = useStrategicDriversStore((state) => state.loadStrategicDriversFromAPI);
+  const navigate = useNavigate(); // Ensure it's inside your component
+  
+
+  // useEffect(() => {
+  //   fetch(`${API_URL}/mock-response2`)
+  //     .then((res) => res.json())
+  //     .then((json) => setUser(json.data));
+  // }, [setUser]);
 
   useEffect(() => {
-    fetch(`${API_URL}/mock-response2`)
-      .then((res) => res.json())
-      .then((json) => setUser(json.data));
-  }, [setUser]);
+
+    fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // important for Laravel session cookies
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          console.log('Fetched Strategic Drivers data:', json);
+          loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [loadStrategicDriversFromAPI]);
+
 
   return (
     <div>

@@ -6,6 +6,52 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/v1/one-page-strategic-plan/strategic-drivers": {
+            "get": {
+                "tags": [
+                    "One Page Strategic Plan"
+                ],
+                "summary": "Get Strategic Drivers",
+                "operationId": "119ac411ae44657b1022d6dc23e20c59",
+                "responses": {
+                    "200": {
+                        "description": "Returns a list of strategic drivers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Solution Innovation"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Focuses on productization, technology, and data integration to create repeatable, scalable solutions that deliver on the brand promise."
+                                            },
+                                            "kpi": {
+                                                "type": "string",
+                                                "example": "Launch 2 scalable products"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "Tracking"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/csrf-token": {
             "get": {
                 "tags": [
@@ -139,6 +185,10 @@
         }
     },
     "tags": [
+        {
+            "name": "One Page Strategic Plan",
+            "description": "One Page Strategic Plan"
+        },
         {
             "name": "Security",
             "description": "Security"

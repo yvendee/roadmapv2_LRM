@@ -4,6 +4,11 @@
   color: black !important;
 }
 
+/* This will force black text regardless of dark mode */
+td, th {
+  color: #111 !important;
+}
+
 .pure-blue-btn {
   background-color: #0000FF; /* pure blue */
   color: white;              /* white text */
@@ -255,6 +260,20 @@
 .modal-add-buttons .btn-close {
   background-color: #dc2626; /* red */
   color: white;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background-color: #e5e7eb; /* Tailwind's gray-200 */
+  border-radius: 4px;
+  height: 1rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
 }
 
   

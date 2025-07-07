@@ -1,4 +1,8 @@
 <?php
+// app\Docs\BaseDoc.php
+
+// php artisan l5-swagger:generate
+// http://localhost/api/documentation
 
 namespace App\Docs;
 

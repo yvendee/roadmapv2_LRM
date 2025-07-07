@@ -6,7 +6,7 @@ import Login from './pages/login/Login';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/home/Home';
 import Review from './components/review/Review';
-import OnePageStrategicPlan from './components/one-page-strategic-plan/onePageStrategicPlan';
+import OnePageStrategicPlan from './components/2.one-page-strategic-plan/onePageStrategicPlan';
 import Flywheel from './components/flywheel/Flywheel';
 import Scoreboard from './components/scoreboard/Scoreboard';
 import CompanyTraction from './components/company-traction/companyTraction';

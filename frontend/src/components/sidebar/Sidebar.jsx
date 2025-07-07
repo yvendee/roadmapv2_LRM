@@ -22,6 +22,7 @@ import './Sidebar.css';
 import useUserStore from '../../store/userStore';
 import useLoginStore from '../../store/loginStore';
 import logo from '../../assets/images/webp/momentum-logo.webp';
+import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
 const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
 
@@ -36,15 +37,15 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
   };
 
   const user = useUserStore((state) => state.user);
-  console.log("Stored User Name:", user?.fullname);
+  // ENABLE_CONSOLE_LOGS && console.log("Stored User Name:", user?.fullname);
 
   const loggedUser = useLoginStore((state) => state.user);
   const loggedSession = useLoginStore((state) => state.session_id);
-  console.log("Logged Email: ", loggedUser?.email);  
-  console.log("Logged Role: ",loggedUser?.role);   
-  console.log("Logged Group: ",loggedUser?.group);
-  console.log("Logged Organization: ",loggedUser?.organization);
-  console.log("Logged Session: ", loggedSession); 
+  // ENABLE_CONSOLE_LOGS && console.log("Logged Email: ", loggedUser?.email);  
+  // ENABLE_CONSOLE_LOGS && console.log("Logged Role: ",loggedUser?.role);   
+  // ENABLE_CONSOLE_LOGS && console.log("Logged Group: ",loggedUser?.group);
+  // ENABLE_CONSOLE_LOGS && console.log("Logged Organization: ",loggedUser?.organization);
+  // ENABLE_CONSOLE_LOGS && console.log("Logged Session: ", loggedSession); 
 
 
   return (

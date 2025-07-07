@@ -1,10 +1,9 @@
 // frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import './StrategicDriversTable.css';
 import useLoginStore from '../../../store/loginStore';
-// import useStrategicDriversStore from '../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
 import useStrategicDriversStore, { initialStrategicDrivers } from '../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
-
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 
 const StrategicDriversTable = () => {
   const [loading, setLoading] = useState(false);
@@ -32,8 +31,8 @@ const StrategicDriversTable = () => {
 
   const [currentOrder, setCurrentOrder] = useState(strategicDrivers);
   const [draggedId, setDraggedId] = useState(null);
-
-
+  
+  
 
   // Load from localStorage if available
   useEffect(() => {
@@ -47,7 +46,7 @@ const StrategicDriversTable = () => {
         setEditedDrivers(parsedData.map((d) => ({ id: d.id })));
 
       } catch (err) {
-        console.error('Failed to parse strategicDriversData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS &&  console.error('Failed to parse strategicDriversData from localStorage:', err);
       }
     }
   }, [setStrategicDrivers]);
@@ -62,7 +61,7 @@ const StrategicDriversTable = () => {
   };
 
   const handleAddNewDriver = () => {
-    console.log('New Driver:', JSON.stringify(newDriver, null, 2));
+    ENABLE_CONSOLE_LOGS &&  console.log('New Driver:', JSON.stringify(newDriver, null, 2));
 
     // 2. Hide Save / Discharge
     setEditedDrivers([]);
@@ -112,7 +111,10 @@ const StrategicDriversTable = () => {
     setEditingCell({ id: null, field: null });
   };
 
+
+  
   const handleSaveChanges = () => {
+
     setLoadingSave(true);
   
     setTimeout(() => {
@@ -125,7 +127,7 @@ const StrategicDriversTable = () => {
           const parsedData = JSON.parse(storedData);
   
           // 1. Log to console
-          console.log('Saved strategic drivers:', parsedData);
+          ENABLE_CONSOLE_LOGS && console.log('Saved strategic drivers after Save Changes Button:', parsedData);
   
           // 2. Update Zustand store
           setStrategicDrivers(parsedData);
@@ -136,7 +138,7 @@ const StrategicDriversTable = () => {
             id: index + 1,
           }));
 
-          console.log('Saved strategic drivers:', reordered);
+          ENABLE_CONSOLE_LOGS &&  console.log('Saved strategic drivers (Reindexed):', reordered);
 
           setStrategicDrivers(reordered);
   
@@ -146,7 +148,7 @@ const StrategicDriversTable = () => {
           // 4. Remove from localStorage
           localStorage.removeItem('strategicDriversData');
         } catch (err) {
-          console.error('Error parsing strategicDriversData on save:', err);
+          ENABLE_CONSOLE_LOGS && console.error('Error parsing strategicDriversData on save:', err);
         }
       } else {
 
@@ -157,7 +159,7 @@ const StrategicDriversTable = () => {
           id: index + 1,
         }));
 
-        console.log('Saved strategic drivers (reordered):', reordered);
+        ENABLE_CONSOLE_LOGS &&  console.log('Saved strategic drivers (reordered):', reordered);
         setStrategicDrivers(reordered);
         setEditedDrivers([]);
 
@@ -225,7 +227,7 @@ const StrategicDriversTable = () => {
 
   // Save drag order to store:
   const saveDraggedOrder = () => {
-    console.log('New order:', JSON.stringify(currentOrder, null, 2));
+    ENABLE_CONSOLE_LOGS &&  console.log('New order:', JSON.stringify(currentOrder, null, 2));
     setStrategicDrivers(currentOrder);
     setEditedDrivers([]);
   };
@@ -237,6 +239,13 @@ const StrategicDriversTable = () => {
     setCurrentOrder(strategicDrivers);
     setEditedDrivers([]);
   };
+
+  const isSkeleton = strategicDrivers.some(driver => 
+    driver.title === '-' && 
+    driver.description === '-' &&
+    driver.kpi === '-' &&
+    driver.status === '-'
+  );
 
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
@@ -290,7 +299,7 @@ const StrategicDriversTable = () => {
           <thead>
             <tr className="bg-gray-100 text-gray-700 text-sm">
               <th className="border px-4 py-2">#</th>
-              <th className="border px-4 py-2">Strategic Drivers</th>
+              <th className="border px-4 py-2 ">Strategic Drivers</th>
               <th className="border px-4 py-2">Description</th>
               <th className="border px-4 py-2 text-center">KPI Annual Target Range</th>
             </tr>
@@ -299,95 +308,255 @@ const StrategicDriversTable = () => {
           <tbody>
             {currentOrder.map(driver => (
               <tr key={driver.id}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, driver.id)}
-                  onDragOver={(e) => handleDragOver(e, driver.id)}
-                  onDragEnd={handleDragEnd}
-                  className="hover:bg-gray-50 cursor-move">
-                  <td className="border px-4 py-3">{driver.id}</td>
 
-                  <td
-                    className="border px-4 py-3 font-medium cursor-pointer"
-                    onClick={() => handleCellClick(driver.id, 'title')}
-                  >
-                    {editingCell.id === driver.id && editingCell.field === 'title' ? (
-                      <input
-                        autoFocus
-                        type="text"
-                        defaultValue={driver.title}
-                        onBlur={(e) => handleInputBlur(driver.id, 'title', e.target.value)}
-                        className="w-full px-2 py-1 border rounded"
-                      />
-                    ) : (
-                      driver.title
-                    )}
-                  </td>
+                // draggable
+                // onDragStart={(e) => handleDragStart(e, driver.id)}
+                // onDragOver={(e) => handleDragOver(e, driver.id)}
+                // onDragEnd={handleDragEnd}
+                // className="hover:bg-gray-50 cursor-move"
 
-                  <td
-                    className="border px-4 py-3 cursor-pointer"
-                    onClick={() => handleCellClick(driver.id, 'description')}
-                  >
-                    {editingCell.id === driver.id && editingCell.field === 'description' ? (
-                      <textarea
-                        autoFocus
-                        defaultValue={driver.description}
-                        onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
-                        className="w-full px-2 py-1 border rounded resize-none"
-                        rows={3}
-                      />
-                    ) : (
-                      driver.description
-                    )}
-                  </td>
+                // when user is super admin , the table cell can't drag and drop
+                //   draggable={loggedUser?.role === 'superadmin'}
+                //   onDragStart={loggedUser?.role === 'superadmin' ? (e) => handleDragStart(e, driver.id) : undefined}
+                //   onDragOver={loggedUser?.role === 'superadmin' ? (e) => handleDragOver(e, driver.id) : undefined}
+                //   onDragEnd={loggedUser?.role === 'superadmin' ? handleDragEnd : undefined}
+                //   className={`hover:bg-gray-50 ${loggedUser?.role === 'superadmin' ? 'cursor-move' : ''}`}
 
-                  <td className="border px-4 py-3 text-center cursor-pointer" onClick={() => handleCellClick(driver.id, 'kpi')}>
-                    {editingCell.id === driver.id && editingCell.field === 'kpi' ? (
-                      <input
+                draggable={
+                  loggedUser?.role === 'superadmin' &&
+                  driver.title !== '-' &&
+                  driver.description !== '-' &&
+                  driver.kpi !== '-' &&
+                  driver.status !== '-'
+                }
+                onDragStart={
+                  loggedUser?.role === 'superadmin' &&
+                  driver.title !== '-' &&
+                  driver.description !== '-' &&
+                  driver.kpi !== '-' &&
+                  driver.status !== '-'
+                    ? (e) => handleDragStart(e, driver.id)
+                    : undefined
+                }
+                onDragOver={
+                  loggedUser?.role === 'superadmin' &&
+                  driver.title !== '-' &&
+                  driver.description !== '-' &&
+                  driver.kpi !== '-' &&
+                  driver.status !== '-'
+                    ? (e) => handleDragOver(e, driver.id)
+                    : undefined
+                }
+                onDragEnd={
+                  loggedUser?.role === 'superadmin' &&
+                  driver.title !== '-' &&
+                  driver.description !== '-' &&
+                  driver.kpi !== '-' &&
+                  driver.status !== '-'
+                    ? handleDragEnd
+                    : undefined
+                }
+                className={`hover:bg-gray-50 ${
+                  loggedUser?.role === 'superadmin' &&
+                  driver.title !== '-' &&
+                  driver.description !== '-' &&
+                  driver.kpi !== '-' &&
+                  driver.status !== '-'
+                    ? 'cursor-move'
+                    : 'cursor-default'
+                }`}
+              >
+
+                 {/* Implement Drag and Drop */}
+
+                {/* <td className="border px-4 py-3">{driver.id}</td>
+
+                <td
+                  className="border px-4 py-3 font-medium cursor-pointer"
+                  onClick={() => handleCellClick(driver.id, 'title')}
+                >
+                  {editingCell.id === driver.id && editingCell.field === 'title' ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      defaultValue={driver.title}
+                      onBlur={(e) => handleInputBlur(driver.id, 'title', e.target.value)}
+                      className="w-full px-2 py-1 border rounded"
+                    />
+                  ) : (
+                    driver.title
+                  )}
+                </td>
+
+                <td
+                  className="border px-4 py-3 cursor-pointer"
+                  onClick={() => handleCellClick(driver.id, 'description')}
+                >
+                  {editingCell.id === driver.id && editingCell.field === 'description' ? (
+                    <textarea
+                      autoFocus
+                      defaultValue={driver.description}
+                      onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
+                      className="w-full px-2 py-1 border rounded resize-none"
+                      rows={3}
+                    />
+                  ) : (
+                    driver.description
+                  )}
+                </td>
+
+                <td className="border px-4 py-3 text-center cursor-pointer" onClick={() => handleCellClick(driver.id, 'kpi')}>
+                  {editingCell.id === driver.id && editingCell.field === 'kpi' ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      defaultValue={driver.kpi}
+                      onBlur={(e) => handleInputBlur(driver.id, 'kpi', e.target.value)}
+                      className="w-full px-2 py-1 border rounded text-center"
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-500 block">
+                      {driver.kpi || 'tbd'}
+                    </span>
+                  )}
+
+                  <div className="mt-1" onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click conflict
+                    handleCellClick(driver.id, 'status');
+                  }}>
+                    {editingCell.id === driver.id && editingCell.field === 'status' ? (
+                      <select
                         autoFocus
-                        type="text"
-                        defaultValue={driver.kpi}
-                        onBlur={(e) => handleInputBlur(driver.id, 'kpi', e.target.value)}
-                        className="w-full px-2 py-1 border rounded text-center"
-                      />
+                        defaultValue={driver.status}
+                        onBlur={(e) => handleInputBlur(driver.id, 'status', e.target.value)}
+                        className="w-full px-2 py-1 border rounded text-xs text-center"
+                      >
+                        <option value="Tracking">Tracking</option>
+                        <option value="Behind">Behind</option>
+                        <option value="At Risk">At Risk</option>
+                        <option value="Paused">Paused</option>
+                      </select>
                     ) : (
-                      <span className="text-xs text-gray-500 block">
-                        {driver.kpi || 'tbd'}
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full ${
+                          driver.status === 'Tracking'
+                            ? 'bg-green-100 text-green-700'
+                            : driver.status === 'Behind'
+                            ? 'bg-red-100 text-red-700'
+                            : driver.status === 'At Risk'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-gray-200 text-gray-600'
+                        }`}
+                      >
+                        {driver.status || 'Tracking'}
                       </span>
                     )}
+                  </div>
+                </td> */}
+                
 
-                    <div className="mt-1" onClick={(e) => {
-                      e.stopPropagation(); // Prevent row click conflict
-                      handleCellClick(driver.id, 'status');
-                    }}>
-                      {editingCell.id === driver.id && editingCell.field === 'status' ? (
-                        <select
-                          autoFocus
-                          defaultValue={driver.status}
-                          onBlur={(e) => handleInputBlur(driver.id, 'status', e.target.value)}
-                          className="w-full px-2 py-1 border rounded text-xs text-center"
-                        >
-                          <option value="Tracking">Tracking</option>
-                          <option value="Behind">Behind</option>
-                          <option value="At Risk">At Risk</option>
-                          <option value="Paused">Paused</option>
-                        </select>
-                      ) : (
-                        <span
-                          className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                            driver.status === 'Tracking'
-                              ? 'bg-green-100 text-green-700'
-                              : driver.status === 'Behind'
-                              ? 'bg-red-100 text-red-700'
-                              : driver.status === 'At Risk'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-gray-200 text-gray-600'
-                          }`}
-                        >
-                          {driver.status || 'Tracking'}
-                        </span>
-                      )}
-                    </div>
-                  </td>
+                {/* Implement skeleton  Loading */}
+
+                <td className="border px-4 py-3">{isSkeleton ? <div className="skeleton w-6"></div> : driver.id}</td>
+
+                <td
+                  className="border px-4 py-3 font-medium cursor-pointer"
+                  onClick={() => driver.title !== '-' && handleCellClick(driver.id, 'title')}
+                >
+                  {driver.title === '-' ? (
+                    <div className="skeleton w-32 h-4"></div>
+                  ) : editingCell.id === driver.id && editingCell.field === 'title' ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      defaultValue={driver.title}
+                      onBlur={(e) => handleInputBlur(driver.id, 'title', e.target.value)}
+                      className="w-full px-2 py-1 border rounded"
+                    />
+                  ) : (
+                    driver.title
+                  )}
+                </td>
+
+
+                <td
+                  className="border px-4 py-3 cursor-pointer"
+                  onClick={() => driver.description !== '-' && handleCellClick(driver.id, 'description')}
+                >
+                  {driver.description === '-' ? (
+                    <div className="skeleton w-64 h-5"></div>
+                  ) : editingCell.id === driver.id && editingCell.field === 'description' ? (
+                    <textarea
+                      autoFocus
+                      defaultValue={driver.description}
+                      onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
+                      className="w-full px-2 py-1 border rounded resize-none"
+                      rows={3}
+                    />
+                  ) : (
+                    driver.description
+                  )}
+                </td>
+
+
+                <td
+                  className="border px-4 py-3 text-center cursor-pointer"
+                  onClick={() => driver.kpi !== '-' && handleCellClick(driver.id, 'kpi')}
+                >
+                  {driver.kpi === '-' ? (
+                    <div className="skeleton w-24 h-4 mx-auto"></div>
+                  ) : editingCell.id === driver.id && editingCell.field === 'kpi' ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      defaultValue={driver.kpi}
+                      onBlur={(e) => handleInputBlur(driver.id, 'kpi', e.target.value)}
+                      className="w-full px-2 py-1 border rounded text-center"
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-500 block">{driver.kpi}</span>
+                  )}
+
+                  <div
+                    className="mt-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      driver.status !== '-' && handleCellClick(driver.id, 'status');
+                    }}
+                  >
+                    {driver.status === '-' ? (
+                      <div className="skeleton w-16 h-5 mx-auto"></div>
+                    ) : editingCell.id === driver.id && editingCell.field === 'status' ? (
+                      <select
+                        autoFocus
+                        defaultValue={driver.status}
+                        onBlur={(e) => handleInputBlur(driver.id, 'status', e.target.value)}
+                        className="w-full px-2 py-1 border rounded text-xs text-center"
+                      >
+                        <option value="Tracking">Tracking</option>
+                        <option value="Behind">Behind</option>
+                        <option value="At Risk">At Risk</option>
+                        <option value="Paused">Paused</option>
+                      </select>
+                    ) : (
+                      <span
+                        className={`inline-block px-2 py-0.5 text-xs rounded-full ${
+                          driver.status === 'Tracking'
+                            ? 'bg-green-100 text-green-700'
+                            : driver.status === 'Behind'
+                            ? 'bg-red-100 text-red-700'
+                            : driver.status === 'At Risk'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-gray-200 text-gray-600'
+                        }`}
+                      >
+                        {driver.status}
+                      </span>
+                    )}
+                  </div>
+                </td>
+
+
 
               </tr>
             ))}
