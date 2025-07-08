@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo from '../../assets/images/webp/momentum-logo.webp';
 import useLoginStore from '../../store/loginStore'; 
+import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
+import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import API_URL from '../../configs/config';
+import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
 import './Login.css';
 
 const Login = () => {
@@ -77,7 +80,7 @@ const Login = () => {
         });
 
         const data = await response.json();
-        console.log('Login API Response:', data);
+        ENABLE_CONSOLE_LOGS && console.log('Login API Response:', data);
 
         if (response.ok && data.status === 'success') {
           setUser(data.user);
@@ -92,6 +95,48 @@ const Login = () => {
             localStorage.removeItem('rememberedEmail');
             localStorage.removeItem('rememberedPassword');
           }
+
+          try {
+
+            // ✅ Step 1: Fetch Company Options
+            const companyRes = await fetch(`${API_URL}/v1/company-options`, {
+              credentials: 'include',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            });
+          
+            if (!companyRes.ok) throw new Error('Company fetch failed');
+          
+            const companies = await companyRes.json();
+
+            ENABLE_CONSOLE_LOGS &&  console.log('Fetched Company List: ',companies);
+
+            const firstCompany = companies[0];
+          
+            // ✅ Update store
+            useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
+          
+            // ✅ Step 2: Fetch Layout Toggles for selected company
+            const toggleRes = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`);
+            const toggleJson = await toggleRes.json();
+          
+            if (toggleJson.status === 'success') {
+              useLayoutSettingsStore.setState({
+                toggles: toggleJson.toggles,
+                organization: toggleJson.organization,
+                unique_id: toggleJson.unique_id,
+              });
+              ENABLE_CONSOLE_LOGS &&  console.log('Fetched toggles', ' for ', firstCompany, ':', toggleJson.toggles);
+            } else {
+              console.error('Toggle fetch error:', toggleJson.message);
+            }
+          
+          } catch (error) {
+            console.error('Post-login fetch error:', error);
+          }
+          
 
           navigate('/home');
           

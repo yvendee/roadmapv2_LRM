@@ -409,7 +409,9 @@ Route::get('/api/keep-alive', function (Request $request) {
     ]);
 });
 
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
+    
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -446,5 +448,89 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
             'kpi' => 'Grow referral traffic by 30%',
             'status' => 'Paused',
         ],
+    ]);
+});
+
+// ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
+// ref: frontend\src\pages\login\Login.jsx
+Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    // Dummy toggle data based on organization (you can replace with DB query)
+    $toggles = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'Strategic Drivers' => true,
+            'Foundations' => true,
+            '3 Year Outlook' => true,
+            'Playing to Win Strategy' => false,
+            'Core Capabilities' => false,
+            '4 Decisions' => true,
+            'Constraints Tracker' => true,
+        ],
+        'Collins Credit Union' => [
+            'Strategic Drivers' => false,
+            'Foundations' => false,
+            '3 Year Outlook' => true,
+            'Playing to Win Strategy' => true,
+            'Core Capabilities' => true,
+            '4 Decisions' => false,
+            'Constraints Tracker' => false,
+        ],
+        'IH MVCU' => [
+            'Strategic Drivers' => false,
+            'Foundations' => false,
+            '3 Year Outlook' => false,
+            'Playing to Win Strategy' => true,
+            'Core Capabilities' => true,
+            '4 Decisions' => false,
+            'Constraints Tracker' => false,
+        ],
+
+        'Ironclad' => [
+            'Strategic Drivers' => true,
+            'Foundations' => false,
+            '3 Year Outlook' => false,
+            'Playing to Win Strategy' => true,
+            'Core Capabilities' => true,
+            '4 Decisions' => false,
+            'Constraints Tracker' => false,
+        ],
+    ];
+
+    return response()->json([
+        'status' => 'success',
+        'toggles' => $toggles[$organization] ?? [],
+        'organization' => $organization,
+        'unique_id' => uniqid(), // just example
+    ]);
+});
+
+
+// ref: frontend\src\pages\login\Login.jsx
+Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
+    
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    return response()->json([
+        'Chuck Gulledge Advisors, LLC', 
+        'Collins Credit Union', 
+        'IH MVCU', 
+        'Ironclad',
+        'Seneca', 
+        'Texans Credit Union', 
+        'Kolb Grading'
     ]);
 });
