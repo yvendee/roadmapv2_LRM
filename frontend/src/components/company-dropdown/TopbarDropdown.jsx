@@ -1,8 +1,12 @@
+// frontend\src\components\company-dropdown\TopbarDropdown.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
 import useLoginStore from '../../store/loginStore'; 
+import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
+import API_URL from '../../configs/config';
+import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './TopbarDropdown.css';
 
 const TopbarDropdown = () => {
@@ -11,23 +15,45 @@ const TopbarDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const setToggles = useLayoutSettingsStore((state) => state.setToggles);
+  const setOrganization = useLayoutSettingsStore((state) => state.setOrganization);
+  const setUniqueId = useLayoutSettingsStore((state) => state.setUniqueId);
+
   const loggedUser = useLoginStore((state) => state.user); 
 
   // 🔒 Only show if superadmin
   // if (loggedUser?.role !== 'superadmin') return null;
   if (loggedUser?.role !== 'superadmin') return <span>&nbsp;</span>;
 
-  const handleSelect = (option) => {
+  const handleSelect = async (option) => {
+    ENABLE_CONSOLE_LOGS && console.log('Selected company filter:', option);
     setSelected(option);
     setIsOpen(false);
     setLoading(true);
-
-    // Hide loader after 1 second
-    setTimeout(() => {
-      setLoading(false);
+  
+    // Simulate a delay before fetching
+    setTimeout(async () => {
+      try {
+        const response = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(option)}`);
+        const result = await response.json();
+  
+        if (result.status === 'success') {
+          setToggles(result.toggles);
+          setOrganization(result.organization);
+          setUniqueId(result.unique_id);
+          // ENABLE_CONSOLE_LOGS && console.log('Fetched :', result);
+          ENABLE_CONSOLE_LOGS && console.log('Fetched toggles:', result.toggles);
+        } else {
+          console.error('Error fetching toggles:', result.message);
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+      } finally {
+        setLoading(false);
+      }
     }, 1000);
   };
-
+  
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
   };

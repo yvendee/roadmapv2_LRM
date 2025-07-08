@@ -22,6 +22,7 @@ import MembersDirectory from './components/members-directory/membersDirectory';
 import Chat from './components/chat/Chat';
 import TopbarDropdown from './components/company-dropdown/TopbarDropdown';
 import ThemeToggle from './components/theme-icon/ThemeToggle';
+import LayoutButton from './components/layout-icon/LayoutButton';
 import SettingsButton from './components/settings-icon/SettingsButton';
 import MessageButton from './components/message-icon/MessageButton';
 import NotificationButton from './components/notification-icon/NotificationButton';
@@ -29,6 +30,7 @@ import AccountButton from './components/account-icon/AccountButton';
 import Tooltip from './components/tooltip/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import useLoginStore from './store/loginStore';
 import useSessionKeepAlive from './hooks/KeepAlive';
 import './index.css';
 
@@ -36,6 +38,11 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
 
   const location = useLocation();
   const isLoginPage = location.pathname === '/';
+  const loggedUser = useLoginStore((state) => state.user); // Assuming user data includes role
+  const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
+  const isStrategicPlanPage = location.pathname === '/one-page-strategic-plan'; // Check if on the right page
+
+
   useSessionKeepAlive();
 
   // 👇 Force light mode on login page
@@ -121,6 +128,10 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             {/* RIGHT SIDE: Icons */}
             <div className="flex items-center space-x-4">
               <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
+
+              {/* Conditionally render LayoutButton only if superadmin and on the correct page */}
+              {isSuperAdmin && isStrategicPlanPage && <LayoutButton />}
+
               <SettingsButton />
               <MessageButton />
               <NotificationButton />

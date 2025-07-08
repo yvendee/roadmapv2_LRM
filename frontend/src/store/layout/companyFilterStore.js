@@ -1,3 +1,4 @@
+// frontend\src\store\layout\companyFilterStore.js
 import { create } from 'zustand';
 
 export const useCompanyFilterStore = create((set) => ({

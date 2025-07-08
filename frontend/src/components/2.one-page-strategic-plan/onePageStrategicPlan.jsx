@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import API_URL from '../../configs/config';
+import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
 import HeaderWithPrint from './0.HeaderWithPrint/HeaderWithPrint';
 import StrategicDriversTable from './1.StrategicDriversTable/StrategicDriversTable';
 import FoundationsSection from './2.FoundationsSection/FoundationsSection';
@@ -11,14 +12,16 @@ import CoreCapabilities from './5.CoreCapabilities/CoreCapabilities';
 import FourDecisions from './6.FourDecisions/FourDecisions';
 import ConstraintsTracker from './7.ConstraintsTracker/ConstraintsTracker';
 import useStrategicDriversStore from '../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
-import { useNavigate } from 'react-router-dom'; // Make sure this is imported
+import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import { useNavigate } from 'react-router-dom'; 
 import './onePageStrategicPlan.css';
+
 
 const OnePageStrategicPlan = () => {
   const { user, setUser } = useUserStore();
   const loadStrategicDriversFromAPI = useStrategicDriversStore((state) => state.loadStrategicDriversFromAPI);
   const navigate = useNavigate(); // Ensure it's inside your component
-  
+  const toggles = useLayoutSettingsStore((state) => state.toggles);
 
   // useEffect(() => {
   //   fetch(`${API_URL}/mock-response2`)
@@ -39,7 +42,7 @@ const OnePageStrategicPlan = () => {
       .then(async (res) => {
         const json = await res.json();
         if (res.ok) {
-          console.log('Fetched Strategic Drivers data:', json);
+          ENABLE_CONSOLE_LOGS &&  console.log('Fetched Strategic Drivers data:', json);
           loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
         } else if (res.status === 401) {
           navigate('/', { state: { loginError: 'Session Expired' } });
@@ -69,13 +72,21 @@ const OnePageStrategicPlan = () => {
       )} */}
 
       <HeaderWithPrint />
-      <StrategicDriversTable />
+      {/* <StrategicDriversTable />
       <FoundationsSection />
       <ThreeYearOutlook />
       <PlayingToWin />
       <CoreCapabilities />
       <FourDecisions />
-      <ConstraintsTracker />
+      <ConstraintsTracker /> */}
+
+      {toggles['Strategic Drivers'] && <StrategicDriversTable />}
+      {toggles['Foundations'] && <FoundationsSection />}
+      {toggles['3 Year Outlook'] && <ThreeYearOutlook />}
+      {toggles['Playing to Win Strategy'] && <PlayingToWin />}
+      {toggles['Core Capabilities'] && <CoreCapabilities />}
+      {toggles['4 Decisions'] && <FourDecisions />}
+      {toggles['Constraints Tracker'] && <ConstraintsTracker />}
 
     </div>
   );
