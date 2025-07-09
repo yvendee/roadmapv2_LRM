@@ -1,9 +1,11 @@
 // frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
 import React, { useState, useEffect} from 'react';
-import './StrategicDriversTable.css';
 import useLoginStore from '../../../store/loginStore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import useStrategicDriversStore, { initialStrategicDrivers } from '../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import './StrategicDriversTable.css';
 
 const StrategicDriversTable = () => {
   const [loading, setLoading] = useState(false);
@@ -46,7 +48,7 @@ const StrategicDriversTable = () => {
         setEditedDrivers(parsedData.map((d) => ({ id: d.id })));
 
       } catch (err) {
-        ENABLE_CONSOLE_LOGS &&  console.error('Failed to parse strategicDriversData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS && console.error('Failed to parse strategicDriversData from localStorage:', err);
       }
     }
   }, [setStrategicDrivers]);
@@ -247,6 +249,15 @@ const StrategicDriversTable = () => {
     driver.status === '-'
   );
 
+  const handleDeleteDriver = (id) => {
+    const updated = strategicDrivers.filter(driver => driver.id !== id);
+    setStrategicDrivers(updated);
+    localStorage.setItem('strategicDriversData', JSON.stringify(updated));
+  
+    // Mark as edited
+    setEditedDrivers(prev => [...prev, { id }]);
+  };
+
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="header-container">
@@ -302,6 +313,7 @@ const StrategicDriversTable = () => {
               <th className="border px-4 py-2 ">Strategic Drivers</th>
               <th className="border px-4 py-2">Description</th>
               <th className="border px-4 py-2 text-center">KPI Annual Target Range</th>
+              <th className="border px-4 py-2 text-center">Delete</th>
             </tr>
           </thead>
 
@@ -555,6 +567,17 @@ const StrategicDriversTable = () => {
                     )}
                   </div>
                 </td>
+
+                <td className="border px-4 py-3 text-center">
+                  <button
+                    onClick={() => handleDeleteDriver(driver.id)}
+                    className="text-red-600 hover:text-red-800"
+                    title="Delete"
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </button>
+                </td>
+
 
 
 

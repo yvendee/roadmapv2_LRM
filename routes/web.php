@@ -451,6 +451,51 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
     ]);
 });
 
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    return response()->json([
+        [
+            'id' => 1,
+            'title' => 'Our Aspiration',
+            'content' => '"To be renowned as the premier coaching organization that transforms how companies achieve their optimal exits."',
+        ],
+        [
+            'id' => 2,
+            'title' => 'Our Purpose / Mission',
+            'content' => "Our purpose is:\n\nDevelop transformative coaching methodologies and frameworks.\nDeliver extraordinary, measurable results for our clients.\n\nOur organizational culture is designed so all team members win.",
+        ],
+        [
+            'id' => 3,
+            'title' => 'Brand Promise',
+            'content' => '',
+        ],
+        [
+            'id' => 4,
+            'title' => 'Profit Per X',
+            'content' => '',
+        ],
+        [
+            'id' => 5,
+            'title' => 'BHAG',
+            'content' => '$100 Billion in Exit Value',
+        ],
+        [
+            'id' => 6,
+            'title' => '3HAG',
+            'content' => '$7Mil in Revenue by 2027',
+        ],
+    ]);
+});
+
+
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {

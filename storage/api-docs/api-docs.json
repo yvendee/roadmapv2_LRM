@@ -1,11 +1,116 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My Laravel API",
+        "title": "Momentum Hub API",
         "description": "General API documentation for the Laravel backend.",
         "version": "1.0.0"
     },
     "paths": {
+        "/api/v1/get-layout-toggles": {
+            "get": {
+                "tags": [
+                    "Upper Content"
+                ],
+                "summary": "Get Layout Toggles for Organization",
+                "operationId": "a19f97c23e117670acb6328a8fc03275",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The name of the organization",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns toggle settings for a specific organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "toggles": {
+                                            "properties": {
+                                                "Strategic Drivers": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "Foundations": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "3 Year Outlook": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "Playing to Win Strategy": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "Core Capabilities": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "4 Decisions": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "Constraints Tracker": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "organization": {
+                                            "type": "string",
+                                            "example": "Ironclad"
+                                        },
+                                        "unique_id": {
+                                            "type": "string",
+                                            "example": "664fbb88e5f56"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/company-options": {
+            "get": {
+                "tags": [
+                    "App Layout"
+                ],
+                "summary": "Get Company Options",
+                "operationId": "61b82d37dc37ec3b69205941fde6bf55",
+                "responses": {
+                    "200": {
+                        "description": "Returns a list of company names",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "example": "Ironclad"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/one-page-strategic-plan/strategic-drivers": {
             "get": {
                 "tags": [
@@ -41,6 +146,44 @@
                                             "status": {
                                                 "type": "string",
                                                 "example": "Tracking"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/one-page-strategic-plan/foundations": {
+            "get": {
+                "tags": [
+                    "One Page Strategic Plan"
+                ],
+                "summary": "Get One Page Strategic Plan - Foundations",
+                "operationId": "e660e581b98d28ad30b5ecdc51988b0c",
+                "responses": {
+                    "200": {
+                        "description": "Returns foundational elements of the One Page Strategic Plan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Our Aspiration"
+                                            },
+                                            "content": {
+                                                "type": "string",
+                                                "example": "To be renowned as the premier coaching organization that transforms how companies achieve their optimal exits."
                                             }
                                         },
                                         "type": "object"
@@ -185,6 +328,14 @@
         }
     },
     "tags": [
+        {
+            "name": "Upper Content",
+            "description": "Upper Content"
+        },
+        {
+            "name": "App Layout",
+            "description": "App Layout"
+        },
         {
             "name": "One Page Strategic Plan",
             "description": "One Page Strategic Plan"
