@@ -116,11 +116,23 @@
                 "tags": [
                     "One Page Strategic Plan"
                 ],
-                "summary": "Get Strategic Drivers",
+                "summary": "Get Strategic Drivers for an Organization",
                 "operationId": "119ac411ae44657b1022d6dc23e20c59",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to filter strategic drivers",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Returns a list of strategic drivers",
+                        "description": "Returns strategic drivers list for the specified organization",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -188,6 +200,61 @@
                                         },
                                         "type": "object"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/one-page-strategic-plan/three-year-outlook": {
+            "get": {
+                "tags": [
+                    "One Page Strategic Plan"
+                ],
+                "summary": "Get 3-Year Outlook for an Organization",
+                "operationId": "2e387beca1ba1a251e62f44e99445963",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to filter the 3-year outlook",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns 3-year revenue outlook for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "year": {
+                                                        "type": "string",
+                                                        "example": "2026"
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "1.0 Revenue of $4 Million"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }

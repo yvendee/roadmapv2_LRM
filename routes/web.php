@@ -410,8 +410,9 @@ Route::get('/api/keep-alive', function (Request $request) {
 });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+
 Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
-    
+
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -419,41 +420,113 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
         $user = $request->session()->get('user');
     }
 
-    return response()->json([
-        [
-            'id' => 1,
-            'title' => 'Solution Innovation',
-            'description' => 'Focuses on productization, technology, and data integration to create repeatable, scalable solutions that deliver on the brand promise.',
-            'kpi' => 'Launch 2 scalable products',
-            'status' => 'Tracking',
+    $organization = $request->query('organization');
+
+    // Mock data for multiple organizations
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'title' => 'Solution Innovation',
+                'description' => 'Focuses on productization, technology, and data integration to create repeatable, scalable solutions that deliver on the brand promise.',
+                'kpi' => 'Launch 2 scalable products',
+                'status' => 'Tracking',
+            ],
+            [
+                'id' => 2,
+                'title' => 'Talent Leadership',
+                'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
+                'kpi' => 'Hire 5 elite coaches',
+                'status' => 'Behind',
+            ],
+            [
+                'id' => 3,
+                'title' => 'Exceptional Delivery',
+                'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
+                'kpi' => 'Achieve 90% 10/10 ratings',
+                'status' => 'At Risk',
+            ],
+            [
+                'id' => 4,
+                'title' => 'Market Dominance',
+                'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
+                'kpi' => 'Grow referral traffic by 30%',
+                'status' => 'Paused',
+            ],
         ],
-        [
-            'id' => 2,
-            'title' => 'Talent Leadership',
-            'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
-            'kpi' => 'Hire 5 elite coaches',
-            'status' => 'Behind',
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'title' => 'Customer Centricity',
+                'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
+                'kpi' => 'Increase customer satisfaction by 20%',
+                'status' => 'Tracking',
+            ],
+            [
+                'id' => 2,
+                'title' => 'Operational Excellence',
+                'description' => 'Streamline operations and reduce costs while maintaining quality.',
+                'kpi' => 'Reduce operational costs by 10%',
+                'status' => 'On Track',
+            ],
+            [
+                'id' => 3,
+                'title' => 'Digital Transformation',
+                'description' => 'Implement new technologies to drive efficiency and innovation.',
+                'kpi' => 'Migrate 70% of systems to cloud',
+                'status' => 'At Risk',
+            ],
+            [
+                'id' => 4,
+                'title' => 'Market Expansion',
+                'description' => 'Entering new markets and increasing market share.',
+                'kpi' => 'Expand into 3 new markets',
+                'status' => 'Behind',
+            ],
         ],
-        [
-            'id' => 3,
-            'title' => 'Exceptional Delivery',
-            'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
-            'kpi' => 'Achieve 90% 10/10 ratings',
-            'status' => 'At Risk',
+
+        'Test Skeleton Loading' => [
+            [
+                'id' => 1,
+                'title' => '-',
+                'description' => '-',
+                'kpi' => '-',
+                'status' => '-',
+            ],
+            [
+                'id' => 2,
+                'title' => '-',
+                'description' => '-',
+                'kpi' => '-',
+                'status' => '-',
+            ],
+            [
+                'id' => 3,
+                'title' => '-',
+                'description' => '-',
+                'kpi' => '-',
+                'status' => '-',
+            ],
+            [
+                'id' => 4,
+                'title' => '-',
+                'description' => '-',
+                'kpi' => '-',
+                'status' => '-',
+            ],
         ],
-        [
-            'id' => 4,
-            'title' => 'Market Dominance',
-            'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
-            'kpi' => 'Grow referral traffic by 30%',
-            'status' => 'Paused',
-        ],
-    ]);
+
+    ];
+
+    // Return data for the requested organization or empty array
+    return response()->json($data[$organization] ?? []);
 });
 
-// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
 
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+
+Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -461,37 +534,186 @@ Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $req
         $user = $request->session()->get('user');
     }
 
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'title' => 'Our Aspiration',
+                'content' => '"To be renowned as the premier coaching organization that transforms how companies achieve their optimal exits."',
+            ],
+            [
+                'id' => 2,
+                'title' => 'Our Purpose / Mission',
+                'content' => "Our purpose is:\n\nDevelop transformative coaching methodologies and frameworks.\nDeliver extraordinary, measurable results for our clients.\n\nOur organizational culture is designed so all team members win.",
+            ],
+            [
+                'id' => 3,
+                'title' => 'Brand Promise',
+                'content' => '',
+            ],
+            [
+                'id' => 4,
+                'title' => 'Profit Per X',
+                'content' => '',
+            ],
+            [
+                'id' => 5,
+                'title' => 'BHAG',
+                'content' => '$100 Billion in Exit Value',
+            ],
+            [
+                'id' => 6,
+                'title' => '3HAG',
+                'content' => '$7Mil in Revenue by 2027',
+            ],
+        ],
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'title' => 'Our Aspiration',
+                'content' => '"To be a trusted partner driving financial wellness and community growth."',
+            ],
+            [
+                'id' => 2,
+                'title' => 'Our Purpose / Mission',
+                'content' => "Empower members with innovative financial solutions.\nFoster a culture of inclusion and service excellence.",
+            ],
+            [
+                'id' => 3,
+                'title' => 'Brand Promise',
+                'content' => 'Reliable, Friendly, Innovative.',
+            ],
+            [
+                'id' => 4,
+                'title' => 'Profit Per X',
+                'content' => 'Maximize member value through sustainable growth.',
+            ],
+            [
+                'id' => 5,
+                'title' => 'BHAG',
+                'content' => '$50 Million in Community Investments',
+            ],
+            [
+                'id' => 6,
+                'title' => '3HAG',
+                'content' => '$12Mil in Revenue by 2028',
+            ],
+        ],
+        'Test Skeleton Loading' => [
+            [
+                'id' => 1,
+                'title' => '-',
+                'content' => '-',
+            ],
+            [
+                'id' => 2,
+                'title' => '-',
+                'content' => "-",
+            ],
+            [
+                'id' => 3,
+                'title' => '-',
+                'content' => '-',
+            ],
+            [
+                'id' => 4,
+                'title' => '-',
+                'content' => '-',
+            ],
+            [
+                'id' => 5,
+                'title' => '-',
+                'content' => '-',
+            ],
+            [
+                'id' => 6,
+                'title' => '-',
+                'content' => '-',
+            ],
+        ],
+    ];
+
+    $organization = $request->query('organization');
+
+    if ($organization && isset($data[$organization])) {
+        return response()->json($data[$organization]);
+    }
+
+    return response()->json(['message' => 'Organization not found or no organization provided.'], 404);
+});
+
+
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');  // <-- get from query params
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'year' => '2026',
+                'value' => '1.0 Revenue of $4 Million',
+            ],
+            [
+                'id' => 2,
+                'year' => '2027',
+                'value' => '2.0 Revenue of $7 Million',
+            ],
+            [
+                'id' => 3,
+                'year' => '2028',
+                'value' => '3.0 Revenue of $9 Million',
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'year' => '2029',
+                'value' => '4.0 Revenue of $10 Million',
+            ],
+            [
+                'id' => 2,
+                'year' => '2030',
+                'value' => '5.0 Revenue of $11 Million',
+            ],
+            [
+                'id' => 3,
+                'year' => '2031',
+                'value' => '6.0 Revenue of $12 Million',
+            ],
+        ],
+
+        'Test Skeleton Loading' => [
+            [
+                'id' => 1,
+                'year' => '-',
+                'value' => '-',
+            ],
+            [
+                'id' => 2,
+                'year' => '-',
+                'value' => '-',
+            ],
+            [
+                'id' => 3,
+                'year' => '-',
+                'value' => '-',
+            ],
+        ],
+      
+    ];
+
     return response()->json([
-        [
-            'id' => 1,
-            'title' => 'Our Aspiration',
-            'content' => '"To be renowned as the premier coaching organization that transforms how companies achieve their optimal exits."',
-        ],
-        [
-            'id' => 2,
-            'title' => 'Our Purpose / Mission',
-            'content' => "Our purpose is:\n\nDevelop transformative coaching methodologies and frameworks.\nDeliver extraordinary, measurable results for our clients.\n\nOur organizational culture is designed so all team members win.",
-        ],
-        [
-            'id' => 3,
-            'title' => 'Brand Promise',
-            'content' => '',
-        ],
-        [
-            'id' => 4,
-            'title' => 'Profit Per X',
-            'content' => '',
-        ],
-        [
-            'id' => 5,
-            'title' => 'BHAG',
-            'content' => '$100 Billion in Exit Value',
-        ],
-        [
-            'id' => 6,
-            'title' => '3HAG',
-            'content' => '$7Mil in Revenue by 2027',
-        ],
+        $organization => $data[$organization] ?? [],
     ]);
 });
 
@@ -521,32 +743,22 @@ Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_s
             'Constraints Tracker' => true,
         ],
         'Collins Credit Union' => [
-            'Strategic Drivers' => false,
-            'Foundations' => false,
+            'Strategic Drivers' => true,
+            'Foundations' => true,
             '3 Year Outlook' => true,
             'Playing to Win Strategy' => true,
             'Core Capabilities' => true,
             '4 Decisions' => false,
             'Constraints Tracker' => false,
         ],
-        'IH MVCU' => [
-            'Strategic Drivers' => false,
-            'Foundations' => false,
-            '3 Year Outlook' => false,
-            'Playing to Win Strategy' => true,
-            'Core Capabilities' => true,
-            '4 Decisions' => false,
-            'Constraints Tracker' => false,
-        ],
-
-        'Ironclad' => [
+        'Test Skeleton Loading' => [
             'Strategic Drivers' => true,
-            'Foundations' => false,
-            '3 Year Outlook' => false,
+            'Foundations' => true,
+            '3 Year Outlook' => true,
             'Playing to Win Strategy' => true,
             'Core Capabilities' => true,
-            '4 Decisions' => false,
-            'Constraints Tracker' => false,
+            '4 Decisions' => true,
+            'Constraints Tracker' => true,
         ],
     ];
 
@@ -569,13 +781,19 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
         $user = $request->session()->get('user');
     }
 
+    // return response()->json([
+    //     'Chuck Gulledge Advisors, LLC', 
+    //     'Collins Credit Union', 
+    //     'IH MVCU', 
+    //     'Ironclad',
+    //     'Seneca', 
+    //     'Texans Credit Union', 
+    //     'Kolb Grading'
+    // ]);
+
     return response()->json([
         'Chuck Gulledge Advisors, LLC', 
         'Collins Credit Union', 
-        'IH MVCU', 
-        'Ironclad',
-        'Seneca', 
-        'Texans Credit Union', 
-        'Kolb Grading'
+        'Test Skeleton Loading'
     ]);
 });
