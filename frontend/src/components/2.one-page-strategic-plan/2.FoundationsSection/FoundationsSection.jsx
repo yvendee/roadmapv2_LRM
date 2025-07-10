@@ -23,7 +23,9 @@ const FoundationsSection = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [editedFoundations, setEditedFoundations] = useState([]);
+  const hasPlaceholder = foundations.some(item => item.title === '-' || item.content === '-');
+
+  // const [editedFoundations, setEditedFoundations] = useState([]);
 
   // Load from localStorage
   useEffect(() => {
@@ -149,15 +151,31 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
+  // const handleDeleteFoundation = (id) => {
+  //   const updated = foundations.filter(item => item.id !== id);
+  //   setFoundations(updated);
+  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
+  //   setEdited(prev => prev.filter(e => e.id !== id));
+  
+  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
+  //   // console.log('📦 Updated Foundations List:', updated);   
+  // };
+
+
   const handleDeleteFoundation = (id) => {
     const updated = foundations.filter(item => item.id !== id);
     setFoundations(updated);
     localStorage.setItem('foundationsData', JSON.stringify(updated));
-    setEdited(prev => prev.filter(e => e.id !== id));
+  
+    // 👇 Ensure at least one change is registered to show save/discharge buttons
+    setEdited(prev => {
+      const alreadyEdited = prev.some(e => e.id === id);
+      return alreadyEdited ? prev : [...prev, { id }];
+    });
   
     console.log(`🗑️ Foundation with ID ${id} deleted.`);
-    console.log('📦 Updated Foundations List:', updated);
   };
+  
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
@@ -177,7 +195,7 @@ const FoundationsSection = () => {
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="flex justify-between items-center mb-4">
-        <h5 className="text-lg font-semibold">Foundations</h5>
+        <h5 className="text-lg font-semibold always-black">Foundations</h5>
         {loggedUser?.role === 'superadmin' && (
           <div className="flex gap-2">
             {edited.length > 0 && (
@@ -212,8 +230,8 @@ const FoundationsSection = () => {
                 </button>
               </>
             )}
-            <button className="pure-blue-btn" onClick={handleAddFoundationClick} disabled={loading}>
-              {/* Add Foundation */}
+
+            {/* <button className="pure-blue-btn" onClick={handleAddFoundationClick} disabled={loading}>
               {loading ? (
                 <div className="loader-bars">
                   <div></div>
@@ -223,7 +241,22 @@ const FoundationsSection = () => {
               ) : (
                 'Add Foundation'
               )}
-            </button>
+            </button> */}
+
+            {!hasPlaceholder && (
+              <button className="pure-blue-btn" onClick={handleAddFoundationClick} disabled={loading}>
+                {loading ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                ) : (
+                  'Add Foundation'
+                )}
+              </button>
+            )}
+
           </div>
         )}
       </div>
@@ -235,12 +268,13 @@ const FoundationsSection = () => {
           return (
             <div key={item.id} className="relative border rounded-md p-4 bg-white shadow-sm min-h-[160px]">
               {loggedUser?.role === 'superadmin' && !isPlaceholder && (
-                <button
+                <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                   onClick={() => handleDeleteFoundation(item.id)}
+                  title="Delete"
                 >
                   <FontAwesomeIcon icon={faTrashAlt} />
-                </button>
+                </div>
               )}
 
               <h6
@@ -313,7 +347,7 @@ const FoundationsSection = () => {
         </div>
       )}
 
-      {showConfirmModal && (
+      {/* {showConfirmModal && (
         <div className="modal-overlay" onClick={() => setShowConfirmModal(false)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <p className="text-lg font-semibold mb-2">Are you sure?</p>
@@ -324,7 +358,23 @@ const FoundationsSection = () => {
             </div>
           </div>
         </div>
+      )} */}
+
+      {showConfirmModal && (
+        <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-add-title">Confirm Discharge</div>
+            <p className="text-gray-700 text-sm mb-4">
+              Are you sure you want to discard all unsaved changes?
+            </p>
+            <div className="modal-add-buttons">
+              <button className="btn-add" onClick={confirmDischarge}>Yes, Discharge</button>
+              <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
+
     </div>
   );
 };

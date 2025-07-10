@@ -290,7 +290,7 @@ const StrategicDriversTable = () => {
                 </button>
               </>
             )}
-            <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
+            {/* <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
               {loading ? (
                 <div className="loader-bars">
                   <div></div>
@@ -300,7 +300,22 @@ const StrategicDriversTable = () => {
               ) : (
                 'Add Strategic Driver'
               )}
-            </button>
+            </button> */}
+
+            {loggedUser?.role === 'superadmin' && !isSkeleton && (
+              <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
+                {loading ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                ) : (
+                  'Add Strategic Driver'
+                )}
+              </button>
+            )}
+
           </div>
         )}
       </div>
@@ -313,7 +328,13 @@ const StrategicDriversTable = () => {
               <th className="border px-4 py-2 ">Strategic Drivers</th>
               <th className="border px-4 py-2">Description</th>
               <th className="border px-4 py-2 text-center">KPI Annual Target Range</th>
-              <th className="border px-4 py-2 text-center">Delete</th>
+              {/* {loggedUser?.role === 'superadmin' && (
+                <th className="border px-4 py-2 text-center">Delete</th>
+              )} */}
+
+              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                <th className="border px-4 py-2 text-center">Delete</th>
+              )}
             </tr>
           </thead>
 
@@ -568,19 +589,30 @@ const StrategicDriversTable = () => {
                   </div>
                 </td>
 
-                <td className="border px-4 py-3 text-center">
-                  <button
-                    onClick={() => handleDeleteDriver(driver.id)}
-                    className="text-red-600 hover:text-red-800"
-                    title="Delete"
-                  >
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                  </button>
-                </td>
+                {/* {loggedUser?.role === 'superadmin' && (
+                  <td className="border px-4 py-3 text-center">
+                    <div
+                      onClick={() => handleDeleteDriver(driver.id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </div>
+                  </td>
+                )} */}
 
-
-
-
+                {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                  <td className="border px-4 py-3 text-center">
+                    <div
+                      onClick={() => handleDeleteDriver(driver.id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </div>
+                  </td>
+                )}
+                
               </tr>
             ))}
           </tbody>
@@ -679,7 +711,7 @@ const StrategicDriversTable = () => {
         </table>
       </div>
 
-      {showConfirmModal && (
+      {/* {showConfirmModal && (
         <div
           className="modal-overlay"
           onClick={cancelDischargeChanges}// Close when clicking background
@@ -695,6 +727,21 @@ const StrategicDriversTable = () => {
             <div className="modal-buttons">
               <button className="btn-yes" onClick={confirmDischargeChanges}>Yes</button>
               <button className="btn-no" onClick={() => setShowConfirmModal(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )} */}
+
+      {showConfirmModal && (
+        <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-add-title">Confirm Discharge</div>
+            <p className="text-gray-700 text-sm mb-4">
+              Are you sure you want to discard all unsaved changes?
+            </p>
+            <div className="modal-add-buttons">
+              <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discharge</button>
+              <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
             </div>
           </div>
         </div>

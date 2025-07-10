@@ -8,11 +8,18 @@ use OpenApi\Annotations as OA;
 /**
  * @OA\Get(
  *     path="/api/v1/one-page-strategic-plan/strategic-drivers",
- *     summary="Get Strategic Drivers",
+ *     summary="Get Strategic Drivers for an Organization",
  *     tags={"One Page Strategic Plan"},
+ *     @OA\Parameter(
+ *         name="organization",
+ *         in="query",
+ *         required=true,
+ *         description="Organization name to filter strategic drivers",
+ *         @OA\Schema(type="string", example="Chuck Gulledge Advisors, LLC")
+ *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Returns a list of strategic drivers",
+ *         description="Returns strategic drivers list for the specified organization",
  *         @OA\JsonContent(
  *             type="array",
  *             @OA\Items(
@@ -26,4 +33,5 @@ use OpenApi\Annotations as OA;
  *     )
  * )
  */
+
 class A_StrategicDriversDoc {}
