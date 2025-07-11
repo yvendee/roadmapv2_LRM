@@ -14,7 +14,8 @@ import ConstraintsTracker from './7.ConstraintsTracker/ConstraintsTracker';
 import useStrategicDriversStore from '../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
 import useFoundationsStore from '../../store/left-lower-content/3.foundations/foundationsStore';
 import useThreeYearOutlookStore from '../../store/left-lower-content/4.three-year-outlook/threeYearOutlookStore';
-
+import usePlayingToWinStore from '../../store/left-lower-content/5.playing-to-win/playingToWinStore';
+import useCoreCapabilitiesStore from '../../store/left-lower-content/6.core-capabilities/coreCapabilitiesStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import { useNavigate } from 'react-router-dom'; 
 import './onePageStrategicPlan.css';
@@ -25,6 +26,10 @@ const OnePageStrategicPlan = () => {
   const loadStrategicDriversFromAPI = useStrategicDriversStore((state) => state.loadStrategicDriversFromAPI);
   const loadFoundationsFromAPI = useFoundationsStore((state) => state.loadFoundationsFromAPI);
   const loadOutlooksFromAPI = useThreeYearOutlookStore((state) => state.setOutlooks);
+  const loadPlayingToWinFromAPI = usePlayingToWinStore((state) => state.setPlayingToWin);
+
+  const loadCoreCapabilitieFromAPI = useCoreCapabilitiesStore((state) => state.setCoreCapabilities);
+
 
   const navigate = useNavigate(); // Ensure it's inside your component
   const toggles = useLayoutSettingsStore((state) => state.toggles);
@@ -36,98 +41,167 @@ const OnePageStrategicPlan = () => {
   //     .then((json) => setUser(json.data));
   // }, [setUser]);
 
-  // StrategicDrivers
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  // // StrategicDrivers
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
   
-    fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', // important for Laravel session cookies
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Strategic Drivers data:', json);
-          loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-  }, [organization, loadStrategicDriversFromAPI, navigate]);
-  
-
-  //Foundations
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/one-page-strategic-plan/foundations?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
-          loadFoundationsFromAPI(json);
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-  }, [organization, loadFoundationsFromAPI, navigate]);
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include', // important for Laravel session cookies
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Strategic-Drivers data:', json);
+  //         loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization, loadStrategicDriversFromAPI, navigate]);
   
 
-  // threeYearOutlook
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  // //Foundations
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
   
-    fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 3-Year Outlook Response:', json);
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/foundations?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
+  //         loadFoundationsFromAPI(json);
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization, loadFoundationsFromAPI, navigate]);
   
-          const outlookArr = json[organization];
+
+  // // Three-Year-Outlook
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
   
-          if (Array.isArray(outlookArr)) {
-            loadOutlooksFromAPI(outlookArr);
-          } else {
-            console.error(`⚠️ No outlooks found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-  }, [organization, loadOutlooksFromAPI, navigate]);
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched 3-Year-Outlook data:', json);
+  
+  //         const outlookArr = json[organization];
+  
+  //         if (Array.isArray(outlookArr)) {
+  //           loadOutlooksFromAPI(outlookArr);
+  //         } else {
+  //           console.error(`⚠️ No outlooks found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization, loadOutlooksFromAPI, navigate]);
+  
+
+  // // Playing-To-Win
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
+  
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Playing-To-Win data:', json);
+  
+  //         const playingToWinArr = json[organization];
+  
+  //         if (Array.isArray(playingToWinArr)) {
+  //           loadPlayingToWinFromAPI(playingToWinArr);
+  //         } else {
+  //           console.error(`⚠️ No Playing-To-Win found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization, loadPlayingToWinFromAPI, navigate]);
+  
+  // // Core-Capabilities
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
+  
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         const capabilitiesArr = json[organization];
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Core-Capabilities data:', capabilitiesArr);
+  //         if (Array.isArray(capabilitiesArr)) {
+  //           loadCoreCapabilitieFromAPI(capabilitiesArr);
+  //         } else {
+  //           console.error(`⚠️ No Core-Capabilities found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization]);
   
   
   return (

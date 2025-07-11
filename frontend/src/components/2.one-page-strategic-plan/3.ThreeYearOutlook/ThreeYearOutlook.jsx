@@ -4,6 +4,7 @@ import useLoginStore from '../../../store/loginStore';
 import useThreeYearOutlookStore, { initialOutlooks } from '../../../store/left-lower-content/4.three-year-outlook/threeYearOutlookStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './ThreeYearOutlook.css';
 
 const ThreeYearOutlook = () => {
@@ -67,7 +68,7 @@ const ThreeYearOutlook = () => {
     setShowAddModal(false);
     // setEdited([...edited, nextId]);
 
-    console.log('✅ New 3-Year Outlook Added:', newItem);
+    ENABLE_CONSOLE_LOGS && console.log('✅ New 3-Year Outlook Added:', newItem);
     // console.log('📦 Full Updated Outlooks:', [...outlooks, newItem]);
   };
 
@@ -75,7 +76,7 @@ const ThreeYearOutlook = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // console.log('Add Strategic Drivers button clicked');
+      // ENABLE_CONSOLE_LOGS && console.log('Add Strategic Drivers button clicked');
       setShowAddModal(true);
     }, 1000);
   };
@@ -86,8 +87,8 @@ const ThreeYearOutlook = () => {
     localStorage.setItem('threeYearOutlook', JSON.stringify(updated));
     if (!edited.includes(id)) setEdited([...edited, id]);
 
-    console.log(`🗑️ Outlook with ID ${id} deleted.`);
-    // console.log('📦 Updated Outlooks:', updated);
+    ENABLE_CONSOLE_LOGS && console.log(`🗑️ Outlook with ID ${id} deleted.`);
+    // ENABLE_CONSOLE_LOGS && console.log('📦 Updated Outlooks:', updated);
   };
 
   const handleSave = () => {
@@ -97,7 +98,7 @@ const ThreeYearOutlook = () => {
     setTimeout(() => {
       setLoadingSave(false);
 
-      console.log('📤 Saving to store:', outlooks);
+      ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', outlooks);
       setEdited([]);
       localStorage.removeItem('threeYearOutlook');
   
@@ -177,7 +178,7 @@ const ThreeYearOutlook = () => {
                       <div></div><div></div><div></div>
                     </div>
                   ) : (
-                    'Add'
+                    'Add Year Outlook'
                   )}
                 </button>
               )}
