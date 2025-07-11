@@ -262,6 +262,80 @@
                 }
             }
         },
+        "/api/v1/one-page-strategic-plan/core-capabilities": {
+            "get": {
+                "tags": [
+                    "One Page Strategic Plan"
+                ],
+                "summary": "Get Core Capabilities for an Organization",
+                "operationId": "85ae0efb4b8f0f794cb1edbc803abcd0",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve core capabilities data",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns core capabilities data for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Leadership Training"
+                                                    },
+                                                    "orig": {
+                                                        "type": "string",
+                                                        "example": "✓"
+                                                    },
+                                                    "q1": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    },
+                                                    "q2": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    },
+                                                    "q3": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    },
+                                                    "q4": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
         "/api/csrf-token": {
             "get": {
                 "tags": [
