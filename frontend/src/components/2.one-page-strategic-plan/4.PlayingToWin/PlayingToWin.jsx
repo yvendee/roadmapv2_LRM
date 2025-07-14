@@ -1,7 +1,7 @@
 // frontend\src\components\one-page-strategic-plan\4.PlayingToWin\PlayingToWin.jsx
 import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import usePlayingToWinStore, { initialPlayingToWin } from '../../../store/left-lower-content/5.playing-to-win/playingToWinStore';
+import usePlayingToWinStore, { initialPlayingToWin } from '../../../store/left-lower-content/2.one-page-strategic-plan/4.playingToWinStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';

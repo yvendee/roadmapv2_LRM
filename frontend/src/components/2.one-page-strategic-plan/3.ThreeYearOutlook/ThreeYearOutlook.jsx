@@ -1,7 +1,7 @@
 // frontend\src\components\2.one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
 import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import useThreeYearOutlookStore, { initialOutlooks } from '../../../store/left-lower-content/4.three-year-outlook/threeYearOutlookStore';
+import useThreeYearOutlookStore, { initialOutlooks } from '../../../store/left-lower-content/2.one-page-strategic-plan/3.threeYearOutlookStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
