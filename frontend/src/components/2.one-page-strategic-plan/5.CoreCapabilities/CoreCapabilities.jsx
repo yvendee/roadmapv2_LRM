@@ -1,6 +1,7 @@
+// frontend\src\components\2.one-page-strategic-plan\5.CoreCapabilities\CoreCapabilities.jsx
 import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import useCoreCapabilitiesStore, { initialCoreCapabilities } from '../../../store/left-lower-content/6.core-capabilities/coreCapabilitiesStore';
+import useCoreCapabilitiesStore, { initialCoreCapabilities } from '../../../store/left-lower-content/2.one-page-strategic-plan/5.coreCapabilitiesStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -62,6 +63,15 @@ const CoreCapabilities = () => {
     ENABLE_CONSOLE_LOGS && console.log('✅ New CoreCapability Added:', newItem);
   };
 
+  const handleAddCapabilityClick = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      // ENABLE_CONSOLE_LOGS && console.log('Add Strategic Drivers button clicked');
+      setShowAddModal(true);
+    }, 1000);
+  };
+
   const handleDelete = (id) => {
     const updated = coreCapabilities.filter((item) => item.id !== id);
     setCoreCapabilities(updated);
@@ -117,7 +127,7 @@ const CoreCapabilities = () => {
             )}
 
             {user?.role === 'superadmin' && hasRealData && (
-              <button className="pure-blue-btn" onClick={() => setShowAddModal(true)} disabled={loading}>
+              <button className="pure-blue-btn" onClick={handleAddCapabilityClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 'Add Capability'}
               </button>
             )}
