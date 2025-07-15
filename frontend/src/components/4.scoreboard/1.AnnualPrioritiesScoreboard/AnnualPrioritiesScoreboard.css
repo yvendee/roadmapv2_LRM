@@ -1,0 +1,122 @@
+/* frontend\src\components\4.scoreboard\1.AnnualPrioritiesScoreboard\AnnualPrioritiesScoreboard.css */
+
+
+/* Container card */
+.scoreboard-card {
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+
+     /* Enhanced shadow */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+}
+
+/* Header */
+.scoreboard-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+/* Flex row layout - centered horizontally and vertically */
+.scoreboard-body.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px; /* increased from 40px to 64px */
+    min-height: 200px; /* optional: ensures vertical centering */
+}
+
+/* Left panel */
+.scoreboard-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Right panel */
+.scoreboard-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Each member row */
+.member-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 6px;
+    gap: 32px; 
+}
+
+/* Member icon + name */
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon {
+    color: #007bff;
+}
+
+/* Circular chart styling */
+.circular-chart {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.circle-bg {
+    stroke: #eee;
+}
+
+.circle {
+    fill: none;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dasharray 0.6s ease;
+}
+
+.percentage {
+    fill: #333;
+    font-size: 0.45em;
+    dominant-baseline: middle;
+}
+
+
+.circular-chart {
+max-width: 100px;
+max-height: 100px;
+}
+
+.circle-bg {
+stroke: #eee;
+}
+
+.circle {
+fill: none;
+stroke-linecap: round;
+transform: rotate(-90deg);
+transform-origin: center;
+transition: stroke-dasharray 0.6s ease;
+}
+
+.percentage {
+fill: #333;
+font-size: 0.45em;
+dominant-baseline: middle;
+}
+
+
+
+@media (min-width: 768px) {
+.scoreboard-body.centered {
+    gap: 64px;
+}
+}

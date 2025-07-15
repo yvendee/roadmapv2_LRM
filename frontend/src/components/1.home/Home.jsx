@@ -1,4 +1,4 @@
-// frontend\src\components\home\Home.jsx
+// frontend\src\components\1.home\Home.jsx
 import React, { useEffect, useState } from 'react';
 import API_URL from '../../configs/config';
 import './Home.css';

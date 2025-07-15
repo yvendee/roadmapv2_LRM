@@ -1,0 +1,85 @@
+/* frontend\src\components\3.flywheel\1.FlyWheelContent\FlyWheelContent.css */
+
+.always-black {
+  color: black !important;
+}
+
+.flywheel-container {
+    display: flex;
+    gap: 20px;
+    /* padding: 20px; */
+    font-family: sans-serif;
+}
+  
+.left-panel {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  background: #fdfdfd;
+  border-radius: 6px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fbfc;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #999;
+  font-size: 18px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.header .icon {
+  width: 32px;
+  height: auto;
+}
+
+.description-box p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.upload-form {
+  margin-top: 1rem;
+}
+
+.upload-form label {
+  font-weight: bold;
+}
+
+.upload-form .required {
+  color: red;
+}
+
+.upload-form input[type="file"] {
+  display: block;
+  margin: 8px 0;
+}
+
+.upload-form button {
+  background-color: #004080;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.description {
+  text-align: justify;
+  line-height: 1.2;
+  margin: 20px;
+  /* font-size: 12px; */
+  font-size: 14px;
+}
+  
+

@@ -86,7 +86,7 @@ const FourDecisions = () => {
     setLoadingSave(true);
     setTimeout(() => {
       setLoadingSave(false);
-      console.log('📤 Saving FourDecisions:', fourDecisions);
+      ENABLE_CONSOLE_LOGS && console.log('📤 Saving FourDecisions:', fourDecisions);
       setEdited([]);
       localStorage.removeItem('FourDecisions');
     }, 1000);
@@ -157,28 +157,6 @@ const FourDecisions = () => {
         <tbody>
           {fourDecisions.map((item) => (
             <tr key={item.id} className="hover:bg-gray-50">
-              {/* {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field) => (
-                <td key={field} className="border px-3 py-2">
-                  {editing.rowId === item.id && editing.field === field ? (
-                    <input
-                      autoFocus
-                      defaultValue={item[field]}
-                      onBlur={(e) => handleBlur(item.id, field, e.target.value)}
-                      className="w-full border rounded p-1 text-sm"
-                    />
-                  ) : (
-                    <span
-                      className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
-                      onClick={() =>
-                        user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
-                      }
-                    >
-                      {item[field] || '-'}
-                    </span>
-                  )}
-                </td>
-              ))} */}
-
               {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field) => (
                 <td
                   key={field}
@@ -207,18 +185,6 @@ const FourDecisions = () => {
                   )}
                 </td>
               ))}
-
-
-
-              {/* <td className="border px-3 py-2 text-center">
-                {user?.role === 'superadmin' && (
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    className="text-red-500 hover:text-red-700 cursor-pointer"
-                    onClick={() => handleDelete(item.id)}
-                  />
-                )}
-              </td> */}
 
               {user?.role === 'superadmin' && hasRealData && (
                 <td className="border px-3 py-2 text-center">

@@ -12,10 +12,12 @@ import CoreCapabilities from './5.CoreCapabilities/CoreCapabilities';
 import FourDecisions from './6.FourDecisions/FourDecisions';
 import ConstraintsTracker from './7.ConstraintsTracker/ConstraintsTracker';
 import useStrategicDriversStore from '../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
-import useFoundationsStore from '../../store/left-lower-content/3.foundations/foundationsStore';
-import useThreeYearOutlookStore from '../../store/left-lower-content/4.three-year-outlook/threeYearOutlookStore';
-import usePlayingToWinStore from '../../store/left-lower-content/5.playing-to-win/playingToWinStore';
-import useCoreCapabilitiesStore from '../../store/left-lower-content/6.core-capabilities/coreCapabilitiesStore';
+import useFoundationsStore from '../../store/left-lower-content/2.one-page-strategic-plan/2.foundationsStore';
+import useThreeYearOutlookStore from '../../store/left-lower-content/2.one-page-strategic-plan/3.threeYearOutlookStore';
+import usePlayingToWinStore from '../../store/left-lower-content/2.one-page-strategic-plan/4.playingToWinStore';
+import useCoreCapabilitiesStore from '../../store/left-lower-content/2.one-page-strategic-plan/5.coreCapabilitiesStore';
+import useFourDecisions from '../../store/left-lower-content/2.one-page-strategic-plan/6.fourDecisionsStore';
+import useConstraintsTracker from '../../store/left-lower-content/2.one-page-strategic-plan/7.constraintsTrackerStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import { useNavigate } from 'react-router-dom'; 
 import './onePageStrategicPlan.css';
@@ -27,8 +29,10 @@ const OnePageStrategicPlan = () => {
   const loadFoundationsFromAPI = useFoundationsStore((state) => state.loadFoundationsFromAPI);
   const loadOutlooksFromAPI = useThreeYearOutlookStore((state) => state.setOutlooks);
   const loadPlayingToWinFromAPI = usePlayingToWinStore((state) => state.setPlayingToWin);
-
   const loadCoreCapabilitieFromAPI = useCoreCapabilitiesStore((state) => state.setCoreCapabilities);
+  const loadFourDesicionsFromAPI = useFourDecisions((state) => state.setFourDecisions);
+  const loadConstraintsTrackerFromAPI = useConstraintsTracker((state) => state.setConstraintsTracker);
+
 
 
   const navigate = useNavigate(); // Ensure it's inside your component
@@ -202,8 +206,72 @@ const OnePageStrategicPlan = () => {
   //       console.error('API error:', err);
   //     });
   // }, [organization]);
+
+  // // Four-Decisions
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         const decisionsArr = json[organization];
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Four-Decisions data:', decisionsArr);
+  //         if (Array.isArray(decisionsArr)) {
+  //           loadFourDesicionsFromAPI(decisionsArr); 
+  //         } else {
+  //           console.error(`⚠️ No Four-Decisions found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //   .catch((err) => {
+  //     console.error('API error:', err);
+  //   });
+  // }, [organization]);
   
-  
+  // // Constraints-Tracker
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
+  //   fetch(`${API_URL}/v1/one-page-strategic-plan/constraints-tracker?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         const constraintsArr = json[organization];
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Constraints Tracker data:', constraintsArr);
+  //         if (Array.isArray(constraintsArr)) {
+  //           loadConstraintsTrackerFromAPI(constraintsArr); 
+  //         } else {
+  //           console.error(`⚠️ No Constraints Tracker data found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+
+  // }, [organization]);
+
   return (
     <div>
       
