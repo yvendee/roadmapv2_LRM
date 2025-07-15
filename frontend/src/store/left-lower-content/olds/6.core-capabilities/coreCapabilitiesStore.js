@@ -1,5 +1,5 @@
+// frontend\src\store\left-lower-content\6.core-capabilities\coreCapabilitiesStore.js
 import { create } from 'zustand';
-
 
 export const initialCoreCapabilities = [
   { description: 'Leadership Training', orig: '✓', q1: 'x', q2: '✓', q3: 'x', q4: '✓', id: 1 },

@@ -336,6 +336,150 @@
                 }
             }
         },
+        "/api/v1/one-page-strategic-plan/four-decisions": {
+            "get": {
+                "tags": [
+                    "One Page Strategic Plan"
+                ],
+                "summary": "Get Four Decisions data for an Organization",
+                "operationId": "b4edce57677a0635c9342f33479a116f",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve Four Decisions data",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns Four Decisions data for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Budget Allocation"
+                                                    },
+                                                    "orig": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    },
+                                                    "q1": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    },
+                                                    "q2": {
+                                                        "type": "string",
+                                                        "example": "✓"
+                                                    },
+                                                    "q3": {
+                                                        "type": "string",
+                                                        "example": "x"
+                                                    },
+                                                    "q4": {
+                                                        "type": "string",
+                                                        "example": "✓"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/one-page-strategic-plan/constraints-tracker": {
+            "get": {
+                "tags": [
+                    "One Page Strategic Plan"
+                ],
+                "summary": "Get Constraints Tracker data for an Organization",
+                "operationId": "df3c0378f805357ed7fdb510039d045a",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve Constraints Tracker data",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns Constraints Tracker data for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "constraintTitle": {
+                                                        "type": "string",
+                                                        "example": "Leadership Training"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Pending"
+                                                    },
+                                                    "owner": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "actions": {
+                                                        "type": "string",
+                                                        "example": "In Progress"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "Not Started"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
         "/api/csrf-token": {
             "get": {
                 "tags": [

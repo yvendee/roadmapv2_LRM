@@ -1,10 +1,9 @@
-// frontend\src\components\home\0.HomeHeader\HomeHeader.jsx
+// frontend\src\components\4.scoreboard\0.ScoreBoardHeader\ScoreBoardHeader.jsx
+
 import React from 'react';
 import crmBarChart from '../../../assets/images/webp/crm-bar-chart.webp';
-import useLoginStore from '../../../store/loginStore';
 
-const HomeHeader = () => {
-  const user = useLoginStore((state) => state.user);
+const ScoreBoardHeader = () => {
 
   return (
 
@@ -15,7 +14,7 @@ const HomeHeader = () => {
         <div className="col-sm-auto inline-center d-flex align-items-center gap-3 p-2 ms-2">
 
           <img src={crmBarChart} alt="" width="90" />
-          <h4 className="fw-bold mb-0">Good Afternoon, {user?.fullname ?? 'Guest'}!</h4>
+          <h4 className="fw-bold mb-0">Scoreboard</h4>
         </div>
       </div>
     </div>
@@ -24,4 +23,4 @@ const HomeHeader = () => {
   );
 };
 
-export default HomeHeader;
+export default ScoreBoardHeader;

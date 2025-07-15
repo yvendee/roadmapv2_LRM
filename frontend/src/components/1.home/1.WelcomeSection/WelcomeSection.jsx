@@ -1,4 +1,4 @@
-// frontend\src\components\home\1.WelcomeSection\WelcomeSection.jsx
+// frontend\src\components\1.home\1.WelcomeSection\WelcomeSection.jsx
 import React from 'react';
 import './WelcomeSection.css'; 
 
