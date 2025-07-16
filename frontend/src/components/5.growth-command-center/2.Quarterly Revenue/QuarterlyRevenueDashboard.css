@@ -1,0 +1,125 @@
+/* frontend\src\components\5.growth-command-center\2.Quarterly Revenue\QuarterlyRevenueDashboard.css */
+
+
+.always-black {
+    color: black !important;
+}
+
+
+.border-dashed {
+    border: 2px dashed #ccc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+
+.dashboard-wrapper {
+    padding: 20px;
+    font-family: sans-serif;
+    margin-top: 40px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+  
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.dashboard-title {
+    margin: 0;
+    font-size: 20px;
+}
+
+
+.dashboard-header h2 {
+    margin: 0;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.controls select,
+.controls button {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.refresh-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+
+.add-btn {
+    background-color: #004080;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.add-btn.small {
+    font-size: 13px;
+    padding: 5px 10px;
+}
+
+.dashboard-main {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card {
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.center-text {
+    text-align: center;
+    color: #777;
+}
+
+.revenue-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.revenue-table th,
+.revenue-table td {
+    padding: 8px;
+    border: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
+}
+
+.no-data {
+    text-align: center;
+    color: #888;
+    padding: 30px 10px;
+}
+
+

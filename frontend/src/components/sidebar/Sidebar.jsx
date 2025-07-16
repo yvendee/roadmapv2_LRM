@@ -7,6 +7,7 @@ import {
   faMap,
   faSyncAlt,
   faTachometerAlt,
+  faBuilding,
   faChartBar,
   faChartLine,
   faNetworkWired,
@@ -15,7 +16,6 @@ import {
   faCheckCircle,
   faWrench,
   faFolder,
-  faBuilding,
   faUserTie 
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
@@ -41,6 +41,8 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
 
   const loggedUser = useLoginStore((state) => state.user);
   const loggedSession = useLoginStore((state) => state.session_id);
+  const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
+
   // ENABLE_CONSOLE_LOGS && console.log("Logged Email: ", loggedUser?.email);  
   // ENABLE_CONSOLE_LOGS && console.log("Logged Role: ",loggedUser?.role);   
   // ENABLE_CONSOLE_LOGS && console.log("Logged Group: ",loggedUser?.group);
@@ -151,6 +153,25 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             <FontAwesomeIcon icon={faTachometerAlt} />
             {!collapsed && <span>Scoreboard</span>}
           </NavLink>
+
+          {isSuperAdmin && (
+            <NavLink
+            to="/growth-command-center"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Growth Command Center')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+            >
+            <FontAwesomeIcon icon={faBuilding} />
+            {!collapsed && <span>Growth Command Center</span>}
+            </NavLink>
+          )}
 
           <NavLink
             to="/company-traction"

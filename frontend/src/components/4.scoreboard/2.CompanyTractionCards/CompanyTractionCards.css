@@ -1,6 +1,11 @@
+/* frontend\src\components\4.scoreboard\2.CompanyTractionCards\CompanyTractionCards.css */
+.always-black {
+    color: black !important;
+}
+
 .traction-container {
     display: flex;
-    gap: 5px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
     margin-top: 20px;
@@ -13,7 +18,7 @@
 .traction-card {
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); */
     padding: 16px;
     text-align: center;
     width: 200px;

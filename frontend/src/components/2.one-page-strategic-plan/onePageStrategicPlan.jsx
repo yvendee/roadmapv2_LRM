@@ -174,40 +174,40 @@ const OnePageStrategicPlan = () => {
   //     });
   // }, [organization, loadPlayingToWinFromAPI, navigate]);
   
-  // // Core-Capabilities
-  // useEffect(() => {
-  //   const encodedOrg = encodeURIComponent(organization);
+  // Core-Capabilities
+  useEffect(() => {
+    const encodedOrg = encodeURIComponent(organization);
   
-  //   fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities?organization=${encodedOrg}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //   })
-  //     .then(async (res) => {
-  //       const json = await res.json();
-  //       if (res.ok) {
-  //         const capabilitiesArr = json[organization];
-  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Core-Capabilities data:', capabilitiesArr);
-  //         if (Array.isArray(capabilitiesArr)) {
-  //           loadCoreCapabilitieFromAPI(capabilitiesArr);
-  //         } else {
-  //           console.error(`⚠️ No Core-Capabilities found for organization: ${organization}`);
-  //         }
-  //       } else if (res.status === 401) {
-  //         navigate('/', { state: { loginError: 'Session Expired' } });
-  //       } else {
-  //         console.error('Error:', json.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('API error:', err);
-  //     });
-  // }, [organization]);
+    fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          const capabilitiesArr = json[organization];
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Core-Capabilities data:', capabilitiesArr);
+          if (Array.isArray(capabilitiesArr)) {
+            loadCoreCapabilitieFromAPI(capabilitiesArr);
+          } else {
+            console.error(`⚠️ No Core-Capabilities found for organization: ${organization}`);
+          }
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [organization]);
 
-  // // Four-Decisions
+  // Four-Decisions
   // useEffect(() => {
   //   const encodedOrg = encodeURIComponent(organization);
   //   fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions?organization=${encodedOrg}`, {

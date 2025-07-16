@@ -1,9 +1,13 @@
+// frontend\src\components\4.scoreboard\3.ProjectProgressCard\ProjectProgressCard.jsx
 import React from 'react';
-import './ProjectProgressCard.css';
 import { faListCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useProjectProgressStore, { initialProjectProgress } from '../../../store/left-lower-content/4.scoreboard/3.projectProgressCardStore';
+import './ProjectProgressCard.css';
 
-const ProjectProgressCard = ({ completed = 0, total = 36 }) => {
+const ProjectProgressCard = () => {
+  const completed = useProjectProgressStore((state) => state.completed);
+  const total = useProjectProgressStore((state) => state.total);
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
   return (
