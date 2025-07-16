@@ -9,6 +9,7 @@ import Review from './components/review/Review';
 import OnePageStrategicPlan from './components/2.one-page-strategic-plan/onePageStrategicPlan';
 import Flywheel from './components/3.flywheel/Flywheel';
 import Scoreboard from './components/4.scoreboard/Scoreboard';
+import GrowthCommandCenter from './components/5.growth-command-center/growthCommandCenter';
 import CompanyTraction from './components/company-traction/companyTraction';
 import DepartmentTraction from './components/department-traction/departmentTraction';
 import WhoWhatWhen from './components/who-what-when/whoWhatWhen';
@@ -150,6 +151,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />
             <Route path="/flywheel" element={<Flywheel />} />
             <Route path="/scoreboard" element={<Scoreboard />} />
+            <Route path="/growth-command-center" element={<GrowthCommandCenter />} />
             <Route path="/company-traction" element={<CompanyTraction />} />
             <Route path="/department-traction" element={<DepartmentTraction />} />
             <Route path="/who-what-when" element={<WhoWhatWhen />} />

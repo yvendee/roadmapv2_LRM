@@ -1,0 +1,141 @@
+/* frontend\src\components\5.growth-command-center\1.Metrics\ThreeMetricCards.css */
+
+.always-black {
+    color: black !important;
+}
+
+
+.semi-circle {
+    display: block;
+    margin: auto;
+}
+
+.metric-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+  
+.metric-table th,
+.metric-table td {
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    text-align: left;
+}
+  
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+  
+.progress-fill {
+    height: 100%;
+    background-color: green;
+    transition: width 0.3s ease;
+}
+  
+
+.metrics-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+  
+.metric-card {
+    background: #fff;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 330px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    padding: 16px;
+}
+  
+.metric-header {
+    background-color: #0b4b66;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px 6px 0 0;
+    margin: -16px -16px 16px -16px;
+}
+  
+.circular-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+  
+.metric-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 8px 12px;
+}
+  
+.metric-inputs label {
+    font-size: 12px;
+    margin-top: 4px;
+}
+  
+.metric-inputs input {
+    padding: 4px 6px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+  
+.metric-table-container {
+    margin-top: 8px;
+}
+  
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    font-weight: 500;
+    font-size: 13px;
+}
+  
+.table-header select {
+    font-size: 12px;
+    padding: 2px 4px;
+}
+  
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+  
+thead th {
+    text-align: left;
+    padding: 6px;
+    background: #f3f3f3;
+}
+  
+tbody td {
+    padding: 6px;
+    border-bottom: 1px solid #eee;
+}
+  
+.progress-bar {
+    background: #e0e0e0;
+    border-radius: 4px;
+    height: 6px;
+    width: 100%;
+    margin-top: 4px;
+}
+  
+.progress-fill {
+    background: #4caf50;
+    height: 6px;
+    border-radius: 4px;
+    width: 0%;
+}
+  

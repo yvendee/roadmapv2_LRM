@@ -1,5 +1,8 @@
 /* frontend\src\components\4.scoreboard\1.AnnualPrioritiesScoreboard\AnnualPrioritiesScoreboard.css */
 
+.always-black {
+    color: black !important;
+}
 
 /* Container card */
 .scoreboard-card {

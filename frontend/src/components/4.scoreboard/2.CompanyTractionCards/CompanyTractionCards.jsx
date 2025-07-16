@@ -1,14 +1,15 @@
 // frontend/src/components/4.scoreboard/2.CompanyTractionCards/CompanyTractionCards.jsx
 
 import React from 'react';
+import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
 import './CompanyTractionCards.css';
 
-const quarters = [
-  { label: 'Q1', percent: 100 },
-  { label: 'Q2', percent: 92.86 },
-  { label: 'Q3', percent: 5 },
-  { label: 'Q4', percent: 0 },
-];
+// const quarters = [
+//   { label: 'Q1', percent: 100 },
+//   { label: 'Q2', percent: 92.86 },
+//   { label: 'Q3', percent: 5 },
+//   { label: 'Q4', percent: 0 },
+// ];
 
 const getColor = (percent) => {
   if (percent === 100) return '#4caf50';
@@ -18,10 +19,13 @@ const getColor = (percent) => {
 };
 
 const CompanyTractionCards = () => {
+
+  const quarters = useCompanyTractionStore((state) => state.quarters);
+
   return (
     <div className="traction-container">
       {quarters.map((q, idx) => (
-        <div className="traction-card" key={idx}>
+        <div className="traction-card always-black" key={idx}>
           <div className="traction-title">Company Traction - Quarter {idx + 1}</div>
           <div className="traction-chart">
             <svg width="80" height="80" viewBox="0 0 36 36" className="circular-chart">

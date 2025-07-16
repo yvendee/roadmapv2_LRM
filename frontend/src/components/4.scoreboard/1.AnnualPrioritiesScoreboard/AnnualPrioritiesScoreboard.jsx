@@ -3,20 +3,25 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+'../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
+import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/4.scoreboard/1.annualPrioritiesScoreboardStore';
 import './AnnualPrioritiesScoreboard.css';
 
 const AnnualPrioritiesScoreboard = () => {
-  const average = 49.47;
+  // const average = 49.47;
 
-  const members = [
-    { name: 'Maricar Aquino', score: 100 },
-    { name: 'Chuck Gulledge', score: 71 },
-    { name: '', score: 100 },
-  ];
+  // const members = [
+  //   { name: 'Maricar Aquino', score: 100 },
+  //   { name: 'Chuck Gulledge', score: 71 },
+  //   { name: '', score: 100 },
+  // ];
+
+  const average = useAnnualPrioritiesStore((state) => state.average);
+  const members = useAnnualPrioritiesStore((state) => state.members);
 
   return (
     <div className="scoreboard-card">
-      <div className="scoreboard-header">
+      <div className="scoreboard-header always-black">
         <h6>Annual Priorities Scoreboard</h6>
       </div>
 
@@ -50,7 +55,7 @@ const AnnualPrioritiesScoreboard = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="scoreboard-right">
+        <div className="scoreboard-right always-black">
           {members.map((member, idx) => (
             <div key={idx} className="member-row">
               <div className="member-info">
