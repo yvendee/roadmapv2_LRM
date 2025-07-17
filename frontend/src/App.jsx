@@ -10,7 +10,7 @@ import OnePageStrategicPlan from './components/2.one-page-strategic-plan/onePage
 import Flywheel from './components/3.flywheel/Flywheel';
 import Scoreboard from './components/4.scoreboard/Scoreboard';
 import GrowthCommandCenter from './components/5.growth-command-center/growthCommandCenter';
-import CompanyTraction from './components/company-traction/companyTraction';
+import CompanyTraction from './components/6.company-traction/companyTraction';
 import DepartmentTraction from './components/department-traction/departmentTraction';
 import WhoWhatWhen from './components/who-what-when/whoWhatWhen';
 import SessionDates from './components/session-dates/sessionDates';

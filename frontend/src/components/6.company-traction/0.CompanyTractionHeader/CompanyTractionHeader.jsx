@@ -2,7 +2,7 @@
 import React from 'react';
 import crmBarChart from '../../../assets/images/webp/crm-bar-chart.webp';
 
-const GrowthCommandCenterHeader = () => {
+const CompanyTractionHeader = () => {
 
   return (
 
@@ -13,7 +13,7 @@ const GrowthCommandCenterHeader = () => {
         <div className="col-sm-auto inline-center d-flex align-items-center gap-3 p-2 ms-2">
 
           <img src={crmBarChart} alt="" width="90" />
-          <h4 className="fw-bold mb-0">Growth Command Center</h4>
+          <h4 className="fw-bold mb-0">Company Traction</h4>
         </div>
       </div>
     </div>
@@ -22,4 +22,4 @@ const GrowthCommandCenterHeader = () => {
   );
 };
 
-export default GrowthCommandCenterHeader;
+export default CompanyTractionHeader;
