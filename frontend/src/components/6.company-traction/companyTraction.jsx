@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import CompanyTractionHeader from './0.CompanyTractionHeader/CompanyTractionHeader';
 import AnnualPriorities from './1.AnnualPriorities/AnnualPriorities';
+import CompanyTractionTable from './2.CompanyTraction/CompanyTraction';
 import useAnnualPrioritiesStore from '../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import useUserStore from '../../store/userStore';
@@ -57,6 +58,7 @@ const CompanyTraction = () => {
     <div className="main-content-view">
       <CompanyTractionHeader />
       <AnnualPriorities />
+      <CompanyTractionTable />
       <span>&nbsp;</span>  
     </div>
 

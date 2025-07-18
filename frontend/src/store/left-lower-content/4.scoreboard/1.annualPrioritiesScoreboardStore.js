@@ -1,4 +1,3 @@
-// frontend\src\store\left-lower-content\4.scoreboard\1.annualPrioritiesScoreboardStore.js
 import { create } from 'zustand';
 
 export const initialAnnualPriorities = {
@@ -16,12 +15,20 @@ const useAnnualPrioritiesStore = create((set) => ({
 
   setAverage: (value) => set({ average: value }),
   setMembers: (list) => set({ members: list }),
+
+  // Add this method:
+  setAnnualPriorities: (data) => set({
+    average: data.average ?? initialAnnualPriorities.average,
+    members: Array.isArray(data.members) ? data.members : initialAnnualPriorities.members,
+  }),
+
   updateMember: (index, updatedMember) =>
     set((state) => {
       const updated = [...state.members];
       updated[index] = { ...updated[index], ...updatedMember };
       return { members: updated };
     }),
+
   resetAnnualPriorities: () =>
     set({
       average: initialAnnualPriorities.average,
