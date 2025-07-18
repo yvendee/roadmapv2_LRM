@@ -3,9 +3,9 @@ import { create } from 'zustand';
 
 // 🟩 Initial data
 export const initialCompanyTraction = [
-  { label: 'Q1', percent: 99 },
-  { label: 'Q2', percent: 92.86 },
-  { label: 'Q3', percent: 5 },
+  { label: 'Q1', percent: 0 },
+  { label: 'Q2', percent: 0 },
+  { label: 'Q3', percent: 0 },
   { label: 'Q4', percent: 0 },
 ];
 

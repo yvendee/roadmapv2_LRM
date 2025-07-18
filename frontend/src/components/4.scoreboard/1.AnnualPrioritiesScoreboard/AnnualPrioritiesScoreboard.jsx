@@ -1,23 +1,17 @@
-// frontend/src/components/4.scoreboard/1.AnnualPrioritiesScoreboard/AnnualPrioritiesScoreboard.jsx
-
+// frontend\src\store\left-lower-content\4.scoreboard\1.annualPrioritiesScoreboardStore.js
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
-'../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/4.scoreboard/1.annualPrioritiesScoreboardStore';
 import './AnnualPrioritiesScoreboard.css';
 
 const AnnualPrioritiesScoreboard = () => {
-  // const average = 49.47;
-
-  // const members = [
-  //   { name: 'Maricar Aquino', score: 100 },
-  //   { name: 'Chuck Gulledge', score: 71 },
-  //   { name: '', score: 100 },
-  // ];
 
   const average = useAnnualPrioritiesStore((state) => state.average);
   const members = useAnnualPrioritiesStore((state) => state.members);
+
+  // 🔁 Determine color based on average
+  const circleColor = average < 75 ? '#f44336' : '#4caf50'; // red or green
 
   return (
     <div className="scoreboard-card">
@@ -40,7 +34,8 @@ const AnnualPrioritiesScoreboard = () => {
             />
             <path
               className="circle"
-              stroke="#f44336"
+              // stroke="#f44336"
+              stroke={circleColor} // ✅ Dynamic color
               d="M18 2.0845
                  a 15.9155 15.9155 0 0 1 0 31.831
                  a 15.9155 15.9155 0 0 1 0 -31.831"

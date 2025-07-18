@@ -8,8 +8,10 @@ import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
 import API_URL from '../../configs/config';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './TopbarDropdown.css';
+import { useNavigate } from 'react-router-dom'; 
 
 const TopbarDropdown = () => {
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const { options, selected, setSelected } = useCompanyFilterStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -30,21 +32,26 @@ const TopbarDropdown = () => {
     setSelected(option);
     setIsOpen(false);
     setLoading(true);
-  
+
     // Simulate a delay before fetching
     setTimeout(async () => {
       try {
         const response = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(option)}`);
         const result = await response.json();
-  
-        if (result.status === 'success') {
-          setToggles(result.toggles);
-          setOrganization(result.organization);
-          setUniqueId(result.unique_id);
-          // ENABLE_CONSOLE_LOGS && console.log('Fetched :', result);
-          ENABLE_CONSOLE_LOGS && console.log('Fetched toggles:', result.toggles);
+
+        if (response.ok) {
+          if (result.status === 'success') {
+            setToggles(result.toggles);
+            setOrganization(result.organization);
+            setUniqueId(result.unique_id);
+            ENABLE_CONSOLE_LOGS && console.log('Fetched toggles:', result.toggles);
+          } else {
+            console.error('Error fetching toggles:', result.message);
+          }
+        } else if (response.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
         } else {
-          console.error('Error fetching toggles:', result.message);
+          console.error('Server error:', result.message);
         }
       } catch (error) {
         console.error('Network error:', error);
@@ -52,7 +59,13 @@ const TopbarDropdown = () => {
         setLoading(false);
       }
     }, 1000);
+
+
+
   };
+
+
+
   
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);

@@ -4,13 +4,6 @@ import React from 'react';
 import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
 import './CompanyTractionCards.css';
 
-// const quarters = [
-//   { label: 'Q1', percent: 100 },
-//   { label: 'Q2', percent: 92.86 },
-//   { label: 'Q3', percent: 5 },
-//   { label: 'Q4', percent: 0 },
-// ];
-
 const getColor = (percent) => {
   if (percent === 100) return '#4caf50';
   if (percent >= 75) return '#4caf50';
@@ -21,6 +14,7 @@ const getColor = (percent) => {
 const CompanyTractionCards = () => {
 
   const quarters = useCompanyTractionStore((state) => state.quarters);
+
 
   return (
     <div className="traction-container">

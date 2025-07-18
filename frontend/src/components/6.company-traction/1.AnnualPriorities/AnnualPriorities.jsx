@@ -255,7 +255,7 @@ const AnnualPriorities = () => {
   };
 
   return (
-    <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
+    <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
         <h5 className="text-lg font-semibold always-black">Annual Priorities</h5>
         {loggedUser?.role === 'superadmin' && (
@@ -383,25 +383,7 @@ const AnnualPriorities = () => {
                 </td>
 
                 {/* status */}
-                <td
-                
-                //   className="border px-4 py-3 text-center cursor-pointer"
-                //   onClick={() => driver.kpi !== '-' && handleCellClick(driver.id, 'kpi')}
-                >
-                  {/* {driver.kpi === '-' ? (
-                    <div className="skeleton w-24 h-4 mx-auto"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'kpi' ? (
-                    <input
-                      autoFocus
-                      type="text"
-                      defaultValue={driver.kpi}
-                      onBlur={(e) => handleInputBlur(driver.id, 'kpi', e.target.value)}
-                      className="w-full px-2 py-1 border rounded text-center"
-                    />
-                  ) : (
-                    <span className="text-xs text-gray-500 block">{driver.kpi}</span>
-                  )} */}
-
+                <td>
                   <div
                     className="mt-1"
                     onClick={(e) => {

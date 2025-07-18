@@ -889,6 +889,446 @@ Route::get('/api/v1/one-page-strategic-plan/constraints-tracker', function (Requ
 });
 
 
+// ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
+Route::get('/api/v1/scoreboard/annual-priorities', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'average' => 64.28,
+            'members' => [
+                ['name' => 'Maricar Aquino', 'score' => 100],
+                ['name' => 'Chuck Gulledge', 'score' => 71],
+                ['name' => '', 'score' => 22],
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            'average' => 75.45,
+            'members' => [
+                ['name' => 'John Smith', 'score' => 80],
+                ['name' => 'Jane Doe', 'score' => 90],
+                ['name' => 'Emily Davis', 'score' => 56],
+            ],
+        ],
+
+        'Test Skeleton Loading' => [
+            'average' => 0,
+            'members' => [
+                ['name' => '-', 'score' => 0],
+                ['name' => '-', 'score' => 0],
+                ['name' => '-', 'score' => 0],
+            ],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? ['average' => 0, 'members' => []]);
+});
+
+// ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
+Route::get('/api/v1/scoreboard/company-traction-cards', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            ['label' => 'Q1', 'percent' => 100],
+            ['label' => 'Q2', 'percent' => 93],
+            ['label' => 'Q3', 'percent' => 5],
+            ['label' => 'Q4', 'percent' => 0],
+        ],
+        'Collins Credit Union' => [
+            ['label' => 'Q1', 'percent' => 85],
+            ['label' => 'Q2', 'percent' => 75],
+            ['label' => 'Q3', 'percent' => 55],
+            ['label' => 'Q4', 'percent' => 60],
+        ],
+        'Test Skeleton Loading' => [
+            ['label' => 'Q1', 'percent' => 0],
+            ['label' => 'Q2', 'percent' => 0],
+            ['label' => 'Q3', 'percent' => 0],
+            ['label' => 'Q4', 'percent' => 0],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+Route::get('/api/v1/scoreboard/project-progress', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    // 🧪 Sample data for multiple orgs
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'completed' => 10,
+            'total' => 36,
+        ],
+        'Collins Credit Union' => [
+            'completed' => 28,
+            'total' => 30,
+        ],
+        'Test Skeleton Loading' => [
+            'completed' => 0,
+            'total' => 0,
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? ['completed' => 0, 'total' => 0]);
+});
+
+
+// ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
+Route::get('/api/v1/growth-command-center/metrics', function (Request $request) {
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'title' => 'Checks Processed',
+                'percent' => 30,
+                'annualGoal' => 20000,
+                'current' => 18888,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 1500, 'current' => 1300, 'progress' => 87],
+                    ['month' => 'Feb', 'goal' => 1500, 'current' => 1700, 'progress' => 113],
+                    ['month' => 'Mar', 'goal' => 1800, 'current' => 2000, 'progress' => 111],
+                    ['month' => 'Apr', 'goal' => 1700, 'current' => 1600, 'progress' => 94],
+                    ['month' => 'May', 'goal' => 1600, 'current' => 1650, 'progress' => 103],
+                    ['month' => 'Jun', 'goal' => 1700, 'current' => 1850, 'progress' => 109],
+                    ['month' => 'Jul', 'goal' => 1700, 'current' => 1700, 'progress' => 100],
+                    ['month' => 'Aug', 'goal' => 1600, 'current' => 1600, 'progress' => 100],
+                    ['month' => 'Sep', 'goal' => 1800, 'current' => 1700, 'progress' => 94],
+                    ['month' => 'Oct', 'goal' => 1600, 'current' => 1700, 'progress' => 106],
+                    ['month' => 'Nov', 'goal' => 1400, 'current' => 1388, 'progress' => 99],
+                    ['month' => 'Dec', 'goal' => 1500, 'current' => 1800, 'progress' => 120],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 4800, 'current' => 5000, 'progress' => 104],
+                    ['quarter' => 'Q2', 'goal' => 5000, 'current' => 5100, 'progress' => 102],
+                    ['quarter' => 'Q3', 'goal' => 5100, 'current' => 5000, 'progress' => 98],
+                    ['quarter' => 'Q4', 'goal' => 4500, 'current' => 4788, 'progress' => 106],
+                ],
+            ],
+            [
+                'title' => 'Number of Customers',
+                'percent' => 50,
+                'annualGoal' => 1000,
+                'current' => 500,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 80, 'current' => 40, 'progress' => 50],
+                    ['month' => 'Feb', 'goal' => 90, 'current' => 50, 'progress' => 56],
+                    ['month' => 'Mar', 'goal' => 100, 'current' => 60, 'progress' => 60],
+                    ['month' => 'Apr', 'goal' => 90, 'current' => 70, 'progress' => 78],
+                    ['month' => 'May', 'goal' => 90, 'current' => 80, 'progress' => 89],
+                    ['month' => 'Jun', 'goal' => 80, 'current' => 60, 'progress' => 75],
+                    ['month' => 'Jul', 'goal' => 90, 'current' => 70, 'progress' => 78],
+                    ['month' => 'Aug', 'goal' => 90, 'current' => 70, 'progress' => 78],
+                    ['month' => 'Sep', 'goal' => 100, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Oct', 'goal' => 90, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Nov', 'goal' => 60, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Dec', 'goal' => 60, 'current' => 0, 'progress' => 0],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 270, 'current' => 150, 'progress' => 56],
+                    ['quarter' => 'Q2', 'goal' => 260, 'current' => 210, 'progress' => 81],
+                    ['quarter' => 'Q3', 'goal' => 280, 'current' => 140, 'progress' => 50],
+                    ['quarter' => 'Q4', 'goal' => 210, 'current' => 0, 'progress' => 0],
+                ],
+            ],
+            [
+                'title' => 'Profit per X',
+                'percent' => 89,
+                'annualGoal' => 120000,
+                'current' => 106800,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 10000, 'current' => 9000, 'progress' => 90],
+                    ['month' => 'Feb', 'goal' => 10000, 'current' => 9600, 'progress' => 96],
+                    ['month' => 'Mar', 'goal' => 10000, 'current' => 9700, 'progress' => 97],
+                    ['month' => 'Apr', 'goal' => 10000, 'current' => 8800, 'progress' => 88],
+                    ['month' => 'May', 'goal' => 10000, 'current' => 9200, 'progress' => 92],
+                    ['month' => 'Jun', 'goal' => 10000, 'current' => 9100, 'progress' => 91],
+                    ['month' => 'Jul', 'goal' => 10000, 'current' => 10000, 'progress' => 100],
+                    ['month' => 'Aug', 'goal' => 10000, 'current' => 9500, 'progress' => 95],
+                    ['month' => 'Sep', 'goal' => 10000, 'current' => 9500, 'progress' => 95],
+                    ['month' => 'Oct', 'goal' => 10000, 'current' => 10000, 'progress' => 100],
+                    ['month' => 'Nov', 'goal' => 10000, 'current' => 10000, 'progress' => 100],
+                    ['month' => 'Dec', 'goal' => 10000, 'current' => 10000, 'progress' => 100],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 30000, 'current' => 28300, 'progress' => 94],
+                    ['quarter' => 'Q2', 'goal' => 30000, 'current' => 27100, 'progress' => 90],
+                    ['quarter' => 'Q3', 'goal' => 30000, 'current' => 29000, 'progress' => 97],
+                    ['quarter' => 'Q4', 'goal' => 30000, 'current' => 22400, 'progress' => 75],
+                ],
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'title' => 'Checks Processed',
+                'percent' => 65,
+                'annualGoal' => 24000,
+                'current' => 15600,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 2000, 'current' => 1800, 'progress' => 90],
+                    ['month' => 'Feb', 'goal' => 2000, 'current' => 1900, 'progress' => 95],
+                    ['month' => 'Mar', 'goal' => 2000, 'current' => 2000, 'progress' => 100],
+                    ['month' => 'Apr', 'goal' => 2000, 'current' => 1900, 'progress' => 95],
+                    ['month' => 'May', 'goal' => 2000, 'current' => 2000, 'progress' => 100],
+                    ['month' => 'Jun', 'goal' => 2000, 'current' => 1900, 'progress' => 95],
+                    ['month' => 'Jul', 'goal' => 2000, 'current' => 1600, 'progress' => 80],
+                    ['month' => 'Aug', 'goal' => 2000, 'current' => 1500, 'progress' => 75],
+                    ['month' => 'Sep', 'goal' => 2000, 'current' => 1500, 'progress' => 75],
+                    ['month' => 'Oct', 'goal' => 2000, 'current' => 1600, 'progress' => 80],
+                    ['month' => 'Nov', 'goal' => 2000, 'current' => 1500, 'progress' => 75],
+                    ['month' => 'Dec', 'goal' => 2000, 'current' => 1500, 'progress' => 75],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 6000, 'current' => 5700, 'progress' => 95],
+                    ['quarter' => 'Q2', 'goal' => 6000, 'current' => 5800, 'progress' => 97],
+                    ['quarter' => 'Q3', 'goal' => 6000, 'current' => 4600, 'progress' => 76],
+                    ['quarter' => 'Q4', 'goal' => 6000, 'current' => 5500, 'progress' => 91],
+                ],
+            ],
+            [
+                'title' => 'Number of Customers',
+                'percent' => 40,
+                'annualGoal' => 800,
+                'current' => 320,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 70, 'current' => 50, 'progress' => 71],
+                    ['month' => 'Feb', 'goal' => 70, 'current' => 55, 'progress' => 79],
+                    ['month' => 'Mar', 'goal' => 70, 'current' => 60, 'progress' => 86],
+                    ['month' => 'Apr', 'goal' => 70, 'current' => 60, 'progress' => 86],
+                    ['month' => 'May', 'goal' => 70, 'current' => 65, 'progress' => 93],
+                    ['month' => 'Jun', 'goal' => 70, 'current' => 60, 'progress' => 86],
+                    ['month' => 'Jul', 'goal' => 70, 'current' => 50, 'progress' => 71],
+                    ['month' => 'Aug', 'goal' => 70, 'current' => 40, 'progress' => 57],
+                    ['month' => 'Sep', 'goal' => 70, 'current' => 30, 'progress' => 43],
+                    ['month' => 'Oct', 'goal' => 70, 'current' => 30, 'progress' => 43],
+                    ['month' => 'Nov', 'goal' => 70, 'current' => 30, 'progress' => 43],
+                    ['month' => 'Dec', 'goal' => 70, 'current' => 30, 'progress' => 43],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 210, 'current' => 165, 'progress' => 79],
+                    ['quarter' => 'Q2', 'goal' => 210, 'current' => 190, 'progress' => 90],
+                    ['quarter' => 'Q3', 'goal' => 210, 'current' => 120, 'progress' => 57],
+                    ['quarter' => 'Q4', 'goal' => 210, 'current' => 105, 'progress' => 50],
+                ],
+            ],
+            [
+                'title' => 'Profit per X',
+                'percent' => 75,
+                'annualGoal' => 100000,
+                'current' => 75000,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 8000, 'current' => 7000, 'progress' => 88],
+                    ['month' => 'Feb', 'goal' => 8000, 'current' => 7500, 'progress' => 94],
+                    ['month' => 'Mar', 'goal' => 8000, 'current' => 8000, 'progress' => 100],
+                    ['month' => 'Apr', 'goal' => 8000, 'current' => 7500, 'progress' => 94],
+                    ['month' => 'May', 'goal' => 8000, 'current' => 7800, 'progress' => 98],
+                    ['month' => 'Jun', 'goal' => 8000, 'current' => 7700, 'progress' => 96],
+                    ['month' => 'Jul', 'goal' => 8000, 'current' => 6000, 'progress' => 75],
+                    ['month' => 'Aug', 'goal' => 8000, 'current' => 5500, 'progress' => 69],
+                    ['month' => 'Sep', 'goal' => 8000, 'current' => 5000, 'progress' => 63],
+                    ['month' => 'Oct', 'goal' => 8000, 'current' => 5000, 'progress' => 63],
+                    ['month' => 'Nov', 'goal' => 8000, 'current' => 5000, 'progress' => 63],
+                    ['month' => 'Dec', 'goal' => 8000, 'current' => 5000, 'progress' => 63],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 24000, 'current' => 22500, 'progress' => 94],
+                    ['quarter' => 'Q2', 'goal' => 24000, 'current' => 23000, 'progress' => 96],
+                    ['quarter' => 'Q3', 'goal' => 24000, 'current' => 16500, 'progress' => 69],
+                    ['quarter' => 'Q4', 'goal' => 24000, 'current' => 13000, 'progress' => 54],
+                ],
+            ],
+        ],
+
+    
+        'Test Skeleton Loading' => [
+            [
+                'title' => '0',
+                'percent' => 0,
+                'annualGoal' => 0,
+                'current' => 0,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Feb', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Mar', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Apr', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'May', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Jun', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Jul', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Aug', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Sep', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Oct', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Nov', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Dec', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q2', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q3', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q4', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                ],
+            ],
+            // Clone for 2nd and 3rd cards
+            [
+                'title' => '0',
+                'percent' => 0,
+                'annualGoal' => 0,
+                'current' => 0,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Feb', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Mar', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Apr', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'May', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Jun', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Jul', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Aug', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Sep', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Oct', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Nov', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Dec', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q2', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q3', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q4', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                ],
+            ],
+            [
+                'title' => '0',
+                'percent' => 0,
+                'annualGoal' => 0,
+                'current' => 0,
+                'monthlyData' => [
+                    ['month' => 'Jan', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Feb', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Mar', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Apr', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'May', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Jun', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Jul', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Aug', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Sep', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Oct', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Nov', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['month' => 'Dec', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                ],
+                'quarterlyData' => [
+                    ['quarter' => 'Q1', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q2', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q3', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                    ['quarter' => 'Q4', 'goal' => 0, 'current' => 0, 'progress' => 0],
+                ],
+            ],
+        ],
+
+
+    ];
+    
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
+});
+
+// ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
+Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    // Mock data for multiple organizations
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'year' => '2023',
+                'revenueGrowth' => 5,
+                'cogsGrowth' => 3,
+            ],
+            [
+                'year' => '2024',
+                'revenueGrowth' => 12,
+                'cogsGrowth' => 10,
+            ],
+            [
+                'year' => '2025',
+                'revenueGrowth' => 9,
+                'cogsGrowth' => 7,
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'year' => '2023',
+                'revenueGrowth' => 4,
+                'cogsGrowth' => 2,
+            ],
+            [
+                'year' => '2024',
+                'revenueGrowth' => 9,
+                'cogsGrowth' => 7,
+            ],
+            [
+                'year' => '2025',
+                'revenueGrowth' => 11,
+                'cogsGrowth' => 8,
+            ],
+        ],
+
+        'Test Skeleton Loading' => [
+            [
+                'year' => '2023',
+                'revenueGrowth' => 0,
+                'cogsGrowth' => 0,
+            ],
+            [
+                'year' => '2024',
+                'revenueGrowth' => 0,
+                'cogsGrowth' => 0,
+            ],
+            [
+                'year' => '2025',
+                'revenueGrowth' => 0,
+                'cogsGrowth' => 0,
+            ],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::get('/api/v1/company-traction/annual-priorities', function (Request $request) use ($API_secure) {
 

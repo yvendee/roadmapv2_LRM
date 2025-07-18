@@ -10,6 +10,8 @@
     border-radius: 6px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
     padding: 16px;
+    margin-right: 5px;
+    margin-left: 5px;
 
      /* Enhanced shadow */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
