@@ -7,10 +7,11 @@ export const initialCompanyTraction = {
       id: 1,
       who: 'Maricar',
       collaborator: 'Maricar',
-      description: 'Build landing page',
+      description:
+        'Develop $8,000 in new monthly revenue - one on one or cohort. Use the references and leads we have.',
       progress: '5%',
       annualPriority: 'Develop lead generation systems',
-      dueDate: '03-31-2025',
+      dueDate: '03/31/2025',
       rank: '1',
       comment: [
         {
@@ -28,10 +29,11 @@ export const initialCompanyTraction = {
   ],
   Q2: [
     {
-      id: 1,
+      id: 2,
       who: 'Maricar',
       collaborator: 'Maricar',
-      description: 'Launch marketing campaign',
+      description:
+        'Continue with developing lead generation system but using LinkedIn post and Chuck’s website',
       progress: '0%',
       annualPriority: 'Develop lead generation systems',
       dueDate: 'Click to set date',
@@ -49,28 +51,16 @@ export const initialCompanyTraction = {
         },
       ],
     },
-
     {
-      id: 2,
-      who: 'Chuck',
-      collaborator: 'Maricar',
-      description: 'Build landing page',
-      progress: '5%',
+      id: 3,
+      who: 'Maricar',
+      collaborator: 'None',
+      description: 'Use Apollo with Arlene',
+      progress: '0%',
       annualPriority: 'Develop lead generation systems',
-      dueDate: '04-19-2025',
-      rank: '2',
-      comment: [
-        {
-          author: 'Maricar',
-          message: 'This is a test comment.',
-          posted: '26 June 2025',
-        },
-        {
-          author: 'John',
-          message: 'Great work on this!',
-          posted: '27 June 2025',
-        },
-      ],
+      dueDate: 'Click to set date',
+      rank: '3',
+      comment: [],  // Initialize as an empty array for multiple comments
     },
   ],
   Q3: [],
@@ -100,6 +90,7 @@ const useCompanyTractionStore = create((set) => ({
       },
     })),
 
+  // Action to append a new comment to the array
   updateComment: (quarter, id, newComment) =>
     set((state) => ({
       companyTraction: {
@@ -113,7 +104,7 @@ const useCompanyTractionStore = create((set) => ({
                   {
                     author: newComment.author,
                     message: newComment.message,
-                    posted: new Date().toLocaleDateString(),
+                    posted: new Date().toLocaleDateString(), // Use the current date as posted
                   },
                 ],
               }
@@ -122,17 +113,7 @@ const useCompanyTractionStore = create((set) => ({
       },
     })),
 
-  updateCompanyTractionField: (quarter, id, field, value) =>
-    set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: state.companyTraction[quarter].map((row) =>
-          row.id === id ? { ...row, [field]: value } : row
-        ),
-      },
-    })),
-    
-
+  // Action to delete a comment by index
   deleteComment: (quarter, id, commentIndex) =>
     set((state) => ({
       companyTraction: {

@@ -65,7 +65,36 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  /* border: solid blue; */
+  white-space: normal; /* allow wrapping */
+  word-break: break-word; /* break long words if needed */
 }
+
+.horizontal-comment{
+  flex: 1; 
+  display: flex;
+  flex-direction: row;
+  margin: 7px; 
+  align-items: center; 
+  justify-content: center; 
+  /* border: solid red; */
+}
+
+.vertical-comment {
+  display: flex;
+  flex-direction: column;
+  margin: 5px; 
+  /* border: solid blue; */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.nested-comment {
+  display: flex;
+  margin: 5px;
+  white-space: nowrap;
+  /* border: solid gray; */
+}
+
 
 .comment-item button {
   margin-left: 8px;
@@ -302,3 +331,10 @@
 .quarter-tab:hover::after {
   background-color: #3b82f6; /* Tailwind blue-500 */
 }
+
+
+
+
+
+
+

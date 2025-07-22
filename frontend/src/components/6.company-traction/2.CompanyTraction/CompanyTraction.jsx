@@ -8,94 +8,9 @@ import {
   faCommentDots,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 
-const initialCompanyTraction = {
-  Q1: [
-    {
-      id: 1,
-      who: 'Maricar',
-      collaborator: 'Maricar',
-      description:
-        'Develop $8,000 in new monthly revenue - one on one or cohort. Use the references and leads we have.',
-      progress: '5%',
-      annualPriority: 'Develop lead generation systems',
-      dueDate: '03/31/2025',
-      rank: '1',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-    {
-      id: 2,
-      who: 'John',
-      collaborator: 'Derek',
-      description: 'Complete onboarding SOP for sales team',
-      progress: '60%',
-      annualPriority: 'Streamline internal operations',
-      dueDate: '03/25/2025',
-      rank: '2',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-    {
-      id: 3,
-      who: 'Arlene',
-      collaborator: 'None',
-      description: 'Prepare customer success templates',
-      progress: '40%',
-      annualPriority: 'Improve client retention',
-      dueDate: '03/28/2025',
-      rank: '3',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-  ],
-  Q2: [
-    {
-      id: 1,
-      who: 'Maricar',
-      collaborator: 'Maricar',
-      description:
-        'Continue with developing lead generation system but using LinkedIn post and Chuck’s website',
-      progress: '0%',
-      annualPriority: 'Develop lead generation systems',
-      dueDate: 'Click to set date',
-      rank: '',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-    {
-      id: 2,
-      who: 'Maricar',
-      collaborator: 'None',
-      description: 'Use Apollo with Arlene',
-      progress: '0%',
-      annualPriority: 'Develop lead generation systems',
-      dueDate: 'Click to set date',
-      rank: '',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-    {
-      id: 3,
-      who: 'Derek',
-      collaborator: 'John',
-      description: 'Launch Q2 marketing campaign for SaaS clients',
-      progress: '10%',
-      annualPriority: 'Increase brand awareness',
-      dueDate: '05/15/2025',
-      rank: '1',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-    {
-      id: 4,
-      who: 'Chuck',
-      collaborator: 'Arlene',
-      description: 'Evaluate CRM tools and propose migration',
-      progress: '25%',
-      annualPriority: 'Optimize sales operations',
-      dueDate: '06/01/2025',
-      rank: '2',
-      comment: [],  // Initialize as an empty array for multiple comments
-    },
-  ],
-  Q3: [],
-  Q4: [],
-};
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
@@ -104,8 +19,25 @@ const CompanyTraction = () => {
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
 
+  const { users, selectedUser, setUsers, setSelectedUser } = useCompanyTractionUserStore();
 
-  const [activeQuarter, setActiveQuarter] = useState('Q2');
+  const storeData = useCompanyTractionStore((state) => state.companyTraction);
+  const updateCompanyTractionField = useCompanyTractionStore(
+    (state) => state.updateCompanyTractionField
+  );
+
+  const [data, setData] = useState(null);
+
+  // const [activeQuarter, setActiveQuarter] = useState('Q2');
+  const [activeQuarter, setActiveQuarter] = useState(() => {
+    return localStorage.getItem('activeQuarter') || 'Q1';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('activeQuarter', activeQuarter);
+  }, [activeQuarter]);
+
+  
   const [showCompleted, setShowCompleted] = useState(true);
   // const [companyTraction] = useState(initialCompanyTraction);
   const [companyTraction, setCompanyTraction, updateComment] = useState(() => {
@@ -133,27 +65,103 @@ const CompanyTraction = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [editingProgress, setEditingProgress] = useState(null); 
+  const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
+
 
   const filteredRows = showCompleted
     ? companyTraction[activeQuarter] || []
     : (companyTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
+  useEffect(() => {
+    const storedData = localStorage.getItem('companyTractionData');
+    if (storedData) {
+      setIsEditing(true); // Mark as edited
+      try {
+        setData(JSON.parse(storedData));
+      } catch (e) {
+        console.error('Failed to parse companyTractionData from localStorage', e);
+        setData(storeData);
+      }
+    } else {
+      setData(storeData);
+    }
+  }, [storeData]);
+
+  if (!data) return <p>Loading...</p>;
+
+
+  // Convert MM/DD/YYYY to YYYY-MM-DD
+  function mmddyyyyToIso(dateStr) {
+    if (!dateStr || dateStr === 'Click to set date') return '';
+    const [month, day, year] = dateStr.split('/');
+    if (!month || !day || !year) return '';
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
+  // Convert YYYY-MM-DD to MM/DD/YYYY
+  function isoToMmddyyyy(dateStr) {
+    if (!dateStr) return 'Click to set date';
+    const [year, month, day] = dateStr.split('-');
+    if (!year || !month || !day) return 'Click to set date';
+    return `${month}/${day}/${year}`;
+  }
+
+  const getTimeAgo = (timestamp) => {
+    const now = new Date();
+    const postedDate = new Date(timestamp);
+    const seconds = Math.floor((now - postedDate) / 1000);
+  
+    const intervals = [
+      { label: 'year', seconds: 31536000 },
+      { label: 'month', seconds: 2592000 },
+      { label: 'day', seconds: 86400 },
+      { label: 'hour', seconds: 3600 },
+      { label: 'minute', seconds: 60 },
+      { label: 'second', seconds: 1 },
+    ];
+  
+    for (const interval of intervals) {
+      const count = Math.floor(seconds / interval.seconds);
+      if (count >= 1) {
+        return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
+      }
+    }
+    return 'just now';
+  };
+
+  // function formatDateForDisplay(dateString) {
+  //   if (!dateString) return 'Click to set date'; // or empty display
+  //   const [year, month, day] = dateString.split('-');
+  //   if (!year || !month || !day) return 'Click to set date';
+  //   return `${month}/${day}/${year}`;
+  // }
+  
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
     if (newComment && selectedItem) {
       const updatedCompanyTraction = { ...companyTraction };
+  
+      const newCommentData = {
+        author: loggedUser?.fullname || 'Anonymous',
+        message: newComment,
+        posted: new Date().toISOString(), // Save full timestamp
+      };
+  
       updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
-        item.id === selectedItem.id ? { ...item, comment: [...item.comment, newComment] } : item
+        item.id === selectedItem.id
+          ? { ...item, comment: [...item.comment, newCommentData] }
+          : item
       );
+  
       setCompanyTraction(updatedCompanyTraction);
       localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
       setNewComment('');
       setCommentModalOpen(false);
     }
   };
+  
 
-    
   const handleDeleteComment = (itemId, commentIndex) => {
     setIsEditing(true); // Mark as edited
     const updatedCompanyTraction = { ...companyTraction };
@@ -165,8 +173,10 @@ const CompanyTraction = () => {
           }
         : item
     );
+  
     setCompanyTraction(updatedCompanyTraction);
-
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+  
     // Also update the selectedItem to reflect the changes in the modal
     const updatedSelectedItem = {
       ...selectedItem,
@@ -174,7 +184,7 @@ const CompanyTraction = () => {
     };
     setSelectedItem(updatedSelectedItem);
   };
-
+  
   const handleDeleteRow = (rowId) => {
 
     setIsEditing(true); // Mark as edited
@@ -250,7 +260,26 @@ const CompanyTraction = () => {
     return 'bg-green-500'; // Green for progress >= 95%
   };
 
+  // const handleDueDateChange = (e, rowId) => {
+  //   setIsEditing(true); // Mark as edited
+  //   handleEditChange(e, rowId, 'dueDate');
+  // };
+
+
+  // function handleDueDateChange(e, id) {
+  //   setIsEditing(true);
+  //   const isoDate = e.target.value; // YYYY-MM-DD
+  //   // Convert to MM/DD/YYYY to store
+  //   const [year, month, day] = isoDate.split('-');
+  //   const mmddyyyy = `${month}/${day}/${year}`;
+  
+  //   // update in the store, for example:
+  //   updateCompanyTractionField(activeQuarter, id, 'dueDate', mmddyyyy);
+  // }
+
+
   const handleDueDateChange = (e, rowId) => {
+    setIsEditing(true);
     handleEditChange(e, rowId, 'dueDate');
   };
 
@@ -296,12 +325,13 @@ const CompanyTraction = () => {
   };
 
   const handleSaveChanges = () => {
-    localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
+    // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
     
     // Parse the stored JSON data back to its original object form
     const savedData = JSON.parse(localStorage.getItem('companyTractionData'));
     
     console.log('Updated data from localStorage:', savedData);
+    localStorage.removeItem('companyTractionData');
     setIsEditing(false); // Hide the buttons after saving
   };
 
@@ -314,6 +344,7 @@ const CompanyTraction = () => {
     setEditingProgress(rowId); // Set row id for editing
     setNewProgressValue(currentProgress); // Set current progress as initial value for dropdown
   };
+  
 
   const handleProgressSave = (rowId) => {
     updateCompanyTractionField(activeQuarter, rowId, 'progress', newProgressValue);
@@ -328,10 +359,17 @@ const CompanyTraction = () => {
       <div className="flex justify-center mb-4">
         <div className="text-center">
           <label className="font-medium mr-2">Employee Filter:</label>
-          <select className="border rounded px-2 py-1 text-sm">
-            <option>All</option>
-            <option>Maricar</option>
-            <option>Arlene</option>
+          <select
+            className="border rounded px-2 py-1 text-sm"
+            value={selectedUser || ''}
+            onChange={(e) => setSelectedUser(e.target.value)}
+          >
+            <option value="">All</option>
+            {users.map((user) => (
+              <option key={user} value={user}>
+                {user}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -447,12 +485,20 @@ const CompanyTraction = () => {
                       className="w-full text-xs"
                       value={row.who}
                       onChange={(e) => handleEditChange(e, row.id, 'who')}
-                      disabled={!isSuperAdmin} // Disable for non-superadmins
+                      disabled={!isSuperAdmin}
                     >
-                      <option>{row.who}</option>
-                      {/* Add other options here */}
+                      {/* Default: show current selection */}
+                      {!users.includes(row.who) && <option value={row.who}>{row.who}</option>}
+
+                      {/* All users from the store */}
+                      {users.map((user) => (
+                        <option key={user} value={user}>
+                          {user}
+                        </option>
+                      ))}
                     </select>
                   </td>
+
 
                   {/* Collaborator Dropdown for each row */}
                   <td className="border px-4 py-2">
@@ -460,12 +506,22 @@ const CompanyTraction = () => {
                       className="w-full text-xs"
                       value={row.collaborator}
                       onChange={(e) => handleEditChange(e, row.id, 'collaborator')}
-                      disabled={!isSuperAdmin} // Disable for non-superadmins
+                      disabled={!isSuperAdmin}
                     >
-                      <option>{row.collaborator}</option>
-                      {/* Add other options here */}
+                      {/* Ensure current collaborator is always shown, even if not in list */}
+                      {!users.includes(row.collaborator) && (
+                        <option value={row.collaborator}>{row.collaborator}</option>
+                      )}
+
+                      {/* List all users from the store */}
+                      {users.map((user) => (
+                        <option key={user} value={user}>
+                          {user}
+                        </option>
+                      ))}
                     </select>
                   </td>
+
 
                   {/* Editable Description Column */}
                   <td className="border px-4 py-2">
@@ -478,14 +534,14 @@ const CompanyTraction = () => {
                     />
                   </td>
 
-                  {/* Progress Dropdown */}
+
                   <td className="border px-4 py-2">
-                    {/* Progress Display with Colored Oblong */}
-                    {editingProgress === row.id ? (
+
+                  {editingProgress === row.id ? (
                       <select
                         className="w-full text-xs"
                         value={row.progress}
-                        onChange={(e) => handleProgressChange(e, row.id)}
+                        onChange={(e) => handleProgressChange(e, row.id)} // Handle change
                         onBlur={() => setEditingProgress(null)} // Hide dropdown when user clicks outside
                         autoFocus
                         disabled={!isSuperAdmin} // Disable for non-superadmins
@@ -510,7 +566,6 @@ const CompanyTraction = () => {
                   </td>
 
 
-
                   {/* Editable Annual Priority Column */}
                   <td className="border px-4 py-2">
                     <input
@@ -523,7 +578,32 @@ const CompanyTraction = () => {
                   </td>
 
 
-                  <td className="border px-4 py-2">{row.dueDate}</td>
+                  {/* <td className="border px-4 py-2">{row.dueDate}</td> */}
+<td className="border px-4 py-2">
+  {isSuperAdmin ? (
+    editingCell.rowId === row.id && editingCell.field === 'dueDate' ? (
+      <input
+        type="date"
+        className="w-full text-xs"
+        value={row.dueDate !== 'Click to set date' ? row.dueDate : ''}
+        onChange={(e) => handleDueDateChange(e, row.id)}
+        onBlur={() => setEditingCell({ rowId: null, field: null })}
+        autoFocus
+      />
+    ) : (
+      <div
+        className={`cursor-pointer text-xs ${
+          row.dueDate === 'Click to set date' ? 'text-gray-400 italic' : ''
+        }`}
+        onClick={() => setEditingCell({ rowId: row.id, field: 'dueDate' })}
+      >
+        {row.dueDate}
+      </div>
+    )
+  ) : (
+    <div className="text-xs">{row.dueDate}</div>
+  )}
+</td>
 
                   {/* Editable Rank Column with Circle and Conditional Colors */}
                   <td className="border px-4 py-2">
@@ -576,52 +656,63 @@ const CompanyTraction = () => {
 
       {/* Add Comment Modal */}
       {commentModalOpen && selectedItem && (
-      <div className="transparent-overlay">
-        <div className="modal-content">
-          <h3 className="text-lg font-semibold mb-4">
-            Comments ({selectedItem.comment?.length || 0})
-          </h3>
+        <div className="transparent-overlay">
+          <div className="modal-content">
+            <h3 className="text-lg font-semibold mb-4">
+              Comments ({selectedItem.comment?.length || 0})
+            </h3>
 
-          {/* Render existing comments */}
-          {selectedItem.comment?.length > 0 && (
-            <div className="comment-list-container">
-              {selectedItem.comment.map((comment, index) => (
-                <div key={index} className="comment-item">
-                  <span>{comment}</span>
-                  <button
-                    onClick={() => handleDeleteComment(selectedItem.id, index)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
+            {/* Render existing comments */}
+            {selectedItem.comment?.length > 0 && (
+              <div className="comment-list-container">
+                {selectedItem.comment.map((comment, index) => (
+                  <div key={index} className="vertical-comment">
+                    <div className="comment-item">
+                      <p className="text-sm">
+                        <strong>{comment.author}:</strong> {comment.message}
+                      </p>
+                      <button
+                        onClick={() => handleDeleteComment(selectedItem.id, index)}
+                        className="text-red-600 ml-2"
+                      >
+                        x
+                      </button>
+                      
+                    </div>
+                    <div className="nested-comment">
+                      <p className="text-gray-500 text-sm">{getTimeAgo(comment.posted)}</p>
+                    </div>
+                  </div>
+                  
+                ))}
+              </div>
+            )}
+
+            {/* Add new comment */}
+            <textarea
+              className="w-full p-2 border rounded-md"
+              placeholder="Enter your comment here..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="pure-red-btn"
+                onClick={() => setCommentModalOpen(false)} // Close the modal without saving
+              >
+                Cancel
+              </button>
+              <button
+                className="pure-green-btn"
+                onClick={handleAddComment} // Handle adding the comment
+              >
+                Add Comment
+              </button>
             </div>
-          )}
-
-          {/* Add new comment */}
-          <textarea
-            className="w-full p-2 border rounded-md"
-            placeholder="Enter your comment here..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
-          <div className="mt-4 flex justify-end gap-2">
-            <button
-              className="pure-red-btn"
-              onClick={() => setCommentModalOpen(false)} // Close the modal without saving
-            >
-              Cancel
-            </button>
-            <button
-              className="pure-green-btn"
-              onClick={handleAddComment} // Handle adding the comment
-            >
-              Add Comment
-            </button>
           </div>
         </div>
-      </div>
-)}
+      )}
+
 
 
 
