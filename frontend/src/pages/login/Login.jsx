@@ -4,6 +4,7 @@ import logo from '../../assets/images/webp/momentum-logo.webp';
 import useLoginStore from '../../store/loginStore'; 
 import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import { useCompanyTractionUserStore } from '../../store/layout/companyTractionUserStore';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
 import './Login.css';
@@ -135,6 +136,34 @@ const Login = () => {
           
           } catch (error) {
             console.error('Post-login fetch error:', error);
+          }
+
+          // Fetch Company Traction Users
+          try {
+            const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users`, {
+              credentials: 'include',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+
+            const tractionUsers = await tractionUserRes.json();
+
+            ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
+
+            const firstUser = tractionUsers[0] || null;
+
+            // Update Zustand store
+            useCompanyTractionUserStore.setState({
+              users: tractionUsers,
+              selectedUser: firstUser,
+            });
+
+          } catch (error) {
+            console.error('Error fetching traction users:', error);
           }
           
 

@@ -1500,3 +1500,22 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
         'Test Skeleton Loading'
     ]);
 });
+
+
+
+// ref: frontend\src\pages\login\Login.jsx
+Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {
+    
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    return response()->json([
+        'Maricar', 
+        'Chuck', 
+        'Arlene'
+    ]);
+});
