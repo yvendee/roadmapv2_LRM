@@ -1,6 +1,6 @@
+// frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 import React, { useState, useEffect } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import './CompanyTraction.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -8,14 +8,15 @@ import {
   faCommentDots,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
+
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
-
+import './DepartmentTraction.css';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
-const CompanyTraction = () => {
+const DepartmentTractionTable = () => {
 
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -133,13 +134,6 @@ const CompanyTraction = () => {
     return 'just now';
   };
 
-  // function formatDateForDisplay(dateString) {
-  //   if (!dateString) return 'Click to set date'; // or empty display
-  //   const [year, month, day] = dateString.split('-');
-  //   if (!year || !month || !day) return 'Click to set date';
-  //   return `${month}/${day}/${year}`;
-  // }
-  
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
     if (newComment && selectedItem) {
@@ -226,19 +220,6 @@ const CompanyTraction = () => {
     });
   };
 
-  // Function to handle dropdown changes (example with a priority dropdown)
-  const handleDropdownChange = (e, rowId, field) => {
-    const value = e.target.value;
-    setCompanyTraction((prev) => {
-      const updatedData = { ...prev };
-      updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-        row.id === rowId ? { ...row, [field]: value } : row
-      );
-      // Save updated data to localStorage immediately after modification
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-      return updatedData;
-    });
-  };
 
   // Function to handle changes in progress dropdown
   const handleProgressChange = (e, rowId) => {
@@ -399,7 +380,7 @@ const CompanyTraction = () => {
           <div className="flex gap-2">
             <div className="pure-blue-btn cursor-pointer flex items-center" onClick={() => setAddTractionModalOpen(true)}>
               <FontAwesomeIcon icon={faPlus} className="mr-1" />
-              Add Company Traction
+              Add Department Traction
             </div>
             <div
               className="pure-green-btn cursor-pointer"
@@ -750,7 +731,7 @@ const CompanyTraction = () => {
             <div className="bg-white rounded-lg shadow-lg p-6 w-[500px] relative z-50"
                   onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-xl font-semibold mb-4">Add Company Traction</h2>
+              <h2 className="text-xl font-semibold mb-4">Add Department Traction</h2>
 
               <div className="space-y-4 text-sm">
                 <div>
@@ -898,4 +879,4 @@ const CompanyTraction = () => {
   );
 };
 
-export default CompanyTraction;
+export default DepartmentTractionTable;

@@ -1,4 +1,4 @@
-// frontend\src\store\left-lower-content\6.company-traction\2.companyTractionStore.js
+// frontend\src\store\left-lower-content\7.department-traction\1.departmentAnnualPrioritiesStore.js
 import { create } from 'zustand';
 
 export const initialCompanyTraction = {
@@ -7,11 +7,10 @@ export const initialCompanyTraction = {
       id: 1,
       who: 'Maricar',
       collaborator: 'Maricar',
-      description:
-        'Develop $8,000 in new monthly revenue - one on one or cohort. Use the references and leads we have.',
+      description: 'Build landing page',
       progress: '5%',
       annualPriority: 'Develop lead generation systems',
-      dueDate: '03/31/2025',
+      dueDate: '03-31-2025',
       rank: '1',
       comment: [
         {
@@ -29,11 +28,10 @@ export const initialCompanyTraction = {
   ],
   Q2: [
     {
-      id: 2,
+      id: 1,
       who: 'Maricar',
       collaborator: 'Maricar',
-      description:
-        'Continue with developing lead generation system but using LinkedIn post and Chuck’s website',
+      description: 'Launch marketing campaign',
       progress: '0%',
       annualPriority: 'Develop lead generation systems',
       dueDate: 'Click to set date',
@@ -51,16 +49,28 @@ export const initialCompanyTraction = {
         },
       ],
     },
+
     {
-      id: 3,
-      who: 'Maricar',
-      collaborator: 'None',
-      description: 'Use Apollo with Arlene',
-      progress: '0%',
+      id: 2,
+      who: 'Chuck',
+      collaborator: 'Maricar',
+      description: 'Build landing page',
+      progress: '5%',
       annualPriority: 'Develop lead generation systems',
-      dueDate: 'Click to set date',
-      rank: '3',
-      comment: [],  // Initialize as an empty array for multiple comments
+      dueDate: '04-19-2025',
+      rank: '2',
+      comment: [
+        {
+          author: 'Maricar',
+          message: 'This is a test comment.',
+          posted: '26 June 2025',
+        },
+        {
+          author: 'John',
+          message: 'Great work on this!',
+          posted: '27 June 2025',
+        },
+      ],
     },
   ],
   Q3: [],
@@ -90,7 +100,6 @@ const useCompanyTractionStore = create((set) => ({
       },
     })),
 
-  // Action to append a new comment to the array
   updateComment: (quarter, id, newComment) =>
     set((state) => ({
       companyTraction: {
@@ -104,7 +113,7 @@ const useCompanyTractionStore = create((set) => ({
                   {
                     author: newComment.author,
                     message: newComment.message,
-                    posted: new Date().toLocaleDateString(), // Use the current date as posted
+                    posted: new Date().toLocaleDateString(),
                   },
                 ],
               }
@@ -113,7 +122,17 @@ const useCompanyTractionStore = create((set) => ({
       },
     })),
 
-  // Action to delete a comment by index
+  updateCompanyTractionField: (quarter, id, field, value) =>
+    set((state) => ({
+      companyTraction: {
+        ...state.companyTraction,
+        [quarter]: state.companyTraction[quarter].map((row) =>
+          row.id === id ? { ...row, [field]: value } : row
+        ),
+      },
+    })),
+    
+
   deleteComment: (quarter, id, commentIndex) =>
     set((state) => ({
       companyTraction: {

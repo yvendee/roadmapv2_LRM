@@ -1,13 +1,13 @@
-// frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
+// frontend\src\components\7.department-traction\1.DepartmentAnnualPriorities\DepartmentAnnualPriorities.jsx
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
-import './AnnualPriorities.css';
+import './DepartmentAnnualPriorities.css';
 
-const AnnualPriorities = () => {
+const DepartmentAnnualPriorities = () => {
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
@@ -55,13 +55,13 @@ const AnnualPriorities = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // ENABLE_CONSOLE_LOGS && console.log('Add Annual Priorities button clicked');
+      // ENABLE_CONSOLE_LOGS && console.log('Add Department Annual Priorities button clicked');
       setShowAddModal(true);
     }, 1000);
   };
 
   const handleAddNewAnnualPriority = () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
+    ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
 
     // 2. Hide Save / Discharge
     setEditedAnnualPriorities([]);
@@ -127,7 +127,7 @@ const AnnualPriorities = () => {
           const parsedData = JSON.parse(storedData);
   
           // 1. Log to console
-          ENABLE_CONSOLE_LOGS && console.log('Saved Annual Priorities after Save Changes Button:', parsedData);
+          ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities after Save Changes Button:', parsedData);
   
           // 2. Update Zustand store
           setAnnualPriorities(parsedData);
@@ -138,7 +138,7 @@ const AnnualPriorities = () => {
             id: index + 1,
           }));
 
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (Reindexed):', reordered);
+          ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (Reindexed):', reordered);
 
           setAnnualPriorities(reordered);
   
@@ -257,7 +257,7 @@ const AnnualPriorities = () => {
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
-        <h5 className="text-lg font-semibold always-black">Annual Priorities</h5>
+        <h5 className="text-lg font-semibold always-black">Department Annual Priorities</h5>
         {loggedUser?.role === 'superadmin' && (
           <div className="flex gap-2">
             {editedAnnualPriorities.length > 0 && (
@@ -298,7 +298,7 @@ const AnnualPriorities = () => {
                 ) : (
                   <>
                   <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                  Add Annual Priority
+                  Add Department Annual Priorities
                   </>
                 )}
               </button>
@@ -479,7 +479,7 @@ const AnnualPriorities = () => {
             className="modal-add-box"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-add-title">Annual Priorities</div>
+            <div className="modal-add-title">Department Annual Priorities</div>
 
             <label className="modal-add-label">Description</label>
             <textarea
@@ -515,4 +515,4 @@ const AnnualPriorities = () => {
   );
 };
 
-export default AnnualPriorities;
+export default DepartmentAnnualPriorities;
