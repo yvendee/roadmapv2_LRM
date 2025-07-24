@@ -19,7 +19,8 @@ const AnnualPriorities = () => {
   const updateAnnualPrioritiesField = useAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
   const pushAnnualPriorities = useAnnualPrioritiesStore((state) => state.pushAnnualPriorities);
 
-  const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
+  // const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
+  
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -31,9 +32,11 @@ const AnnualPriorities = () => {
 
   const [currentOrder, setCurrentOrder] = useState(annualPriorities);
   const [draggedId, setDraggedId] = useState(null);
-  
-  
 
+  const [isEditing, setIsEditing] = useState(false);
+
+  
+  
   // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('annualPrioritiesData');
@@ -42,8 +45,13 @@ const AnnualPriorities = () => {
         const parsedData = JSON.parse(storedData);
         setAnnualPriorities(parsedData);
 
+        ENABLE_CONSOLE_LOGS && console.log('annualPrioritiesData found! and  loaded!');
+
+
         // ✅ Treat this as unsaved state, trigger the buttons
-        setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
+        // setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
+        setIsEditing(true);
+
 
       } catch (err) {
         ENABLE_CONSOLE_LOGS && console.error('Failed to parse annualPrioritiesData from localStorage:', err);
@@ -64,7 +72,9 @@ const AnnualPriorities = () => {
     ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
 
     // 2. Hide Save / Discharge
-    setEditedAnnualPriorities([]);
+    // setEditedAnnualPriorities([]);
+    setIsEditing(false);
+
   
     // 3. Remove localStorage temp data
     localStorage.removeItem('annualPrioritiesData');
@@ -92,15 +102,17 @@ const AnnualPriorities = () => {
     updateAnnualPrioritiesField(id, field, value);
 
     // Update local state for Save/Discharge buttons
-    setEditedAnnualPriorities((prev) => {
-      const existing = prev.find((d) => d.id === id);
-      if (existing) {
-        return prev.map((d) =>
-          d.id === id ? { ...d, [field]: value } : d
-        );
-      }
-      return [...prev, { id, [field]: value }];
-    });
+    setIsEditing(true);
+
+    // setEditedAnnualPriorities((prev) => {
+    //   const existing = prev.find((d) => d.id === id);
+    //   if (existing) {
+    //     return prev.map((d) =>
+    //       d.id === id ? { ...d, [field]: value } : d
+    //     );
+    //   }
+    //   return [...prev, { id, [field]: value }];
+    // });
 
     // Update localStorage
     const updatedDrivers = annualPriorities.map((driver) =>
@@ -143,7 +155,9 @@ const AnnualPriorities = () => {
           setAnnualPriorities(reordered);
   
           // 3. Clear edited state (hides buttons)
-          setEditedAnnualPriorities([]);
+          // setEditedAnnualPriorities([]);
+          setIsEditing(false);
+
   
           // 4. Remove from localStorage
           localStorage.removeItem('annualPrioritiesData');
@@ -161,7 +175,9 @@ const AnnualPriorities = () => {
 
         ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (reordered):', reordered);
         setAnnualPriorities(reordered);
-        setEditedAnnualPriorities([]);
+        // setEditedAnnualPriorities([]);
+        setIsEditing(false);
+
 
         // Remove from localStorage
         localStorage.removeItem('annualPrioritiesData');
@@ -184,7 +200,9 @@ const AnnualPriorities = () => {
     localStorage.removeItem('annualPrioritiesData');
 
     // 2. Clear edited state (hides buttons)
-    setEditedAnnualPriorities([]);
+    // setEditedAnnualPriorities([]);
+    setIsEditing(false);
+
 
     // 3. Update Zustand store
     setAnnualPriorities(initialAnnualPriorities);
@@ -218,18 +236,31 @@ const AnnualPriorities = () => {
     const [moved] = newOrder.splice(draggedIndex, 1);
     newOrder.splice(overIndex, 0, moved);
     setCurrentOrder(newOrder);
-    setEditedAnnualPriorities(prev => prev.find(d=>d.id===draggedId) ? prev : [...prev, { id: draggedId }]);
+    // setEditedAnnualPriorities(prev => prev.find(d=>d.id===draggedId) ? prev : [...prev, { id: draggedId }]);
+    setIsEditing(true);
   };
 
   const handleDragEnd = () => {
     setDraggedId(null);
+  
+    // Save the new drag order to localStorage
+    localStorage.setItem('annualPrioritiesData', JSON.stringify(currentOrder));
+  
+    // Also flag changes for Save/Discharge buttons
+    // setEditedAnnualPriorities(currentOrder.map(d => ({ id: d.id })));
+    setIsEditing(true);
+
+  
+    ENABLE_CONSOLE_LOGS && console.log('Drag ended and saved to localStorage:', currentOrder);
   };
 
   // Save drag order to store:
   const saveDraggedOrder = () => {
     ENABLE_CONSOLE_LOGS &&  console.log('New order:', JSON.stringify(currentOrder, null, 2));
     setAnnualPriorities(currentOrder);
-    setEditedAnnualPriorities([]);
+    // setEditedAnnualPriorities([]);
+    setIsEditing(false);
+
   };
 
   // On discharge—confirmation modal does reset order from store
@@ -237,7 +268,9 @@ const AnnualPriorities = () => {
     localStorage.removeItem('annualPrioritiesData');
     setShowConfirmModal(false);
     setCurrentOrder(annualPriorities);
-    setEditedAnnualPriorities([]);
+    // setEditedAnnualPriorities([]);
+    setIsEditing(false);
+
   };
 
   const isSkeleton = annualPriorities.some(driver => 
@@ -251,7 +284,9 @@ const AnnualPriorities = () => {
     localStorage.setItem('annualPrioritiesData', JSON.stringify(updated));
   
     // Mark as edited
-    setEditedAnnualPriorities(prev => [...prev, { id }]);
+    // setEditedAnnualPriorities(prev => [...prev, { id }]);
+    setIsEditing(true);
+
   };
 
   return (
@@ -260,8 +295,8 @@ const AnnualPriorities = () => {
         <h5 className="text-lg font-semibold always-black">Annual Priorities</h5>
         {loggedUser?.role === 'superadmin' && (
           <div className="flex gap-2">
-            {editedAnnualPriorities.length > 0 && (
-              <>
+
+            {isEditing && <>
                 <button className="pure-green-btn" onClick={handleSaveChanges}>
                 {loadingSave ? (
                   <div className="loader-bars">
@@ -285,7 +320,7 @@ const AnnualPriorities = () => {
                   )}
                 </button>
               </>
-            )}
+            }
 
             {loggedUser?.role === 'superadmin' && !isSkeleton && (
               <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
