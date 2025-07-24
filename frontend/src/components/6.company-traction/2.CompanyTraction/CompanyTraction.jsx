@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import './CompanyTraction.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -8,15 +7,16 @@ import {
   faCommentDots,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
-
+import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import './CompanyTraction.css';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 const CompanyTraction = () => {
 
+  // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
     annualPriority: '',
@@ -33,18 +33,22 @@ const CompanyTraction = () => {
 
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
+  const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
+
+  // const [companyTraction, setCompanyTraction] = useState(initialCompanyTraction);
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
 
   const { users, selectedUser, setUsers, setSelectedUser } = useCompanyTractionUserStore();
 
-  const storeData = useCompanyTractionStore((state) => state.companyTraction);
+  // const storeData = useCompanyTractionStore((state) => state.companyTraction);
+
   const updateCompanyTractionField = useCompanyTractionStore(
     (state) => state.updateCompanyTractionField
   );
 
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -57,12 +61,12 @@ const CompanyTraction = () => {
 
   
   const [showCompleted, setShowCompleted] = useState(true);
-  // const [companyTraction] = useState(initialCompanyTraction);
-  const [companyTraction, setCompanyTraction, updateComment] = useState(() => {
-    // Load company traction from localStorage if available, otherwise use initial data
-    const storedData = localStorage.getItem('companyTractionData');
-    return storedData ? JSON.parse(storedData) : initialCompanyTraction;
-  });
+  
+  // const [companyTraction, setCompanyTraction, updateComment] = useState(() => {
+  //   // Load company traction from localStorage if available, otherwise use initial data
+  //   const storedData = localStorage.getItem('companyTractionData');
+  //   return storedData ? JSON.parse(storedData) : initialCompanyTraction;
+  // });
 
   // Generate progress options from 0% to 100% with increments of 5%
   const progressOptions = [];
@@ -71,7 +75,7 @@ const CompanyTraction = () => {
   }
 
   const [commentModalOpen, setCommentModalOpen] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState(null);
+  // const [selectedRowId, setSelectedRowId] = useState(null);
   const [newComment, setNewComment] = useState('');
   const [selectedItem, setSelectedItem] = useState(null); // To store the selected item for comment
 
@@ -85,6 +89,11 @@ const CompanyTraction = () => {
   const [editingProgress, setEditingProgress] = useState(null); 
   const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
 
+  const [loading, setLoading] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDischarge, setLoadingDischarge] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
 
   const filteredRows = showCompleted
     ? companyTraction[activeQuarter] || []
@@ -96,17 +105,19 @@ const CompanyTraction = () => {
     if (storedData) {
       setIsEditing(true); // Mark as edited
       try {
-        setData(JSON.parse(storedData));
+        // setData(JSON.parse(storedData));
+        setCompanyTraction(JSON.parse(storedData));
       } catch (e) {
         console.error('Failed to parse companyTractionData from localStorage', e);
-        setData(storeData);
+        // setData(storeData);
       }
-    } else {
-      setData(storeData);
-    }
-  }, [storeData]);
+    } 
+    // else {
+    //   setData(storeData);
+    // }
+  }, [setCompanyTraction]);
 
-  if (!data) return <p>Loading...</p>;
+  // if (!data) return <p>Loading...</p>;
 
 
 
@@ -211,49 +222,75 @@ const CompanyTraction = () => {
     setCommentModalOpen(true);
   };
 
+  // const handleEditChange = (e, rowId, field) => {
+  //   const value = e.target.value;
+  //   setCompanyTraction((prev) => {
+  //     const updatedData = { ...prev };
+  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
+  //       row.id === rowId ? { ...row, [field]: value } : row
+  //     );
+
+  //     // Save updated data to localStorage immediately after modification
+  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+
+  //     return updatedData;
+  //   });
+  // };
+
   const handleEditChange = (e, rowId, field) => {
     const value = e.target.value;
-    setCompanyTraction((prev) => {
-      const updatedData = { ...prev };
-      updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-        row.id === rowId ? { ...row, [field]: value } : row
-      );
-
-      // Save updated data to localStorage immediately after modification
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-
-      return updatedData;
-    });
+  
+    // Update the store
+    updateCompanyTractionField(activeQuarter, rowId, field, value);
+  
+    // Get latest store data and persist it
+    const updatedData = useCompanyTractionStore.getState().companyTraction;
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
   };
+  
 
-  // Function to handle dropdown changes (example with a priority dropdown)
-  const handleDropdownChange = (e, rowId, field) => {
-    const value = e.target.value;
-    setCompanyTraction((prev) => {
-      const updatedData = { ...prev };
-      updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-        row.id === rowId ? { ...row, [field]: value } : row
-      );
-      // Save updated data to localStorage immediately after modification
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-      return updatedData;
-    });
-  };
+  // // Function to handle dropdown changes (example with a priority dropdown)
+  // const handleDropdownChange = (e, rowId, field) => {
+  //   const value = e.target.value;
+  //   setCompanyTraction((prev) => {
+  //     const updatedData = { ...prev };
+  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
+  //       row.id === rowId ? { ...row, [field]: value } : row
+  //     );
+  //     // Save updated data to localStorage immediately after modification
+  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  //     return updatedData;
+  //   });
+  // };
 
-  // Function to handle changes in progress dropdown
+  // // Function to handle changes in progress dropdown
+  // const handleProgressChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setCompanyTraction((prev) => {
+  //     const updatedData = { ...prev };
+  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
+  //       row.id === rowId ? { ...row, progress: value } : row
+  //     );
+  //     // Save updated data to localStorage immediately after modification
+  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  //     return updatedData;
+  //   });
+  //   setIsEditing(true); // Mark as edited
+  // };
+
   const handleProgressChange = (e, rowId) => {
     const value = e.target.value;
-    setCompanyTraction((prev) => {
-      const updatedData = { ...prev };
-      updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-        row.id === rowId ? { ...row, progress: value } : row
-      );
-      // Save updated data to localStorage immediately after modification
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-      return updatedData;
-    });
+  
+    // Update the store
+    updateCompanyTractionField(activeQuarter, rowId, 'progress', value);
+  
+    // Optional: persist to localStorage
+    const updatedData = useCompanyTractionStore.getState().companyTraction;
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
     setIsEditing(true); // Mark as edited
   };
+  
 
   // Function to determine the color based on progress
   const getProgressColor = (progress) => {
@@ -264,32 +301,78 @@ const CompanyTraction = () => {
   };
 
 
+  // const handleDueDateChange = (e, rowId) => {
+  //   setIsEditing(true);
+  //   handleEditChange(e, rowId, 'dueDate');
+  // };
+
+  // const handleDescriptionChange = (e, rowId) => {
+  //   setIsEditing(true); // Mark as edited
+  //   const value = e.target.value;
+  //   setDescription(value);
+  //   handleEditChange(e, rowId, 'description');
+  // };
+
+  
+  // const handleAnnualPriorityChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setAnnualPriority(value);
+  //   handleEditChange(e, rowId, 'annualPriority');
+  //   setIsEditing(true); // Mark as edited
+  // };
+
+  // const handleRankChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setRank(value);
+  //   handleEditChange(e, rowId, 'rank');
+  //   setIsEditing(true); // Mark as edited
+  // };
+
+
   const handleDueDateChange = (e, rowId) => {
-    setIsEditing(true);
-    handleEditChange(e, rowId, 'dueDate');
-  };
-
-  const handleDescriptionChange = (e, rowId) => {
-    setIsEditing(true); // Mark as edited
     const value = e.target.value;
-    setDescription(value);
-    handleEditChange(e, rowId, 'description');
+    updateCompanyTractionField(activeQuarter, rowId, 'dueDate', value);
+  
+    const updatedData = useCompanyTractionStore.getState().companyTraction;
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
   };
-
+  
+  const handleDescriptionChange = (e, rowId) => {
+    const value = e.target.value;
+    setDescription(value); // keep UI controlled
+    updateCompanyTractionField(activeQuarter, rowId, 'description', value);
+  
+    const updatedData = useCompanyTractionStore.getState().companyTraction;
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
+  };
   
   const handleAnnualPriorityChange = (e, rowId) => {
     const value = e.target.value;
-    setAnnualPriority(value);
-    handleEditChange(e, rowId, 'annualPriority');
-    setIsEditing(true); // Mark as edited
+    setAnnualPriority(value); // keep UI controlled
+    updateCompanyTractionField(activeQuarter, rowId, 'annualPriority', value);
+  
+    const updatedData = useCompanyTractionStore.getState().companyTraction;
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
   };
-
+  
   const handleRankChange = (e, rowId) => {
     const value = e.target.value;
-    setRank(value);
-    handleEditChange(e, rowId, 'rank');
-    setIsEditing(true); // Mark as edited
+    setRank(value); // keep UI controlled
+    updateCompanyTractionField(activeQuarter, rowId, 'rank', value);
+  
+    const updatedData = useCompanyTractionStore.getState().companyTraction;
+    localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
   };
+
+  
 
   // Function to determine rank color
   const getRankColor = (rank) => {
@@ -305,12 +388,26 @@ const CompanyTraction = () => {
     }
   };
 
-  const handleSaveClick = (rowId) => {
-    setEditing((prev) => ({ ...prev, [rowId]: false }));
-    handleSaveChanges();
-  };
+  // const handleSaveClick = (rowId) => {
+  //   setEditing((prev) => ({ ...prev, [rowId]: false }));
+  //   handleSaveChanges();
+  // };
+
+  const handleAddCompanyTractionClick = () => {
+    setLoading(true);
+    
+    setTimeout(() => {
+      setLoading(false);
+      setAddTractionModalOpen(true);
+    }, 1000);
+  }
 
   const handleSaveChanges = () => {
+
+    setLoadingSave(true);
+    
+    setTimeout(() => {
+      setLoadingSave(false);
     // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
     
     // Parse the stored JSON data back to its original object form
@@ -319,6 +416,31 @@ const CompanyTraction = () => {
     console.log('Updated data from localStorage:', savedData);
     localStorage.removeItem('companyTractionData');
     setIsEditing(false); // Hide the buttons after saving
+    }, 1000);
+
+  };
+
+  const handleDischargeChanges = () => {
+    setLoadingDischarge(true);
+    setTimeout(() => {
+      setLoadingDischarge(false);
+      setShowConfirmModal(true);
+      setIsEditing(false); 
+    }, 1000);
+  };
+
+  const confirmDischargeChanges = () => {
+    // 1. Remove from localStorage
+    localStorage.removeItem('companyTractionData');
+
+    // 2. Clear edited state (hides buttons)
+    setIsEditing(false); 
+
+    // 3. Update Zustand store
+    setCompanyTraction(initialCompanyTraction);
+
+    // 4. Hide Modal
+    setShowConfirmModal(false);
   };
 
 
@@ -349,10 +471,8 @@ const CompanyTraction = () => {
     setCompanyTraction(updated); // update table
     setAddTractionModalOpen(false); // close modal
   }
+
   
-
-
-
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       
@@ -397,9 +517,21 @@ const CompanyTraction = () => {
         {/* Action Buttons */}
         {isSuperAdmin && (
           <div className="flex gap-2">
-            <div className="pure-blue-btn cursor-pointer flex items-center" onClick={() => setAddTractionModalOpen(true)}>
-              <FontAwesomeIcon icon={faPlus} className="mr-1" />
-              Add Company Traction
+            <div className="pure-blue-btn cursor-pointer flex items-center" onClick={handleAddCompanyTractionClick}>
+
+              {loading ? (
+                <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+                ) : (
+                  <>
+                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                  Add Company Traction
+                  </>
+              )}
+
             </div>
             <div
               className="pure-green-btn cursor-pointer"
@@ -420,9 +552,31 @@ const CompanyTraction = () => {
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
             <div className="pure-green-btn" onClick={handleSaveChanges}>
-              Save Changes
+              
+              {loadingSave ? (
+                <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+                ) : (
+                  'Save Changes'
+              )}
+
             </div>
-            <div className="pure-red-btn">Discharge Changes</div>
+            <div className="pure-red-btn" onClick={handleDischargeChanges}>
+
+              {loadingDischarge ? (
+                <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+                ) : (
+                  'Discharge Changes'
+              )}
+
+            </div>
           </div>
         </div>
       )}
@@ -883,16 +1037,20 @@ const CompanyTraction = () => {
         </div>
       )}
 
-
-
-
-
-      
-
-
-
-
-
+      {showConfirmModal && (
+        <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-add-title">Confirm Discharge</div>
+            <p className="text-gray-700 text-sm mb-4">
+              Are you sure you want to discard all unsaved changes?
+            </p>
+            <div className="modal-add-buttons">
+              <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discharge</button>
+              <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

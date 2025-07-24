@@ -8,10 +8,10 @@ import {
   faCommentDots,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
-
+import useDepartmentTractionStore, { initialDepartmentTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './DepartmentTraction.css';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
@@ -30,22 +30,33 @@ const DepartmentTractionTable = () => {
     rank: '',
   });
 
-  const addCompanyTraction = useCompanyTractionStore((state) => state.addCompanyTraction);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const addDepartmentTraction = useDepartmentTractionStore((state) => state.addDepartmentTraction);
 
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
+  
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
 
   const { users, selectedUser, setUsers, setSelectedUser } = useCompanyTractionUserStore();
 
-  const storeData = useCompanyTractionStore((state) => state.companyTraction);
-  const updateCompanyTractionField = useCompanyTractionStore(
-    (state) => state.updateCompanyTractionField
+  // const storeData = useDepartmentTractionStore((state) => state.departmentTraction);
+  const updateDepartmentTractionField = useDepartmentTractionStore(
+    (state) => state.updateDepartmentTractionField
   );
 
-  const [data, setData] = useState(null);
+  
+
+  const [loading, setLoading] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDischarge, setLoadingDischarge] = useState(false);
+
+  // const [data, setData] = useState(null);
+
+  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -58,12 +69,12 @@ const DepartmentTractionTable = () => {
 
   
   const [showCompleted, setShowCompleted] = useState(true);
-  // const [companyTraction] = useState(initialCompanyTraction);
-  const [companyTraction, setCompanyTraction, updateComment] = useState(() => {
-    // Load company traction from localStorage if available, otherwise use initial data
-    const storedData = localStorage.getItem('companyTractionData');
-    return storedData ? JSON.parse(storedData) : initialCompanyTraction;
-  });
+  // const [companyTraction] = useState(initialDepartmentTraction);
+  // const [departmentTraction, setDepartmentTraction, updateComment] = useState(() => {
+  //   // Load company traction from localStorage if available, otherwise use initial data
+  //   const storedData = localStorage.getItem('departmentTractionData');
+  //   return storedData ? JSON.parse(storedData) : initialDepartmentTraction;
+  // });
 
   // Generate progress options from 0% to 100% with increments of 5%
   const progressOptions = [];
@@ -88,26 +99,28 @@ const DepartmentTractionTable = () => {
 
 
   const filteredRows = showCompleted
-    ? companyTraction[activeQuarter] || []
-    : (companyTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
+    ? departmentTraction[activeQuarter] || []
+    : (departmentTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
   useEffect(() => {
-    const storedData = localStorage.getItem('companyTractionData');
+    const storedData = localStorage.getItem('departmentTractionData');
     if (storedData) {
       setIsEditing(true); // Mark as edited
       try {
-        setData(JSON.parse(storedData));
+        // setData(JSON.parse(storedData));
+        setDepartmentTraction(JSON.parse(storedData));
       } catch (e) {
-        console.error('Failed to parse companyTractionData from localStorage', e);
-        setData(storeData);
+        console.error('Failed to parse departmentTractionData from localStorage', e);
+        // setData(storeData);
       }
-    } else {
-      setData(storeData);
-    }
-  }, [storeData]);
+    } 
+    // else {
+    //   setData(storeData);
+    // }
+  }, [setDepartmentTraction]);
 
-  if (!data) return <p>Loading...</p>;
+  // if (!data) return <p>Loading...</p>;
 
 
 
@@ -137,7 +150,7 @@ const DepartmentTractionTable = () => {
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
     if (newComment && selectedItem) {
-      const updatedCompanyTraction = { ...companyTraction };
+      const updatedCompanyTraction = { ...departmentTraction };
   
       const newCommentData = {
         author: loggedUser?.fullname || 'Anonymous',
@@ -151,8 +164,8 @@ const DepartmentTractionTable = () => {
           : item
       );
   
-      setCompanyTraction(updatedCompanyTraction);
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+      setDepartmentTraction(updatedCompanyTraction);
+      localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
       setNewComment('');
       setCommentModalOpen(false);
     }
@@ -161,7 +174,7 @@ const DepartmentTractionTable = () => {
 
   const handleDeleteComment = (itemId, commentIndex) => {
     setIsEditing(true); // Mark as edited
-    const updatedCompanyTraction = { ...companyTraction };
+    const updatedCompanyTraction = { ...departmentTraction };
     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
       item.id === itemId
         ? {
@@ -171,8 +184,8 @@ const DepartmentTractionTable = () => {
         : item
     );
   
-    setCompanyTraction(updatedCompanyTraction);
-    localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+    setDepartmentTraction(updatedCompanyTraction);
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
   
     // Also update the selectedItem to reflect the changes in the modal
     const updatedSelectedItem = {
@@ -186,17 +199,17 @@ const DepartmentTractionTable = () => {
 
     setIsEditing(true); // Mark as edited
 
-    // Create a copy of the current company traction data
-    const updatedCompanyTraction = { ...companyTraction };
+    // Create a copy of the current department traction data
+    const updatedCompanyTraction = { ...departmentTraction };
     
     // Remove the row with the matching rowId from the active quarter
     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].filter(item => item.id !== rowId);
     
-    // Update the state with the new company traction data
-    setCompanyTraction(updatedCompanyTraction);
+    // Update the state with the new Department Traction data
+    setDepartmentTraction(updatedCompanyTraction);
     
     // Update localStorage to persist changes
-    localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
   };
   
 
@@ -205,34 +218,59 @@ const DepartmentTractionTable = () => {
     setCommentModalOpen(true);
   };
 
+  // const handleEditChange = (e, rowId, field) => {
+  //   const value = e.target.value;
+  //   setDepartmentTraction((prev) => {
+  //     const updatedData = { ...prev };
+  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
+  //       row.id === rowId ? { ...row, [field]: value } : row
+  //     );
+
+  //     // Save updated data to localStorage immediately after modification
+  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+
+  //     return updatedData;
+  //   });
+  // };
+
+
   const handleEditChange = (e, rowId, field) => {
     const value = e.target.value;
-    setCompanyTraction((prev) => {
-      const updatedData = { ...prev };
-      updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-        row.id === rowId ? { ...row, [field]: value } : row
-      );
-
-      // Save updated data to localStorage immediately after modification
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-
-      return updatedData;
-    });
+  
+    // Update the store
+    updateDepartmentTractionField(activeQuarter, rowId, field, value);
+  
+    // Get latest store data and persist it
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
   };
 
 
   // Function to handle changes in progress dropdown
+  // const handleProgressChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setDepartmentTraction((prev) => {
+  //     const updatedData = { ...prev };
+  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
+  //       row.id === rowId ? { ...row, progress: value } : row
+  //     );
+  //     // Save updated data to localStorage immediately after modification
+  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  //     return updatedData;
+  //   });
+  //   setIsEditing(true); // Mark as edited
+  // };
+
   const handleProgressChange = (e, rowId) => {
     const value = e.target.value;
-    setCompanyTraction((prev) => {
-      const updatedData = { ...prev };
-      updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-        row.id === rowId ? { ...row, progress: value } : row
-      );
-      // Save updated data to localStorage immediately after modification
-      localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-      return updatedData;
-    });
+  
+    // Update the store
+    updateDepartmentTractionField(activeQuarter, rowId, 'progress', value);
+  
+    // Optional: persist to localStorage
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
     setIsEditing(true); // Mark as edited
   };
 
@@ -245,31 +283,74 @@ const DepartmentTractionTable = () => {
   };
 
 
+  // const handleDueDateChange = (e, rowId) => {
+  //   setIsEditing(true);
+  //   handleEditChange(e, rowId, 'dueDate');
+  // };
+
+  // const handleDescriptionChange = (e, rowId) => {
+  //   setIsEditing(true); // Mark as edited
+  //   const value = e.target.value;
+  //   setDescription(value);
+  //   handleEditChange(e, rowId, 'description');
+  // };
+
+  // const handleAnnualPriorityChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setAnnualPriority(value);
+  //   handleEditChange(e, rowId, 'annualPriority');
+  //   setIsEditing(true); // Mark as edited
+  // };
+
+  // const handleRankChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setRank(value);
+  //   handleEditChange(e, rowId, 'rank');
+  //   setIsEditing(true); // Mark as edited
+  // };
+
+
   const handleDueDateChange = (e, rowId) => {
-    setIsEditing(true);
-    handleEditChange(e, rowId, 'dueDate');
-  };
-
-  const handleDescriptionChange = (e, rowId) => {
-    setIsEditing(true); // Mark as edited
     const value = e.target.value;
-    setDescription(value);
-    handleEditChange(e, rowId, 'description');
+    updateDepartmentTractionField(activeQuarter, rowId, 'dueDate', value);
+  
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
   };
-
+  
+  const handleDescriptionChange = (e, rowId) => {
+    const value = e.target.value;
+    setDescription(value); 
+    updateDepartmentTractionField(activeQuarter, rowId, 'description', value);
+  
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
+  };
   
   const handleAnnualPriorityChange = (e, rowId) => {
     const value = e.target.value;
-    setAnnualPriority(value);
-    handleEditChange(e, rowId, 'annualPriority');
-    setIsEditing(true); // Mark as edited
+    setAnnualPriority(value); 
+    updateDepartmentTractionField(activeQuarter, rowId, 'annualPriority', value);
+  
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
   };
-
+  
   const handleRankChange = (e, rowId) => {
     const value = e.target.value;
-    setRank(value);
-    handleEditChange(e, rowId, 'rank');
-    setIsEditing(true); // Mark as edited
+    setRank(value); 
+    updateDepartmentTractionField(activeQuarter, rowId, 'rank', value);
+  
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    setIsEditing(true);
   };
 
   // Function to determine rank color
@@ -286,20 +367,59 @@ const DepartmentTractionTable = () => {
     }
   };
 
-  const handleSaveClick = (rowId) => {
-    setEditing((prev) => ({ ...prev, [rowId]: false }));
-    handleSaveChanges();
-  };
+  // const handleSaveClick = (rowId) => {
+  //   setEditing((prev) => ({ ...prev, [rowId]: false }));
+  //   handleSaveChanges();
+  // };
 
   const handleSaveChanges = () => {
-    // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
+    setLoadingSave(true);
     
-    // Parse the stored JSON data back to its original object form
-    const savedData = JSON.parse(localStorage.getItem('companyTractionData'));
+    setTimeout(() => {
+      setLoadingSave(false);
+      // localStorage.setItem('departmentTractionData', JSON.stringify(departmentTraction));
+      
+      // Parse the stored JSON data back to its original object form
+      const savedData = JSON.parse(localStorage.getItem('departmentTractionData'));
+      
+      ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
+      localStorage.removeItem('departmentTractionData');
+      setIsEditing(false); // Hide the buttons after saving
+    }, 1000);
+
+  };
+
+  const handleDischargeChanges = () => {
+    setLoadingDischarge(true);
+    setTimeout(() => {
+      setLoadingDischarge(false);
+      setShowConfirmModal(true);
+      setIsEditing(false); 
+    }, 1000);
+  };
+
+
+  const handleAddNewTractionClick = () => {
+    setLoading(true);
     
-    console.log('Updated data from localStorage:', savedData);
-    localStorage.removeItem('companyTractionData');
-    setIsEditing(false); // Hide the buttons after saving
+    setTimeout(() => {
+      setLoading(false);
+      setAddTractionModalOpen(true);
+    }, 1000);
+  }
+
+  const confirmDischargeChanges = () => {
+    // 1. Remove from localStorage
+    localStorage.removeItem('departmentTractionData');
+
+    // 2. Clear edited state (hides buttons)
+    setIsEditing(false); 
+
+    // 3. Update Zustand store
+    setDepartmentTraction(initialDepartmentTraction);
+
+    // 4. Hide Modal
+    setShowConfirmModal(false);
   };
 
 
@@ -321,13 +441,13 @@ const DepartmentTractionTable = () => {
     };
   
     const updated = {
-      ...companyTraction,
-      [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
+      ...departmentTraction,
+      [form.quarter]: [...(departmentTraction[form.quarter] || []), newItem],
     };
   
-    addCompanyTraction(form.quarter, newItem); // store
-    localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    setCompanyTraction(updated); // update table
+    addDepartmentTraction(form.quarter, newItem); // store
+    localStorage.setItem('departmentTractionData', JSON.stringify(updated)); // localStorage
+    setDepartmentTraction(updated); // update table
     setAddTractionModalOpen(false); // close modal
   }
   
@@ -378,9 +498,21 @@ const DepartmentTractionTable = () => {
         {/* Action Buttons */}
         {isSuperAdmin && (
           <div className="flex gap-2">
-            <div className="pure-blue-btn cursor-pointer flex items-center" onClick={() => setAddTractionModalOpen(true)}>
-              <FontAwesomeIcon icon={faPlus} className="mr-1" />
-              Add Department Traction
+            <div className="pure-blue-btn cursor-pointer flex items-center" onClick={handleAddNewTractionClick}>
+              
+              {loading ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                      Add Department Traction
+                    </>
+                )}
+
             </div>
             <div
               className="pure-green-btn cursor-pointer"
@@ -401,9 +533,31 @@ const DepartmentTractionTable = () => {
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
             <div className="pure-green-btn" onClick={handleSaveChanges}>
-              Save Changes
+
+            {loadingSave ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  ) : (
+                    "Save Changes"
+            )}
+
+              
             </div>
-            <div className="pure-red-btn">Discharge Changes</div>
+            <div className="pure-red-btn" onClick={handleDischargeChanges}>
+              {loadingDischarge ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  ) : (
+                      'Discharge Changes'
+              )}
+
+            </div>
           </div>
         </div>
       )}
@@ -864,16 +1018,20 @@ const DepartmentTractionTable = () => {
         </div>
       )}
 
-
-
-
-
-      
-
-
-
-
-
+      {showConfirmModal && (
+              <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
+                <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-add-title">Confirm Discharge</div>
+                  <p className="text-gray-700 text-sm mb-4">
+                    Are you sure you want to discard all unsaved changes?
+                  </p>
+                  <div className="modal-add-buttons">
+                    <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discharge</button>
+                    <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+      )}
 
     </div>
   );

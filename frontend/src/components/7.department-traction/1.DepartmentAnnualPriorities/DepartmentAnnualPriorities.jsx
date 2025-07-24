@@ -3,7 +3,7 @@ import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
-import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import useDepartmentAnnualPrioritiesStore, { initialDepartmentAnnualPriorities } from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './DepartmentAnnualPriorities.css';
 
@@ -14,10 +14,10 @@ const DepartmentAnnualPriorities = () => {
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
 
   const loggedUser = useLoginStore((state) => state.user);
-  const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
-  const setAnnualPriorities = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
-  const updateAnnualPrioritiesField = useAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
-  const pushAnnualPriorities = useAnnualPrioritiesStore((state) => state.pushAnnualPriorities);
+  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
+  const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
+  const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
+  const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
 
   const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
 
@@ -29,27 +29,26 @@ const DepartmentAnnualPriorities = () => {
     status: 'Tracking',
   });
 
-  const [currentOrder, setCurrentOrder] = useState(annualPriorities);
+  const [currentOrder, setCurrentOrder] = useState(departmentAnnualPriorities);
   const [draggedId, setDraggedId] = useState(null);
   
   
-
   // Load from localStorage if available
   useEffect(() => {
-    const storedData = localStorage.getItem('annualPrioritiesData');
+    const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
-        setAnnualPriorities(parsedData);
+        setDepartmentAnnualPriorities(parsedData);
 
         // ✅ Treat this as unsaved state, trigger the buttons
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
 
       } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse annualPrioritiesData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
     }
-  }, [setAnnualPriorities]);
+  }, [setDepartmentAnnualPriorities]);
 
   const handleAddDriverClick = () => {
     setLoading(true);
@@ -67,10 +66,10 @@ const DepartmentAnnualPriorities = () => {
     setEditedAnnualPriorities([]);
   
     // 3. Remove localStorage temp data
-    localStorage.removeItem('annualPrioritiesData');
+    localStorage.removeItem('departmentAnnualPrioritiesData');
   
     // 4. Push to Zustand store
-    pushAnnualPriorities(newAnnualPriority);
+    pushDepartmentAnnualPriorities(newAnnualPriority);
   
     // 5. Optionally: force-refresh the UI by resetting store (if needed)
     // Not required unless you deep reset from localStorage elsewhere
@@ -103,10 +102,10 @@ const DepartmentAnnualPriorities = () => {
     });
 
     // Update localStorage
-    const updatedDrivers = annualPriorities.map((driver) =>
+    const updatedDrivers = departmentAnnualPriorities.map((driver) =>
       driver.id === id ? { ...driver, [field]: value } : driver
     );
-    localStorage.setItem('annualPrioritiesData', JSON.stringify(updatedDrivers));
+    localStorage.setItem('departmentAnnualPrioritiesData', JSON.stringify(updatedDrivers));
 
     setEditingCell({ id: null, field: null });
   };
@@ -120,7 +119,7 @@ const DepartmentAnnualPriorities = () => {
     setTimeout(() => {
       setLoadingSave(false);
   
-      const storedData = localStorage.getItem('annualPrioritiesData');
+      const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
   
       if (storedData) {
         try {
@@ -130,7 +129,7 @@ const DepartmentAnnualPriorities = () => {
           ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities after Save Changes Button:', parsedData);
   
           // 2. Update Zustand store
-          setAnnualPriorities(parsedData);
+          setDepartmentAnnualPriorities(parsedData);
 
           // Reindex IDs
           const reordered = parsedData.map((driver, index) => ({
@@ -140,15 +139,15 @@ const DepartmentAnnualPriorities = () => {
 
           ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (Reindexed):', reordered);
 
-          setAnnualPriorities(reordered);
+          setDepartmentAnnualPriorities(reordered);
   
           // 3. Clear edited state (hides buttons)
           setEditedAnnualPriorities([]);
   
           // 4. Remove from localStorage
-          localStorage.removeItem('annualPrioritiesData');
+          localStorage.removeItem('departmentAnnualPrioritiesData');
         } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing annualPrioritiesData on save:', err);
+          ENABLE_CONSOLE_LOGS && console.error('Error parsing departmentAnnualPrioritiesData on save:', err);
         }
       } else {
 
@@ -159,12 +158,12 @@ const DepartmentAnnualPriorities = () => {
           id: index + 1,
         }));
 
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (reordered):', reordered);
-        setAnnualPriorities(reordered);
+        ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (reordered):', reordered);
+        setDepartmentAnnualPriorities(reordered);
         setEditedAnnualPriorities([]);
 
         // Remove from localStorage
-        localStorage.removeItem('annualPrioritiesData');
+        localStorage.removeItem('departmentAnnualPrioritiesData');
 
       }
     }, 1000);
@@ -181,13 +180,13 @@ const DepartmentAnnualPriorities = () => {
 
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
-    localStorage.removeItem('annualPrioritiesData');
+    localStorage.removeItem('departmentAnnualPrioritiesData');
 
     // 2. Clear edited state (hides buttons)
     setEditedAnnualPriorities([]);
 
     // 3. Update Zustand store
-    setAnnualPriorities(initialAnnualPriorities);
+    setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
 
     // 4. Hide Modal
     setShowConfirmModal(false);
@@ -200,8 +199,8 @@ const DepartmentAnnualPriorities = () => {
 
   // Sync initial and store changes:
   useEffect(() => {
-    setCurrentOrder(annualPriorities);
-  }, [annualPriorities]);
+    setCurrentOrder(departmentAnnualPriorities);
+  }, [departmentAnnualPriorities]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {
@@ -221,34 +220,46 @@ const DepartmentAnnualPriorities = () => {
     setEditedAnnualPriorities(prev => prev.find(d=>d.id===draggedId) ? prev : [...prev, { id: draggedId }]);
   };
 
+  // const handleDragEnd = () => {
+  //   setDraggedId(null);
+  // };
+
   const handleDragEnd = () => {
     setDraggedId(null);
+  
+    // Save the new drag order to localStorage
+    localStorage.setItem('departmentAnnualPrioritiesData', JSON.stringify(currentOrder));
+  
+    // Also flag changes for Save/Discharge buttons
+    setEditedAnnualPriorities(currentOrder.map(d => ({ id: d.id })));
+  
+    ENABLE_CONSOLE_LOGS && console.log('Drag ended and saved to localStorage:', currentOrder);
   };
 
   // Save drag order to store:
   const saveDraggedOrder = () => {
     ENABLE_CONSOLE_LOGS &&  console.log('New order:', JSON.stringify(currentOrder, null, 2));
-    setAnnualPriorities(currentOrder);
+    setDepartmentAnnualPriorities(currentOrder);
     setEditedAnnualPriorities([]);
   };
 
   // On discharge—confirmation modal does reset order from store
   const confirmDischargeChangesDrag = () => {
-    localStorage.removeItem('annualPrioritiesData');
+    localStorage.removeItem('departmentAnnualPrioritiesData');
     setShowConfirmModal(false);
-    setCurrentOrder(annualPriorities);
+    setCurrentOrder(departmentAnnualPriorities);
     setEditedAnnualPriorities([]);
   };
 
-  const isSkeleton = annualPriorities.some(driver => 
+  const isSkeleton = departmentAnnualPriorities.some(driver => 
     driver.description === '-' &&
     driver.status === '-'
   );
 
   const handleDeleteDriver = (id) => {
-    const updated = annualPriorities.filter(driver => driver.id !== id);
-    setAnnualPriorities(updated);
-    localStorage.setItem('annualPrioritiesData', JSON.stringify(updated));
+    const updated = departmentAnnualPriorities.filter(driver => driver.id !== id);
+    setDepartmentAnnualPriorities(updated);
+    localStorage.setItem('departmentAnnualPrioritiesData', JSON.stringify(updated));
   
     // Mark as edited
     setEditedAnnualPriorities(prev => [...prev, { id }]);

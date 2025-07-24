@@ -1,7 +1,7 @@
 // frontend\src\store\left-lower-content\7.department-traction\1.departmentAnnualPrioritiesStore.js
 import { create } from 'zustand';
 
-export const initialCompanyTraction = {
+export const initialDepartmentTraction = {
   Q1: [
     {
       id: 1,
@@ -77,24 +77,24 @@ export const initialCompanyTraction = {
   Q4: [],
 };
 
-const useCompanyTractionStore = create((set) => ({
-  companyTraction: initialCompanyTraction,
+const useDepartmentTractionStore = create((set) => ({
+  departmentTraction: initialDepartmentTraction,
 
-  setCompanyTraction: (data) => set({ companyTraction: data }),
+  setDepartmentTraction: (data) => set({ departmentTraction: data }),
 
-  addCompanyTraction: (quarter, item) =>
+  addDepartmentTraction: (quarter, item) =>
     set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: [...state.companyTraction[quarter], item],
+      departmentTraction: {
+        ...state.departmentTraction,
+        [quarter]: [...state.departmentTraction[quarter], item],
       },
     })),
 
-  updateCompanyTractionField: (quarter, id, field, value) =>
+  updateDepartmentTractionField: (quarter, id, field, value) =>
     set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: state.companyTraction[quarter].map((row) =>
+      departmentTraction: {
+        ...state.departmentTraction,
+        [quarter]: state.departmentTraction[quarter].map((row) =>
           row.id === id ? { ...row, [field]: value } : row
         ),
       },
@@ -102,9 +102,9 @@ const useCompanyTractionStore = create((set) => ({
 
   updateComment: (quarter, id, newComment) =>
     set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: state.companyTraction[quarter].map((row) =>
+      departmentTraction: {
+        ...state.departmentTraction,
+        [quarter]: state.departmentTraction[quarter].map((row) =>
           row.id === id
             ? {
                 ...row,
@@ -122,11 +122,11 @@ const useCompanyTractionStore = create((set) => ({
       },
     })),
 
-  updateCompanyTractionField: (quarter, id, field, value) =>
+    updateDepartmentTractionField: (quarter, id, field, value) =>
     set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: state.companyTraction[quarter].map((row) =>
+      departmentTraction: {
+        ...state.departmentTraction,
+        [quarter]: state.departmentTraction[quarter].map((row) =>
           row.id === id ? { ...row, [field]: value } : row
         ),
       },
@@ -135,9 +135,9 @@ const useCompanyTractionStore = create((set) => ({
 
   deleteComment: (quarter, id, commentIndex) =>
     set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: state.companyTraction[quarter].map((row) =>
+      departmentTraction: {
+        ...state.departmentTraction,
+        [quarter]: state.departmentTraction[quarter].map((row) =>
           row.id === id
             ? {
                 ...row,
@@ -149,4 +149,4 @@ const useCompanyTractionStore = create((set) => ({
     })),
 }));
 
-export default useCompanyTractionStore;
+export default useDepartmentTractionStore;
