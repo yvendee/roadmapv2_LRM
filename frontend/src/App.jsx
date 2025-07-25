@@ -12,7 +12,7 @@ import Scoreboard from './components/4.scoreboard/Scoreboard';
 import GrowthCommandCenter from './components/5.growth-command-center/growthCommandCenter';
 import CompanyTraction from './components/6.company-traction/companyTraction';
 import DepartmentTraction from './components/7.department-traction/departmentTraction';
-import WhoWhatWhen from './components/who-what-when/whoWhatWhen';
+import WhoWhatWhen from './components/8.who-what-when/whoWhatWhen';
 import SessionDates from './components/session-dates/sessionDates';
 import Meetings from './components/meetings/meetings';
 import CoachingChecklist from './components/coaching-checklist/coachingChecklist';
