@@ -504,7 +504,7 @@ const WhoWhatWhenTable = () => {
                   )}
                 </td>
 
-                {/* Deadline */}
+                {/* deadline */}
                 <td
                     className="border px-4 py-3 cursor-pointer"
                     onClick={() => driver.deadline !== '-' && handleCellClick(driver.id, 'deadline')}

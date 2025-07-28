@@ -1,0 +1,47 @@
+/* frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.css */
+.qs-container {
+    margin-top: 24px;
+    background-color: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+  
+.qs-title {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+  
+.qs-table-wrapper {
+    overflow-x: auto;
+}
+  
+.qs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+  
+.qs-table thead {
+    background-color: #f9fbfd;
+    border-bottom: 1px solid #e1e7ef;
+}
+  
+.qs-table th,
+.qs-table td {
+    padding: 12px 8px;
+    text-align: left;
+    color: #333;
+    white-space: nowrap;
+}
+  
+.qs-table th {
+    color: #2c3e50;
+    font-weight: 500;
+}
+  
+.qs-table tr:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+}
+  
