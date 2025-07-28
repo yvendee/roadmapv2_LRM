@@ -1749,7 +1749,7 @@ Route::get('/api/v1/department-traction/traction-data', function (Request $reque
     ]);
 });
 
-//ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
+// ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
 Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -1900,6 +1900,244 @@ Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure
 
     return response()->json($data[$organization] ?? []);
 });
+
+
+// ref: frontend\src\components\9.session-dates\sessionDates.jsx
+Route::get('/api/v1/session-tracker/monthly-sessions', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            ['date' => '2025-07-01', 'status' => 'done', 'details' => 'Strategy alignment'],
+            ['date' => '2025-07-15', 'status' => 'pending', 'details' => 'KPI review'],
+            ['date' => '2025-07-25', 'status' => 'new', 'details' => 'Planning'],
+            ['date' => '2025-08-05', 'status' => 'pending', 'details' => 'Forecasting'],
+        ],
+        'Collins Credit Union' => [
+            ['date' => '2025-07-03', 'status' => 'done', 'details' => 'Budget review'],
+            ['date' => '2025-07-18', 'status' => 'pending', 'details' => 'Risk assessment'],
+            ['date' => '2025-07-28', 'status' => 'new', 'details' => 'Team training'],
+            ['date' => '2025-08-07', 'status' => 'pending', 'details' => 'Customer feedback'],
+        ],
+        'Test Skeleton Loading' => [
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+        ],
+    ];
+
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
+});
+
+
+// ref: frontend\src\components\9.session-dates\sessionDates.jsx
+Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'status' => 'Completed',
+                'quarter' => 'Q1 2025',
+                'meetingDate' => 'January 20, 2025',
+                'agenda' => 'Strategic Planning & KPIs',
+                'recap' => 'Shared Q1 goals and budget updates',
+            ],
+            [
+                'status' => 'Scheduled',
+                'quarter' => 'Q2 2025',
+                'meetingDate' => 'April 22, 2025',
+                'agenda' => 'Customer Retention Plans',
+                'recap' => 'To be added after session',
+            ],
+            [
+                'status' => 'Pending',
+                'quarter' => 'Q3 2025',
+                'meetingDate' => 'July 15, 2025',
+                'agenda' => 'New Product Launch Discussion',
+                'recap' => 'To be added',
+            ],
+            [
+                'status' => 'Upcoming',
+                'quarter' => 'Q4 2025',
+                'meetingDate' => 'October 17, 2025',
+                'agenda' => 'Annual Review & Strategy 2026',
+                'recap' => 'To be added',
+            ],
+        ],
+        'Collins Credit Union' => [
+            [
+                'status' => 'Completed',
+                'quarter' => 'Q1 2024',
+                'meetingDate' => 'January 15, 2024',
+                'agenda' => 'Budget Review',
+                'recap' => 'Reviewed last year’s budget and set targets',
+            ],
+            [
+                'status' => 'Scheduled',
+                'quarter' => 'Q2 2024',
+                'meetingDate' => 'April 20, 2024',
+                'agenda' => 'Marketing Strategy',
+                'recap' => 'Plan for Q2 marketing initiatives',
+            ],
+            [
+                'status' => 'Pending',
+                'quarter' => 'Q3 2024',
+                'meetingDate' => 'July 18, 2024',
+                'agenda' => 'Product Development Update',
+                'recap' => 'To be added',
+            ],
+            [
+                'status' => 'Upcoming',
+                'quarter' => 'Q4 2024',
+                'meetingDate' => 'October 22, 2024',
+                'agenda' => 'Year-End Review',
+                'recap' => 'To be added',
+            ],
+        ],
+        'Test Skeleton Loading' => [
+            [
+                'status' => '-',
+                'quarter' => '-',
+                'meetingDate' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+            [
+                'status' => '-',
+                'quarter' => '-',
+                'meetingDate' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+            [
+                'status' => '-',
+                'quarter' => '-',
+                'meetingDate' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+            [
+                'status' => '-',
+                'quarter' => '-',
+                'meetingDate' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+        ],
+    ];
+
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
+});
+
+// ref: frontend\src\components\9.session-dates\sessionDates.jsx
+Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'status' => 'Done',
+                'month' => 'January',
+                'date' => '2025-01-10',
+                'agenda' => 'Review January goals and targets',
+                'recap' => 'All targets met. Positive team performance.',
+            ],
+            [
+                'status' => 'Pending',
+                'month' => 'February',
+                'date' => '2025-02-14',
+                'agenda' => 'Mid-Q1 Alignment & Budget Discussion',
+                'recap' => 'To be conducted.',
+            ],
+            [
+                'status' => 'New',
+                'month' => 'March',
+                'date' => '2025-03-20',
+                'agenda' => 'Client Feedback Analysis',
+                'recap' => 'Preparation ongoing.',
+            ],
+        ],
+        'Collins Credit Union' => [
+            [
+                'status' => 'Done',
+                'month' => 'April',
+                'date' => '2024-04-05',
+                'agenda' => 'Q1 Financial Review',
+                'recap' => 'Reviewed finances and approved budget.',
+            ],
+            [
+                'status' => 'Pending',
+                'month' => 'May',
+                'date' => '2024-05-12',
+                'agenda' => 'Marketing Campaign Planning',
+                'recap' => 'Plan draft under review.',
+            ],
+            [
+                'status' => 'New',
+                'month' => 'June',
+                'date' => '2024-06-18',
+                'agenda' => 'Team Building Activities',
+                'recap' => 'To be scheduled.',
+            ],
+        ],
+        'Test Skeleton Loading' => [
+            [
+                'status' => '-',
+                'month' => '-',
+                'date' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+            [
+                'status' => '-',
+                'month' => '-',
+                'date' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+            [
+                'status' => '-',
+                'month' => '-',
+                'date' => '-',
+                'agenda' => '-',
+                'recap' => '-',
+            ],
+        ],
+    ];
+
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
+});
+
 
 
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
