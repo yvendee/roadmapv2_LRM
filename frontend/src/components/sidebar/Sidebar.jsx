@@ -8,7 +8,9 @@ import {
   faSyncAlt,
   faTachometerAlt,
   faBuilding,
+  faBook,
   faChartBar,
+  faListCheck,
   faChartLine,
   faNetworkWired,
   faTasks,
@@ -207,6 +209,24 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             {!collapsed && <span>Department Traction</span>}
           </NavLink>
 
+
+          <NavLink
+            to="/13-week-sprint"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+            onMouseEnter={(e) => handleMouseEnter(e, '13 Week Sprint')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon icon={faListCheck} />
+            {!collapsed && <span>13 Week Sprint</span>}
+          </NavLink>
+
           <NavLink
             to="/who-what-when"
             className={({ isActive }) =>
@@ -284,6 +304,25 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             <FontAwesomeIcon icon={faCheckCircle} />
             {!collapsed && <span>Coaching Checklist</span>}
           </NavLink>
+
+          {isSuperAdmin && (
+            <NavLink
+            to="/coaching-alignment"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Coaching Alignment')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+            >
+            <FontAwesomeIcon icon={faBook} />
+            {!collapsed && <span>Coaching Alignment</span>}
+            </NavLink>
+          )}
 
           <NavLink
             to="/tools"

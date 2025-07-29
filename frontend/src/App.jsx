@@ -12,14 +12,16 @@ import Scoreboard from './components/4.scoreboard/Scoreboard';
 import GrowthCommandCenter from './components/5.growth-command-center/growthCommandCenter';
 import CompanyTraction from './components/6.company-traction/companyTraction';
 import DepartmentTraction from './components/7.department-traction/departmentTraction';
+import ThirteenWeekSprint from './components/7A.thirteen-week-sprint/ThirteenWeekSprint'
 import WhoWhatWhen from './components/8.who-what-when/whoWhatWhen';
 import SessionDates from './components/9.session-dates/sessionDates';
-import Meetings from './components/meetings/meetings';
-import CoachingChecklist from './components/coaching-checklist/coachingChecklist';
-import Tools from './components/tools/tools';
-import DocumentVault from './components/document-vault/documentVault';
-import MembersDepartments from './components/members-departments/membersDepartments';
-import MembersDirectory from './components/members-directory/membersDirectory';
+import Meetings from './components/10.meetings/Meetings';
+import CoachingChecklist from './components/11.coaching-checklist/coachingChecklist';
+import CoachingAlignment from './components/12.coaching-alignment/coachingAlignment';
+import Tools from './components/13.tools/Tools';
+import DocumentVault from './components/14.document-vault/documentVault';
+import MembersDepartments from './components/15.members-departments/membersDepartments';
+import MembersDirectory from './components/16.members-directory/membersDirectory';
 import Chat from './components/chat/Chat';
 import TopbarDropdown from './components/company-dropdown/TopbarDropdown';
 import ThemeToggle from './components/theme-icon/ThemeToggle';
@@ -154,10 +156,12 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/growth-command-center" element={<GrowthCommandCenter />} />
             <Route path="/company-traction" element={<CompanyTraction />} />
             <Route path="/department-traction" element={<DepartmentTraction />} />
+            <Route path="/13-week-sprint" element={<ThirteenWeekSprint />} />
             <Route path="/who-what-when" element={<WhoWhatWhen />} />
             <Route path="/session-dates" element={<SessionDates />} />
             <Route path="/meetings" element={<Meetings />} />
             <Route path="/coaching-checklist" element={<CoachingChecklist />} />
+            <Route path="/coaching-alignment" element={<CoachingAlignment />} />
             <Route path="/tools" element={<Tools />} />
             <Route path="/document-vault" element={<DocumentVault />} />
             <Route path="/members-departments" element={<MembersDepartments />} />
