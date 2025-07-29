@@ -117,6 +117,7 @@ Route::post('/api/login', function (Request $request) {
             'role' => 'admin',
             'group' => 'executive',
             'organization' => 'kay organization ',
+            'position' => 'admin',
 
         ],
         [
@@ -127,6 +128,7 @@ Route::post('/api/login', function (Request $request) {
             'role' => 'testuser',
             'group' => 'operations',
             'organization' => 'test organization',
+            'position' => 'testuser',
         ],
         [
             'email' => 'maricar@chuckgulledge.com',
@@ -136,6 +138,7 @@ Route::post('/api/login', function (Request $request) {
             'role' => 'superadmin',
             'group' => 'operations',
             'organization' => 'maricar organization',
+            'position' => 'superadmin',
         ],
     ];
 
@@ -161,6 +164,7 @@ Route::post('/api/login', function (Request $request) {
                 'role' => $matchedUser['role'],
                 'group' => $matchedUser['group'],
                 'organization' => $matchedUser['organization'],
+                'position' => $matchedUser['position'],
             ],
         ]);
     }
@@ -258,7 +262,6 @@ Route::get('/api/logout/{session_id}', function ($session_id, Request $request) 
         'message' => "Session {$session_id} logged out (session file deleted).",
     ]);
 });
-
 
 
 Route::get('/api/csrf-token', function () {
