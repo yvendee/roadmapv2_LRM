@@ -1,0 +1,168 @@
+/* frontend\src\components\7A.thirteen-week-sprint\1.WeeklySprintTracker\WeeklySprintTracker.css */
+
+.weekly-sprint-tracker {
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: sans-serif;
+}
+
+.weekly-sprint-tracker table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: 1px solid #ddd;
+}
+
+.weekly-sprint-tracker th,
+.weekly-sprint-tracker td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: left;
+    vertical-align: top;
+    background-color: #fff;
+}
+
+.weekly-sprint-tracker th {
+    background-color: #f3f4f6; /* Light gray header */
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Multi-cell layout for Key Focus, Progress, Blockers */
+.multi-cell-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 0;
+}
+
+.multi-cell {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 0.875rem;
+    cursor: move;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.multi-cell:hover {
+    background-color: #eef2f7;
+}
+
+textarea,
+input[type="text"] {
+    width: 100%;
+    font-size: 0.875rem;
+    padding: 4px;
+    border: 1px solid black;
+    border-radius: 4px;
+    resize: vertical;
+    white-space: pre-wrap;       /* enable multiline wrapping */
+    overflow-wrap: break-word;   /* break long words to next line */
+    word-wrap: break-word;       /* older browsers */
+    box-sizing: border-box;      /* include padding/border in width */
+}
+
+
+select {
+    width: 100%;
+    padding: 4px;
+    font-size: 0.875rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+/* Add button inside multi-cell columns */
+.multi-cell-container button {
+    margin-top: 4px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border: none;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.multi-cell-container button:hover {
+    background-color: #1e40af;
+}
+
+/* Skeleton loading effect */
+.skeleton {
+    background-color: #e5e7eb;
+    height: 1.25rem;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+0% {
+    opacity: 1;
+}
+50% {
+    opacity: 0.4;
+}
+100% {
+    opacity: 1;
+}
+}
+
+
+.skeleton {
+    height: 1.5em;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Optional: consistent spacing/width if desired */
+.multi-cell .skeleton {
+    width: 100%;
+    display: block;
+}
+
+/* Keyframes for pulsing animation */
+@keyframes pulse {
+0% {
+    background-color: #e0e0e0;
+}
+50% {
+    background-color: #f0f0f0;
+}
+100% {
+    background-color: #e0e0e0;
+}
+}
+
+
+.multi-cell {
+    white-space: pre-wrap;      /* allows wrapping respecting line breaks */
+    word-break: break-word;     /* breaks long words */
+    overflow-wrap: break-word;  /* breaks long words */
+    word-wrap: break-word;      /* legacy */
+    overflow: hidden;           /* prevent overflow outside */
+    box-sizing: border-box;     /* padding included in width */
+}
+  
+textarea,
+input[type="text"] {
+    width: 100%;
+    font-size: 0.875rem;
+    padding: 4px;
+    border: 1px solid black;
+    border-radius: 4px;
+    resize: vertical;
+    white-space: pre-wrap;       /* wrap text respecting line breaks */
+    word-break: break-word;      /* break very long words */
+    overflow-wrap: break-word;   /* break long words */
+    word-wrap: break-word;       /* fallback */
+    box-sizing: border-box;      /* include padding and border in width */
+    overflow: hidden;            /* prevent overflow */
+}
+  
