@@ -73,9 +73,9 @@ const useWeeklySprintTrackerStore = create((set) => ({
         w.week === week && (w.keyFocus?.length ?? 0) < 10
           ? {
               ...w,
-              keyFocus: [...(w.keyFocus ?? []), '-'],
+              keyFocus: [...(w.keyFocus ?? []), ' '],
               progress: [...(w.progress ?? []), '0%'],
-              blockers: [...(w.blockers ?? []), '-'],
+              blockers: [...(w.blockers ?? []), ' '],
             }
           : w
       ),

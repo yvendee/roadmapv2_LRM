@@ -81,7 +81,6 @@ const WeeklySprintTracker = () => {
                 </td>
 
                 {/* Top Tasks Dropdowns */}
-
                 <td>
                     {ws.topTasks.map((task, idx) => (
                         <select
