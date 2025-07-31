@@ -2141,6 +2141,194 @@ Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request)
     ]);
 });
 
+// ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
+Route::get('/api/v1/coaching-checklist/project-progress', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $mockData = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'completedItems' => 3,
+            'totalItems' => 5,
+            'nextRecommendedTools' => [
+                ['id' => 1, 'name' => 'SWOT Analysis Tool'],
+                ['id' => 2, 'name' => 'Customer Journey Mapper'],
+                ['id' => 3, 'name' => 'Competitor Benchmarking Grid'],
+                ['id' => 4, 'name' => 'SMART Goals Planner'],
+            ],
+        ],
+        'Collins Credit Union' => [
+            'completedItems' => 4,
+            'totalItems' => 6,
+            'nextRecommendedTools' => [
+                ['id' => 1, 'name' => 'KPI Dashboard'],
+                ['id' => 2, 'name' => 'Process Optimization Tool'],
+                ['id' => 3, 'name' => 'Employee Feedback Survey'],
+            ],
+        ],
+        'Test Skeleton Loading' => [
+            'completedItems' => 0,
+            'totalItems' => 0,
+            'nextRecommendedTools' => [],
+        ],
+    ];
+
+    return response()->json($mockData[$organization] ?? [
+        'completedItems' => 0,
+        'totalItems' => 0,
+        'nextRecommendedTools' => [],
+    ]);
+});
+
+// ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
+Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $mockPanels = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'title' => 'Client Onboarding',
+                'icon' => 'faHandshake',
+                'expanded' => false,
+                'items' => [
+                    ['id' => '1a', 'text' => 'Welcome call completed', 'completed' => true],
+                    ['id' => '1b', 'text' => 'Onboarding documents submitted', 'completed' => false],
+                ],
+            ],
+            [
+                'id' => 2,
+                'title' => 'Personal & Leadership Readiness',
+                'icon' => 'faUserTie',
+                'expanded' => false,
+                'items' => [
+                    ['id' => '2a', 'text' => 'Personal goals aligned', 'completed' => true],
+                    ['id' => '2b', 'text' => 'Leadership team commitment', 'completed' => false],
+                ],
+            ],
+            [
+                'id' => 3,
+                'title' => 'Strategic Clarity',
+                'icon' => 'faBullseye',
+                'expanded' => false,
+                'items' => [
+                    ['id' => '3a', 'text' => 'Vision and mission reviewed', 'completed' => true],
+                    ['id' => '3b', 'text' => 'Key strategic drivers defined', 'completed' => false],
+                ],
+            ],
+            [
+                'id' => 4,
+                'title' => 'Execution Discipline',
+                'icon' => 'faCheckSquare',
+                'expanded' => false,
+                'items' => [
+                    ['id' => '4a', 'text' => 'Quarterly goals set', 'completed' => false],
+                    ['id' => '4b', 'text' => 'Weekly check-ins scheduled', 'completed' => true],
+                ],
+            ],
+            [
+                'id' => 5,
+                'title' => 'Cash & Financial Discipline',
+                'icon' => 'faMoneyBillWave',
+                'expanded' => false,
+                'items' => [
+                    ['id' => '5a', 'text' => 'Cash flow projection ready', 'completed' => false],
+                    ['id' => '5b', 'text' => 'Budget aligned to goals', 'completed' => true],
+                ],
+            ],
+            [
+                'id' => 6,
+                'title' => 'MomentumOS Performance System',
+                'icon' => 'faChartLine',
+                'expanded' => false,
+                'items' => [
+                    ['id' => '6a', 'text' => 'MomentumOS dashboard set up', 'completed' => true],
+                    ['id' => '6b', 'text' => 'Team trained to use system', 'completed' => false],
+                ],
+            ],
+        ],
+
+        'Collins Credit Union' => [
+        [
+            'id' => 1,
+            'title' => 'Client Onboarding',
+            'icon' => 'faHandshake',
+            'expanded' => false,
+            'items' => [
+                ['id' => '1a', 'text' => 'Initial consultation completed', 'completed' => true],
+                ['id' => '1b', 'text' => 'Client portal access granted', 'completed' => true],
+            ],
+        ],
+        [
+            'id' => 2,
+            'title' => 'Personal & Leadership Readiness',
+            'icon' => 'faUserTie',
+            'expanded' => false,
+            'items' => [
+                ['id' => '2a', 'text' => 'Executive coaching scheduled', 'completed' => false],
+                ['id' => '2b', 'text' => 'Team alignment session held', 'completed' => true],
+            ],
+        ],
+        [
+            'id' => 3,
+            'title' => 'Strategic Clarity',
+            'icon' => 'faBullseye',
+            'expanded' => false,
+            'items' => [
+                ['id' => '3a', 'text' => 'Strategic plan reviewed', 'completed' => true],
+                ['id' => '3b', 'text' => 'Core values defined', 'completed' => false],
+            ],
+        ],
+        [
+            'id' => 4,
+            'title' => 'Execution Discipline',
+            'icon' => 'faCheckSquare',
+            'expanded' => false,
+            'items' => [
+                ['id' => '4a', 'text' => 'Milestone tracking system implemented', 'completed' => true],
+                ['id' => '4b', 'text' => 'Weekly accountability meetings started', 'completed' => true],
+            ],
+        ],
+        [
+            'id' => 5,
+            'title' => 'Cash & Financial Discipline',
+            'icon' => 'faMoneyBillWave',
+            'expanded' => false,
+            'items' => [
+                ['id' => '5a', 'text' => 'Monthly financial reviews in place', 'completed' => true],
+                ['id' => '5b', 'text' => 'Cost savings initiatives identified', 'completed' => false],
+            ],
+        ],
+        [
+            'id' => 6,
+            'title' => 'MomentumOS Performance System',
+            'icon' => 'faChartLine',
+            'expanded' => false,
+            'items' => [
+                ['id' => '6a', 'text' => 'Dashboard KPIs configured', 'completed' => false],
+                ['id' => '6b', 'text' => 'Performance reports automated', 'completed' => true],
+            ],
+        ],
+        ],
+
+        'Test Skeleton Loading' => [],
+    ];
+
+    return response()->json($mockPanels[$organization] ?? []);
+});
 
 
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
@@ -2194,9 +2382,6 @@ Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_s
         'unique_id' => uniqid(), // just example
     ]);
 });
-
-
-
 
 
 // ref: frontend\src\pages\login\Login.jsx

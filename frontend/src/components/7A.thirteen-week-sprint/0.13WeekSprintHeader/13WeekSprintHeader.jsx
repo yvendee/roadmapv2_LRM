@@ -13,7 +13,7 @@ const ThirteenWeekSprintHeader = () => {
         <div className="col-sm-auto inline-center d-flex align-items-center gap-3 p-2 ms-2">
 
           <img src={crmBarChart} alt="" width="90" />
-          <h4 className="fw-bold mb-0">13th Week Sprint</h4>
+          <h4 className="fw-bold mb-0">13 Week Sprint</h4>
         </div>
       </div>
     </div>

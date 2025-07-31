@@ -93,6 +93,8 @@ const CompanyTraction = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
+
 
 
   const filteredRows = showCompleted
@@ -679,7 +681,7 @@ const CompanyTraction = () => {
 
 
                   {/* Editable Description Column */}
-                  <td className="border px-4 py-2">
+                  {/* <td className="border px-4 py-2">
                     <input
                       type="text"
                       className="w-full text-xs"
@@ -687,8 +689,18 @@ const CompanyTraction = () => {
                       onChange={(e) => handleDescriptionChange(e, row.id)}
                       disabled={!isSuperAdmin} // Disable for non-superadmins
                     />
-                  </td>
+                  </td> */}
 
+                  {/* Editable Description Column */}
+                  <td className="border px-4 py-2">
+                    <textarea
+                       className="w-full text-xs resize-none border border-gray-300" // resize-none to disable manual resizing, optional
+                      rows={3}  // number of visible lines
+                      value={row.description}
+                      onChange={(e) => handleDescriptionChange(e, row.id)}
+                      disabled={!isSuperAdmin} // Disable for non-superadmins
+                    />
+                  </td>
 
                   <td className="border px-4 py-2">
 
@@ -782,7 +794,7 @@ const CompanyTraction = () => {
                   </td>
 
                   {/* Editable Rank Column with Circle and Conditional Colors */}
-                  <td className="border px-4 py-2">
+                  {/* <td className="border px-4 py-2">
                     <input
                       type="text"
                       className={`w-8 h-8 flex items-center justify-center rounded-full text-xs text-center ${getRankColor(row.rank)}`}
@@ -790,7 +802,36 @@ const CompanyTraction = () => {
                       onChange={(e) => handleRankChange(e, row.id)}
                       disabled={!isSuperAdmin} // Disable if user is not superadmin
                     />
+                  </td> */}
+
+                  {/* Editable Rank Column with Oblong and Conditional Colors */}
+                  <td className="border px-4 py-2">
+                    {editingRank === row.id ? (
+                      <select
+                        className="w-full text-xs"
+                        value={row.rank}
+                        onChange={(e) => handleRankChange(e, row.id)}
+                        onBlur={() => setEditingRank(null)}
+                        autoFocus
+                        disabled={!isSuperAdmin}
+                      >
+                        <option value="">Please select</option>
+                        <option value="1">1 (Top Priority)</option>
+                        <option value="2">2</option>
+                        <option value="3">3 (Low Priority)</option>
+                      </select>
+                    ) : (
+                      <div
+                        onClick={() => isSuperAdmin && setEditingRank(row.id)}
+                        className={`inline-block px-4 py-1 rounded-full mt-2 text-xs font-medium text-white cursor-pointer ${getRankColor(row.rank)}`}
+                      >
+                        {row.rank || '—'}
+                      </div>
+                    )}
                   </td>
+
+
+
 
                 <td className="border px-4 py-2 text-center">
                   <FontAwesomeIcon
@@ -897,6 +938,10 @@ const CompanyTraction = () => {
           <div
             className="modal-overlay"
             onClick={() => setAddTractionModalOpen(false)}
+            style={{
+              position: 'fixed',
+              zIndex: '49',  // Make sure the overlay is behind the modal
+            }}
           />
 
           {/* Modal */}

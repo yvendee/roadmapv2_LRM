@@ -18,7 +18,7 @@ const QuarterlySessions = () => {
 
   return (
     <div className="qs-container">
-      <h3 className="qs-title">Quarterly Sessions</h3>
+      <h3 className="qs-title always-black">Quarterly Sessions</h3>
       <div className="qs-table-wrapper">
         <table className="qs-table">
           <thead>

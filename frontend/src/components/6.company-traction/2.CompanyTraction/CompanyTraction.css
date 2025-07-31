@@ -398,6 +398,37 @@
 }
 
 
+/* Add this CSS to your stylesheet or in a styled-components block */
+
+/* Apply an oblong shape */
+.rank-input {
+  width: 60px;      /* Set width to make it oblong */
+  height: 30px;     /* Set height to maintain the oblong shape */
+  border-radius: 9999px;  /* Fully round edges for oblong shape */
+  text-align: center;
+  font-size: 0.75rem; /* Smaller text for better appearance */
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc; /* Default border */
+}
+
+/* Conditionally add the background color */
+.rank-input.bg-green {
+  background-color: #4CAF50; /* Green for Top Priority */
+  color: white;
+}
+
+.rank-input.bg-yellow {
+  background-color: #FFEB3B; /* Yellow for Medium Priority */
+}
+
+.rank-input.bg-red {
+  background-color: #F44336; /* Red for Low Priority */
+}
+
+/* Add more conditional styles as needed */
 
 
 

@@ -17,9 +17,8 @@ const ThirteenWeekSprint = () => {
 
     <div className="main-content-view">
       <ThirteenWeekSprintHeader />
-
       <WeeklySprintTracker />
-
+      
       <span>&nbsp;</span>  
     </div>
 
