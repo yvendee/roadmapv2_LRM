@@ -1,3 +1,9 @@
+/* frontend\src\components\9.session-dates\1.MonthlySessionTracker\MonthlySessionTracker.css */
+
+.always-black {
+    color: black !important;
+}
+
 /* Base container styling */
 .monthly-session-container {
     display: flex;
@@ -56,26 +62,27 @@ border-bottom: 1px solid #eee;
 
 /* Calendar styles (override as needed for FullCalendar) */
 .fc .fc-button {
-background-color: #334155;
-border-color: #334155;
-color: white;
-font-weight: 500;
-border-radius: 6px;
-padding: 4px 10px;
+    background-color: #334155;
+    border-color: #334155;
+    color: white;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 4px 10px;
 }
 
 .fc .fc-button:hover {
-background-color: #1e293b;
-border-color: #1e293b;
+    background-color: #1e293b;
+    border-color: #1e293b;
 }
 
 .fc .fc-toolbar-title {
-font-size: 20px;
-font-weight: 600;
+    font-size: 20px;
+    font-weight: 600;
+    color: black !important;
 }
 
 .fc .fc-daygrid-day-number {
-font-weight: 500;
+    font-weight: 500;
 }
 
 

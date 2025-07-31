@@ -1,4 +1,9 @@
 /* frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.css */
+
+.always-black {
+    color: black !important;
+}
+
 .qs-container {
     margin-top: 24px;
     background-color: white;

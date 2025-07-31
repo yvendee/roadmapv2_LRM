@@ -88,8 +88,8 @@ const MonthlySessionTracker = () => {
       </div>
 
       {modalData && (
-        <div className="modal-overlay" onClick={() => setModalData(null)}>
-            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay " onClick={() => setModalData(null)}>
+            <div className="modal-box always-black" onClick={(e) => e.stopPropagation()}>
             <h4>Session Details</h4>
             <p><strong>Date:</strong> {format(parseISO(modalData.date), 'MMMM dd, yyyy')}</p>
             <p><strong>Status:</strong> {modalData.status}</p>
