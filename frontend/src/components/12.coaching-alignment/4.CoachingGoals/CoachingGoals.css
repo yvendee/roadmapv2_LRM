@@ -1,0 +1,97 @@
+/* frontend\src\components\12.coaching-alignment\4.CoachingGoals\CoachingGoals.css */
+.coaching-goals-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    margin: 20px 0;
+}
+  
+.coaching-goals-header {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.coaching-goals-header h4 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.coaching-goals-header p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.coaching-goals-content {
+  background-color: #f9fafb;
+  padding: 16px 20px;
+}
+
+.coaching-goals-content ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1f2937;
+}
+
+.coaching-goals-content li {
+  margin-bottom: 6px;
+}
+
+
+/* CoachingGoals.css */
+
+/* Styling for the Delete Button */
+.delete-button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+
+/* Ensure that the delete button aligns properly with the item text */
+.coaching-goals-content ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.coaching-goals-content ul li textarea {
+  flex-grow: 1;
+  margin-right: 10px; /* Space between textarea and delete button */
+}
+
+/* Styling for the Delete Button */
+.delete-button {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+
+/* Ensure that the delete button aligns properly with the item text */
+.coaching-goals-content ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.coaching-goals-content ul li textarea {
+  flex-grow: 1;
+  margin-right: 10px; /* Space between textarea and delete button */
+}

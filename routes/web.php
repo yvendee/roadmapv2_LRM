@@ -2330,6 +2330,150 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
     return response()->json($mockPanels[$organization] ?? []);
 });
 
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+Route::get('/api/v1/coaching-alignment/current-focus', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'focusItems' => ['Enhance leadership training', 'Streamline team communication'],
+        ],
+        'Collins Credit Union' => [
+            'focusItems' => ['Improve coaching feedback loops', 'Align department KPIs'],
+        ],
+        'Test Skeleton Loading' => [
+            'focusItems' => ['-', '-'],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? ['focusItems' => []]);
+});
+
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'category' => 'Strategic Clarity',
+                'rating' => 2,
+                'notes' => ['Need clearer vision shared', 'Stakeholder alignment required'],
+            ],
+            [
+                'category' => 'Execution Discipline',
+                'rating' => 3,
+                'notes' => ['Better task tracking', 'Set clear milestones'],
+            ],
+            [
+                'category' => 'Leadership & Team Health',
+                'rating' => 4,
+                'notes' => ['Strong collaboration', 'Trust increasing'],
+            ],
+        ],
+        'Collins Credit Union' => [
+            [
+                'category' => 'Strategic Clarity',
+                'rating' => 1,
+                'notes' => ['Too many initiatives'],
+            ],
+            [
+                'category' => 'Execution Discipline',
+                'rating' => 2,
+                'notes' => ['Accountability needs work'],
+            ],
+            [
+                'category' => 'Leadership & Team Health',
+                'rating' => 'N/A',
+                'notes' => [],
+            ],
+        ],
+        'Test Skeleton Loading' => [
+            [
+                'category' => 'Strategic Clarity',
+                'rating' => 'N/A',
+                'notes' => [],
+            ],
+            [
+                'category' => 'Execution Discipline',
+                'rating' => 'N/A',
+                'notes' => [],
+            ],
+            [
+                'category' => 'Leadership & Team Health',
+                'rating' => 'N/A',
+                'notes' => [],
+            ],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+Route::get('/api/v1/coaching-alignment/whats-next', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'whatsNextItems' => ['Schedule leadership retreat', 'Finalize Q4 goals'],
+        ],
+        'Collins Credit Union' => [
+            'whatsNextItems' => ['Review coaching reports', 'Assign accountability partners'],
+        ],
+        'Test Skeleton Loading' => [
+            'whatsNextItems' => ['-', '-'],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? ['whatsNextItems' => []]);
+});
+
+
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'coachingGoalsItems' => ['Build high-impact team', 'Increase client engagement', 'Develop Momentum Hub'],
+        ],
+        'Collins Credit Union' => [
+            'coachingGoalsItems' => ['Improve leadership accountability', 'Launch new performance dashboard'],
+        ],
+        'Test Skeleton Loading' => [
+            'coachingGoalsItems' => ['-', '-', '-', '-'],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? ['coachingGoalsItems' => []]);
+});
+
 
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx

@@ -1,5 +1,5 @@
 // frontend\src\components\sidebar\Sidebar.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,7 +18,9 @@ import {
   faCheckCircle,
   faWrench,
   faFolder,
-  faUserTie 
+  faUserTie,
+  faChevronDown,
+  faChevronUp
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import useUserStore from '../../store/userStore';
@@ -27,6 +29,11 @@ import logo from '../../assets/images/webp/momentum-logo.webp';
 import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
 const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
+  const [toolsExpanded, setToolsExpanded] = useState(false); // State for expanding/collapsing "Tools"
+
+  const toggleTools = () => {
+    setToolsExpanded(!toolsExpanded); // Toggle the "Tools" section
+  };
 
   const handleMouseEnter = (e, text) => {
     const { top, left, height } = e.target.getBoundingClientRect();
@@ -324,7 +331,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             </NavLink>
           )}
 
-          <NavLink
+          {/* <NavLink
             to="/tools"
             className={({ isActive }) =>
               `sidebar-item flex items-center gap-2 ${
@@ -339,12 +346,98 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
           >
             <FontAwesomeIcon icon={faWrench} />
             {!collapsed && <span>Tools</span>}
-          </NavLink>
+          </NavLink> */}
 
-          {/* Section: Document Vault */}
-          {!collapsed && (
-            <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Document Vault</p>
-          )}
+          {/* Section: Tools (Accordion) */}
+          <div className="space-y-1">
+            <NavLink
+              to="/tools"
+              className={({ isActive }) =>
+                `sidebar-item flex items-center gap-2 ${
+                  isActive
+                    ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                    : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                }`
+              }
+              onClick={toggleTools} // Toggle the Tools section
+              onMouseEnter={(e) => handleMouseEnter(e, 'Tools')}
+              onMouseLeave={handleMouseLeave}
+              style={{ position: 'relative' }}
+            >
+              <FontAwesomeIcon icon={faWrench} />
+              {!collapsed && <span>Tools</span>}
+
+              <FontAwesomeIcon 
+                icon={toolsExpanded ? faChevronUp : faChevronDown} 
+                className="ml-2" // Adds space between the text and chevron icon
+              />
+              
+            </NavLink>
+
+            {/* Sub-links for Tools */}
+            {toolsExpanded && !collapsed && (
+              <div className="pl-6 space-y-1">
+                <NavLink
+                  to="/issue"
+                  className={({ isActive }) =>
+                    `sidebar-item flex items-center gap-2 ${
+                      isActive
+                        ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                        : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                    }`
+                  }
+                >
+                  <FontAwesomeIcon icon={faListCheck} />
+                  <span>Issue</span>
+                </NavLink>
+                <NavLink
+                  to="/victories"
+                  className={({ isActive }) =>
+                    `sidebar-item flex items-center gap-2 ${
+                      isActive
+                        ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                        : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                    }`
+                  }
+                >
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                  <span>Victories</span>
+                </NavLink>
+                <NavLink
+                  to="/big-ideas"
+                  className={({ isActive }) =>
+                    `sidebar-item flex items-center gap-2 ${
+                      isActive
+                        ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                        : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                    }`
+                  }
+                >
+                  <FontAwesomeIcon icon={faTasks} />
+                  <span>Big Ideas</span>
+                </NavLink>
+                <NavLink
+                  to="/product-evaluation-grid"
+                  className={({ isActive }) =>
+                    `sidebar-item flex items-center gap-2 ${
+                      isActive
+                        ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                        : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                    }`
+                  }
+                >
+                  <FontAwesomeIcon icon={faChartBar} />
+                  <span>Product Evaluation Grid</span>
+                </NavLink>
+              </div>
+            )}
+
+            {/* Section: Document Vault */}
+            {!collapsed && (
+              <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Document Vault</p>
+            )}
+
+          </div>
           
           <NavLink
             to="/document-vault"

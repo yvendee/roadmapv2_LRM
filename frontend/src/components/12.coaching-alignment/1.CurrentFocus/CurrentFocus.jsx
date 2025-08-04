@@ -1,0 +1,98 @@
+import React, { useState, useEffect, useRef } from 'react';
+import useCurrentFocusStore from '../../../store/left-lower-content/12.coaching-alignment/1.currentFocusStore';
+import { useHandleEditStore } from '../../../store/left-lower-content/12.coaching-alignment/0.handleEditStore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'; // Import delete icon
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import './CurrentFocus.css';
+
+const CurrentFocus = () => {
+
+  const { focusItems, setFocusItems } = useCurrentFocusStore();
+  const { isEditing } = useHandleEditStore();
+  const [editableItems, setEditableItems] = useState(focusItems);
+  const focusContentRef = useRef(null);
+
+  const handleBlur = () => {
+    // Log the content when the user clicks outside the textarea
+    ENABLE_CONSOLE_LOGS && console.log('Updated Focus Items:', editableItems);
+    setFocusItems(editableItems);  // Update the store with the new data
+  };
+
+  const handleInputChange = (index, event) => {
+    const updatedItems = [...editableItems];
+    updatedItems[index] = event.target.value;
+    setEditableItems(updatedItems);
+  };
+
+  const handleAddNewLine = () => {
+    setEditableItems([...editableItems, '']);
+  };
+
+  const handleDeleteItem = (index) => {
+    const updatedItems = editableItems.filter((_, i) => i !== index);
+    setEditableItems(updatedItems);
+    // Update the store with the new list after deletion
+    setFocusItems(updatedItems);
+    ENABLE_CONSOLE_LOGS && console.log(`Deleted Item at index ${index}`);
+    const itemToDelete = editableItems[index]; // Get the item data
+    ENABLE_CONSOLE_LOGS && console.log('Deleting item:', itemToDelete); // Log the deleted item data
+  };
+
+  useEffect(() => {
+    // Sync the editable items when the store content changes
+    setEditableItems(focusItems);
+  }, [focusItems]);
+
+  return (
+    <div className="current-focus-card">
+      <div className="current-focus-header">
+        <h4>Current Focus</h4>
+        <p>What are the 1-2 most important things we're focused on right now?</p>
+      </div>
+      <div
+        className="current-focus-content"
+        ref={focusContentRef}
+        onClick={() => isEditing && focusContentRef.current.focus()}
+      >
+        {isEditing ? (
+          <div>
+            <ul>
+              {editableItems.map((item, index) => (
+                <li key={index} className="focus-item">
+                  <textarea
+                    value={item}
+                    onChange={(e) => handleInputChange(index, e)}
+                    onBlur={handleBlur}
+                    rows="3"
+                    className="focus-item-textarea"
+                  />
+                  <button
+                    onClick={() => handleDeleteItem(index)}
+                    className="delete-button"
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn btn-secondary btn-sm mt-2"
+              onClick={handleAddNewLine}
+            >
+              Add New Line
+            </button>
+          </div>
+        ) : (
+          <ul>
+            {editableItems.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default CurrentFocus;
