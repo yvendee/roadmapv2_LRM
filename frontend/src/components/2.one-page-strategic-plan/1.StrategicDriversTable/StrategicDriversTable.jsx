@@ -285,7 +285,7 @@ const StrategicDriversTable = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discharge Changes'
+                      'Discard'
                   )}
                 </button>
               </>
@@ -735,12 +735,12 @@ const StrategicDriversTable = () => {
       {showConfirmModal && (
         <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
           <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-add-title">Confirm Discharge</div>
+            <div className="modal-add-title">Confirm Discard</div>
             <p className="text-gray-700 text-sm mb-4">
               Are you sure you want to discard all unsaved changes?
             </p>
             <div className="modal-add-buttons">
-              <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discharge</button>
+              <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discard</button>
               <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
             </div>
           </div>
