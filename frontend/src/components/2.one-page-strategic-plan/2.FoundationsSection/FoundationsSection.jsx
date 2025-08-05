@@ -6,6 +6,8 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import useFoundationsStore, { initialFoundations } from '../../../store/left-lower-content/2.one-page-strategic-plan/2.foundationsStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './FoundationsSection.css';
+import './RichTextEditor.css';
+import RichTextEditor from './RichTextEditor';
 
 const FoundationsSection = () => {
   const loggedUser = useLoginStore((state) => state.user);
@@ -192,6 +194,11 @@ const FoundationsSection = () => {
     setShowConfirmModal(false);
   };
 
+  function unescapeHtml(escapedStr) {
+    const doc = new DOMParser().parseFromString(escapedStr, "text/html");
+    return doc.documentElement.textContent;
+  }
+
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="flex justify-between items-center mb-4">
@@ -300,7 +307,7 @@ const FoundationsSection = () => {
                 className="text-sm whitespace-pre-line text-gray-700 cursor-pointer"
                 onClick={() => handleCellClick(item.id, 'content')}
               >
-                {editingCell.id === item.id && editingCell.field === 'content' ? (
+                {/* {editingCell.id === item.id && editingCell.field === 'content' ? (
                   <textarea
                     autoFocus
                     rows={3}
@@ -315,7 +322,28 @@ const FoundationsSection = () => {
                   </div>
                 ) : (
                   item.content || '\u00A0'
-                )}
+                )} */}
+
+{editingCell.id === item.id && editingCell.field === 'content' ? (
+  <RichTextEditor
+    value={foundations.find(f => f.id === item.id)?.content || ''}
+    onChange={(val) => updateFoundationField(item.id, 'content', val)}
+    autoFocus
+    onBlur={(finalHtml) => handleInputBlur(item.id, 'content', finalHtml)} 
+  />
+) : item.content === '-' ? (
+  <div className="space-y-2">
+    <div className="skeleton w-full h-3"></div>
+    <div className="skeleton w-5/6 h-3"></div>
+  </div>
+) : (
+<div
+  dangerouslySetInnerHTML={{ __html: item.content || '\u00A0' }}
+  className="text-sm"
+  style={{ whiteSpace: 'pre-wrap' }}
+/>
+)}
+
               </p>
             </div>
           );
