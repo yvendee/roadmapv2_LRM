@@ -378,7 +378,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             {toolsExpanded && !collapsed && (
               <div className="pl-6 space-y-1">
                 <NavLink
-                  to="/issue"
+                  to="/tools/issues"
                   className={({ isActive }) =>
                     `sidebar-item flex items-center gap-2 ${
                       isActive
@@ -391,7 +391,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
                   <span>Issue</span>
                 </NavLink>
                 <NavLink
-                  to="/victories"
+                  to="/tools/victories"
                   className={({ isActive }) =>
                     `sidebar-item flex items-center gap-2 ${
                       isActive
@@ -404,7 +404,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
                   <span>Victories</span>
                 </NavLink>
                 <NavLink
-                  to="/big-ideas"
+                  to="/tools/big-ideas"
                   className={({ isActive }) =>
                     `sidebar-item flex items-center gap-2 ${
                       isActive
@@ -417,7 +417,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
                   <span>Big Ideas</span>
                 </NavLink>
                 <NavLink
-                  to="/product-evaluation-grid"
+                  to="/tools/product-evaluation-grid"
                   className={({ isActive }) =>
                     `sidebar-item flex items-center gap-2 ${
                       isActive

@@ -19,6 +19,10 @@ import Meetings from './components/10.meetings/Meetings';
 import CoachingChecklist from './components/11.coaching-checklist/coachingChecklist';
 import CoachingAlignment from './components/12.coaching-alignment/coachingAlignment';
 import Tools from './components/13.tools/Tools';
+import Issues from './components/13a.issues/Issues';
+import Victories from './components/13b.victories/Victories';
+import BigIdeas from './components/13c.big-ideas/BigIdeas';
+import ProductEvaluationGrid from './components/13d.product-evaluation-grid/ProductEvaluationGrid';
 import DocumentVault from './components/14.document-vault/documentVault';
 import MembersDepartments from './components/15.members-departments/membersDepartments';
 import MembersDirectory from './components/16.members-directory/membersDirectory';
@@ -163,6 +167,10 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/coaching-checklist" element={<CoachingChecklist />} />
             <Route path="/coaching-alignment" element={<CoachingAlignment />} />
             <Route path="/tools" element={<Tools />} />
+            <Route path="/tools/issues" element={<Issues />} />
+            <Route path="/tools/victories" element={<Victories />} />
+            <Route path="/tools/big-ideas" element={<BigIdeas />} />
+            <Route path="/tools/product-evaluation-grid" element={<ProductEvaluationGrid />} />
             <Route path="/document-vault" element={<DocumentVault />} />
             <Route path="/members-departments" element={<MembersDepartments />} />
             <Route path="/members-directory" element={<MembersDirectory />} />
