@@ -1,29 +1,26 @@
 // frontend\src\store\left-lower-content\13.tools\1.issuesStore.js
 import { create } from 'zustand';
 
-// Issue	Description	Date logged	Who	Resolution	Date resolved
-export const initialAnnualPriorities = [
+export const initialIssues = [
   {
     id: 1,
     issueName: 'System Issue 1',
-    description:
-      'Systematize Coaching Framework (now called Momentum OS).',
+    description: 'Systematize Coaching Framework (now called Momentum OS).',
     status: '100.00%',
-    dateLogged: '03-31-2025',
+    dateLogged: '2025-03-31',
     who: 'Kayven',
     resolution: 'resolution here',
-    dateResolved: '04-02-2025'
+    dateResolved: '2025-04-02',
   },
   {
     id: 2,
     issueName: 'System Issue 2',
-    description:
-      'Systematize Client Delivery.',
+    description: 'Systematize Client Delivery.',
     status: '83.33%',
-    dateLogged: '03-29-2025',
+    dateLogged: '2025-03-29',
     who: 'Kayven',
     resolution: 'resolution here 1',
-    dateResolved: '04-03-2025'
+    dateResolved: '2025-04-03',
   },
   {
     id: 3,
@@ -31,92 +28,70 @@ export const initialAnnualPriorities = [
     description:
       'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
     status: '0.00%',
-    dateLogged: '03-28-2025',
+    dateLogged: '2025-03-28',
     who: 'Kayven',
     resolution: 'resolution here 2',
-    dateResolved: '04-03-2025'
+    dateResolved: '2025-04-03',
   },
   {
     id: 4,
     issueName: 'System Issue 3',
-    description:
-      'Develop lead generation systems.',
+    description: 'Develop lead generation systems.',
     status: '50.00%',
-    dateLogged: '03-27-2025',
+    dateLogged: '2025-03-27',
     who: 'Kayven',
     resolution: 'resolution here 3',
-    dateResolved: '04-04-2025'
+    dateResolved: '2025-04-04',
   },
   {
     id: 5,
     issueName: 'System Issue 4',
-    description:
-      '1% Genius Version 3 Development.',
+    description: '1% Genius Version 3 Development.',
     status: '50.00%',
-    dateLogged: '03-26-2025',
+    dateLogged: '2025-03-26',
     who: 'Kayven',
     resolution: 'resolution here 4',
-    dateResolved: '04-05-2025'
+    dateResolved: '2025-04-05',
   },
 ];
 
-// export const initialAnnualPriorities = [
-//   {
-//     id: 1,
-//     description: '-',
-//     status: '-',
-//   },
-//   {
-//     id: 2,
-//     description: '-',
-//     status: '-',
-//   },
-//   {
-//     id: 3,
-//     description: '-',
-//     status: '-',
-//   },
-//   {
-//     id: 4,
-//     description: '-',
-//     status: '-',
-//   },
-//   {
-//     id: 5,
-//     description: '-',
-//     status: '-',
-//   },
-// ];
+const useIssuesStore = create((set) => ({
+  issuesTable: initialIssues,
 
+  setIssuesTable: (issues) => set({ issuesTable: issues }),
 
-const useAnnualPrioritiesStore = create((set) => ({
-  annualPriorities: initialAnnualPriorities,
-  setAnnualPriorities: (drivers) => set({ annualPriorities: drivers }),
-  addAnnualPriorities: (driver) =>
+  addIssuesTable: (issue) =>
     set((state) => ({
-      annualPriorities: [...state.annualPriorities, driver],
+      issuesTable: [...state.issuesTable, issue],
     })),
-  updateAnnualPrioritiesField: (id, field, value) =>
+
+  updateIssuesTableField: (id, field, value) =>
     set((state) => ({
-      annualPriorities: state.annualPriorities.map((driver) =>
-        driver.id === id ? { ...driver, [field]: value } : driver
+      issuesTable: state.issuesTable.map((issue) =>
+        issue.id === id ? { ...issue, [field]: value } : issue
       ),
     })),
-  pushAnnualPriorities: (driver) =>
+
+  pushIssuesTable: (issue) =>
     set((state) => {
-      const newDriver = {
-        id: state.annualPriorities.length + 1,
-        title: driver.title,
-        description: driver.description,
-        kpi: driver.kpi,
-        status: driver.status,
+      const newIssue = {
+        id: state.issuesTable.length + 1,
+        issueName: issue.issueName,
+        description: issue.description,
+        kpi: issue.kpi,
+        status: issue.status,
+        dateLogged: issue.dateLogged || '',     // date string (yyyy-mm-dd)
+        who: issue.who,
+        resolution: issue.resolution,
+        dateResolved: issue.dateResolved || '', // date string (yyyy-mm-dd)
       };
       return {
-        annualPriorities: [...state.annualPriorities, newDriver],
+        issuesTable: [...state.issuesTable, newIssue],
       };
     }),
-  loadAnnualPrioritiesFromAPI: (drivers) => set({ annualPriorities: drivers }),
+
+  loadIssuesTableFromAPI: (issues) =>
+    set({ issuesTable: issues }),
 }));
 
-
-export default useAnnualPrioritiesStore;
+export default useIssuesStore;
