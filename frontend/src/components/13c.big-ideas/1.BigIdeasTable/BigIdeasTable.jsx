@@ -1,50 +1,51 @@
-// frontend\src\components\13a.issues\1.IssueTable\IssueTable.jsx
+// frontend\src\components\13c.big-ideas\1.BigIdeasTable\BigIdeasTable.jsx
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
-import useIssuesStore, { initialIssues } from '../../../store/left-lower-content/13.tools/1.issuesStore';
+import useBigIdeasStore, { initialBigIdeas } from '../../../store/left-lower-content/13.tools/3.bigIdeasStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
-import './IssueTable.css';
+import './BigIdeasTable.css';
 
-const IssueTable = () => {
+const BigIdeasTable = () => {
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
 
   const loggedUser = useLoginStore((state) => state.user);
-  const issuesTable = useIssuesStore((state) => state.issuesTable);
-  const setIssuesTable = useIssuesStore((state) => state.setIssuesTable);
-  const updateIssuesTableField = useIssuesStore((state) => state.updateIssuesTableField);
-  const pushIssuesTable = useIssuesStore((state) => state.pushIssuesTable);
+  const bigIdeasTable = useBigIdeasStore((state) => state.bigIdeasTable);
+  const setBigIdeasTable = useBigIdeasStore((state) => state.setBigIdeasTable);
+  const updateBigIdeasTableField = useBigIdeasStore((state) => state.updateBigIdeasTableField);
+  const pushBigIdeasTable = useBigIdeasStore((state) => state.pushBigIdeasTable);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newIssuesTable, setNewIssuesTable] = useState({
-    issueName: '',
-    description: '',
-    dateLogged: '',
+  const [newBigIdeasTable, setNewBigIdeasTable] = useState({
+    date: '',
     who: '',
-    resolution: '',
-    dateResolved: '',
+    description: '',
+    impact: '',
+    when: '',
+    evaluator: '',
+    comments: '',
   });
 
-  const [currentOrder, setCurrentOrder] = useState(issuesTable);
+  const [currentOrder, setCurrentOrder] = useState(bigIdeasTable);
   const [draggedId, setDraggedId] = useState(null);
 
   const [isEditing, setIsEditing] = useState(false);
 
   // Load from localStorage if available
   useEffect(() => {
-    const storedData = localStorage.getItem('IssueTableData');
+    const storedData = localStorage.getItem('BigIdeasTableData');
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
-        setIssuesTable(parsedData);
+        setBigIdeasTable(parsedData);
 
-        ENABLE_CONSOLE_LOGS && console.log('IssueTableData found! and  loaded!');
+        ENABLE_CONSOLE_LOGS && console.log('BigIdeasTableData found! and  loaded!');
 
 
         // ✅ Treat this as unsaved state, trigger the buttons
@@ -52,32 +53,32 @@ const IssueTable = () => {
 
 
       } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse IssueTableData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS && console.error('Failed to parse BigIdeasTableData from localStorage:', err);
       }
     }
-  }, [setIssuesTable]);
+  }, [setBigIdeasTable]);
 
   const handleAddDriverClick = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // ENABLE_CONSOLE_LOGS && console.log('Add Annual Priorities button clicked');
+      // ENABLE_CONSOLE_LOGS && console.log('Add BigIdeas Table button clicked');
       setShowAddModal(true);
     }, 1000);
   };
 
-  const handleAddNewIssuesTable = () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Issues Table', JSON.stringify(newIssuesTable, null, 2));
+  const handleAddNewBigIdeasTable = () => {
+    ENABLE_CONSOLE_LOGS && console.log('New BigIdeas Table', JSON.stringify(newBigIdeasTable, null, 2));
 
     // 2. Hide Save / Discharge
     setIsEditing(false);
 
   
     // 3. Remove localStorage temp data
-    localStorage.removeItem('IssueTableData');
+    localStorage.removeItem('BigIdeasTableData');
   
     // 4. Push to Zustand store
-    pushIssuesTable(newIssuesTable);
+    pushBigIdeasTable(newBigIdeasTable);
   
     // 5. Optionally: force-refresh the UI by resetting store (if needed)
     // Not required unless you deep reset from localStorage elsewhere
@@ -86,14 +87,16 @@ const IssueTable = () => {
     setShowAddModal(false);
   
     // Reset form input
-    setNewIssuesTable({     
-      issueName: '',
-      description: '',
-      dateLogged: '',
+    setNewBigIdeasTable({     
+      date: '',
       who: '',
-      resolution: '',
-      dateResolved: '', 
+      description: '',
+      impact: '',
+      when: '',
+      evaluator: '',
+      comments: '',
     });
+
   };
 
   const handleCellClick = (id, field) => {
@@ -103,20 +106,19 @@ const IssueTable = () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    updateIssuesTableField(id, field, value);
+    updateBigIdeasTableField(id, field, value);
 
     // Update local state for Save/Discharge buttons
     setIsEditing(true);
 
     // Update localStorage
-    const updatedDrivers = issuesTable.map((driver) =>
+    const updatedDrivers = bigIdeasTable.map((driver) =>
       driver.id === id ? { ...driver, [field]: value } : driver
     );
-    localStorage.setItem('IssueTableData', JSON.stringify(updatedDrivers));
+    localStorage.setItem('BigIdeasTableData', JSON.stringify(updatedDrivers));
 
     setEditingCell({ id: null, field: null });
   };
-
 
   
   const handleSaveChanges = () => {
@@ -126,17 +128,17 @@ const IssueTable = () => {
     setTimeout(() => {
       setLoadingSave(false);
   
-      const storedData = localStorage.getItem('IssueTableData');
+      const storedData = localStorage.getItem('BigIdeasTableData');
   
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
   
           // 1. Log to console
-          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
+          ENABLE_CONSOLE_LOGS && console.log('Saved BigIdeas Table after Save Changes Button:', parsedData);
   
           // 2. Update Zustand store
-          setIssuesTable(parsedData);
+          setBigIdeasTable(parsedData);
 
           // Reindex IDs
           const reordered = parsedData.map((driver, index) => ({
@@ -144,18 +146,18 @@ const IssueTable = () => {
             id: index + 1,
           }));
 
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (Reindexed):', reordered);
+          ENABLE_CONSOLE_LOGS &&  console.log('Saved BigIdeas Table (Reindexed):', reordered);
 
-          setIssuesTable(reordered);
+          setBigIdeasTable(reordered);
   
           // 3. Clear edited state (hides buttons)
           setIsEditing(false);
 
   
           // 4. Remove from localStorage
-          localStorage.removeItem('IssueTableData');
+          localStorage.removeItem('BigIdeasTableData');
         } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
+          ENABLE_CONSOLE_LOGS && console.error('Error parsing BigIdeasTableData on save:', err);
         }
       } else {
 
@@ -166,13 +168,13 @@ const IssueTable = () => {
           id: index + 1,
         }));
 
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (reordered):', reordered);
-        setIssuesTable(reordered);
+        ENABLE_CONSOLE_LOGS &&  console.log('Saved BigIdeas Table (reordered):', reordered);
+        setBigIdeasTable(reordered);
         setIsEditing(false);
 
 
         // Remove from localStorage
-        localStorage.removeItem('IssueTableData');
+        localStorage.removeItem('BigIdeasTableData');
 
       }
     }, 1000);
@@ -189,24 +191,20 @@ const IssueTable = () => {
 
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
-    localStorage.removeItem('IssueTableData');
+    localStorage.removeItem('BigIdeasTableData');
 
     // 2. Clear edited state (hides buttons)
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setIssuesTable(initialIssues);
+    setBigIdeasTable(initialBigIdeas);
 
     // 4. refresh the table
-    setCurrentOrder(issuesTable);
+    setCurrentOrder(bigIdeasTable);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
 
-    // localStorage.removeItem('IssueTableData');
-    // setShowConfirmModal(false);
-    // setCurrentOrder(issuesTable);
-    // setIsEditing(false);
   };
 
   const cancelDischargeChanges = () => {
@@ -216,8 +214,8 @@ const IssueTable = () => {
 
   // Sync initial and store changes:
   useEffect(() => {
-    setCurrentOrder(issuesTable);
-  }, [issuesTable]);
+    setCurrentOrder(bigIdeasTable);
+  }, [bigIdeasTable]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {
@@ -241,7 +239,7 @@ const IssueTable = () => {
     setDraggedId(null);
   
     // Save the new drag order to localStorage
-    localStorage.setItem('IssueTableData', JSON.stringify(currentOrder));
+    localStorage.setItem('BigIdeasTableData', JSON.stringify(currentOrder));
   
     // Also flag changes for Save/Discharge buttons
     setIsEditing(true);
@@ -253,28 +251,28 @@ const IssueTable = () => {
   // Save drag order to store:
   const saveDraggedOrder = () => {
     ENABLE_CONSOLE_LOGS &&  console.log('New order:', JSON.stringify(currentOrder, null, 2));
-    setIssuesTable(currentOrder);
+    setBigIdeasTable(currentOrder);
     setIsEditing(false);
 
   };
 
   // On discharge—confirmation modal does reset order from store
   const confirmDischargeChangesDrag = () => {
-    localStorage.removeItem('IssueTableData');
+    localStorage.removeItem('BigIdeasTableData');
     setShowConfirmModal(false);
-    setCurrentOrder(issuesTable);
+    setCurrentOrder(bigIdeasTable);
     setIsEditing(false);
   };
 
-  const isSkeleton = issuesTable.some(driver => 
+  const isSkeleton = bigIdeasTable.some(driver => 
     driver.description === '-' &&
     driver.status === '-'
   );
 
   const handleDeleteDriver = (id) => {
-    const updated = issuesTable.filter(driver => driver.id !== id);
-    setIssuesTable(updated);
-    localStorage.setItem('IssueTableData', JSON.stringify(updated));
+    const updated = bigIdeasTable.filter(driver => driver.id !== id);
+    setBigIdeasTable(updated);
+    localStorage.setItem('BigIdeasTableData', JSON.stringify(updated));
   
     // Mark as edited
     setIsEditing(true);
@@ -284,7 +282,7 @@ const IssueTable = () => {
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
-        <h5 className="text-lg font-semibold always-black">Issues</h5>
+        <h5 className="text-lg font-semibold always-black">Big Ideas</h5>
         {loggedUser?.role === 'superadmin' && (
           <div className="flex gap-2">
 
@@ -325,7 +323,7 @@ const IssueTable = () => {
                 ) : (
                   <>
                   <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                  Add Issues
+                  Add Big Idea
                   </>
                 )}
               </button>
@@ -340,13 +338,13 @@ const IssueTable = () => {
           <thead>
             <tr className="bg-gray-100 text-gray-700 text-sm">
               <th className="border px-4 py-2">#</th>
-              <th className="border px-4 py-2 ">Issue</th>
-              <th className="border px-4 py-2 ">Description</th>
-              <th className="border px-4 py-2 ">Date Logged</th>
+              <th className="border px-4 py-2 ">Date</th>
               <th className="border px-4 py-2 ">Who</th>
-              <th className="border px-4 py-2 ">Resolution</th>
-              <th className="border px-4 py-2 ">Date Resolved</th>
-              <th className="border px-4 py-2"></th>
+              <th className="border px-4 py-2 ">Description</th>
+              <th className="border px-4 py-2 ">Impact</th>
+              <th className="border px-4 py-2 ">When</th>
+              <th className="border px-4 py-2 ">Evaluator</th>
+              <th className="border px-4 py-2 ">Comments</th>
               {loggedUser?.role === 'superadmin' && !isSkeleton && (
                 <th className="border px-4 py-2 text-center"></th>
               )}
@@ -356,63 +354,61 @@ const IssueTable = () => {
           <tbody>
             {currentOrder.map(driver => (
               <tr key={driver.id}
-
                 draggable={
                   loggedUser?.role === 'superadmin' &&
-                  driver.issueName !== '-' &&
-                  driver.description !== '-' &&
-                  driver.dateLogged !== '-' &&
+                  driver.date !== '-' &&
                   driver.who !== '-' &&
-                  driver.resolution !== '-' &&
-                  driver.dateResolved !== '-' &&
-                  driver.status !== '-'
-                  
+                  driver.description !== '-' &&
+                  driver.impact !== '-' &&
+                  driver.when !== '-' &&
+                  driver.evaluator !== '-' &&
+                  driver.comments !== '-' 
                 }
                 onDragStart={
                   loggedUser?.role === 'superadmin' &&
-                  driver.issueName !== '-' &&
-                  driver.description !== '-' &&
-                  driver.dateLogged !== '-' &&
+                  driver.date !== '-' &&
                   driver.who !== '-' &&
-                  driver.resolution !== '-' &&
-                  driver.dateResolved !== '-' &&
-                  driver.status !== '-'
+                  driver.description !== '-' &&
+                  driver.impact !== '-' &&
+                  driver.when !== '-' &&
+                  driver.evaluator !== '-' &&
+                  driver.comments !== '-' 
                     ? (e) => handleDragStart(e, driver.id)
                     : undefined
                 }
                 onDragOver={
                   loggedUser?.role === 'superadmin' &&
-                  driver.issueName !== '-' &&
-                  driver.description !== '-' &&
-                  driver.dateLogged !== '-' &&
+                  driver.date !== '-' &&
                   driver.who !== '-' &&
-                  driver.resolution !== '-' &&
-                  driver.dateResolved !== '-' &&
-                  driver.status !== '-'
+                  driver.description !== '-' &&
+                  driver.impact !== '-' &&
+                  driver.when !== '-' &&
+                  driver.evaluator !== '-' &&
+                  driver.comments !== '-' 
                     ? (e) => handleDragOver(e, driver.id)
                     : undefined
                 }
                 onDragEnd={
                   loggedUser?.role === 'superadmin' &&
-                  driver.issueName !== '-' &&
-                  driver.description !== '-' &&
-                  driver.dateLogged !== '-' &&
+                  driver.date !== '-' &&
                   driver.who !== '-' &&
-                  driver.resolution !== '-' &&
-                  driver.dateResolved !== '-' &&
-                  driver.status !== '-'
+                  driver.description !== '-' &&
+                  driver.impact !== '-' &&
+                  driver.when !== '-' &&
+                  driver.evaluator !== '-' &&
+                  driver.comments !== '-' 
                     ? handleDragEnd
                     : undefined
                 }
                 className={`hover:bg-gray-50 ${
                   loggedUser?.role === 'superadmin' &&
-                  driver.issueName !== '-' &&
-                  driver.description !== '-' &&
-                  driver.dateLogged !== '-' &&
+                  driver.date !== '-' &&
                   driver.who !== '-' &&
-                  driver.resolution !== '-' &&
-                  driver.dateResolved !== '-' &&
-                  driver.status !== '-'
+                  driver.description !== '-' &&
+                  driver.impact !== '-' &&
+                  driver.when !== '-' &&
+                  driver.evaluator !== '-' &&
+                  driver.comments !== '-' 
                     ? 'cursor-move'
                     : 'cursor-default'
                 }`}
@@ -423,72 +419,26 @@ const IssueTable = () => {
                 {/* id */}
                 <td className="border px-4 py-3">{isSkeleton ? <div className="skeleton w-6"></div> : driver.id}</td>
 
-                {/* issue name*/}
-                <td
-                  className="border px-4 py-3 cursor-pointer"
-                  onClick={() => driver.issueName !== '-' && handleCellClick(driver.id, 'issueName')}
-                >
-                  {driver.issueName === '-' ? (
-                    <div className="skeleton w-64 h-5"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'issueName' ? (
-                    <textarea
-                      autoFocus
-                      defaultValue={driver.issueName}
-                      onBlur={(e) => handleInputBlur(driver.id, 'issueName', e.target.value)}
-                      className="w-full px-2 py-1 border rounded resize-none"
-                      rows={3}
-                    />
-                  ) : (
-                    driver.issueName
-                  )}
-                </td>
 
-                {/* description */}
+                {/* date */}
                 <td
                   className="border px-4 py-3 cursor-pointer"
-                  onClick={() => driver.description !== '-' && handleCellClick(driver.id, 'description')}
+                  onClick={() => driver.date !== '-' && handleCellClick(driver.id, 'date')}
                 >
-                  {driver.description === '-' ? (
+                  {driver.date === '-' ? (
                     <div className="skeleton w-64 h-5"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'description' ? (
-                    <textarea
-                      autoFocus
-                      defaultValue={driver.description}
-                      onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
-                      className="w-full px-2 py-1 border rounded resize-none"
-                      rows={3}
-                    />
-                  ) : (
-                    driver.description
-                  )}
-                </td>
-
-                {/* dateLogged */}
-                <td
-                  className="border px-4 py-3 cursor-pointer"
-                  onClick={() => driver.dateLogged !== '-' && handleCellClick(driver.id, 'dateLogged')}
-                >
-                  {driver.dateLogged === '-' ? (
-                    <div className="skeleton w-64 h-5"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'dateLogged' ? (
-                    // <textarea
-                    //   autoFocus
-                    //   defaultValue={driver.dateLogged}
-                    //   onBlur={(e) => handleInputBlur(driver.id, 'dateLogged', e.target.value)}
-                    //   className="w-full px-2 py-1 border rounded resize-none"
-                    //   rows={3}
-                    // />
+                  ) : editingCell.id === driver.id && editingCell.field === 'date' ? (
 
                     <input
                       type="date"
                       autoFocus
-                      defaultValue={driver.dateLogged} // ensure it's in YYYY-MM-DD format
-                      onBlur={(e) => handleInputBlur(driver.id, 'dateLogged', e.target.value)}
+                      defaultValue={driver.date} // ensure it's in YYYY-MM-DD format
+                      onBlur={(e) => handleInputBlur(driver.id, 'date', e.target.value)}
                       className="w-full px-2 py-1 border rounded"
                     />
 
                   ) : (
-                    driver.dateLogged
+                    driver.date
                   )}
                 </td>
 
@@ -512,104 +462,108 @@ const IssueTable = () => {
                   )}
                 </td>
 
-                {/* resolution */}
+                {/* description */}
                 <td
                   className="border px-4 py-3 cursor-pointer"
-                  onClick={() => driver.resolution !== '-' && handleCellClick(driver.id, 'resolution')}
+                  onClick={() => driver.description !== '-' && handleCellClick(driver.id, 'description')}
                 >
-                  {driver.resolution === '-' ? (
+                  {driver.description === '-' ? (
                     <div className="skeleton w-64 h-5"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'resolution' ? (
+                  ) : editingCell.id === driver.id && editingCell.field === 'description' ? (
                     <textarea
                       autoFocus
-                      defaultValue={driver.resolution}
-                      onBlur={(e) => handleInputBlur(driver.id, 'resolution', e.target.value)}
+                      defaultValue={driver.description}
+                      onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
                       className="w-full px-2 py-1 border rounded resize-none"
                       rows={3}
                     />
                   ) : (
-                    driver.resolution
+                    driver.description
                   )}
                 </td>
 
-
-                {/* date resolved */}
+                {/* impact */}
                 <td
                   className="border px-4 py-3 cursor-pointer"
-                  onClick={() => driver.dateResolved !== '-' && handleCellClick(driver.id, 'dateResolved')}
+                  onClick={() => driver.impact !== '-' && handleCellClick(driver.id, 'impact')}
                 >
-                  {driver.dateResolved === '-' ? (
+                  {driver.impact === '-' ? (
                     <div className="skeleton w-64 h-5"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'dateResolved' ? (
-                    // <textarea
-                    //   autoFocus
-                    //   defaultValue={driver.dateResolved}
-                    //   onBlur={(e) => handleInputBlur(driver.id, 'dateResolved', e.target.value)}
-                    //   className="w-full px-2 py-1 border rounded resize-none"
-                    //   rows={3}
-                    // />
+                  ) : editingCell.id === driver.id && editingCell.field === 'impact' ? (
+                    <textarea
+                      autoFocus
+                      defaultValue={driver.impact}
+                      onBlur={(e) => handleInputBlur(driver.id, 'impact', e.target.value)}
+                      className="w-full px-2 py-1 border rounded resize-none"
+                      rows={3}
+                    />
+                  ) : (
+                    driver.impact
+                  )}
+                </td>
+
+                {/* when */}
+                <td
+                  className="border px-4 py-3 cursor-pointer"
+                  onClick={() => driver.when !== '-' && handleCellClick(driver.id, 'when')}
+                >
+                  {driver.when === '-' ? (
+                    <div className="skeleton w-64 h-5"></div>
+                  ) : editingCell.id === driver.id && editingCell.field === 'when' ? (
 
                     <input
                       type="date"
                       autoFocus
-                      defaultValue={driver.dateResolved} // ensure it's in YYYY-MM-DD format
-                      onBlur={(e) => handleInputBlur(driver.id, 'dateResolved', e.target.value)}
+                      defaultValue={driver.when} // ensure it's in YYYY-MM-DD format
+                      onBlur={(e) => handleInputBlur(driver.id, 'when', e.target.value)}
                       className="w-full px-2 py-1 border rounded"
                     />
 
                   ) : (
-                    driver.dateResolved
+                    driver.when
                   )}
                 </td>
 
-                {/* status */}
-                {/* <td>
-                  <div
-                    className="mt-1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      driver.status !== '-' && handleCellClick(driver.id, 'status');
-                    }}
-                  >
-                    {driver.status === '-' ? (
-                      <div className="skeleton w-16 h-5 mx-auto"></div>
-                    ) : editingCell.id === driver.id && editingCell.field === 'status' ? (
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      pattern="^\d+(\.\d{0,2})?$"
+                {/* evaluator */}
+                <td
+                  className="border px-4 py-3 cursor-pointer"
+                  onClick={() => driver.evaluator !== '-' && handleCellClick(driver.id, 'evaluator')}
+                >
+                  {driver.evaluator === '-' ? (
+                    <div className="skeleton w-64 h-5"></div>
+                  ) : editingCell.id === driver.id && editingCell.field === 'evaluator' ? (
+                    <textarea
                       autoFocus
-                      defaultValue={driver.status.replace('%', '')}
-                      onBlur={(e) => {
-                        let rawValue = e.target.value.trim().replace('%', '');
-                        let numeric = parseFloat(rawValue);
-
-                        if (isNaN(numeric)) numeric = 0;
-
-                        const formatted = `${numeric.toFixed(2)}%`;
-                        handleInputBlur(driver.id, 'status', formatted);
-                      }}
-                      className="w-full px-2 py-1 border rounded text-xs text-center"
+                      defaultValue={driver.evaluator}
+                      onBlur={(e) => handleInputBlur(driver.id, 'evaluator', e.target.value)}
+                      className="w-full px-2 py-1 border rounded resize-none"
+                      rows={3}
                     />
+                  ) : (
+                    driver.evaluator
+                  )}
+                </td>
 
-                    ) : (
-                      <span
-                        className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                          driver.status === '100.00%'
-                            ? 'bg-green-100 text-green-700'
-                            : driver.status === '83.33%'
-                            ? 'bg-red-100 text-red-700'
-                            : driver.status === '0.00%'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-200 text-gray-600'
-                        }`}
-                      >
-                        {driver.status}
-                      </span>
-                    )}
-                  </div>
-                </td> */}
-                
+                {/* comments */}
+                <td
+                  className="border px-4 py-3 cursor-pointer"
+                  onClick={() => driver.comments !== '-' && handleCellClick(driver.id, 'comments')}
+                >
+                  {driver.comments === '-' ? (
+                    <div className="skeleton w-64 h-5"></div>
+                  ) : editingCell.id === driver.id && editingCell.field === 'comments' ? (
+                    <textarea
+                      autoFocus
+                      defaultValue={driver.comments}
+                      onBlur={(e) => handleInputBlur(driver.id, 'comments', e.target.value)}
+                      className="w-full px-2 py-1 border rounded resize-none"
+                      rows={3}
+                    />
+                  ) : (
+                    driver.comments
+                  )}
+                </td>
+             
                 {/* delete button */}
                 {loggedUser?.role === 'superadmin' && !isSkeleton && (
                   <td className="border px-4 py-3 text-center">
@@ -656,65 +610,71 @@ const IssueTable = () => {
             className="modal-add-box"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-add-title">Add Issue</div>
+            <div className="modal-add-title">Add Big Idea</div>
 
-            <label className="modal-add-label">Issue Name</label>
-            <textarea
-              className="modal-add-input"
-              rows="1"
-              value={newIssuesTable.issueName}
-              onChange={(e) => setNewIssuesTable({ ...newIssuesTable, issueName: e.target.value })}
-            />
 
-            <label className="modal-add-label">Description</label>
-            <textarea
-              className="modal-add-input"
-              rows="2"
-              value={newIssuesTable.description}
-              onChange={(e) => setNewIssuesTable({ ...newIssuesTable, description: e.target.value })}
-            />
-
-            <label className="modal-add-label">Date Logged</label>
+            <label className="modal-add-label">Date</label>
             <input
               type="date"
               className="modal-add-input"
-              value={newIssuesTable.dateLogged}
+              value={newBigIdeasTable.date}
               onChange={(e) =>
-                setNewIssuesTable({ ...newIssuesTable, dateLogged: e.target.value })
+                setNewBigIdeasTable({ ...newBigIdeasTable, date: e.target.value })
               }
             />
-
 
             <label className="modal-add-label">Who</label>
             <textarea
               className="modal-add-input"
               rows="1"
-              value={newIssuesTable.who}
-              onChange={(e) => setNewIssuesTable({ ...newIssuesTable, who: e.target.value })}
+              value={newBigIdeasTable.who}
+              onChange={(e) => setNewBigIdeasTable({ ...newBigIdeasTable, who: e.target.value })}
             />
 
-
-            <label className="modal-add-label">Resolution</label>
+            <label className="modal-add-label">Description</label>
             <textarea
               className="modal-add-input"
               rows="1"
-              value={newIssuesTable.resolution}
-              onChange={(e) => setNewIssuesTable({ ...newIssuesTable, resolution: e.target.value })}
+              value={newBigIdeasTable.description}
+              onChange={(e) => setNewBigIdeasTable({ ...newBigIdeasTable, description: e.target.value })}
             />
 
+            <label className="modal-add-label">Impact</label>
+            <textarea
+              className="modal-add-input"
+              rows="1"
+              value={newBigIdeasTable.impact}
+              onChange={(e) => setNewBigIdeasTable({ ...newBigIdeasTable, impact: e.target.value })}
+            />
 
-            <label className="modal-add-label">Date Resolved</label>
+            <label className="modal-add-label">When</label>
             <input
               type="date"
               className="modal-add-input"
-              value={newIssuesTable.dateResolved}
+              value={newBigIdeasTable.when}
               onChange={(e) =>
-                setNewIssuesTable({ ...newIssuesTable, dateResolved: e.target.value })
+                setNewBigIdeasTable({ ...newBigIdeasTable, when: e.target.value })
               }
             />
 
+            <label className="modal-add-label">Evaluator</label>
+            <textarea
+              className="modal-add-input"
+              rows="1"
+              value={newBigIdeasTable.evaluator}
+              onChange={(e) => setNewBigIdeasTable({ ...newBigIdeasTable, evaluator: e.target.value })}
+            />
+
+            <label className="modal-add-label">Comments</label>
+            <textarea
+              className="modal-add-input"
+              rows="2"
+              value={newBigIdeasTable.comments}
+              onChange={(e) => setNewBigIdeasTable({ ...newBigIdeasTable, comments: e.target.value })}
+            />
+
             <div className="modal-add-buttons">
-              <button className="btn-add" onClick={handleAddNewIssuesTable}>Add</button>
+              <button className="btn-add" onClick={handleAddNewBigIdeasTable}>Add</button>
               <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
             </div>
           </div>
@@ -726,4 +686,4 @@ const IssueTable = () => {
   );
 };
 
-export default IssueTable;
+export default BigIdeasTable;

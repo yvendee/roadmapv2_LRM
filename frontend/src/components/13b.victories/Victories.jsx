@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import VictoriesHeader from './0.VictoriesHeader/VictoriesHeader';
+import VictoriesTable from '../13b.victories/1.VictoriesTable/VictoriesTable';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
 import './Victories.css';
@@ -54,6 +55,7 @@ const Victories = () => {
 
     <div className="main-content-view">
       <VictoriesHeader />
+      <VictoriesTable />
 
       <span>&nbsp;</span>  
     </div>

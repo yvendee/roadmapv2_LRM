@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import ProductEvaluationGridHeader from './0.ProductEvaluationGridHeader/ProductEvaluationGridHeader';
+import ProductEvaluationGridTable from './1.ProductEvaluationGridTable/ProductEvaluationGridTable';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
 import './ProductEvaluationGrid.css';
@@ -54,6 +55,7 @@ const ProductEvaluationGrid = () => {
 
     <div className="main-content-view">
       <ProductEvaluationGridHeader />
+      <ProductEvaluationGridTable />
 
       <span>&nbsp;</span>  
     </div>

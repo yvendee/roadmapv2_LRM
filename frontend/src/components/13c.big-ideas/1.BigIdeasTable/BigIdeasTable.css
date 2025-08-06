@@ -1,4 +1,4 @@
-/* frontend\src\components\13a.issues\1.IssueTable\IssueTable.css */
+/* frontend\src\components\13c.big-ideas\1.BigIdeasTable\BigIdeasTable.css */
 .always-black {
     color: black !important;
 }
@@ -276,4 +276,6 @@ td, th {
     50% { opacity: 0.4; }
     100% { opacity: 1; }
 }
+
+
 

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useUserStore from '../../store/userStore';
 import BigIdeasHeader from './0.BigIdeasHeader/BigIdeasHeader';
+import BigIdeasTable from './1.BigIdeasTable/BigIdeasTable';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
 import './BigIdeas.css';
@@ -54,6 +55,7 @@ const BigIdeas = () => {
 
     <div className="main-content-view">
       <BigIdeasHeader />
+      <BigIdeasTable />
 
       <span>&nbsp;</span>  
     </div>
