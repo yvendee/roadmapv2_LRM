@@ -91,7 +91,7 @@ const useProductEvaluationGridStore = create((set) => ({
 
   pushProductEvaluationGridTableField: (productEvaluationGrid) =>
     set((state) => {
-      const newBigIdea = {
+      const newProductEvaluationGrid = {
         id: state.productEvaluationGridTable.length + 1,
         productName: productEvaluationGrid.productName || '',
         description: productEvaluationGrid.description || '',
@@ -105,7 +105,7 @@ const useProductEvaluationGridStore = create((set) => ({
         lifeCycleStage: productEvaluationGrid.lifeCycleStage || '',
       };
       return {
-        productEvaluationGridTable: [...state.productEvaluationGridTable, newBigIdea],
+        productEvaluationGridTable: [...state.productEvaluationGridTable, newProductEvaluationGrid],
       };
     }),
 

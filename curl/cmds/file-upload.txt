@@ -1,0 +1,2 @@
+curl -X POST "http://localhost/api/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p" -H "Content-Type: multipart/form-data" -F "file=@\"C:\\Users\\yven\\Desktop\\test.pdf""
+
