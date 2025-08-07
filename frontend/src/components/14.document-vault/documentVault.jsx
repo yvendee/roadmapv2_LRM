@@ -1,6 +1,7 @@
 //frontend\src\components\document-vault\documentVault.jsx
 import React, { useEffect, useState } from 'react';
 import DocumentVaultHeader from './0.DocumentVaultHeader/DocumentVaultHeader';
+import DocumentVaultTable from './1.DocumentVaultTable/DocumentVaultTable';
 import useUserStore from '../../store/userStore';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
@@ -36,22 +37,15 @@ const documentVault = () => {
   // }, [setUser, navigate]);
 
   return (
-    <DocumentVaultHeader />
-    // <div>
-    //   <h2 className="text-xl font-bold mb-4">Document Vault</h2>
-    //   {error ? (
-    //     <p className="text-red-500">{error}</p>
-    //   ) : user ? (
-    //     <table className="table-auto border-collapse border border-gray-400">
-    //       <tbody>
-    //         <tr><td className="border p-2">Name</td><td className="border p-2">{user.name}</td></tr>
-    //         <tr><td className="border p-2">Email</td><td className="border p-2">{user.email}</td></tr>
-    //       </tbody>
-    //     </table>
-    //   ) : (
-    //     <p>Loading...</p>
-    //   )}
-    // </div>
+
+    <div className="main-content-view">
+      <DocumentVaultHeader />
+      <DocumentVaultTable />
+
+      <span>&nbsp;</span>  
+    </div>
+
+
   );
 };
 

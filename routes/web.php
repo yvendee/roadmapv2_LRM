@@ -312,6 +312,47 @@ Route::get('/api/storage/{path}', function ($path) {
 })->where('path', '.*');
 
 
+// Route::post('/api/file-upload/{path}', function (Request $request, $path) {
+//     if (!$request->hasFile('file')) {
+//         return response()->json(['error' => 'No file uploaded'], 400);
+//     }
+
+//     $file = $request->file('file');
+
+//     $storedPath = $file->storeAs("public/{$path}", $file->getClientOriginalName());
+
+//     return response()->json([
+//         'message' => 'File uploaded successfully',
+//         'path' => $storedPath,
+//     ]);
+// })->where('path', '.*');
+
+
+Route::post('/api/file-upload/{path}', function (Request $request, $path) {
+    if (!$request->hasFile('file')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    $file = $request->file('file');
+
+    // Save directly into storage/app/public/{path}
+    $fileName = $file->getClientOriginalName();
+    $targetPath = storage_path("app/public/{$path}");
+
+    // Ensure the directory exists
+    if (!File::exists($targetPath)) {
+        File::makeDirectory($targetPath, 0755, true);
+    }
+
+    $file->move($targetPath, $fileName);
+
+    return response()->json([
+        'message' => 'File uploaded successfully',
+        'path' => "storage/app/public/{$path}/{$fileName}",
+    ]);
+})->where('path', '.*');
+
+
 // Your API route(s)
 Route::get('/api/mock-response1', function () {
     return response()->json([
@@ -2554,7 +2595,6 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
         'Test Skeleton Loading'
     ]);
 });
-
 
 
 // ref: frontend\src\pages\login\Login.jsx

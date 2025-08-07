@@ -1,0 +1,281 @@
+/* frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.css */
+.always-black {
+    color: black !important;
+}
+
+/* This will force black text regardless of dark mode */
+td, th {
+    color: #111 !important;
+}
+
+.pure-blue-btn {
+    background-color: #0000FF; /* pure blue */
+    color: white;              /* white text */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 9999px; /* fully rounded */
+    padding: 0.5rem 1rem;  /* py-2 px-4 */
+    font-size: 0.875rem;   /* text-sm */
+    font-weight: 500;      /* font-medium */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pure-blue-btn:hover {
+    background-color: #add8e6; /* light blue on hover */
+    color: #0000FF;              /* keep text white on hover */
+}
+
+
+.pure-red-btn {
+    background-color: #f50f08; /* pure red */
+    color: white;              /* white text */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 9999px; /* fully rounded */
+    padding: 0.5rem 1rem;  /* py-2 px-4 */
+    font-size: 0.875rem;   /* text-sm */
+    font-weight: 500;      /* font-medium */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pure-red-btn:hover {
+    background-color: #add8e6; /* light red on hover */
+    color: #f50f08;             /* keep text white on hover */
+}
+
+
+.pure-green-btn {
+    background-color: #177e03cb; /* pure green */
+    color: white;              /* white text */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 9999px; /* fully rounded */
+    padding: 0.5rem 1rem;  /* py-2 px-4 */
+    font-size: 0.875rem;   /* text-sm */
+    font-weight: 500;      /* font-medium */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pure-green-btn:hover {
+    background-color: #add8e6; /* light green on hover */
+    color: #177e03cb;          /* keep text white on hover */
+}
+
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem; /* equivalent to mb-4 */
+}
+
+/* loader-balls*/
+
+.loader-balls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 60px; /* adjust to fit nicely */
+}
+
+.loader-balls div {
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    animation: loader-balls 0.8s infinite ease-in-out;
+}
+
+.loader-balls div:nth-child(2) {
+    animation-delay: 0.16s;
+}
+
+.loader-balls div:nth-child(3) {
+    animation-delay: 0.32s;
+}
+
+@keyframes loader-balls {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+
+/* loader-bars */
+
+.loader-bars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 60px; /* consistent button size */
+    height: 16px;
+}
+
+.loader-bars div {
+    width: 4px;
+    height: 100%;
+    background-color: white;
+    animation: loader-bars 1s infinite ease-in-out;
+}
+
+.loader-bars div:nth-child(1) {
+    animation-delay: 0s;
+}
+.loader-bars div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.loader-bars div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loader-bars {
+    0%, 40%, 100% {
+        transform: scaleY(0.4);
+    }
+    20% {
+        transform: scaleY(1);
+    }
+}
+
+
+/* Discharge Button Modal */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.modal-buttons button {
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-buttons .btn-yes {
+    background-color: #2563eb; /* blue-600 */
+    color: white;
+}
+
+.modal-buttons .btn-no {
+    background-color: #dc2626; /* red-600 */
+    color: white;
+}
+
+/* Add Strategic Driver Button Modal */
+
+.modal-add-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-add-box {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;           /* Limit modal height */
+    overflow-y: auto;           /* Enable vertical scroll */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.modal-add-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.modal-add-label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.modal-add-input,
+.modal-add-select {
+    width: 100%;
+    margin-top: 4px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.modal-add-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-add-buttons button {
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-add-buttons .btn-add {
+    background-color: #2563eb; /* blue */
+    color: white;
+}
+
+.modal-add-buttons .btn-close {
+    background-color: #dc2626; /* red */
+    color: white;
+}
+
+/* Skeleton loading */
+.skeleton {
+    background-color: #e5e7eb; /* Tailwind's gray-200 */
+    border-radius: 4px;
+    height: 1rem;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+
+

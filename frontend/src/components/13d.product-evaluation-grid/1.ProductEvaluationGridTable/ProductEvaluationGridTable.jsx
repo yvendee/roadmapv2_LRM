@@ -722,7 +722,7 @@ const ProductEvaluationGridTable = () => {
               onChange={(e) => setNewProductEvaluationGridTable({ ...newProductEvaluationGridTable, pricingPower: e.target.value })}
             />
 
-            <label className="modal-add-label">Accelerating Growthr</label>
+            <label className="modal-add-label">Accelerating Growth</label>
             <textarea
               className="modal-add-input"
               rows="1"
