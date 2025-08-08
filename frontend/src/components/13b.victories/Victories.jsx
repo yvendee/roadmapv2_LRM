@@ -5,8 +5,8 @@ import VictoriesHeader from './0.VictoriesHeader/VictoriesHeader';
 import VictoriesTable from '../13b.victories/1.VictoriesTable/VictoriesTable';
 import useVictoriesStore from '../../store/left-lower-content/13.tools/2.victoriesStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
-
 import { useNavigate } from 'react-router-dom';
+import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 import API_URL from '../../configs/config';
 import './Victories.css';
 
