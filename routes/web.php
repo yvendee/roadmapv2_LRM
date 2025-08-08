@@ -328,6 +328,7 @@ Route::get('/api/storage/{path}', function ($path) {
 // })->where('path', '.*');
 
 
+
 Route::post('/api/file-upload/{path}', function (Request $request, $path) {
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
@@ -2516,6 +2517,613 @@ Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $reque
 });
 
 
+
+
+Route::get('/api/v1/tools/issues', function (Request $request) {
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'issueName' => 'System Issue 1',
+                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+                'status' => '100.00%',
+                'dateLogged' => '2025-03-31',
+                'who' => 'Kayven',
+                'resolution' => 'resolution here',
+                'dateResolved' => '2025-04-02',
+            ],
+            [
+                'id' => 2,
+                'issueName' => 'System Issue 2',
+                'description' => 'Systematize Client Delivery.',
+                'status' => '83.33%',
+                'dateLogged' => '2025-03-29',
+                'who' => 'Kayven',
+                'resolution' => 'resolution here 1',
+                'dateResolved' => '2025-04-03',
+            ],
+            [
+                'id' => 3,
+                'issueName' => 'System Issue 2',
+                'description' => 'Develop online Portal for Clients (Momentum Hub).',
+                'status' => '0.00%',
+                'dateLogged' => '2025-03-28',
+                'who' => 'Kayven',
+                'resolution' => 'resolution here 2',
+                'dateResolved' => '2025-04-03',
+            ],
+            [
+                'id' => 4,
+                'issueName' => 'System Issue 3',
+                'description' => 'Develop lead generation systems.',
+                'status' => '50.00%',
+                'dateLogged' => '2025-03-27',
+                'who' => 'Kayven',
+                'resolution' => 'resolution here 3',
+                'dateResolved' => '2025-04-04',
+            ],
+            [
+                'id' => 5,
+                'issueName' => 'System Issue 4',
+                'description' => '1% Genius Version 3 Development.',
+                'status' => '50.00%',
+                'dateLogged' => '2025-03-26',
+                'who' => 'Kayven',
+                'resolution' => 'resolution here 4',
+                'dateResolved' => '2025-04-05',
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'issueName' => 'Login Delay Bug',
+                'description' => 'Users experience delay when logging in via mobile app.',
+                'status' => '70.00%',
+                'dateLogged' => '2025-04-01',
+                'who' => 'John Smith',
+                'resolution' => 'Increased server cache and optimized query',
+                'dateResolved' => '2025-04-06',
+            ],
+            [
+                'id' => 2,
+                'issueName' => 'Loan Processing API Timeout',
+                'description' => 'Timeout during peak hours on loan API.',
+                'status' => '100.00%',
+                'dateLogged' => '2025-04-02',
+                'who' => 'Jane Doe',
+                'resolution' => 'Upgraded server tier and added background job queue.',
+                'dateResolved' => '2025-04-07',
+            ],
+            [
+                'id' => 3,
+                'issueName' => 'UI Bug on Dashboard',
+                'description' => 'Misaligned chart legends in the dashboard.',
+                'status' => '100.00%',
+                'dateLogged' => '2025-04-03',
+                'who' => 'Emily Davis',
+                'resolution' => 'Updated CSS and component layout.',
+                'dateResolved' => '2025-04-08',
+            ],
+            [
+                'id' => 4,
+                'issueName' => 'PDF Export Not Working',
+                'description' => 'Export to PDF fails for reports over 10 pages.',
+                'status' => '90.00%',
+                'dateLogged' => '2025-04-04',
+                'who' => 'Michael Lee',
+                'resolution' => 'Pagination fix and memory limit increased.',
+                'dateResolved' => '2025-04-09',
+            ],
+            [
+                'id' => 5,
+                'issueName' => 'Delayed Notifications',
+                'description' => 'Push notifications arriving late on Android.',
+                'status' => '60.00%',
+                'dateLogged' => '2025-04-05',
+                'who' => 'Olivia Brown',
+                'resolution' => 'Investigating Firebase token refresh issues.',
+                'dateResolved' => '',
+            ],
+        ],
+
+        'Test Skeleton Loading' => [],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+// ref: frontend\src\components\13b.victories\Victories.jsx
+Route::get('/api/v1/tools/victories', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'date' => '2025-04-02',
+                'who' => 'Kayven',
+                'milestones' => 'Systematize Coaching Framework (now called Momentum OS).',
+                'notes' => 'Notes ',
+            ],
+            [
+                'id' => 2,
+                'date' => '2025-04-03',
+                'who' => 'Kayven',
+                'milestones' => 'Systematize Client Delivery.',
+                'notes' => 'Notes 1',
+            ],
+            [
+                'id' => 3,
+                'date' => '2025-04-03',
+                'who' => 'Kayven',
+                'milestones' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
+                'notes' => 'Notes 2',
+            ],
+            [
+                'id' => 4,
+                'date' => '2025-04-04',
+                'who' => 'Kayven',
+                'milestones' => 'Develop lead generation systems.',
+                'notes' => 'Notes 3',
+            ],
+            [
+                'id' => 5,
+                'date' => '2025-04-05',
+                'who' => 'Kayven',
+                'milestones' => '1% Genius Version 3 Development.',
+                'notes' => 'Notes 4',
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'date' => '2025-04-06',
+                'who' => 'John Smith',
+                'milestones' => 'Launched AI-driven customer service chatbot.',
+                'notes' => 'Initial rollout shows 30% reduction in support tickets.',
+            ],
+            [
+                'id' => 2,
+                'date' => '2025-04-07',
+                'who' => 'Jane Doe',
+                'milestones' => 'Completed mobile app redesign.',
+                'notes' => 'User engagement up by 12% in first week.',
+            ],
+            [
+                'id' => 3,
+                'date' => '2025-04-08',
+                'who' => 'Emily Davis',
+                'milestones' => 'Automated loan processing system deployed.',
+                'notes' => 'Cut processing time from 3 days to 6 hours.',
+            ],
+            [
+                'id' => 4,
+                'date' => '2025-04-09',
+                'who' => 'Michael Lee',
+                'milestones' => 'Introduced real-time fraud alerts.',
+                'notes' => 'Detected 4 threats in pilot phase.',
+            ],
+            [
+                'id' => 5,
+                'date' => '2025-04-10',
+                'who' => 'Olivia Brown',
+                'milestones' => 'Launched new client onboarding workflow.',
+                'notes' => 'Feedback indicates smoother experience for 95% of users.',
+            ],
+        ],
+
+        'Test Skeleton Loading' => [],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+// ref: frontend\src\components\13c.big-ideas\BigIdeas.jsx
+Route::get('/api/v1/tools/big-ideas', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'date' => '2025-04-02',
+                'who' => 'Kayven',
+                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+                'impact' => 'High',
+                'when' => '2025-04-02',
+                'evaluator' => 'Team A',
+                'comments' => 'Notes',
+            ],
+            [
+                'id' => 2,
+                'date' => '2025-04-03',
+                'who' => 'Kayven',
+                'description' => 'Systematize Client Delivery.',
+                'impact' => 'Medium',
+                'when' => '2025-04-02',
+                'evaluator' => 'Team A',
+                'comments' => 'Notes 1',
+            ],
+            [
+                'id' => 3,
+                'date' => '2025-04-03',
+                'who' => 'Kayven',
+                'description' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
+                'impact' => 'High',
+                'when' => '2025-04-02',
+                'evaluator' => 'Team B',
+                'comments' => 'Notes 2',
+            ],
+            [
+                'id' => 4,
+                'date' => '2025-04-04',
+                'who' => 'Kayven',
+                'description' => 'Develop lead generation systems.',
+                'impact' => 'Medium',
+                'when' => '2025-04-02',
+                'evaluator' => 'Team B',
+                'comments' => 'Notes 3',
+            ],
+            [
+                'id' => 5,
+                'date' => '2025-04-05',
+                'who' => 'Kayven',
+                'description' => '1% Genius Version 3 Development.',
+                'impact' => 'High',
+                'when' => '2025-04-02',
+                'evaluator' => 'Team C',
+                'comments' => 'Notes 4',
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'date' => '2025-04-10',
+                'who' => 'John Smith',
+                'description' => 'Implement AI-powered fraud detection system.',
+                'impact' => 'High',
+                'when' => '2025-04-12',
+                'evaluator' => 'Compliance Team',
+                'comments' => 'Could significantly reduce manual work.',
+            ],
+            [
+                'id' => 2,
+                'date' => '2025-04-11',
+                'who' => 'Jane Doe',
+                'description' => 'Develop mobile-first loan application flow.',
+                'impact' => 'Medium',
+                'when' => '2025-04-15',
+                'evaluator' => 'Product Team',
+                'comments' => 'Requires UX review and integration.',
+            ],
+            [
+                'id' => 3,
+                'date' => '2025-04-12',
+                'who' => 'Emily Davis',
+                'description' => 'Launch customer rewards pilot program.',
+                'impact' => 'High',
+                'when' => '2025-04-20',
+                'evaluator' => 'Marketing Team',
+                'comments' => 'Align with Q2 marketing calendar.',
+            ],
+            [
+                'id' => 4,
+                'date' => '2025-04-13',
+                'who' => 'Mark Thompson',
+                'description' => 'Introduce automated document verification.',
+                'impact' => 'Medium',
+                'when' => '2025-04-18',
+                'evaluator' => 'Operations Team',
+                'comments' => 'Needs vendor evaluation.',
+            ],
+            [
+                'id' => 5,
+                'date' => '2025-04-14',
+                'who' => 'Sarah Lee',
+                'description' => 'Enhance chatbot with multi-language support.',
+                'impact' => 'High',
+                'when' => '2025-04-25',
+                'evaluator' => 'Tech Team',
+                'comments' => 'Customer demand in bilingual regions.',
+            ],
+        ],
+
+        'Test Skeleton Loading' => [],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+// ref: frontend\src\components\13d.product-evaluation-grid\ProductEvaluationGrid.jsx
+Route::get('/api/v1/tools/product-evaluation-grid', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'productName' => 'Momentum OS',
+                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+                'pricingPower' => 'High',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '60%',
+                'marketShare' => '10%',
+                'customerSatisfaction' => 'Excellent',
+                'innovationPotential' => 'High',
+                'operationEfficiency' => 'Strong',
+                'lifeCycleStage' => 'Growth',
+            ],
+            [
+                'id' => 2,
+                'productName' => 'Client Delivery System',
+                'description' => 'Systematize Client Delivery.',
+                'pricingPower' => 'Medium',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '55%',
+                'marketShare' => '8%',
+                'customerSatisfaction' => 'Good',
+                'innovationPotential' => 'Medium',
+                'operationEfficiency' => 'Moderate',
+                'lifeCycleStage' => 'Growth',
+            ],
+            [
+                'id' => 3,
+                'productName' => 'Momentum Hub',
+                'description' => 'Online Portal for Clients (Beta completed with eDoc by March 31).',
+                'pricingPower' => 'High',
+                'acceleratingGrowth' => 'No',
+                'profitMargin' => '0%',
+                'marketShare' => '0%',
+                'customerSatisfaction' => 'Pending',
+                'innovationPotential' => 'High',
+                'operationEfficiency' => 'Early',
+                'lifeCycleStage' => 'Introduction',
+            ],
+            [
+                'id' => 4,
+                'productName' => 'Lead Gen System',
+                'description' => 'Develop lead generation systems.',
+                'pricingPower' => 'Medium',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '50%',
+                'marketShare' => '5%',
+                'customerSatisfaction' => 'Average',
+                'innovationPotential' => 'Medium',
+                'operationEfficiency' => 'Developing',
+                'lifeCycleStage' => 'Development',
+            ],
+            [
+                'id' => 5,
+                'productName' => '1% Genius v3',
+                'description' => '1% Genius Version 3 Development.',
+                'pricingPower' => 'High',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '65%',
+                'marketShare' => '12%',
+                'customerSatisfaction' => 'Excellent',
+                'innovationPotential' => 'Very High',
+                'operationEfficiency' => 'Optimized',
+                'lifeCycleStage' => 'Maturity',
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'productName' => 'Member Insights Platform',
+                'description' => 'Tool for analyzing member behavior and feedback.',
+                'pricingPower' => 'High',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '58%',
+                'marketShare' => '9%',
+                'customerSatisfaction' => 'Excellent',
+                'innovationPotential' => 'High',
+                'operationEfficiency' => 'Optimized',
+                'lifeCycleStage' => 'Growth',
+            ],
+            [
+                'id' => 2,
+                'productName' => 'Loan Automation Suite',
+                'description' => 'Automated end-to-end loan processing system.',
+                'pricingPower' => 'Medium',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '62%',
+                'marketShare' => '7%',
+                'customerSatisfaction' => 'Good',
+                'innovationPotential' => 'Medium',
+                'operationEfficiency' => 'Efficient',
+                'lifeCycleStage' => 'Maturity',
+            ],
+            [
+                'id' => 3,
+                'productName' => 'Digital Branch App',
+                'description' => 'Mobile-first banking app for members.',
+                'pricingPower' => 'High',
+                'acceleratingGrowth' => 'No',
+                'profitMargin' => '48%',
+                'marketShare' => '4%',
+                'customerSatisfaction' => 'Pending',
+                'innovationPotential' => 'High',
+                'operationEfficiency' => 'Developing',
+                'lifeCycleStage' => 'Introduction',
+            ],
+            [
+                'id' => 4,
+                'productName' => 'Compliance Tracker',
+                'description' => 'Tracks internal compliance metrics in real-time.',
+                'pricingPower' => 'Medium',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '53%',
+                'marketShare' => '6%',
+                'customerSatisfaction' => 'Average',
+                'innovationPotential' => 'Medium',
+                'operationEfficiency' => 'Strong',
+                'lifeCycleStage' => 'Growth',
+            ],
+            [
+                'id' => 5,
+                'productName' => 'Virtual Advisor Bot',
+                'description' => 'AI chatbot that assists members with inquiries.',
+                'pricingPower' => 'High',
+                'acceleratingGrowth' => 'Yes',
+                'profitMargin' => '70%',
+                'marketShare' => '11%',
+                'customerSatisfaction' => 'Excellent',
+                'innovationPotential' => 'Very High',
+                'operationEfficiency' => 'Optimized',
+                'lifeCycleStage' => 'Maturity',
+            ],
+        ],
+
+        'Test Skeleton Loading' => [],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
+// ref: frontend\src\components\document-vault\documentVault.jsx
+Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'projectName' => 'Momentum OS',
+                'date' => '2025-03-28',
+                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+            ],
+            [
+                'id' => 2,
+                'projectName' => 'Client Delivery System',
+                'date' => '2025-03-29',
+                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+            ],
+            [
+                'id' => 3,
+                'projectName' => 'Momentum Hub',
+                'date' => '2025-03-30',
+                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+            ],
+            [
+                'id' => 4,
+                'projectName' => 'Lead Gen System',
+                'date' => '2025-03-31',
+                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+            ],
+            [
+                'id' => 5,
+                'projectName' => '1% Genius v3',
+                'date' => '2025-04-01',
+                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+            ],
+        ],
+    
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'projectName' => 'Onboarding System Revamp',
+                'date' => '2025-04-02',
+                'link' => 'https://drive.google.com/file/d/2aExampleIdCCU1/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/2aExampleIdCCU1/view?usp=sharing',
+                'uploadLink' => '/file-upload/collins/onboarding-revamp',
+                'pdflink' => '/storage/collins/onboarding-revamp/project.pdf',
+            ],
+            [
+                'id' => 2,
+                'projectName' => 'Internal Dashboard Launch',
+                'date' => '2025-04-03',
+                'link' => 'https://drive.google.com/file/d/2bExampleIdCCU2/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/2bExampleIdCCU2/view?usp=sharing',
+                'uploadLink' => '/file-upload/collins/internal-dashboard',
+                'pdflink' => '/storage/collins/internal-dashboard/project.pdf',
+            ],
+            [
+                'id' => 3,
+                'projectName' => 'Customer Support Automation',
+                'date' => '2025-04-04',
+                'link' => 'https://drive.google.com/file/d/2cExampleIdCCU3/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/2cExampleIdCCU3/view?usp=sharing',
+                'uploadLink' => '/file-upload/collins/support-automation',
+                'pdflink' => '/storage/collins/support-automation/project.pdf',
+            ],
+            [
+                'id' => 4,
+                'projectName' => 'Compliance Tracker 2.0',
+                'date' => '2025-04-05',
+                'link' => 'https://drive.google.com/file/d/2dExampleIdCCU4/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/2dExampleIdCCU4/view?usp=sharing',
+                'uploadLink' => '/file-upload/collins/compliance-tracker',
+                'pdflink' => '/storage/collins/compliance-tracker/project.pdf',
+            ],
+            [
+                'id' => 5,
+                'projectName' => 'Mobile App Security Upgrade',
+                'date' => '2025-04-06',
+                'link' => 'https://drive.google.com/file/d/2eExampleIdCCU5/view?usp=sharing',
+                'viewLink' => 'https://drive.google.com/file/d/2eExampleIdCCU5/view?usp=sharing',
+                'uploadLink' => '/file-upload/collins/mobile-security',
+                'pdflink' => '/storage/collins/mobile-security/project.pdf',
+            ],
+        ],
+    
+        'Test Skeleton Loading' => [],
+    ];
+    
+
+    return response()->json($data[$organization] ?? []);
+});
+
+
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
@@ -2596,6 +3204,38 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
     ]);
 });
 
+// ref: frontend\src\components\document-vault\documentVault.jsx
+Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organization');
+
+    $map = [
+        'Chuck Gulledge Advisors, LLC' => [
+            'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+        ],
+        'Collins Credit Union' => [
+            'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
+        ],
+        'Test Skeleton Loading' => [
+            'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
+        ],
+    ];
+
+    if (!array_key_exists($organization, $map)) {
+        return response()->json([
+            'message' => 'Organization not found',
+        ], 404);
+    }
+
+    return response()->json([
+        $organization => $map[$organization],
+    ]);
+});
 
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {

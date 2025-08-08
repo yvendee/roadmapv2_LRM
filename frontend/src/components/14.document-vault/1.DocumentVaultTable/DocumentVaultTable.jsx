@@ -4,6 +4,8 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useDocumentVaultStore, { initialDocumentVault } from '../../../store/left-lower-content/14.document-vault/1.documentVaultStore';
+import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';; 
+
 
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -37,15 +39,15 @@ const DocumentVaultTable = () => {
     projectName: '',
     date: '',
     link: '',
-    viewLink: '',
-    uploadLink: '',
     pdflink: '',
   });
+  
 
   const [currentOrder, setCurrentOrder] = useState(documentVaultTable);
   const [draggedId, setDraggedId] = useState(null);
 
   const [isEditing, setIsEditing] = useState(false);
+
 
   async function fetchCsrfToken() {
     const response = await fetch(`${API_URL}/csrf-token`, {
@@ -89,41 +91,131 @@ const DocumentVaultTable = () => {
     }, 1000);
   };
 
-  const handleAddNewDocumentVaultTable = () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Document Vault Table', JSON.stringify(newDocumentVaultTable, null, 2));
+  // const handleAddNewDocumentVaultTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Document Vault Table', JSON.stringify(newDocumentVaultTable, null, 2));
 
-    // 2. Hide Save / Discharge
-    setIsEditing(false);
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
 
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('DocumentVaultTableData');
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('DocumentVaultTableData');
   
-    // 4. Push to Zustand store
-    pushDocumentVaultTableField(newDocumentVaultTable);
+  //   // 4. Push to Zustand store
+  //   pushDocumentVaultTableField(newDocumentVaultTable);
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
   
-    // Close modal
-    setShowAddModal(false);
+  //   // Close modal
+  //   setShowAddModal(false);
   
-    // Reset form input
-    setNewDocumentVaultTable({     
-      productName: '',
-      description: '',
-      pricingPower: '',
-      acceleratingGrowth: '',
-      profitMargin: '',
-      marketShare: '',
-      customerSatisfaction: '',
-      innovationPotential: '',
-      operationEfficiency: '',
-      lifeCycleStage: '',
-    });
+  //   // Reset form input
+  //   setNewDocumentVaultTable({     
+  //     productName: '',
+  //     description: '',
+  //     pricingPower: '',
+  //     acceleratingGrowth: '',
+  //     profitMargin: '',
+  //     marketShare: '',
+  //     customerSatisfaction: '',
+  //     innovationPotential: '',
+  //     operationEfficiency: '',
+  //     lifeCycleStage: '',
+  //   });
 
+  // };
+
+  const handleAddNewDocumentVaultTable = async () => {
+    const file = newDocumentVaultTable?.file;
+    const uid = useOrganizationUIDStore.getState().uid;
+  
+    try {
+      let pdflink = '-'; // Default value if no file
+      let uploadLink = uid ? `/file-upload/${uid}` : '-';
+  
+      // Only upload if file is selected
+      if (file) {
+        const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx'];
+        const isAllowed = allowedExtensions.some((ext) =>
+          file.name.toLowerCase().endsWith(ext)
+        );
+  
+        if (!isAllowed) {
+          alert('Invalid file type.');
+          return;
+        }
+  
+        if (file.size > 10 * 1024 * 1024) {
+          alert('File size must be less than 10MB.');
+          return;
+        }
+  
+        // Get CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const formData = new FormData();
+        formData.append('file', file);
+
+        if (!uid) {
+          alert('Organization UID not set.');
+          return;
+        }
+  
+        const uploadRes = await fetch(`${API_URL}/file-upload/${uid}`, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          body: formData,
+          credentials: 'include',
+        });
+  
+        if (!uploadRes.ok) throw new Error('File upload failed');
+  
+        // Generate pdflink using uploaded file name
+        const filename = file.name;
+        uploadLink = `/file-upload/${uid}`;
+        pdflink = `/api/storage/${uid}/${filename}`;
+      }
+  
+      // Build clean document object
+      const { projectName, date, link } = newDocumentVaultTable;
+      const cleanData = {
+        projectName,
+        date,
+        link,
+        uploadLink,
+        pdflink,
+      };
+  
+      console.log('✅ New Document Vault Table:', cleanData);
+  
+      // Update Zustand store
+      useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+  
+      // Reset modal and input state
+      setShowAddModal(false);
+      setNewDocumentVaultTable({
+        projectName: '',
+        date: '',
+        link: '',
+        uploadLink: uploadLink,
+        pdflink: '',
+      });
+  
+    } catch (error) {
+      console.error('❌ Upload/Add failed:', error);
+      alert('Failed to add document.');
+    }
   };
+  
+  
 
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -657,23 +749,21 @@ const DocumentVaultTable = () => {
 
 
       {showAddModal && (
-        <div
-          className="modal-add-overlay"
-          onClick={() => setShowAddModal(false)}
-        >
-          <div
-            className="modal-add-box"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="modal-add-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
             <div className="modal-add-title">Add Document</div>
-
 
             <label className="modal-add-label">Project Name</label>
             <textarea
               className="modal-add-input"
               rows="1"
               value={newDocumentVaultTable.projectName}
-              onChange={(e) => setNewDocumentVaultTable({ ...newDocumentVaultTable, projectName: e.target.value })}
+              onChange={(e) =>
+                setNewDocumentVaultTable({
+                  ...newDocumentVaultTable,
+                  projectName: e.target.value,
+                })
+              }
             />
 
             <label className="modal-add-label">Date</label>
@@ -682,7 +772,10 @@ const DocumentVaultTable = () => {
               className="modal-add-input"
               value={newDocumentVaultTable.date}
               onChange={(e) =>
-                setNewDocumentVaultTable({ ...newDocumentVaultTable, date: e.target.value })
+                setNewDocumentVaultTable({
+                  ...newDocumentVaultTable,
+                  date: e.target.value,
+                })
               }
             />
 
@@ -691,36 +784,63 @@ const DocumentVaultTable = () => {
               className="modal-add-input"
               rows="1"
               value={newDocumentVaultTable.link}
-              onChange={(e) => setNewDocumentVaultTable({ ...newDocumentVaultTable, link: e.target.value })}
+              onChange={(e) =>
+                setNewDocumentVaultTable({
+                  ...newDocumentVaultTable,
+                  link: e.target.value,
+                })
+              }
             />
 
-            <label className="modal-add-label">View Link</label>
-            <textarea
+            <label className="modal-add-label">Choose a File</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.xls,.xlsx"
               className="modal-add-input"
-              rows="1"
-              value={newDocumentVaultTable.viewLink}
-              onChange={(e) => setNewDocumentVaultTable({ ...newDocumentVaultTable, viewLink: e.target.value })}
-            />
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            <label className="modal-add-label">Upload Link</label>
-            <textarea
-              className="modal-add-input"
-              rows="1"
-              value={newDocumentVaultTable.uploadLink}
-              onChange={(e) => setNewDocumentVaultTable({ ...newDocumentVaultTable, uploadLink: e.target.value })}
-            />
+                const validTypes = [
+                  'application/pdf',
+                  'application/msword',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                  'application/vnd.ms-excel',
+                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                ];
 
-            <label className="modal-add-label">PDF link</label>
-            <textarea
-              className="modal-add-input"
-              rows="1"
-              value={newDocumentVaultTable.pdflink}
-              onChange={(e) => setNewDocumentVaultTable({ ...newDocumentVaultTable, pdflink: e.target.value })}
+                if (!validTypes.includes(file.type)) {
+                  alert('Invalid file type. Allowed: PDF, DOC, DOCX, XLS, XLSX.');
+                  setNewDocumentVaultTable({
+                    ...newDocumentVaultTable,
+                    file: null,
+                  });
+                  return;
+                }
+
+                if (file.size > 10 * 1024 * 1024) {
+                  alert('File must be less than 10MB.');
+                  setNewDocumentVaultTable({
+                    ...newDocumentVaultTable,
+                    file: null,
+                  });
+                  return;
+                }
+
+                setNewDocumentVaultTable({
+                  ...newDocumentVaultTable,
+                  file,
+                });
+              }}
             />
 
             <div className="modal-add-buttons">
-              <button className="btn-add" onClick={handleAddNewDocumentVaultTable}>Add</button>
-              <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
+              <button className="btn-add" onClick={handleAddNewDocumentVaultTable}>
+                Add
+              </button>
+              <button className="btn-close" onClick={() => setShowAddModal(false)}>
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -890,7 +1010,7 @@ const DocumentVaultTable = () => {
                     
                         if (!response.ok) throw new Error('Upload failed.');
                     
-                        const result = await response.json();
+                        // const result = await response.json();
                         const uploadedFileName = uploadFile.name;
                         const uploadPath = selectedUploadDriver.uploadLink.replace('/file-upload/', '');
                         const newPdfLink = `${API_URL}/storage/${uploadPath}/${uploadedFileName}`;
@@ -901,6 +1021,11 @@ const DocumentVaultTable = () => {
                             ? { ...doc, pdflink: newPdfLink }
                             : doc
                         );
+
+                        // ✅ Log updated store data
+                        const updatedStoreData = useDocumentVaultStore.getState().documentVaultTable;
+                        console.log('📦 Updated Document Vault Store:', updatedStoreData);
+
                     
                         setDocumentVault(updatedData);
                         setUploadSuccess(true);

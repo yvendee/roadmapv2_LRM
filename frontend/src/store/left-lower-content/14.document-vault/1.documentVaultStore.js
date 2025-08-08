@@ -50,8 +50,6 @@ export const initialDocumentVault = [
 ];
 
 
-
-
 const useDocumentVaultStore = create((set) => ({
   documentVaultTable: initialDocumentVault,
 
