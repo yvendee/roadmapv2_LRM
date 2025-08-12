@@ -117,28 +117,28 @@ const WhoWhatWhenTable = () => {
 
     // When you start editing, initialize inputValue:
     const handleCellClick = (id, field) => {
-    setEditingCell({ id, field });
-    const driver = whoWhatWhen.find((d) => d.id === id);
-    setInputValue(driver[field]);
-    };
+      setEditingCell({ id, field });
+      const driver = whoWhatWhen.find((d) => d.id === id);
+      setInputValue(driver[field]);
+      };
 
-    const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-    };
+      const handleInputChange = (e) => {
+      setInputValue(e.target.value);
+      };
 
-    const handleInputBlur = (id, field) => {
-    updateWhoWhatWhenField(id, field, inputValue);
+      const handleInputBlur = (id, field) => {
+      updateWhoWhatWhenField(id, field, inputValue);
 
-    // Update local state for Save/Discharge buttons
-    setIsEditing(true);
+      // Update local state for Save/Discharge buttons
+      setIsEditing(true);
 
-    // Update localStorage
-    const updatedDrivers = whoWhatWhen.map((driver) =>
-        driver.id === id ? { ...driver, [field]: inputValue } : driver
-    );
-    localStorage.setItem('whoWhatWhenData', JSON.stringify(updatedDrivers));
+      // Update localStorage
+      const updatedDrivers = whoWhatWhen.map((driver) =>
+          driver.id === id ? { ...driver, [field]: inputValue } : driver
+      );
+      localStorage.setItem('whoWhatWhenData', JSON.stringify(updatedDrivers));
 
-    setEditingCell({ id: null, field: null });
+      setEditingCell({ id: null, field: null });
     };
 
 

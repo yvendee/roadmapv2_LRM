@@ -1,0 +1,75 @@
+/* frontend\src\components\16.members-directory\1.InformationSection\InformationSection.css */
+
+.access-title {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: left;
+}
+
+
+.access-body {
+    font-size: 0.95rem;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+}
+
+.fw-bold {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.access-list {
+    margin-left: 20px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #333;
+    padding-left: 15px;
+}
+
+.access-list li {
+    margin-bottom: 8px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card-header {
+    padding: 15px; /* Adjust this value to your preference */
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.bg-100 {
+    background-color: #f8f9fa;
+}
+
+.border {
+    border: 1px solid #ddd !important;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.g-3 {
+    gap: 1rem;
+}
+
+.row {
+    margin-bottom: 15px;
+}
+
+.col {
+    padding: 12px;
+}

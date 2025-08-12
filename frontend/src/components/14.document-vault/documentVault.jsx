@@ -1,4 +1,4 @@
-//frontend\src\components\document-vault\documentVault.jsx
+// frontend\src\components\14.document-vault\documentVault.jsx
 import React, { useEffect, useState } from 'react';
 import DocumentVaultHeader from './0.DocumentVaultHeader/DocumentVaultHeader';
 import DocumentVaultTable from './1.DocumentVaultTable/DocumentVaultTable';
