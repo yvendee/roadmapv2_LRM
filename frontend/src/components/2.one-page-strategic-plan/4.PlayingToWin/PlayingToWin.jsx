@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './PlayingToWin.css';
+import './RichTextEditor.css';
+import RichTextEditor from './RichTextEditor';
 
 const PlayingToWin = () => {
   const user = useLoginStore((state) => state.user);
@@ -22,6 +24,16 @@ const PlayingToWin = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const hasPlayingToWin = playingtowins.some(item => item.value === '-');
+
+  // For drag-and-drop
+  const [draggedId, setDraggedId] = useState(null);
+  const [localOrder, setLocalOrder] = useState(playingtowins);
+
+  // Sync local order from store when no edits
+  useEffect(() => {
+    if (edited.length === 0) setLocalOrder(playingtowins);
+  }, [playingtowins, edited.length]);
+  
 
   // useEffect(() => {
   //   const stored = localStorage.getItem('PlayingToWin');
@@ -49,13 +61,27 @@ const PlayingToWin = () => {
   }, [setPlayingToWin]);
 
 
+  const markEdited = (id) => {
+    if (!edited.includes(id)) setEdited((prev) => [...prev, id]);
+  };
+
+  // const handleBlur = (id, field, newValue) => {
+  //   const updatedPlayingToWin = playingtowins.map((item) =>
+  //     item.id === id ? { ...item, [field]: newValue } : item
+  //   );
+  //   setPlayingToWin(updatedPlayingToWin);
+  //   // localStorage.setItem('PlayingToWin', JSON.stringify(updatedPlayingToWin));
+  //   localStorage.setItem('PlayingToWin', JSON.stringify(localOrder));
+  //   markEdited(id);
+  //   if (!edited.includes(id)) setEdited([...edited, id]);
+  //   setEditing({ field: null, id: null });
+  // };
+
   const handleBlur = (id, field, newValue) => {
-    const updatedPlayingToWin = playingtowins.map((item) =>
-      item.id === id ? { ...item, [field]: newValue } : item
-    );
-    setPlayingToWin(updatedPlayingToWin);
-    localStorage.setItem('PlayingToWin', JSON.stringify(updatedPlayingToWin));
-    if (!edited.includes(id)) setEdited([...edited, id]);
+    updatePlayingToWin(id, field, newValue);
+    setLocalOrder((prev) => prev.map((o) => (o.id === id ? { ...o, [field]: newValue } : o)));
+    localStorage.setItem('PlayingToWin', JSON.stringify(localOrder));
+    markEdited(id);
     setEditing({ field: null, id: null });
   };
 
@@ -66,6 +92,7 @@ const PlayingToWin = () => {
     localStorage.removeItem('PlayingToWin');
     setNewPlayingToWin({ title: '', value: '' });
     setShowAddModal(false);
+    markEdited(nextId);
     // setEdited([...edited, nextId]);
 
     ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', newItem);
@@ -82,28 +109,42 @@ const PlayingToWin = () => {
   };
 
   const handleDelete = (id) => {
-    const updated = playingtowins.filter(o => o.id !== id);
-    setPlayingToWin(updated);
-    localStorage.setItem('PlayingToWin', JSON.stringify(updated));
-    if (!edited.includes(id)) setEdited([...edited, id]);
+    // const updated = playingtowins.filter(o => o.id !== id);
+    // setPlayingToWin(updated);
+    setPlayingToWin(playingtowins.filter((o) => o.id !== id));
+    setLocalOrder((prev) => prev.filter((o) => o.id !== id));
+    // localStorage.setItem('PlayingToWin', JSON.stringify(updated));
+    // if (!edited.includes(id)) setEdited([...edited, id]);
+    localStorage.setItem('PlayingToWin', JSON.stringify(localOrder));
+    markEdited(id);
 
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ PlayingToWin with ID ${id} deleted.`);
     // ENABLE_CONSOLE_LOGS && console.log('📦 Updated PlayingToWins:', updated);
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
 
-    setLoadingSave(true);
+  //   setLoadingSave(true);
   
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //     console.log('📤 Saving to store:', playingtowins);
+  //     setEdited([]);
+  //     localStorage.removeItem('PlayingToWin');
+  //     setPlayingToWin(localOrder);
+  //   }, 1000);
+
+  // };
+
+  const handleSave = () => {
+    setLoadingSave(true);
     setTimeout(() => {
       setLoadingSave(false);
-
-      console.log('📤 Saving to store:', playingtowins);
       setEdited([]);
       localStorage.removeItem('PlayingToWin');
-  
+      ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', localOrder);
+      setPlayingToWin(localOrder);
     }, 1000);
-
   };
 
   const handleDischargeChanges = () => {
@@ -117,9 +158,38 @@ const PlayingToWin = () => {
   const confirmDischarge = () => {
     localStorage.removeItem('PlayingToWin');
     setEdited([]);
+    setLocalOrder(playingtowins);
     setPlayingToWin(initialPlayingToWin);
     setShowConfirmModal(false);
   };
+
+  // Drag-and-drop handlers
+  const handleDragStart = (e, id) => {
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, id) => {
+    e.preventDefault();
+    if (draggedId === id) return;
+
+    const draggedIndex = localOrder.findIndex((o) => o.id === draggedId);
+    const overIndex = localOrder.findIndex((o) => o.id === id);
+
+    if (draggedIndex < 0 || overIndex < 0) return;
+    const updated = [...localOrder];
+    const [moved] = updated.splice(draggedIndex, 1);
+    updated.splice(overIndex, 0, moved);
+
+    setLocalOrder(updated);
+    markEdited('reorder');
+  };
+
+  const handleDragEnd = () => {
+    setDraggedId(null);
+    localStorage.setItem('PlayingToWin', JSON.stringify(localOrder));
+  };
+  
   
 
   return (
@@ -188,8 +258,15 @@ const PlayingToWin = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {playingtowins.map((item) => (
-            <div key={item.id} className="relative border rounded-md p-4 shadow-sm bg-white min-h-[100px]">
+          {/* {playingtowins.map((item) => ( */}
+          {localOrder.map((item) => (
+            <div key={item.id} 
+              className="relative border rounded-md p-4 shadow-sm bg-white min-h-[100px]"
+              draggable={user?.role === 'superadmin' && item.value !== '-'}
+              onDragStart={(e) => handleDragStart(e, item.id)}
+              onDragOver={(e) => handleDragOver(e, item.id)}
+              onDragEnd={handleDragEnd}
+            >
               {user?.role === 'superadmin' && item.value !== '-' &&  (
                 <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700"
@@ -226,7 +303,7 @@ const PlayingToWin = () => {
                   user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'value', id: item.id })
                 }
               >
-                {editing.field === 'value' && editing.id === item.id ? (
+                {/* {editing.field === 'value' && editing.id === item.id ? (
                   <textarea
                     autoFocus
                     defaultValue={item.value}
@@ -238,7 +315,22 @@ const PlayingToWin = () => {
                   <div className="skeleton w-32 h-4"></div>
                 ) : (
                   item.value
+                )} */}
+
+                {editing.field === 'value' && editing.id === item.id ? (
+                  // Use RichTextEditor for the value field
+                  <RichTextEditor
+                    value={localOrder.find((o) => o.id === item.id)?.value || ''}
+                    onChange={(val) => updatePlayingToWin(item.id, 'value', val)}
+                    autoFocus
+                    onBlur={(finalHtml) => handleBlur(item.id, 'value', finalHtml)}
+                  />
+                ) : item.value === '-' ? (
+                  <div className="skeleton w-32 h-4"/>
+                ) : (
+                  <div dangerouslySetInnerHTML={{ __html: item.value }} style={{ whiteSpace: 'pre-wrap' }}/>
                 )}
+
               </p>
 
             </div>

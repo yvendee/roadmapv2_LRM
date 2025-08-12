@@ -27,6 +27,16 @@ const FoundationsSection = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const hasPlaceholder = foundations.some(item => item.title === '-' || item.content === '-');
 
+
+  // For drag and drop
+  const [draggedId, setDraggedId] = useState(null);
+  const [localOrder, setLocalOrder] = useState(foundations);
+
+  // Sync local order when store foundations changes, unless user is editing (avoid overwriting)
+  useEffect(() => {
+    if (edited.length === 0) setLocalOrder(foundations);
+  }, [foundations, edited.length]);
+
   // const [editedFoundations, setEditedFoundations] = useState([]);
 
   // Load from localStorage
@@ -57,12 +67,19 @@ const FoundationsSection = () => {
       return prev;
     });
 
+    // Update local order also to reflect changes immediately
+    setLocalOrder(prev =>
+      prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
+    );
+
     const updated = foundations.map(f =>
       f.id === id ? { ...f, [field]: value } : f
     );
     localStorage.setItem('foundationsData', JSON.stringify(updated));
     setEditingCell({ id: null, field: null });
   };
+
+  
 
   // const handleAddFoundation = () => {
   //   pushFoundation(newFoundation);
@@ -126,20 +143,28 @@ const FoundationsSection = () => {
       let reordered = [];
   
       try {
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          reordered = parsedData.map((item, index) => ({
-            ...item,
-            id: index + 1,
-          }));
-        } else {
-          reordered = foundations.map((item, index) => ({
-            ...item,
-            id: index + 1,
-          }));
-        }
-  
+
+        // if (storedData) {
+        //   const parsedData = JSON.parse(storedData);
+        //   reordered = parsedData.map((item, index) => ({
+        //     ...item,
+        //     id: index + 1,
+        //   }));
+        // } else {
+        //   reordered = foundations.map((item, index) => ({
+        //     ...item,
+        //     id: index + 1,
+        //   }));
+        // }
+
+        // Reindex IDs just to be safe and consistent
+        const reordered = localOrder.map((item, index) => ({
+          ...item,
+          id: index + 1,
+        }));
+
         setFoundations(reordered);
+
   
         // ✅ Log updated data
         ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
@@ -198,6 +223,36 @@ const FoundationsSection = () => {
     const doc = new DOMParser().parseFromString(escapedStr, "text/html");
     return doc.documentElement.textContent;
   }
+
+  // Drag and Drop handlers
+  const handleDragStart = (e, id) => {
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, id) => {
+    e.preventDefault();
+    if (id === draggedId) return;
+
+    const draggedIndex = localOrder.findIndex(f => f.id === draggedId);
+    const overIndex = localOrder.findIndex(f => f.id === id);
+
+    if (draggedIndex === -1 || overIndex === -1) return;
+
+    const reordered = [...localOrder];
+    const [draggedItem] = reordered.splice(draggedIndex, 1);
+    reordered.splice(overIndex, 0, draggedItem);
+
+    setLocalOrder(reordered);
+
+    // Mark edited for reorder action
+    if (edited.length === 0) setEdited([{ id: 'reorder' }]);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedId(null);
+  };
+  
 
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
@@ -269,11 +324,19 @@ const FoundationsSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {foundations.map((item) => {
+        {/* {foundations.map((item) => {
+          const isPlaceholder = item.title === '-' && item.content === '-'; */}
+        {localOrder.map((item) => {
           const isPlaceholder = item.title === '-' && item.content === '-';
 
           return (
-            <div key={item.id} className="relative border rounded-md p-4 bg-white shadow-sm min-h-[160px]">
+            <div key={item.id} 
+              className="relative border rounded-md p-4 bg-white shadow-sm min-h-[160px]"
+              draggable={loggedUser?.role === 'superadmin' && !isPlaceholder}
+              onDragStart={(e) => handleDragStart(e, item.id)}
+              onDragOver={(e) => handleDragOver(e, item.id)}
+              onDragEnd={handleDragEnd}
+            >
               {loggedUser?.role === 'superadmin' && !isPlaceholder && (
                 <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700"
@@ -324,25 +387,26 @@ const FoundationsSection = () => {
                   item.content || '\u00A0'
                 )} */}
 
-{editingCell.id === item.id && editingCell.field === 'content' ? (
-  <RichTextEditor
-    value={foundations.find(f => f.id === item.id)?.content || ''}
-    onChange={(val) => updateFoundationField(item.id, 'content', val)}
-    autoFocus
-    onBlur={(finalHtml) => handleInputBlur(item.id, 'content', finalHtml)} 
-  />
-) : item.content === '-' ? (
-  <div className="space-y-2">
-    <div className="skeleton w-full h-3"></div>
-    <div className="skeleton w-5/6 h-3"></div>
-  </div>
-) : (
-<div
-  dangerouslySetInnerHTML={{ __html: item.content || '\u00A0' }}
-  className="text-sm"
-  style={{ whiteSpace: 'pre-wrap' }}
-/>
-)}
+                {editingCell.id === item.id && editingCell.field === 'content' ? (
+                  <RichTextEditor
+                    // value={foundations.find(f => f.id === item.id)?.content || ''}
+                    value={localOrder.find(f => f.id === item.id)?.content || ''}
+                    onChange={(val) => updateFoundationField(item.id, 'content', val)}
+                    autoFocus
+                    onBlur={(finalHtml) => handleInputBlur(item.id, 'content', finalHtml)} 
+                  />
+                ) : item.content === '-' ? (
+                  <div className="space-y-2">
+                    <div className="skeleton w-full h-3"></div>
+                    <div className="skeleton w-5/6 h-3"></div>
+                  </div>
+                ) : (
+                <div
+                  dangerouslySetInnerHTML={{ __html: item.content || '\u00A0' }}
+                  className="text-sm"
+                  style={{ whiteSpace: 'pre-wrap' }}
+                />
+                )}
 
               </p>
             </div>

@@ -3008,7 +3008,7 @@ Route::get('/api/v1/tools/product-evaluation-grid', function (Request $request) 
 });
 
 
-// ref: frontend\src\components\document-vault\documentVault.jsx
+// ref: frontend\src\components\14.document-vault\documentVault.jsx
 Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3119,6 +3119,127 @@ Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_
         'Test Skeleton Loading' => [],
     ];
     
+
+    return response()->json($data[$organization] ?? []);
+});
+
+// ref: frontend\src\components\15.members-departments\membersDepartments.jsx
+Route::get('/api/v1/members-departments', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            ['id' => 1, 'name' => 'Momentum OS'],
+            ['id' => 2, 'name' => 'Client Delivery System'],
+            ['id' => 3, 'name' => 'Momentum Hub'],
+            ['id' => 4, 'name' => 'Lead Gen System'],
+            ['id' => 5, 'name' => '1% Genius v3'],
+        ],
+        'Collins Credit Union' => [
+            ['id' => 1, 'name' => 'Internal Training'],
+            ['id' => 2, 'name' => 'Customer Service'],
+            ['id' => 3, 'name' => 'Compliance and Risk'],
+            ['id' => 4, 'name' => 'Financial Planning'],
+            ['id' => 5, 'name' => 'Digital Transformation'],
+        ],
+        'Test Skeleton Loading' => [
+            ['id' => 1, 'name' => '-'],
+            ['id' => 2, 'name' => '-'],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? []);
+});
+
+// ref: frontend\src\components\16.members-directory\membersDirectory.jsx
+Route::get('/api/v1/members-directory', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'fullname' => 'Maricar Aquino',
+                'company' => 'Chuck Gulledge Advisors, LLC',
+                'email' => 'maricar@chuckgulledge.com',
+                'department' => 'Admin',
+                'memberAccess' => 'Leadership',
+                'canLogin' => 'Yes',
+            ],
+            [
+                'id' => 2,
+                'fullname' => 'Chuck Gulledge',
+                'company' => 'Chuck Gulledge Advisors, LLC',
+                'email' => 'chuck.gulledge@gmail.com',
+                'department' => 'Admin',
+                'memberAccess' => 'Superadmin',
+                'canLogin' => 'Yes',
+            ],
+        ],
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'fullname' => 'Alex Parker',
+                'company' => 'Collins Credit Union',
+                'email' => 'alex.parker@collinscu.com',
+                'department' => 'Customer Service',
+                'memberAccess' => 'Admin',
+                'canLogin' => 'Yes',
+            ],
+            [
+                'id' => 2,
+                'fullname' => 'Jamie Lee',
+                'company' => 'Collins Credit Union',
+                'email' => 'jamie.lee@collinscu.com',
+                'department' => 'Compliance and Risk',
+                'memberAccess' => 'Supervisor',
+                'canLogin' => 'No',
+            ],
+        ],
+        'Test Skeleton Loading' => [
+            [
+                'id' => 1,
+                'fullname' => '-',
+                'company' => '-',
+                'email' => '-',
+                'department' => '-',
+                'memberAccess' => '-',
+                'canLogin' => '-',
+            ],
+
+            [
+                'id' => 2,
+                'fullname' => '-',
+                'company' => '-',
+                'email' => '-',
+                'department' => '-',
+                'memberAccess' => '-',
+                'canLogin' => '-',
+            ],
+
+            [
+                'id' => 3,
+                'fullname' => '-',
+                'company' => '-',
+                'email' => '-',
+                'department' => '-',
+                'memberAccess' => '-',
+                'canLogin' => '-',
+            ],
+        ],
+    ];
 
     return response()->json($data[$organization] ?? []);
 });
