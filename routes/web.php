@@ -3245,6 +3245,273 @@ Route::get('/api/v1/members-directory', function (Request $request) use ($API_se
 });
 
 
+// ref: frontend\src\components\0.messaging\Messaging.jsx
+Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $fullname = $request->query('fullname'); // e.g., "Maricar Aquino"
+    $sender = $request->query('sender');     // e.g., "Kayven Delatado"
+
+    // Mock message data structured as: $messages[fullname][sender] = [ ... ]
+    $messages = [
+        'Maricar Aquino' => [
+            'Kayven Delatado' => [
+                [
+                    'id' => 1,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Kayven Delatado',
+                    'content' => 'Hey, just checking in on the latest update.',
+                    'datetime' => '2025-08-13 09:00 AM',
+                ],
+                [
+                    'id' => 2,
+                    'sender' => 'Kayven Delatado',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'All good on my side, thanks for following up!',
+                    'datetime' => '2025-08-13 09:02 AM',
+                ],
+                [
+                    'id' => 3,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Kayven Delatado',
+                    'content' => 'Great to hear! Let’s sync later this afternoon.',
+                    'datetime' => '2025-08-13 09:05 AM',
+                ],
+                [
+                    'id' => 4,
+                    'sender' => 'Kayven Delatado',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Sure thing, I’ll be free after 2 PM.',
+                    'datetime' => '2025-08-13 09:06 AM',
+                ],
+                [
+                    'id' => 5,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Kayven Delatado',
+                    'content' => 'Perfect, I’ll send a calendar invite.',
+                    'datetime' => '2025-08-13 09:08 AM',
+                ],
+            ],
+            'Jamie Lee' => [
+                [
+                    'id' => 1,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Jamie Lee',
+                    'content' => 'Hey Jamie, did you get the file?',
+                    'datetime' => '2025-08-13 10:00 AM',
+                ],
+                [
+                    'id' => 2,
+                    'sender' => 'Jamie Lee',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Yes! Reviewing it now.',
+                    'datetime' => '2025-08-13 10:01 AM',
+                ],
+                [
+                    'id' => 3,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Jamie Lee',
+                    'content' => 'Cool. Let me know your thoughts.',
+                    'datetime' => '2025-08-13 10:02 AM',
+                ],
+                [
+                    'id' => 4,
+                    'sender' => 'Jamie Lee',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Looks good so far.',
+                    'datetime' => '2025-08-13 10:03 AM',
+                ],
+                [
+                    'id' => 5,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Jamie Lee',
+                    'content' => 'Awesome!',
+                    'datetime' => '2025-08-13 10:04 AM',
+                ],
+            ],
+            'John Santos' => [
+                [
+                    'id' => 1,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'John Santos',
+                    'content' => 'John, can we reschedule?',
+                    'datetime' => '2025-08-13 11:00 AM',
+                ],
+                [
+                    'id' => 2,
+                    'sender' => 'John Santos',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Sure, no problem.',
+                    'datetime' => '2025-08-13 11:01 AM',
+                ],
+                [
+                    'id' => 3,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'John Santos',
+                    'content' => 'Thanks a lot.',
+                    'datetime' => '2025-08-13 11:02 AM',
+                ],
+                [
+                    'id' => 4,
+                    'sender' => 'John Santos',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Catch you later.',
+                    'datetime' => '2025-08-13 11:03 AM',
+                ],
+                [
+                    'id' => 5,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'John Santos',
+                    'content' => 'Bye!',
+                    'datetime' => '2025-08-13 11:04 AM',
+                ],
+            ],
+            'Angela Reyes' => [
+                [
+                    'id' => 1,
+                    'sender' => 'Angela Reyes',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Are you free to chat?',
+                    'datetime' => '2025-08-13 01:00 PM',
+                ],
+                [
+                    'id' => 2,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Angela Reyes',
+                    'content' => 'Give me 5 mins.',
+                    'datetime' => '2025-08-13 01:01 PM',
+                ],
+                [
+                    'id' => 3,
+                    'sender' => 'Angela Reyes',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Sure!',
+                    'datetime' => '2025-08-13 01:02 PM',
+                ],
+                [
+                    'id' => 4,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Angela Reyes',
+                    'content' => 'Ready now.',
+                    'datetime' => '2025-08-13 01:05 PM',
+                ],
+                [
+                    'id' => 5,
+                    'sender' => 'Angela Reyes',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Calling you.',
+                    'datetime' => '2025-08-13 01:06 PM',
+                ],
+            ],
+            'Mark Villanueva' => [
+                [
+                    'id' => 1,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Mark Villanueva',
+                    'content' => 'Got your request. On it!',
+                    'datetime' => '2025-08-13 02:00 PM',
+                ],
+                [
+                    'id' => 2,
+                    'sender' => 'Mark Villanueva',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => 'Appreciate it.',
+                    'datetime' => '2025-08-13 02:01 PM',
+                ],
+                [
+                    'id' => 3,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Mark Villanueva',
+                    'content' => 'Will update you shortly.',
+                    'datetime' => '2025-08-13 02:02 PM',
+                ],
+                [
+                    'id' => 4,
+                    'sender' => 'Mark Villanueva',
+                    'receipt' => 'Maricar Aquino',
+                    'content' => '👍',
+                    'datetime' => '2025-08-13 02:03 PM',
+                ],
+                [
+                    'id' => 5,
+                    'sender' => 'Maricar Aquino',
+                    'receipt' => 'Mark Villanueva',
+                    'content' => 'Done!',
+                    'datetime' => '2025-08-13 02:04 PM',
+                ],
+            ],
+        ],
+    ];
+
+    return response()->json(
+        $messages[$fullname][$sender] ?? []
+    );
+});
+
+
+// ref: frontend\src\components\0.messaging\Messaging.jsx
+Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // Return all contacts regardless of sender
+    $contacts = [
+        ['id' => 1, 'name' => 'Kayven Delatado'],
+        ['id' => 2, 'name' => 'Maricar Aquino'],
+        ['id' => 3, 'name' => 'John Santos'],
+        ['id' => 4, 'name' => 'Angela Reyes'],
+        ['id' => 5, 'name' => 'Mark Villanueva'],
+    ];
+
+    return response()->json($contacts);
+});
+
+// ref: frontend\src\components\0.messaging\Messaging.jsx
+Route::get('/api/v1/left-conversations', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $fullname = $request->query('fullname');
+
+    $mockData = [
+        'Kayven Delatado' => [
+            ['id' => 1, 'sender' => 'Jamie Lee', 'uid' => 'UID-101'],
+            ['id' => 2, 'sender' => 'Maricar Aquino', 'uid' => 'UID-102'],
+            ['id' => 3, 'sender' => 'John Santos', 'uid' => 'UID-103'],
+            ['id' => 4, 'sender' => 'Angela Reyes', 'uid' => 'UID-104'],
+            ['id' => 5, 'sender' => 'Mark Villanueva', 'uid' => 'UID-105'],
+        ],
+        'Jamie Lee' => [
+            ['id' => 1, 'sender' => 'Kayven Delatado', 'uid' => 'UID-201'],
+            ['id' => 2, 'sender' => 'Mark Villanueva', 'uid' => 'UID-202'],
+            ['id' => 3, 'sender' => 'Angela Reyes', 'uid' => 'UID-203'],
+            ['id' => 4, 'sender' => 'Maricar Aquino', 'uid' => 'UID-204'],
+            ['id' => 5, 'sender' => 'John Santos', 'uid' => 'UID-205'],
+        ],
+        'Maricar Aquino' => [
+            ['id' => 1, 'sender' => 'Kayven Delatado', 'uid' => 'UID-301'],
+            ['id' => 2, 'sender' => 'Jamie Lee', 'uid' => 'UID-302'],
+            // ['id' => 3, 'sender' => 'Angela Reyes', 'uid' => 'UID-303'],
+            // ['id' => 4, 'sender' => 'John Santos', 'uid' => 'UID-304'],
+            // ['id' => 5, 'sender' => 'Mark Villanueva', 'uid' => 'UID-305'],
+        ],
+    ];
+
+    return response()->json($mockData[$fullname] ?? []);
+});
+
+
+
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
@@ -3295,6 +3562,43 @@ Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_s
         'organization' => $organization,
         'unique_id' => uniqid(), // just example
     ]);
+});
+
+
+// ref: 
+Route::get('/api/v1/notifications', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $fullname = $request->query('fullname');
+
+    $data = [
+        'Maricar Aquino' => [
+            ['message' => "Welcome back, Maricar!", 'notification_status' => 'unread'],
+            ['message' => "Strategy session scheduled at 3 PM.", 'notification_status' => 'unread'],
+        ],
+        'Chuck Gulledge' => [
+            ['message' => "You have a new coaching request.", 'notification_status' => 'unread'],
+            ['message' => "Reminder: Leadership webinar at 2 PM.", 'notification_status' => 'unread'],
+        ],
+        'Kayven Delatado' => [
+            ['message' => "Your password will expire soon.", 'notification_status' => 'unread'],
+            ['message' => "Team update: Weekly review posted.", 'notification_status' => 'unread'],
+        ],
+        'UAT Test' => [
+            ['message' => "Report submitted successfully.", 'notification_status' => 'unread'],
+            ['message' => "Don’t forget the meeting notes.", 'notification_status' => 'unread'],
+        ],
+        'Jamie Lee' => [
+            ['message' => "Performance review scheduled.", 'notification_status' => 'unread'],
+            ['message' => "New announcement: Office hours updated.", 'notification_status' => 'unread'],
+        ],
+    ];
+
+    return response()->json($data[$fullname] ?? []);
 });
 
 

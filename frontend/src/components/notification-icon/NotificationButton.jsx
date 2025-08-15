@@ -2,13 +2,54 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import useNotificationStore from '../../store/notificationStore'; 
+import useLoginStore from '../../store/loginStore';
+import API_URL from '../../configs/config';
+import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
 const NotificationButton = () => {
+  const user = useLoginStore((state) => state.user);
+  const setNotifications = useNotificationStore((state) => state.setNotifications);
+
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const notifications = useNotificationStore((state) => state.notifications);
   const markAllAsRead = useNotificationStore((state) => state.markAllAsRead);
+
+  // Fetch Notification Data
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!user?.fullname) return;
+
+      try {
+        const response = await fetch(
+          `${API_URL}/v1/notifications?fullname=${encodeURIComponent(user.fullname)}`,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok && Array.isArray(data)) {
+          setNotifications(data);
+          ENABLE_CONSOLE_LOGS && console.log('📥 Notifications received:', data);
+        } else {
+          console.error('Failed to fetch notifications:', data?.message || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [user?.fullname, setNotifications]);
+  
 
   // const toggleDropdown = () => {
   //   setOpen(prev => !prev);

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Login from './pages/login/Login';
+import ForgotPassword from './pages/forgot-password/ForgotPassword';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/1.home/Home';
 import Review from './components/review/Review';
@@ -34,6 +35,7 @@ import SettingsButton from './components/settings-icon/SettingsButton';
 import MessageButton from './components/message-icon/MessageButton';
 import NotificationButton from './components/notification-icon/NotificationButton';
 import AccountButton from './components/account-icon/AccountButton';
+import ChatInterface from './components/0.messaging/Messaging';
 import Tooltip from './components/tooltip/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
@@ -44,7 +46,8 @@ import './index.css';
 function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
 
   const location = useLocation();
-  const isLoginPage = location.pathname === '/';
+  // const isLoginPage = location.pathname === '/';
+  const isLoginPage = location.pathname === '/' || location.pathname === '/forgot-password';
   const loggedUser = useLoginStore((state) => state.user); // Assuming user data includes role
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
   const isStrategicPlanPage = location.pathname === '/one-page-strategic-plan'; // Check if on the right page
@@ -152,6 +155,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
         <div className={`${isLoginPage ? '' : 'flex-grow overflow-auto'}`}>
           <Routes>
             <Route path="/" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/home" element={<Home />} />
             <Route path="/review" element={<Review />} />
             <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />
@@ -174,6 +178,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/document-vault" element={<DocumentVault />} />
             <Route path="/members-departments" element={<MembersDepartments />} />
             <Route path="/members-directory" element={<MembersDirectory />} />
+            <Route path="/messaging" element={<ChatInterface />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import logo from '../../assets/images/webp/momentum-logo.webp';
 import useLoginStore from '../../store/loginStore'; 
 import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
@@ -240,7 +240,9 @@ const Login = () => {
               />
               <span>Remember me</span>
             </label>
-            <a href="#" className="text-sm text-blue-500 hover:underline">Forgot Password?</a>
+            <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
+              Forgot Password?
+            </Link>
           </div>
 
           <button
