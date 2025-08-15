@@ -1,0 +1,60 @@
+/* frontend\src\components\0.messaging\Messaging.css */
+
+
+.modal-overlay-add-contact {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(128, 128, 128, 0.5); /* gray with 50% opacity */
+    z-index: 40;
+  }
+
+.horizontal-box {
+    display: flex;
+    flex-direction: row;
+    margin: 7px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* consistent gap */
+  }
+  
+.modal-add-contact-btn,
+.modal-close-contact-btn {
+min-width: 80px;
+height: 40px;
+padding: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+font-weight: bold;
+border: none;
+border-radius: 5px;
+color: white;
+cursor: pointer;
+}
+
+.modal-add-contact-btn {
+background-color: blue;
+}
+
+.modal-close-contact-btn {
+background-color: red;
+}
+
+
+
+/* Scroll appears after ~6 items (~80px each) */
+.conversation-list {
+  max-height: calc(6 * 80px);
+  overflow-y: auto;
+}
+
+/* Small scrollbar */
+.conversation-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversation-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
