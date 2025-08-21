@@ -3491,7 +3491,6 @@ Route::get('/api/v1/left-conversations', function (Request $request) use ($API_s
 });
 
 
-
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
