@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 
 // Configurable flag to enable/disable authentication
-$API_secure = true;
-// $API_secure = false;
+// $API_secure = true;
+$API_secure = false;
 
 Route::get('/api/me', function () {
     return response()->json([
@@ -116,7 +116,7 @@ Route::post('/api/login', function (Request $request) {
             'name' => 'Kay Dee',
             'role' => 'admin',
             'group' => 'executive',
-            'organization' => 'kay organization ',
+            'organization' => 'kay organizations',
             'position' => 'admin',
 
         ],
@@ -397,20 +397,6 @@ Route::get('/api/mock-response3', function () {
 
 
 
-// // Your API route(s)
-// Route::get('/api/mock-response5', function () {
-//     return response()->json([
-//         'status' => 'success',
-//         'message' => 'This is a mock response',
-//         'data' => [
-//             'id' => 1,
-//             'name' => 'mock User',
-//             'email' => 'mock@example.com',
-//         ],
-//     ]);
-// });
-
-
 // Your API route(s)
 Route::get('/api/mock-response4', function (Request $request) {
 
@@ -455,7 +441,6 @@ Route::get('/api/keep-alive', function (Request $request) {
 });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-
 Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
 
     if ($API_secure) {
@@ -570,7 +555,6 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-
 Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -1012,7 +996,7 @@ Route::get('/api/v1/scoreboard/company-traction-cards', function (Request $reque
     return response()->json($data[$organization] ?? []);
 });
 
-
+// ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
 Route::get('/api/v1/scoreboard/project-progress', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -1948,7 +1932,7 @@ Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure
 
 
 // ref: frontend\src\components\9.session-dates\sessionDates.jsx
-Route::get('/api/v1/session-tracker/monthly-sessions', function (Request $request) use ($API_secure) {
+Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -1983,7 +1967,6 @@ Route::get('/api/v1/session-tracker/monthly-sessions', function (Request $reques
         $organization => $data[$organization] ?? [],
     ]);
 });
-
 
 // ref: frontend\src\components\9.session-dates\sessionDates.jsx
 Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
@@ -2516,9 +2499,7 @@ Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $reque
     return response()->json($data[$organization] ?? ['coachingGoalsItems' => []]);
 });
 
-
-
-
+// ref: // frontend\src\components\13a.issues\Issues.jsx
 Route::get('/api/v1/tools/issues', function (Request $request) {
     $organization = $request->query('organization');
 
@@ -2634,7 +2615,6 @@ Route::get('/api/v1/tools/issues', function (Request $request) {
 
     return response()->json($data[$organization] ?? []);
 });
-
 
 // ref: frontend\src\components\13b.victories\Victories.jsx
 Route::get('/api/v1/tools/victories', function (Request $request) use ($API_secure) {
@@ -3565,7 +3545,7 @@ Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_s
 });
 
 
-// ref: 
+// ref: frontend\src\components\notification-icon\NotificationButton.jsx
 Route::get('/api/v1/notifications', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
