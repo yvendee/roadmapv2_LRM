@@ -32,7 +32,7 @@ const SessionDates = () => {
   useEffect(() => {
     const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/session-tracker/monthly-sessions?organization=${encodedOrg}`, {
+    fetch(`${API_URL}/v1/session-dates/monthly-sessions-tracker?organization=${encodedOrg}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

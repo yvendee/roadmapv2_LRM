@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Login from './pages/login/Login';
 import ForgotPassword from './pages/forgot-password/ForgotPassword';
+import CreateUser  from './pages/create-user/CreateUser';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './components/1.home/Home';
 import Review from './components/review/Review';
@@ -47,7 +48,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
 
   const location = useLocation();
   // const isLoginPage = location.pathname === '/';
-  const isLoginPage = location.pathname === '/' || location.pathname === '/forgot-password';
+  const isLoginPage = location.pathname === '/' || location.pathname === '/forgot-password' || location.pathname === '/create-user';
   const loggedUser = useLoginStore((state) => state.user); // Assuming user data includes role
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
   const isStrategicPlanPage = location.pathname === '/one-page-strategic-plan'; // Check if on the right page
@@ -156,6 +157,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/create-user" element={<CreateUser />} />
             <Route path="/home" element={<Home />} />
             <Route path="/review" element={<Review />} />
             <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />

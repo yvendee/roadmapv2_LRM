@@ -1,0 +1,152 @@
+/* frontend\src\pages\create-user\CreateUser.css */
+.create-user-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    /* box-shadow: 0 0 12px rgba(0, 0, 0, 0.1); */
+}
+
+.create-user-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.create-user-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-user-floating-input {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.create-user-floating-input input {
+    width: 100%;
+    padding: 1rem 0.5rem 0.25rem;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+}
+
+.create-user-floating-input label {
+    position: absolute;
+    left: 0.5rem;
+    top: 1rem;
+    color: #6b7280;
+    background: white;
+    padding: 0 0.25rem;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+}
+
+.create-user-floating-input input:focus + label,
+.create-user-floating-input input:not(:placeholder-shown):valid + label,
+.create-user-floating-input label.filled {
+    top: -0.5rem;
+    left: 0.4rem;
+    font-size: 0.75rem;
+    color: #2563eb;
+}
+
+
+.create-user-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.create-user-btn {
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.create-user-btn-blue {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+}
+
+.create-user-btn-blue:hover {
+    background-color: #2563eb;
+}
+
+.create-user-btn-red {
+    background-color: #ef4444; /* red-500 */
+    color: white;
+}
+
+.create-user-btn-red:hover {
+    background-color: #dc2626;
+}
+
+.create-user-feedback {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.create-user-feedback.success {
+    color: #10b981; /* green-500 */
+}
+
+.create-user-feedback.error {
+    color: #ef4444; /* red-500 */
+}
+
+
+.create-user-floating-input {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+  
+
+.create-user-floating-input-field {
+    width: 100%;
+    padding: 1.5rem 0.5rem 0.5rem; /* Increased top padding */
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+    background-color: white;
+    height: 3.25rem; /* Ensures enough vertical height */
+    box-sizing: border-box;
+}
+  
+
+.create-user-select-wrapper {
+    margin-bottom: 1rem; /* reduced spacing for tighter grouping */
+    display: flex;
+    flex-direction: column;
+}
+
+.create-user-select {
+    margin-bottom: 0.25rem; /* reduced spacing below the dropdown */
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background-color: white;
+}
+  
+.create-user-error {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin: 0 0 0 0.25rem; /* minimal spacing to align with the dropdown */
+}
+  
+
+
+.create-user-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+  

@@ -507,6 +507,1059 @@
                 }
             }
         },
+        "/api/v1/scoreboard/annual-priorities": {
+            "get": {
+                "tags": [
+                    "Scoreboard"
+                ],
+                "summary": "Get Annual Priorities scoreboard data for an Organization",
+                "operationId": "6504b92663a49921a5d8dfd5f54b1ef5",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve Annual Priorities scoreboard",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns average score and member scores for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "average": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 64.28
+                                        },
+                                        "members": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Maricar Aquino"
+                                                    },
+                                                    "score": {
+                                                        "type": "integer",
+                                                        "example": 100
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/scoreboard/company-traction-cards": {
+            "get": {
+                "tags": [
+                    "Scoreboard"
+                ],
+                "summary": "Get Company Traction Cards data for an Organization",
+                "operationId": "941ea1625603b76322a4f1f7edbe2948",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve traction card percentages",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns quarterly traction card percentages for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "label": {
+                                                "type": "string",
+                                                "example": "Q1"
+                                            },
+                                            "percent": {
+                                                "type": "integer",
+                                                "example": 100
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/scoreboard/project-progress": {
+            "get": {
+                "tags": [
+                    "Scoreboard"
+                ],
+                "summary": "Get Project Progress data for an Organization",
+                "operationId": "8815ccebc70763e1d4e413d1b0cf1987",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve project progress",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns number of completed and total projects for the specified organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "completed": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 36
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/growth-command-center/metrics": {
+            "get": {
+                "tags": [
+                    "Growth Command Center"
+                ],
+                "summary": "Get Growth Command Center metrics for an Organization",
+                "operationId": "4678d8197ff531b8fb75f9d7ac8210f9",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve growth metrics",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns annual metric progress data for an organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Checks Processed"
+                                                    },
+                                                    "percent": {
+                                                        "type": "integer",
+                                                        "example": 30
+                                                    },
+                                                    "annualGoal": {
+                                                        "type": "integer",
+                                                        "example": 20000
+                                                    },
+                                                    "current": {
+                                                        "type": "integer",
+                                                        "example": 18888
+                                                    },
+                                                    "monthlyData": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "month": {
+                                                                    "type": "string",
+                                                                    "example": "Jan"
+                                                                },
+                                                                "goal": {
+                                                                    "type": "integer",
+                                                                    "example": 1500
+                                                                },
+                                                                "current": {
+                                                                    "type": "integer",
+                                                                    "example": 1300
+                                                                },
+                                                                "progress": {
+                                                                    "type": "integer",
+                                                                    "example": 87
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "quarterlyData": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "quarter": {
+                                                                    "type": "string",
+                                                                    "example": "Q1"
+                                                                },
+                                                                "goal": {
+                                                                    "type": "integer",
+                                                                    "example": 4800
+                                                                },
+                                                                "current": {
+                                                                    "type": "integer",
+                                                                    "example": 5000
+                                                                },
+                                                                "progress": {
+                                                                    "type": "integer",
+                                                                    "example": 104
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/growth-command-center/revenue-growth": {
+            "get": {
+                "tags": [
+                    "Growth Command Center"
+                ],
+                "summary": "Get revenue and COGS growth by year for an organization",
+                "operationId": "1b46098c2f0748f79047041c6775c05d",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to retrieve revenue and COGS growth data",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns year-wise revenue and COGS growth",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "year": {
+                                                "type": "string",
+                                                "example": "2024"
+                                            },
+                                            "revenueGrowth": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 12
+                                            },
+                                            "cogsGrowth": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 10
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/company-traction/annual-priorities": {
+            "get": {
+                "tags": [
+                    "Company Traction"
+                ],
+                "summary": "Get annual priorities for a given organization",
+                "operationId": "1a8283a36da401a3e4e9d739a3adba3f",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch annual priorities for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of annual priorities with completion status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Systematize Coaching Framework (now called Momentum OS)."
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "100.00%"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/company-traction/traction-data": {
+            "get": {
+                "tags": [
+                    "Company Traction"
+                ],
+                "summary": "Get traction data for a given organization",
+                "operationId": "3e50c8eb12a756af681cb30d03ed38e6",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch traction data for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Traction data grouped by quarters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Q1": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "who": {
+                                                        "type": "string",
+                                                        "example": "Maricar"
+                                                    },
+                                                    "collaborator": {
+                                                        "type": "string",
+                                                        "example": "Maricar"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Build landing page"
+                                                    },
+                                                    "progress": {
+                                                        "type": "string",
+                                                        "example": "5%"
+                                                    },
+                                                    "annualPriority": {
+                                                        "type": "string",
+                                                        "example": "Develop lead generation systems"
+                                                    },
+                                                    "dueDate": {
+                                                        "type": "string",
+                                                        "example": "03-31-2025"
+                                                    },
+                                                    "rank": {
+                                                        "type": "string",
+                                                        "example": "1"
+                                                    },
+                                                    "comment": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "author": {
+                                                                    "type": "string",
+                                                                    "example": "Maricar"
+                                                                },
+                                                                "message": {
+                                                                    "type": "string",
+                                                                    "example": "This is a test comment."
+                                                                },
+                                                                "posted": {
+                                                                    "type": "string",
+                                                                    "example": "26 June 2025"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "Q2": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TractionItem"
+                                            }
+                                        },
+                                        "Q3": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TractionItem"
+                                            }
+                                        },
+                                        "Q4": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TractionItem"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/department-traction/annual-priorities": {
+            "get": {
+                "tags": [
+                    "Department Traction"
+                ],
+                "summary": "Get department-level annual priorities for a given organization",
+                "operationId": "114ed68bb84eb82fbbf0634824b17f8e",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch department annual priorities for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of department annual priorities with completion status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Department-level initiative to enhance coaching operations."
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "90.00%"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/department-traction/traction-data": {
+            "get": {
+                "tags": [
+                    "Department Traction"
+                ],
+                "summary": "Get department traction data grouped by quarters for a given organization",
+                "operationId": "8d7e8abf974a45de1626792d8f1829d3",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch traction data for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Traction data grouped by quarters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Q1": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeptTractionItem"
+                                            }
+                                        },
+                                        "Q2": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeptTractionItem"
+                                            }
+                                        },
+                                        "Q3": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeptTractionItem"
+                                            }
+                                        },
+                                        "Q4": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeptTractionItem"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/who-what-when": {
+            "get": {
+                "tags": [
+                    "Who What When"
+                ],
+                "summary": "Get who, what, and when tasks for a given organization",
+                "operationId": "ac32166d1b1c6fe59d88605cff4bbbe3",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch who-what-when data for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of who-what-when tasks with status and comments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/WhoWhatWhenItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/session-dates/monthly-sessions-tracker": {
+            "get": {
+                "tags": [
+                    "Session Dates"
+                ],
+                "summary": "Get monthly session tracker data for a given organization",
+                "operationId": "fc5fe3cfde40418cd341939ae1ad2b8a",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch monthly sessions for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Monthly sessions data with date, status, and details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/MonthlySessionItem"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/session-dates/quarterly-sessions": {
+            "get": {
+                "tags": [
+                    "Session Dates"
+                ],
+                "summary": "Retrieve quarterly session data for the specified organization",
+                "operationId": "54b82160ea78226d9344c943f1ebe6fc",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch quarterly sessions for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quarterly sessions data for the organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/QuarterlySessionItem"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/v1/session-dates/monthly-sessions": {
+            "get": {
+                "tags": [
+                    "Session Dates"
+                ],
+                "summary": "Retrieve monthly session data for a specific organization",
+                "operationId": "201dc97e7f9c829865cd7cff6336e6cc",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch monthly sessions for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Monthly session records with status, agenda, and recap",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "Chuck Gulledge Advisors, LLC": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/MonthlySessionRecord"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/coaching-checklist/project-progress": {
+            "get": {
+                "tags": [
+                    "Coaching Checklist"
+                ],
+                "summary": "Get project progress and next recommended tools for a given organization",
+                "operationId": "27bef81508090efa895c447b8da8e4ae",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "Organization name to fetch project progress for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project progress including completed items, total items, and tool recommendations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "completedItems": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "totalItems": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "nextRecommendedTools": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RecommendedTool"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/coaching-checklist/panels": {
+            "get": {
+                "tags": [
+                    "Coaching Checklist"
+                ],
+                "summary": "Get coaching checklist panels for a given organization",
+                "operationId": "b19c38bb695c410125bf212eb374a6a9",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization to retrieve coaching checklist panels for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of coaching checklist panels",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChecklistPanel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/coaching-alignment/current-focus": {
+            "get": {
+                "tags": [
+                    "Coaching Alignment"
+                ],
+                "summary": "Get current coaching alignment focus items for an organization",
+                "operationId": "d8486779d346db2cb01ad4c1c765d5fb",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve focus items for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current coaching alignment focus items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "focusItems": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "Enhance leadership training"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/coaching-alignment/current-business-pulse": {
+            "get": {
+                "tags": [
+                    "Coaching Alignment"
+                ],
+                "summary": "Get current business pulse categories, ratings, and notes for an organization",
+                "operationId": "02b41023406ad41454b3cf12dd4b38fa",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve business pulse data for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current business pulse data by category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "category": {
+                                                "type": "string",
+                                                "example": "Strategic Clarity"
+                                            },
+                                            "rating": {
+                                                "type": "string",
+                                                "example": "3"
+                                            },
+                                            "notes": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "example": "Need clearer vision shared"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/coaching-alignment/whats-next": {
+            "get": {
+                "tags": [
+                    "Coaching Alignment"
+                ],
+                "summary": "Get upcoming coaching alignment action items for an organization",
+                "operationId": "ea7036c437f9b5464a6a3fa3263dae74",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve upcoming action items for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Upcoming coaching alignment action items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "whatsNextItems": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "Schedule leadership retreat"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/coaching-alignment/coaching-goals": {
+            "get": {
+                "tags": [
+                    "Coaching Alignment"
+                ],
+                "summary": "Get coaching goals for an organization",
+                "operationId": "3a6e9ece1db90406f461bbf5ddf0a508",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve coaching goals for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of coaching goals",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "coachingGoalsItems": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "Build high-impact team"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -612,6 +1665,285 @@
             }
         }
     },
+    "components": {
+        "schemas": {
+            "TractionItem": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "who": {
+                        "type": "string",
+                        "example": "Maricar"
+                    },
+                    "collaborator": {
+                        "type": "string",
+                        "example": "Maricar"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Build landing page"
+                    },
+                    "progress": {
+                        "type": "string",
+                        "example": "5%"
+                    },
+                    "annualPriority": {
+                        "type": "string",
+                        "example": "Develop lead generation systems"
+                    },
+                    "dueDate": {
+                        "type": "string",
+                        "example": "03-31-2025"
+                    },
+                    "rank": {
+                        "type": "string",
+                        "example": "1"
+                    },
+                    "comment": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "author": {
+                                    "type": "string",
+                                    "example": "Maricar"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "This is a test comment."
+                                },
+                                "posted": {
+                                    "type": "string",
+                                    "example": "26 June 2025"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "DeptTractionItem": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "who": {
+                        "type": "string",
+                        "example": "Maricar"
+                    },
+                    "collaborator": {
+                        "type": "string",
+                        "example": "Maricar"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Build landing page"
+                    },
+                    "progress": {
+                        "type": "string",
+                        "example": "5%"
+                    },
+                    "annualPriority": {
+                        "type": "string",
+                        "example": "Develop lead generation systems"
+                    },
+                    "dueDate": {
+                        "type": "string",
+                        "example": "03-31-2025"
+                    },
+                    "rank": {
+                        "type": "string",
+                        "example": "1"
+                    },
+                    "comment": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "author": {
+                                    "type": "string",
+                                    "example": "Maricar"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "This is a test comment."
+                                },
+                                "posted": {
+                                    "type": "string",
+                                    "example": "26 June 2025"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "WhoWhatWhenItem": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-03-31"
+                    },
+                    "who": {
+                        "type": "string",
+                        "example": "Maricar"
+                    },
+                    "what": {
+                        "type": "string",
+                        "example": "Systematize Coaching Framework (now called Momentum OS)."
+                    },
+                    "deadline": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-03-31"
+                    },
+                    "comments": {
+                        "type": "string",
+                        "example": "approved"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "100.00%"
+                    }
+                },
+                "type": "object"
+            },
+            "MonthlySessionItem": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-07-01"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "done"
+                    },
+                    "details": {
+                        "type": "string",
+                        "example": "Strategy alignment"
+                    }
+                },
+                "type": "object"
+            },
+            "QuarterlySessionItem": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "Completed"
+                    },
+                    "quarter": {
+                        "type": "string",
+                        "example": "Q1 2025"
+                    },
+                    "meetingDate": {
+                        "type": "string",
+                        "example": "January 20, 2025"
+                    },
+                    "agenda": {
+                        "type": "string",
+                        "example": "Strategic Planning & KPIs"
+                    },
+                    "recap": {
+                        "type": "string",
+                        "example": "Shared Q1 goals and budget updates"
+                    }
+                },
+                "type": "object"
+            },
+            "MonthlySessionRecord": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "Done"
+                    },
+                    "month": {
+                        "type": "string",
+                        "example": "January"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-01-10"
+                    },
+                    "agenda": {
+                        "type": "string",
+                        "example": "Review January goals and targets"
+                    },
+                    "recap": {
+                        "type": "string",
+                        "example": "All targets met. Positive team performance."
+                    }
+                },
+                "type": "object"
+            },
+            "RecommendedTool": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "SWOT Analysis Tool"
+                    }
+                },
+                "type": "object"
+            },
+            "ChecklistPanel": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Client Onboarding"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "example": "faHandshake"
+                    },
+                    "expanded": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChecklistItem"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ChecklistItem": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "1a"
+                    },
+                    "text": {
+                        "type": "string",
+                        "example": "Welcome call completed"
+                    },
+                    "completed": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
     "tags": [
         {
             "name": "Upper Content",
@@ -628,6 +1960,38 @@
         {
             "name": "Security",
             "description": "Security"
+        },
+        {
+            "name": "Scoreboard",
+            "description": "Scoreboard"
+        },
+        {
+            "name": "Growth Command Center",
+            "description": "Growth Command Center"
+        },
+        {
+            "name": "Company Traction",
+            "description": "Company Traction"
+        },
+        {
+            "name": "Department Traction",
+            "description": "Department Traction"
+        },
+        {
+            "name": "Who What When",
+            "description": "Who What When"
+        },
+        {
+            "name": "Session Dates",
+            "description": "Session Dates"
+        },
+        {
+            "name": "Coaching Checklist",
+            "description": "Coaching Checklist"
+        },
+        {
+            "name": "Coaching Alignment",
+            "description": "Coaching Alignment"
         },
         {
             "name": "Authentication",

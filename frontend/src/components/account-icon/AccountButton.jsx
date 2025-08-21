@@ -16,6 +16,29 @@ const AccountButton = () => {
   const user = useLoginStore((state) => state.user);
   // const user = useUserStore((state) => state.user);
 
+  const [showModal, setShowModal] = useState(false);
+  const [oldPasswordInput, setOldPasswordInput] = useState('');
+  const [newPasswordInput, setNewPasswordInput] = useState('');
+  const [feedbackMsg, setFeedbackMsg] = useState({ type: '', message: '' });
+
+  const HARDCODED_OLD_PASSWORD = 'admin123';
+
+  const handleChangePassword = () => {
+    if (oldPasswordInput === HARDCODED_OLD_PASSWORD && newPasswordInput.trim()) {
+      setFeedbackMsg({ type: 'success', message: 'Password has been changed' });
+      console.log('Password changed:', { oldPasswordInput, newPasswordInput });
+    } else {
+      setFeedbackMsg({ type: 'error', message: 'Old password is wrong' });
+    }
+  };
+  
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setOldPasswordInput('');
+    setNewPasswordInput('');
+    setFeedbackMsg({ type: '', message: '' });
+  };
+
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -73,10 +96,23 @@ const AccountButton = () => {
 
           <div
             className="dropdown-item"
-            onClick={() => alert('Change password clicked')}
+            onClick={() => setShowModal(true)}
           >
             Change Password
           </div>
+
+          {user?.role === 'superadmin' && (
+            <div
+              className="dropdown-item"
+              onClick={() => {
+                setOpen(false);
+                navigate('/create-user');
+              }}
+            >
+              Create User
+            </div>
+          )}
+
           <div
             className="custom-logout-item"
             onClick={handleLogout}
@@ -87,6 +123,46 @@ const AccountButton = () => {
         </div>
         
       )}
+
+      {showModal && (
+        <div className="account-modal-overlay" onClick={handleCloseModal}>
+          <div className="account-modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 className="account-modal-title">Change Password</h2>
+            <input
+              type="password"
+              placeholder="Old Password"
+              className="account-modal-input"
+              value={oldPasswordInput}
+              onChange={(e) => setOldPasswordInput(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              className="account-modal-input"
+              value={newPasswordInput}
+              onChange={(e) => setNewPasswordInput(e.target.value)}
+            />
+            <div className="account-modal-buttons">
+              <button className="account-modal-button" onClick={handleChangePassword}>
+                Change
+              </button>
+              <button className="account-modal-button" onClick={handleCloseModal}>
+                Close
+              </button>
+            </div>
+            {feedbackMsg.message && (
+              <div
+                className={`account-modal-feedback ${
+                  feedbackMsg.type === 'success' ? 'success' : 'error'
+                }`}
+              >
+                {feedbackMsg.message}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
