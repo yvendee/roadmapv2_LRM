@@ -1560,6 +1560,303 @@
                 }
             }
         },
+        "/api/v1/tools/issues": {
+            "get": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Get list of issues for an organization",
+                "operationId": "4a921e9dd8218c8e476d7afadd0cda83",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve issues for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of issues related to the organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "issueName": {
+                                                "type": "string",
+                                                "example": "System Issue 1"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Systematize Coaching Framework"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "100.00%"
+                                            },
+                                            "dateLogged": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-03-31"
+                                            },
+                                            "who": {
+                                                "type": "string",
+                                                "example": "Kayven"
+                                            },
+                                            "resolution": {
+                                                "type": "string",
+                                                "example": "resolution here"
+                                            },
+                                            "dateResolved": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-04-02"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/tools/victories": {
+            "get": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Get list of recorded victories (milestones) for an organization",
+                "operationId": "380bf006f00eeb9d7f25bc240e224e00",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve victories for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of victories related to the organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-04-02"
+                                            },
+                                            "who": {
+                                                "type": "string",
+                                                "example": "Kayven"
+                                            },
+                                            "milestones": {
+                                                "type": "string",
+                                                "example": "Systematize Coaching Framework (now called Momentum OS)."
+                                            },
+                                            "notes": {
+                                                "type": "string",
+                                                "example": "Notes about the achievement"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/tools/big-ideas": {
+            "get": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Get list of Big Ideas submitted for an organization",
+                "operationId": "836e9d82cdd5ecad1bf2539e32f94a28",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve big ideas for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of big ideas with their details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-04-02"
+                                            },
+                                            "who": {
+                                                "type": "string",
+                                                "example": "Kayven"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Systematize Coaching Framework (now called Momentum OS)."
+                                            },
+                                            "impact": {
+                                                "type": "string",
+                                                "example": "High"
+                                            },
+                                            "when": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-04-02"
+                                            },
+                                            "evaluator": {
+                                                "type": "string",
+                                                "example": "Team A"
+                                            },
+                                            "comments": {
+                                                "type": "string",
+                                                "example": "Initial team feedback looks promising."
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/tools/product-evaluation-grid": {
+            "get": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Get product evaluation grid data for an organization",
+                "operationId": "7121bbbb949643c634263093032ebc00",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve product evaluations for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of product evaluations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "productName": {
+                                                "type": "string",
+                                                "example": "Momentum OS"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Systematize Coaching Framework (now called Momentum OS)."
+                                            },
+                                            "pricingPower": {
+                                                "type": "string",
+                                                "example": "High"
+                                            },
+                                            "acceleratingGrowth": {
+                                                "type": "string",
+                                                "example": "Yes"
+                                            },
+                                            "profitMargin": {
+                                                "type": "string",
+                                                "example": "60%"
+                                            },
+                                            "marketShare": {
+                                                "type": "string",
+                                                "example": "10%"
+                                            },
+                                            "customerSatisfaction": {
+                                                "type": "string",
+                                                "example": "Excellent"
+                                            },
+                                            "innovationPotential": {
+                                                "type": "string",
+                                                "example": "High"
+                                            },
+                                            "operationEfficiency": {
+                                                "type": "string",
+                                                "example": "Strong"
+                                            },
+                                            "lifeCycleStage": {
+                                                "type": "string",
+                                                "example": "Growth"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -1660,6 +1957,197 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/document-vault/list": {
+            "get": {
+                "tags": [
+                    "Document Vault"
+                ],
+                "summary": "Get document list for an organization",
+                "operationId": "cd184fd0e3b8cc2f43a7c3a4a5f9cfca",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve document list for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of documents",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "projectName": {
+                                                "type": "string",
+                                                "example": "Momentum OS"
+                                            },
+                                            "date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-03-28"
+                                            },
+                                            "link": {
+                                                "type": "string",
+                                                "format": "url",
+                                                "example": "https://drive.google.com/file/d/1OsPZ8.../view?usp=sharing"
+                                            },
+                                            "viewLink": {
+                                                "type": "string",
+                                                "format": "url",
+                                                "example": "https://drive.google.com/file/d/1OsPZ8.../view?usp=sharing"
+                                            },
+                                            "uploadLink": {
+                                                "type": "string",
+                                                "example": "/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p"
+                                            },
+                                            "pdflink": {
+                                                "type": "string",
+                                                "example": "/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                }
+            }
+        },
+        "/api/v1/members-departments": {
+            "get": {
+                "tags": [
+                    "Members & Departments"
+                ],
+                "summary": "Get list of departments or teams for a given organization",
+                "operationId": "ed2ce4293c5cb17da5fe7a60e7742487",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve departments for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of departments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Momentum OS"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/v1/members-directory": {
+            "get": {
+                "tags": [
+                    "Members & Directory"
+                ],
+                "summary": "Get list of members for a given organization",
+                "operationId": "a1ae5b19030889751e2bc6ff79bd6cd8",
+                "parameters": [
+                    {
+                        "name": "organization",
+                        "in": "query",
+                        "description": "The organization name to retrieve member directory for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Chuck Gulledge Advisors, LLC"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of members",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "fullname": {
+                                                "type": "string",
+                                                "example": "Chuck Gulledge"
+                                            },
+                                            "company": {
+                                                "type": "string",
+                                                "example": "Chuck Gulledge Advisors, LLC"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "chuck.gulledge@gmail.com"
+                                            },
+                                            "department": {
+                                                "type": "string",
+                                                "example": "Admin"
+                                            },
+                                            "memberAccess": {
+                                                "type": "string",
+                                                "example": "Superadmin"
+                                            },
+                                            "canLogin": {
+                                                "type": "string",
+                                                "example": "Yes"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }
@@ -1994,8 +2482,24 @@
             "description": "Coaching Alignment"
         },
         {
+            "name": "Tools",
+            "description": "Tools"
+        },
+        {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Document Vault",
+            "description": "Document Vault"
+        },
+        {
+            "name": "Members & Departments",
+            "description": "Members & Departments"
+        },
+        {
+            "name": "Members & Directory",
+            "description": "Members & Directory"
         }
     ]
 }
