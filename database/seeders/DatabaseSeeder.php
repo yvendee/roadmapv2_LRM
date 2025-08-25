@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+// database\seeders\DatabaseSeeder.php
+
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,5 +21,13 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Call your AuthTableSeeder here
+        $this->call([
+            AuthTableSeeder::class,
+        ]);
+
     }
+
+
 }
