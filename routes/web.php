@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Cookie;
 
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
+use App\Models\AuthUser;
+
+
 // Configurable flag to enable/disable authentication
 $API_secure = true;
 // $API_secure = false;
@@ -103,6 +108,79 @@ Route::get('/api/sessions/live', function () {
 
 
 
+// Route::post('/api/login', function (Request $request) {
+//     $email = $request->input('email');
+//     $password = $request->input('password');
+
+//     // 🔐 Hardcoded users
+//     $users = [
+//         [
+//             'email' => 'kay@gmail.com',
+//             'password' => 'password123',
+//             'id' => 1,
+//             'name' => 'Kay Dee',
+//             'role' => 'admin',
+//             'group' => 'executive',
+//             'organization' => 'kay organizations',
+//             'position' => 'admin',
+
+//         ],
+//         [
+//             'email' => 'uat@gmail.com',
+//             'password' => 'q',
+//             'id' => 2,
+//             'name' => 'User Test',
+//             'role' => 'testuser',
+//             'group' => 'operations',
+//             'organization' => 'test organization',
+//             'position' => 'testuser',
+//         ],
+//         [
+//             'email' => 'maricar@chuckgulledge.com',
+//             'password' => 'Password123',
+//             'id' => 2,
+//             'name' => 'Maricar Aquino',
+//             'role' => 'superadmin',
+//             'group' => 'operations',
+//             'organization' => 'maricar organization',
+//             'position' => 'superadmin',
+//         ],
+//     ];
+
+//     // 🔍 Find matching user
+//     $matchedUser = collect($users)->first(function ($user) use ($email, $password) {
+//         return $user['email'] === $email && $user['password'] === $password;
+//     });
+
+//     if ($matchedUser) {
+//         // Save in session
+//         $request->session()->put('logged_in', true);
+//         $request->session()->put('user', $matchedUser);
+
+//         // Regenerate session ID for security
+//         $request->session()->regenerate();
+
+//         return response()->json([
+//             'status' => 'success',
+//             'session_id' => $request->session()->getId(),
+//             'user' => [
+//                 'fullname' => $matchedUser['name'],
+//                 'email' => $matchedUser['email'],
+//                 'role' => $matchedUser['role'],
+//                 'group' => $matchedUser['group'],
+//                 'organization' => $matchedUser['organization'],
+//                 'position' => $matchedUser['position'],
+//             ],
+//         ]);
+//     }
+
+//     return response()->json([
+//         'status' => 'error',
+//         'message' => 'Invalid credentials',
+//     ], 401);
+// });
+
+
 Route::post('/api/login', function (Request $request) {
     $email = $request->input('email');
     $password = $request->input('password');
@@ -118,41 +196,55 @@ Route::post('/api/login', function (Request $request) {
             'group' => 'executive',
             'organization' => 'kay organizations',
             'position' => 'admin',
-
         ],
-        [
-            'email' => 'uat@gmail.com',
-            'password' => 'q',
-            'id' => 2,
-            'name' => 'User Test',
-            'role' => 'testuser',
-            'group' => 'operations',
-            'organization' => 'test organization',
-            'position' => 'testuser',
-        ],
-        [
-            'email' => 'maricar@chuckgulledge.com',
-            'password' => 'Password123',
-            'id' => 2,
-            'name' => 'Maricar Aquino',
-            'role' => 'superadmin',
-            'group' => 'operations',
-            'organization' => 'maricar organization',
-            'position' => 'superadmin',
-        ],
+        // [
+        //     'email' => 'uat@gmail.com',
+        //     'password' => 'q',
+        //     'id' => 2,
+        //     'name' => 'User Test',
+        //     'role' => 'testuser',
+        //     'group' => 'operations',
+        //     'organization' => 'test organization',
+        //     'position' => 'testuser',
+        // ],
+        // [
+        //     'email' => 'maricar@chuckgulledge.com',
+        //     'password' => 'Password123',
+        //     'id' => 3,
+        //     'name' => 'Maricar Aquino',
+        //     'role' => 'superadmin',
+        //     'group' => 'operations',
+        //     'organization' => 'maricar organization',
+        //     'position' => 'superadmin',
+        // ],
     ];
 
-    // 🔍 Find matching user
+    // 🔍 Check hardcoded users first
     $matchedUser = collect($users)->first(function ($user) use ($email, $password) {
         return $user['email'] === $email && $user['password'] === $password;
     });
 
+    // 🔍 If not found in hardcoded list, check database
+    if (!$matchedUser) {
+        $dbUser = AuthUser::where('email', $email)->first();
+
+        if ($dbUser && Hash::check($password, $dbUser->passwordHash)) {
+            $matchedUser = [
+                'id' => $dbUser->id,
+                'name' => $dbUser->firstName . ' ' . $dbUser->lastName,
+                'email' => $dbUser->email,
+                'role' => $dbUser->role,
+                'group' => $dbUser->group,
+                'organization' => $dbUser->organization,
+                'position' => $dbUser->position,
+            ];
+        }
+    }
+
+    // ✅ If user found (either hardcoded or DB)
     if ($matchedUser) {
-        // Save in session
         $request->session()->put('logged_in', true);
         $request->session()->put('user', $matchedUser);
-
-        // Regenerate session ID for security
         $request->session()->regenerate();
 
         return response()->json([
@@ -169,11 +261,13 @@ Route::post('/api/login', function (Request $request) {
         ]);
     }
 
+    // ❌ If not found
     return response()->json([
         'status' => 'error',
         'message' => 'Invalid credentials',
     ], 401);
 });
+
 
 
 Route::post('/api/login/one', function (Request $request) {
