@@ -41,7 +41,68 @@ const CreateUser = () => {
     setErrors({});
   };
 
-  const handleCreate = () => {
+  // const handleCreate = () => {
+  //   const fullname = `${firstName.trim()} ${lastName.trim()}`.trim();
+  
+  //   const newErrors = {};
+  
+  //   if (!/^[A-Za-z]+$/.test(firstName)) {
+  //     newErrors.firstName = 'First name must contain only letters';
+  //   }
+  //   if (!/^[A-Za-z]+$/.test(lastName)) {
+  //     newErrors.lastName = 'Last name must contain only letters';
+  //   }
+  //   if (!emailRegex.test(email)) {
+  //     newErrors.email = 'Invalid email format';
+  //   }
+  //   if (!password) {
+  //     newErrors.password = 'Password is required';
+  //   }
+  //   if (password !== confirmPassword) {
+  //     newErrors.confirmPassword = 'Passwords do not match';
+  //   }
+  //   if (!organization) {
+  //     newErrors.organization = 'Organization is required';
+  //   }
+  //   if (!role) {
+  //     newErrors.role = 'Role is required';
+  //   }
+  //   if (!position) {
+  //     newErrors.position = 'Position is required';
+  //   }
+  //   if (!group) {
+  //     newErrors.group = 'Group is required';
+  //   }
+  
+  //   if (Object.keys(newErrors).length > 0) {
+  //     setErrors(newErrors);
+  //     setFeedback({ type: '', message: '' });
+  //     return;
+  //   }
+  
+  //   setLoading(true); // 🔒 disable buttons
+  
+  //   const formData = {
+  //     email,
+  //     password,
+  //     fullname,
+  //     organization,
+  //     role,
+  //     position,
+  //     group,
+  //   };
+  
+  //   console.log('Created User:', formData);
+  
+  //   setFeedback({ type: 'success', message: 'User has been created!' });
+  
+  //   setTimeout(() => {
+  //     resetForm(); // clear inputs
+  //     setLoading(false); // 🔓 re-enable buttons
+  //   }, 5000);
+  // };
+
+  const handleCreate = async () => {
     const fullname = `${firstName.trim()} ${lastName.trim()}`.trim();
   
     const newErrors = {};
@@ -82,25 +143,55 @@ const CreateUser = () => {
   
     setLoading(true); // 🔒 disable buttons
   
-    const formData = {
-      email,
-      password,
-      fullname,
-      organization,
-      role,
-      position,
-      group,
-    };
+    try {
+      // ✅ Get CSRF token first
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
   
-    console.log('Created User:', formData);
+      // ✅ Prepare form data
+      const formData = {
+        firstName,
+        lastName,
+        email,
+        password,
+        organization,
+        role,
+        position,
+        group,
+      };
   
-    setFeedback({ type: 'success', message: 'User has been created!' });
+      // ✅ Call Laravel backend
+      const response = await fetch(`${API_URL}/create-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify(formData),
+      });
   
-    setTimeout(() => {
-      resetForm(); // clear inputs
+      const data = await response.json();
+  
+      if (response.ok && data.status === 'success') {
+        setFeedback({ type: 'success', message: 'User has been created!' });
+        resetForm(); // clear inputs
+      } else {
+        const errMsg = data.message || 'Failed to create user.';
+        setFeedback({ type: 'error', message: errMsg });
+        if (data.errors) setErrors(data.errors);
+      }
+    } catch (error) {
+      console.error('Create user error:', error);
+      setFeedback({ type: 'error', message: 'Server error. Please try again later.' });
+    } finally {
       setLoading(false); // 🔓 re-enable buttons
-    }, 5000);
+    }
   };
+  
+  
   
   
 
