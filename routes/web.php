@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 
 // Configurable flag to enable/disable authentication
-// $API_secure = true;
-$API_secure = false;
+$API_secure = true;
+// $API_secure = false;
 
 Route::get('/api/me', function () {
     return response()->json([
