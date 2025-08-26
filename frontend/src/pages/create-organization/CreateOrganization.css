@@ -1,0 +1,161 @@
+.create-org-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+
+.create-org-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.create-org-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-org-floating-input {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.create-org-floating-input-field {
+    width: 100%;
+    padding: 1.5rem 0.5rem 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+    background-color: white;
+    height: 3.25rem;
+    box-sizing: border-box;
+}
+
+.create-org-floating-input label {
+    position: absolute;
+    left: 0.5rem;
+    top: 1rem;
+    color: #6b7280;
+    background: white;
+    padding: 0 0.25rem;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+}
+
+.create-org-floating-input input:focus + label,
+.create-org-floating-input input:not(:placeholder-shown):valid + label,
+.create-org-floating-input label.filled {
+    top: -0.5rem;
+    left: 0.4rem;
+    font-size: 0.75rem;
+    color: #2563eb;
+}
+
+.create-org-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.create-org-btn {
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.create-org-btn-blue {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.create-org-btn-blue:hover {
+    background-color: #2563eb;
+}
+
+.create-org-btn-red {
+    background-color: #ef4444;
+    color: white;
+}
+
+.create-org-btn-red:hover {
+    background-color: #dc2626;
+}
+
+.create-org-feedback {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.create-org-feedback.success {
+    color: #10b981;
+}
+
+.create-org-feedback.error {
+    color: #ef4444;
+}
+
+.create-org-error {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin: 0 0 0 0.25rem;
+}
+
+.create-org-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+.create-org-floating-input {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+
+
+.create-org-floating-input {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .create-org-floating-input-field {
+    width: 100%;
+    padding: 1.5rem 0.5rem 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+    background-color: white;
+    height: 3.25rem;
+    box-sizing: border-box;
+  }
+  
+  .create-org-floating-input label {
+    position: absolute;
+    left: 0.5rem;
+    top: 1rem;
+    color: #6b7280;
+    background-color: white;
+    padding: 0 0.25rem;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+  }
+  
+  .create-org-floating-input-field:focus + label,
+  .create-org-floating-input-field:not(:placeholder-shown) + label {
+    top: -0.5rem;
+    left: 0.4rem;
+    font-size: 0.75rem;
+    color: #2563eb;
+  }
+  
+  

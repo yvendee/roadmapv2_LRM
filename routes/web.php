@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
 use App\Models\AuthUser;
+use App\Models\Organization;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -322,6 +323,52 @@ Route::post('/api/create-user', function (Request $request) {
         'user' => $user,
     ]);
 });
+
+
+
+Route::post('/api/create-organization', function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'industry' => 'nullable|string|max:255',
+        'size' => 'nullable|string|max:255',
+        'location' => 'nullable|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    // 🔍 Check if organization already exists
+    $existing = Organization::where('organizationName', $request->input('name'))->first();
+    if ($existing) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Organization is already present'
+        ], 409); // 409 Conflict
+    }
+
+    // ✅ Proceed to insert
+    $organization = Organization::create([
+        'organizationName' => $request->input('name'),
+        'industry' => $request->input('industry'),
+        'size' => $request->input('size'),
+        'location' => $request->input('location'),
+        'token' => Str::random(40),
+        'status' => null,
+        'owner' => null,
+    ]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Organization created successfully',
+        'organization' => $organization
+    ]);
+});
+
+
 
 
 Route::post('/api/login/one', function (Request $request) {

@@ -113,6 +113,17 @@ const AccountButton = () => {
             </div>
           )}
 
+          {user?.role === 'superadmin' && (
+            <div
+              className="dropdown-item"
+              onClick={() => {
+                setOpen(false);
+                navigate('/create-organization');
+              }}
+            >
+              Create Organization
+            </div>
+          )}
           <div
             className="custom-logout-item"
             onClick={handleLogout}

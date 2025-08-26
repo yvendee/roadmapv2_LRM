@@ -23,9 +23,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // Call your AuthTableSeeder here
-        $this->call([
-            AuthTableSeeder::class,
-        ]);
+        // $this->call([AuthTableSeeder::class,]);
+
+        $this->call(OrganizationSeeder::class);
 
     }
 
