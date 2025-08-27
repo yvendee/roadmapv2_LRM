@@ -24,6 +24,7 @@ use App\Models\Organization;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 
 // Configurable flag to enable/disable authentication
@@ -325,7 +326,6 @@ Route::post('/api/create-user', function (Request $request) {
 });
 
 
-
 Route::post('/api/create-organization', function (Request $request) {
     $validator = Validator::make($request->all(), [
         'name' => 'required|string|max:255',
@@ -367,8 +367,6 @@ Route::post('/api/create-organization', function (Request $request) {
         'organization' => $organization
     ]);
 });
-
-
 
 
 Route::post('/api/login/one', function (Request $request) {
@@ -523,7 +521,6 @@ Route::get('/api/storage/{path}', function ($path) {
 // })->where('path', '.*');
 
 
-
 Route::post('/api/file-upload/{path}', function (Request $request, $path) {
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
@@ -548,7 +545,6 @@ Route::post('/api/file-upload/{path}', function (Request $request, $path) {
     ]);
 })->where('path', '.*');
 
-
 // Your API route(s)
 Route::get('/api/mock-response1', function () {
     return response()->json([
@@ -561,7 +557,6 @@ Route::get('/api/mock-response1', function () {
         ],
     ]);
 });
-
 
 // Your API route(s)
 Route::get('/api/mock-response2', function () {
@@ -576,7 +571,6 @@ Route::get('/api/mock-response2', function () {
     ]);
 });
 
-
 // Your API route(s)
 Route::get('/api/mock-response3', function () {
     return response()->json([
@@ -589,8 +583,6 @@ Route::get('/api/mock-response3', function () {
         ],
     ]);
 });
-
-
 
 // Your API route(s)
 Route::get('/api/mock-response4', function (Request $request) {
@@ -610,7 +602,6 @@ Route::get('/api/mock-response4', function (Request $request) {
         ],
     ]);
 });
-
 
 Route::get('/api/mock-response5', function (Request $request) {
     if (!$request->session()->get('logged_in')) {
@@ -3776,32 +3767,84 @@ Route::get('/api/v1/notifications', function (Request $request) use ($API_secure
 });
 
 
-// ref: frontend\src\pages\login\Login.jsx
-Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
+// // ref: frontend\src\pages\login\Login.jsx
+// Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
     
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     // return response()->json([
+//     //     'Chuck Gulledge Advisors, LLC', 
+//     //     'Collins Credit Union', 
+//     //     'IH MVCU', 
+//     //     'Ironclad',
+//     //     'Seneca', 
+//     //     'Texans Credit Union', 
+//     //     'Kolb Grading'
+//     // ]);
+
+//     return response()->json([
+//         'Chuck Gulledge Advisors, LLC', 
+//         'Collins Credit Union', 
+//         'Test Skeleton Loading'
+//     ]);
+// });
+
+ // ref: frontend\src\pages\login\Login.jsx
+Route::get('/api/v1/company-options', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
-    // return response()->json([
-    //     'Chuck Gulledge Advisors, LLC', 
-    //     'Collins Credit Union', 
-    //     'IH MVCU', 
-    //     'Ironclad',
-    //     'Seneca', 
-    //     'Texans Credit Union', 
-    //     'Kolb Grading'
-    // ]);
+    // Fetch all organization names from the database
+    $organizationNames = Organization::pluck('organizationName');
 
-    return response()->json([
-        'Chuck Gulledge Advisors, LLC', 
-        'Collins Credit Union', 
-        'Test Skeleton Loading'
-    ]);
+    if ($organizationNames->isEmpty()) {
+        return response()->json(['message' => 'No organizations found'], 404);
+    }
+
+    return response()->json($organizationNames);
 });
+
+// ref: frontend\src\components\document-vault\documentVault.jsx
+// Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->input('organization');
+
+//     $map = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//         ],
+//         'Collins Credit Union' => [
+//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
+//         ],
+//         'Test Skeleton Loading' => [
+//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
+//         ],
+//     ];
+
+//     if (!array_key_exists($organization, $map)) {
+//         return response()->json([
+//             'message' => 'Organization not found',
+//         ], 404);
+//     }
+
+//     return response()->json([
+//         $organization => $map[$organization],
+//     ]);
+// });
+
 
 // ref: frontend\src\components\document-vault\documentVault.jsx
 Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
@@ -3811,30 +3854,26 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
         }
     }
 
-    $organization = $request->input('organization');
+    $organizationName = $request->input('organization');
 
-    $map = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-        ],
-        'Collins Credit Union' => [
-            'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
-        ],
-        'Test Skeleton Loading' => [
-            'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
-        ],
-    ];
+    if (!$organizationName) {
+        return response()->json(['message' => 'Organization name is required'], 422);
+    }
 
-    if (!array_key_exists($organization, $map)) {
+    $organization = Organization::where('organizationName', $organizationName)->first();
+
+    if (!$organization) {
         return response()->json([
-            'message' => 'Organization not found',
+            'message' => 'No organization uid found',
         ], 404);
     }
 
     return response()->json([
-        $organization => $map[$organization],
+        'organization' => $organization->organizationName,
+        'uid' => $organization->u_id,
     ]);
 });
+
 
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {
