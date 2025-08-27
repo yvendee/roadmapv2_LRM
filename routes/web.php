@@ -3830,33 +3830,33 @@ Route::get('/api/v1/notifications', function (Request $request) use ($API_secure
     return response()->json($data[$fullname] ?? []);
 });
 
+//
+    // // ref: frontend\src\pages\login\Login.jsx
+    // Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
+        
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
 
-// // ref: frontend\src\pages\login\Login.jsx
-// Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
-    
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//         $user = $request->session()->get('user');
-//     }
+    //     // return response()->json([
+    //     //     'Chuck Gulledge Advisors, LLC', 
+    //     //     'Collins Credit Union', 
+    //     //     'IH MVCU', 
+    //     //     'Ironclad',
+    //     //     'Seneca', 
+    //     //     'Texans Credit Union', 
+    //     //     'Kolb Grading'
+    //     // ]);
 
-//     // return response()->json([
-//     //     'Chuck Gulledge Advisors, LLC', 
-//     //     'Collins Credit Union', 
-//     //     'IH MVCU', 
-//     //     'Ironclad',
-//     //     'Seneca', 
-//     //     'Texans Credit Union', 
-//     //     'Kolb Grading'
-//     // ]);
-
-//     return response()->json([
-//         'Chuck Gulledge Advisors, LLC', 
-//         'Collins Credit Union', 
-//         'Test Skeleton Loading'
-//     ]);
-// });
+    //     return response()->json([
+    //         'Chuck Gulledge Advisors, LLC', 
+    //         'Collins Credit Union', 
+    //         'Test Skeleton Loading'
+    //     ]);
+    // });
 
  // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/company-options', function (Request $request) use ($API_secure) {
@@ -3876,38 +3876,39 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
     return response()->json($organizationNames);
 });
 
-// ref: frontend\src\components\document-vault\documentVault.jsx
-// Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//     }
+//
+    // ref: frontend\src\components\document-vault\documentVault.jsx
+    // Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //     }
 
-//     $organization = $request->input('organization');
+    //     $organization = $request->input('organization');
 
-//     $map = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-//         ],
-//         'Collins Credit Union' => [
-//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
-//         ],
-//         'Test Skeleton Loading' => [
-//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
-//         ],
-//     ];
+    //     $map = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+    //         ],
+    //         'Collins Credit Union' => [
+    //             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
+    //         ],
+    //         'Test Skeleton Loading' => [
+    //             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
+    //         ],
+    //     ];
 
-//     if (!array_key_exists($organization, $map)) {
-//         return response()->json([
-//             'message' => 'Organization not found',
-//         ], 404);
-//     }
+    //     if (!array_key_exists($organization, $map)) {
+    //         return response()->json([
+    //             'message' => 'Organization not found',
+    //         ], 404);
+    //     }
 
-//     return response()->json([
-//         $organization => $map[$organization],
-//     ]);
-// });
+    //     return response()->json([
+    //         $organization => $map[$organization],
+    //     ]);
+    // });
 
 
 // ref: frontend\src\components\document-vault\documentVault.jsx
@@ -3938,7 +3939,6 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
     ]);
 });
 
-
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {
     
@@ -3953,5 +3953,52 @@ Route::get('/api/v1/company-traction-users', function (Request $request) use ($A
         'Maricar', 
         'Chuck', 
         'Arlene'
+    ]);
+});
+
+// ref: 
+Route::post('/api/v1/update-layout-toggles', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validator = Validator::make($request->all(), [
+        'organization' => 'required|string',
+        'toggles' => 'required|array',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $organizationName = $request->input('organization');
+    $toggles = $request->input('toggles');
+
+    $record = OpspLayoutSetting::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Organization layout settings not found.',
+        ], 404);
+    }
+
+    // Update fields
+    $record->strategicDriversStatus = $toggles['Strategic Drivers'] ? 'true' : 'false';
+    $record->FoundationsStatus = $toggles['Foundations'] ? 'true' : 'false';
+    $record->threeYearOutlookStatus = $toggles['3 Year Outlook'] ? 'true' : 'false';
+    $record->playingToWinStatus = $toggles['Playing to Win Strategy'] ? 'true' : 'false';
+    $record->coreCapabilitiesStatus = $toggles['Core Capabilities'] ? 'true' : 'false';
+    $record->fourDecisionsStatus = $toggles['4 Decisions'] ? 'true' : 'false';
+    $record->ConstraintsTrackerStatus = $toggles['Constraints Tracker'] ? 'true' : 'false';
+
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Layout toggles updated successfully',
     ]);
 });
