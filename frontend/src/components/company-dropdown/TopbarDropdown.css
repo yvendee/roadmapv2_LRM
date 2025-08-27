@@ -1,18 +1,18 @@
 /* frontend\src\components\company-dropdown\TopbarDropdown.css */
   /* Scrollbar styles (already in use) */
-.dropdown-scroll::-webkit-scrollbar {
+.company-dropdown-scroll::-webkit-scrollbar {
   width: 6px;
 }
 
-.dropdown-scroll::-webkit-scrollbar-thumb {
+.company-dropdown-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(100, 100, 100, 0.4);
 }
 
-.dropdown-scroll::-webkit-scrollbar-track {
+.company-dropdown-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.dropdown-scroll {
+.company-dropdown-scroll {
   scrollbar-gutter: stable;
 }
 

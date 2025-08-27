@@ -111,7 +111,7 @@ const TopbarDropdown = () => {
 
       {isOpen && (
         <ul
-          className="dropdown-scroll absolute top-12 left-[130px] z-10 mt-1 max-h-100 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow text-sm"
+          className="company-dropdown-scroll absolute top-10 left-[95px] z-10 mt-1 max-h-100 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow text-sm"
           onMouseEnter={(e) => (e.currentTarget.style.overflowY = 'auto')}
           onMouseLeave={(e) => (e.currentTarget.style.overflowY = 'hidden')}
           style={{ minWidth: '100%' }}
