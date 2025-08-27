@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
 use App\Models\AuthUser;
 use App\Models\Organization;
+use App\Models\OpspLayoutSetting;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -3677,57 +3678,105 @@ Route::get('/api/v1/left-conversations', function (Request $request) use ($API_s
 });
 
 
+
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
-
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    // Dummy toggle data based on organization (you can replace with DB query)
+    if (!$organization) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Organization is required',
+        ], 400);
+    }
+
+    $record = OpspLayoutSetting::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No layout settings found for this organization',
+        ], 404);
+    }
+
     $toggles = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'Strategic Drivers' => true,
-            'Foundations' => true,
-            '3 Year Outlook' => true,
-            'Playing to Win Strategy' => true,
-            'Core Capabilities' => true,
-            '4 Decisions' => true,
-            'Constraints Tracker' => true,
-        ],
-        'Collins Credit Union' => [
-            'Strategic Drivers' => true,
-            'Foundations' => true,
-            '3 Year Outlook' => true,
-            'Playing to Win Strategy' => true,
-            'Core Capabilities' => true,
-            '4 Decisions' => false,
-            'Constraints Tracker' => false,
-        ],
-        'Test Skeleton Loading' => [
-            'Strategic Drivers' => true,
-            'Foundations' => true,
-            '3 Year Outlook' => true,
-            'Playing to Win Strategy' => true,
-            'Core Capabilities' => true,
-            '4 Decisions' => true,
-            'Constraints Tracker' => true,
-        ],
+        'Strategic Drivers' => $record->strategicDriversStatus === 'true',
+        'Foundations' => $record->FoundationsStatus === 'true',
+        '3 Year Outlook' => $record->threeYearOutlookStatus === 'true',
+        'Playing to Win Strategy' => $record->playingToWinStatus === 'true',
+        'Core Capabilities' => $record->coreCapabilitiesStatus === 'true',
+        '4 Decisions' => $record->fourDecisionsStatus === 'true',
+        'Constraints Tracker' => $record->ConstraintsTrackerStatus === 'true',
     ];
 
     return response()->json([
         'status' => 'success',
-        'toggles' => $toggles[$organization] ?? [],
+        'toggles' => $toggles,
         'organization' => $organization,
-        'unique_id' => uniqid(), // just example
+        'unique_id' => $record->u_id,
     ]);
 });
+
+
+
+// // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
+// // ref: frontend\src\pages\login\Login.jsx
+// Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
+
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     // Dummy toggle data based on organization (you can replace with DB query)
+//     $toggles = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'Strategic Drivers' => true,
+//             'Foundations' => true,
+//             '3 Year Outlook' => true,
+//             'Playing to Win Strategy' => true,
+//             'Core Capabilities' => true,
+//             '4 Decisions' => true,
+//             'Constraints Tracker' => true,
+//         ],
+//         'Collins Credit Union' => [
+//             'Strategic Drivers' => true,
+//             'Foundations' => true,
+//             '3 Year Outlook' => true,
+//             'Playing to Win Strategy' => true,
+//             'Core Capabilities' => true,
+//             '4 Decisions' => false,
+//             'Constraints Tracker' => false,
+//         ],
+//         'Test Skeleton Loading' => [
+//             'Strategic Drivers' => true,
+//             'Foundations' => true,
+//             '3 Year Outlook' => true,
+//             'Playing to Win Strategy' => true,
+//             'Core Capabilities' => true,
+//             '4 Decisions' => true,
+//             'Constraints Tracker' => true,
+//         ],
+//     ];
+
+//     return response()->json([
+//         'status' => 'success',
+//         'toggles' => $toggles[$organization] ?? [],
+//         'organization' => $organization,
+//         'unique_id' => uniqid(), // just example
+//     ]);
+// });
 
 
 // ref: frontend\src\components\notification-icon\NotificationButton.jsx
