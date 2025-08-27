@@ -1068,6 +1068,18 @@ Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $
             ['id' => 7, 'description' => 'Quality Control', 'orig' => 'x', 'q1' => '✓', 'q2' => '✓', 'q3' => 'x', 'q4' => 'x'],
             ['id' => 8, 'description' => 'Employee Engagement', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => '✓', 'q4' => 'x'],
         ],
+
+        'Collins Credit Union' => [
+            ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 2, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 3, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 4, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 5, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 6, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 7, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+            ['id' => 8, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+        ],
+
         'Test Skeleton Loading' => [
             ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
             ['id' => 2, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
@@ -1103,6 +1115,17 @@ Route::get('/api/v1/one-page-strategic-plan/constraints-tracker', function (Requ
             ['id' => 6, 'constraintTitle' => 'Team Collaboration', 'description' => 'In Progress', 'owner' => 'Emma Brown', 'actions' => 'Scheduled', 'status' => 'Not Started'],
             ['id' => 7, 'constraintTitle' => 'Market Research', 'description' => 'Completed', 'owner' => 'David White', 'actions' => 'Pending', 'status' => 'Inactive'],
         ],
+        
+        'Collins Credit Union' => [
+            ['id' => 1, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+            ['id' => 2, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+            ['id' => 3, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+            ['id' => 4, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+            ['id' => 5, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+            ['id' => 6, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+            ['id' => 7, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+        ],
+
         'Test Skeleton Loading' => [
             ['id' => 1, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
             ['id' => 2, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
@@ -3740,58 +3763,58 @@ Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_s
 });
 
 
+//
+    // // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
+    // // ref: frontend\src\pages\login\Login.jsx
+    // Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
 
-// // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
-// // ref: frontend\src\pages\login\Login.jsx
-// Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
 
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//         $user = $request->session()->get('user');
-//     }
+    //     $organization = $request->query('organization');
 
-//     $organization = $request->query('organization');
+    //     // Dummy toggle data based on organization (you can replace with DB query)
+    //     $toggles = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             'Strategic Drivers' => true,
+    //             'Foundations' => true,
+    //             '3 Year Outlook' => true,
+    //             'Playing to Win Strategy' => true,
+    //             'Core Capabilities' => true,
+    //             '4 Decisions' => true,
+    //             'Constraints Tracker' => true,
+    //         ],
+    //         'Collins Credit Union' => [
+    //             'Strategic Drivers' => true,
+    //             'Foundations' => true,
+    //             '3 Year Outlook' => true,
+    //             'Playing to Win Strategy' => true,
+    //             'Core Capabilities' => true,
+    //             '4 Decisions' => false,
+    //             'Constraints Tracker' => false,
+    //         ],
+    //         'Test Skeleton Loading' => [
+    //             'Strategic Drivers' => true,
+    //             'Foundations' => true,
+    //             '3 Year Outlook' => true,
+    //             'Playing to Win Strategy' => true,
+    //             'Core Capabilities' => true,
+    //             '4 Decisions' => true,
+    //             'Constraints Tracker' => true,
+    //         ],
+    //     ];
 
-//     // Dummy toggle data based on organization (you can replace with DB query)
-//     $toggles = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             'Strategic Drivers' => true,
-//             'Foundations' => true,
-//             '3 Year Outlook' => true,
-//             'Playing to Win Strategy' => true,
-//             'Core Capabilities' => true,
-//             '4 Decisions' => true,
-//             'Constraints Tracker' => true,
-//         ],
-//         'Collins Credit Union' => [
-//             'Strategic Drivers' => true,
-//             'Foundations' => true,
-//             '3 Year Outlook' => true,
-//             'Playing to Win Strategy' => true,
-//             'Core Capabilities' => true,
-//             '4 Decisions' => false,
-//             'Constraints Tracker' => false,
-//         ],
-//         'Test Skeleton Loading' => [
-//             'Strategic Drivers' => true,
-//             'Foundations' => true,
-//             '3 Year Outlook' => true,
-//             'Playing to Win Strategy' => true,
-//             'Core Capabilities' => true,
-//             '4 Decisions' => true,
-//             'Constraints Tracker' => true,
-//         ],
-//     ];
-
-//     return response()->json([
-//         'status' => 'success',
-//         'toggles' => $toggles[$organization] ?? [],
-//         'organization' => $organization,
-//         'unique_id' => uniqid(), // just example
-//     ]);
-// });
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'toggles' => $toggles[$organization] ?? [],
+    //         'organization' => $organization,
+    //         'unique_id' => uniqid(), // just example
+    //     ]);
+    // });
 
 
 // ref: frontend\src\components\notification-icon\NotificationButton.jsx
@@ -3956,7 +3979,7 @@ Route::get('/api/v1/company-traction-users', function (Request $request) use ($A
     ]);
 });
 
-// ref: 
+// ref: frontend\src\components\layout-icon\LayoutButton.jsx
 Route::post('/api/v1/update-layout-toggles', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);

@@ -25,7 +25,7 @@ const LayoutButton = () => {
     ENABLE_CONSOLE_LOGS && console.log('Unique ID:', uniqueId);
 
     
-    // 🚀 Log the store state
+    // 🚀 Push update to the database
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',

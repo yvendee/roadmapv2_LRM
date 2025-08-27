@@ -45,134 +45,134 @@ const OnePageStrategicPlan = () => {
   //     .then((json) => setUser(json.data));
   // }, [setUser]);
 
-  // // StrategicDrivers
-  // useEffect(() => {
-  //   const encodedOrg = encodeURIComponent(organization);
+  // StrategicDrivers
+  useEffect(() => {
+    const encodedOrg = encodeURIComponent(organization);
   
-  //   fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers?organization=${encodedOrg}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include', // important for Laravel session cookies
-  //   })
-  //     .then(async (res) => {
-  //       const json = await res.json();
-  //       if (res.ok) {
-  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Strategic-Drivers data:', json);
-  //         loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
-  //       } else if (res.status === 401) {
-  //         navigate('/', { state: { loginError: 'Session Expired' } });
-  //       } else {
-  //         console.error('Error:', json.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('API error:', err);
-  //     });
-  // }, [organization, loadStrategicDriversFromAPI, navigate]);
-  
-
-  // //Foundations
-  // useEffect(() => {
-  //   const encodedOrg = encodeURIComponent(organization);
-  
-  //   fetch(`${API_URL}/v1/one-page-strategic-plan/foundations?organization=${encodedOrg}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //   })
-  //     .then(async (res) => {
-  //       const json = await res.json();
-  //       if (res.ok) {
-  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
-  //         loadFoundationsFromAPI(json);
-  //       } else if (res.status === 401) {
-  //         navigate('/', { state: { loginError: 'Session Expired' } });
-  //       } else {
-  //         console.error('Error:', json.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('API error:', err);
-  //     });
-  // }, [organization, loadFoundationsFromAPI, navigate]);
+    fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // important for Laravel session cookies
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Strategic-Drivers data:', json);
+          loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [organization, loadStrategicDriversFromAPI, navigate]);
   
 
-  // // Three-Year-Outlook
-  // useEffect(() => {
-  //   const encodedOrg = encodeURIComponent(organization);
+  //Foundations
+  useEffect(() => {
+    const encodedOrg = encodeURIComponent(organization);
   
-  //   fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook?organization=${encodedOrg}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //   })
-  //     .then(async (res) => {
-  //       const json = await res.json();
-  //       if (res.ok) {
-  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched 3-Year-Outlook data:', json);
-  
-  //         const outlookArr = json[organization];
-  
-  //         if (Array.isArray(outlookArr)) {
-  //           loadOutlooksFromAPI(outlookArr);
-  //         } else {
-  //           console.error(`⚠️ No outlooks found for organization: ${organization}`);
-  //         }
-  //       } else if (res.status === 401) {
-  //         navigate('/', { state: { loginError: 'Session Expired' } });
-  //       } else {
-  //         console.error('Error:', json.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('API error:', err);
-  //     });
-  // }, [organization, loadOutlooksFromAPI, navigate]);
+    fetch(`${API_URL}/v1/one-page-strategic-plan/foundations?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
+          loadFoundationsFromAPI(json);
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [organization, loadFoundationsFromAPI, navigate]);
   
 
-  // // Playing-To-Win
-  // useEffect(() => {
-  //   const encodedOrg = encodeURIComponent(organization);
+  // Three-Year-Outlook
+  useEffect(() => {
+    const encodedOrg = encodeURIComponent(organization);
   
-  //   fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win?organization=${encodedOrg}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //   })
-  //     .then(async (res) => {
-  //       const json = await res.json();
-  //       if (res.ok) {
-  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Playing-To-Win data:', json);
+    fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched 3-Year-Outlook data:', json);
   
-  //         const playingToWinArr = json[organization];
+          const outlookArr = json[organization];
   
-  //         if (Array.isArray(playingToWinArr)) {
-  //           loadPlayingToWinFromAPI(playingToWinArr);
-  //         } else {
-  //           console.error(`⚠️ No Playing-To-Win found for organization: ${organization}`);
-  //         }
-  //       } else if (res.status === 401) {
-  //         navigate('/', { state: { loginError: 'Session Expired' } });
-  //       } else {
-  //         console.error('Error:', json.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('API error:', err);
-  //     });
-  // }, [organization, loadPlayingToWinFromAPI, navigate]);
+          if (Array.isArray(outlookArr)) {
+            loadOutlooksFromAPI(outlookArr);
+          } else {
+            console.error(`⚠️ No outlooks found for organization: ${organization}`);
+          }
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [organization, loadOutlooksFromAPI, navigate]);
+  
+
+  // Playing-To-Win
+  useEffect(() => {
+    const encodedOrg = encodeURIComponent(organization);
+  
+    fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Playing-To-Win data:', json);
+  
+          const playingToWinArr = json[organization];
+  
+          if (Array.isArray(playingToWinArr)) {
+            loadPlayingToWinFromAPI(playingToWinArr);
+          } else {
+            console.error(`⚠️ No Playing-To-Win found for organization: ${organization}`);
+          }
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [organization, loadPlayingToWinFromAPI, navigate]);
   
   // Core-Capabilities
   useEffect(() => {
