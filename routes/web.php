@@ -351,7 +351,7 @@ Route::post('/api/create-organization', function (Request $request) {
         ], 409); // 409 Conflict
     }
 
-    // ✅ Proceed to insert
+    // ✅ Create the organization
     $organization = Organization::create([
         'organizationName' => $request->input('name'),
         'industry' => $request->input('industry'),
@@ -360,6 +360,21 @@ Route::post('/api/create-organization', function (Request $request) {
         'token' => Str::random(40),
         'status' => null,
         'owner' => null,
+    ]);
+
+    // ✅ Create corresponding layout settings
+    OpspLayoutSetting::create([
+        'u_id' => $organization->u_id,
+        'organizationName' => $organization->organizationName,
+        'strategicDriversStatus' => 'true',
+        'FoundationsStatus' => 'true',
+        'threeYearOutlookStatus' => 'true',
+        'playingToWinStatus' => 'true',
+        'coreCapabilitiesStatus' => 'true',
+        'fourDecisionsStatus' => 'true',
+        'ConstraintsTrackerStatus' => 'true',
+        'modifiedByEmail' => null,
+        'statusFlag' => null,
     ]);
 
     return response()->json([
