@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // Call your AuthTableSeeder here
+   
         // $this->call([AuthTableSeeder::class,]);
-
-        $this->call(OrganizationSeeder::class);
+        // $this->call(OrganizationSeeder::class);
+        $this->call(OpspLayoutSettingsSeeder::class);
 
     }
 
