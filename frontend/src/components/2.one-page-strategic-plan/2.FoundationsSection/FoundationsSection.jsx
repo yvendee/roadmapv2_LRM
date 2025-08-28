@@ -306,6 +306,9 @@ const FoundationsSection = () => {
     // Update store and localStorage
     setFoundations(updated);
     localStorage.setItem('foundationsData', JSON.stringify(updated));
+
+    // Update localOrder state for immediate UI update
+    setLocalOrder(updated);
     
     // Add this change to the edited state if not already present, to show save/discard buttons
     setEdited(prev => {
