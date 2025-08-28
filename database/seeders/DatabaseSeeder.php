@@ -25,7 +25,9 @@ class DatabaseSeeder extends Seeder
    
         // $this->call([AuthTableSeeder::class,]);
         // $this->call(OrganizationSeeder::class);
-        $this->call(OpspLayoutSettingsSeeder::class);
+        // $this->call(OpspLayoutSettingsSeeder::class);
+        $this->call(OpspStrategicDriversSeeder::class);
+
 
     }
 

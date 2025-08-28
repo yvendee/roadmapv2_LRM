@@ -178,7 +178,7 @@ const Login = () => {
       } finally {
         setIsLoading(false);
       }
-    }, 1000);
+    }, 100);
   };
 
   // ✅ Handle uncheck logic immediately
