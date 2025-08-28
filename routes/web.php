@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\AuthUser;
 use App\Models\Organization;
 use App\Models\OpspLayoutSetting;
+use App\Models\OpspStrategicDriver;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -642,119 +643,145 @@ Route::get('/api/keep-alive', function (Request $request) {
     ]);
 });
 
-// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
+//
+    // // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
 
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     // Mock data for multiple organizations
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => 'Solution Innovation',
+    //                 'description' => 'Focuses on productization, technology, and data integration to create repeatable, scalable solutions that deliver on the brand promise.',
+    //                 'kpi' => 'Launch 2 scalable products',
+    //                 'status' => 'Tracking',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => 'Talent Leadership',
+    //                 'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
+    //                 'kpi' => 'Hire 5 elite coaches',
+    //                 'status' => 'Behind',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => 'Exceptional Delivery',
+    //                 'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
+    //                 'kpi' => 'Achieve 90% 10/10 ratings',
+    //                 'status' => 'At Risk',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'title' => 'Market Dominance',
+    //                 'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
+    //                 'kpi' => 'Grow referral traffic by 30%',
+    //                 'status' => 'Paused',
+    //             ],
+    //         ],
+
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => 'Customer Centricity',
+    //                 'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
+    //                 'kpi' => 'Increase customer satisfaction by 20%',
+    //                 'status' => 'Tracking',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => 'Operational Excellence',
+    //                 'description' => 'Streamline operations and reduce costs while maintaining quality.',
+    //                 'kpi' => 'Reduce operational costs by 10%',
+    //                 'status' => 'On Track',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => 'Digital Transformation',
+    //                 'description' => 'Implement new technologies to drive efficiency and innovation.',
+    //                 'kpi' => 'Migrate 70% of systems to cloud',
+    //                 'status' => 'At Risk',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'title' => 'Market Expansion',
+    //                 'description' => 'Entering new markets and increasing market share.',
+    //                 'kpi' => 'Expand into 3 new markets',
+    //                 'status' => 'Behind',
+    //             ],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => '-',
+    //                 'description' => '-',
+    //                 'kpi' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => '-',
+    //                 'description' => '-',
+    //                 'kpi' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => '-',
+    //                 'description' => '-',
+    //                 'kpi' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'title' => '-',
+    //                 'description' => '-',
+    //                 'kpi' => '-',
+    //                 'status' => '-',
+    //             ],
+    //         ],
+
+    //     ];
+
+    //     // Return data for the requested organization or empty array
+    //     return response()->json($data[$organization] ?? []);
+    // });
+Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    // Mock data for multiple organizations
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'title' => 'Solution Innovation',
-                'description' => 'Focuses on productization, technology, and data integration to create repeatable, scalable solutions that deliver on the brand promise.',
-                'kpi' => 'Launch 2 scalable products',
-                'status' => 'Tracking',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Talent Leadership',
-                'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
-                'kpi' => 'Hire 5 elite coaches',
-                'status' => 'Behind',
-            ],
-            [
-                'id' => 3,
-                'title' => 'Exceptional Delivery',
-                'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
-                'kpi' => 'Achieve 90% 10/10 ratings',
-                'status' => 'At Risk',
-            ],
-            [
-                'id' => 4,
-                'title' => 'Market Dominance',
-                'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
-                'kpi' => 'Grow referral traffic by 30%',
-                'status' => 'Paused',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization name is required'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'title' => 'Customer Centricity',
-                'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
-                'kpi' => 'Increase customer satisfaction by 20%',
-                'status' => 'Tracking',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Operational Excellence',
-                'description' => 'Streamline operations and reduce costs while maintaining quality.',
-                'kpi' => 'Reduce operational costs by 10%',
-                'status' => 'On Track',
-            ],
-            [
-                'id' => 3,
-                'title' => 'Digital Transformation',
-                'description' => 'Implement new technologies to drive efficiency and innovation.',
-                'kpi' => 'Migrate 70% of systems to cloud',
-                'status' => 'At Risk',
-            ],
-            [
-                'id' => 4,
-                'title' => 'Market Expansion',
-                'description' => 'Entering new markets and increasing market share.',
-                'kpi' => 'Expand into 3 new markets',
-                'status' => 'Behind',
-            ],
-        ],
+    $record = OpspStrategicDriver::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'title' => '-',
-                'description' => '-',
-                'kpi' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 2,
-                'title' => '-',
-                'description' => '-',
-                'kpi' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 3,
-                'title' => '-',
-                'description' => '-',
-                'kpi' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 4,
-                'title' => '-',
-                'description' => '-',
-                'kpi' => '-',
-                'status' => '-',
-            ],
-        ],
+    if (!$record) {
+        return response()->json(['message' => 'No strategic drivers found for this organization'], 404);
+    }
 
-    ];
-
-    // Return data for the requested organization or empty array
-    return response()->json($data[$organization] ?? []);
+    return response()->json([
+        'status' => 'success',
+        'organization' => $organization,
+        'strategicDriversData' => $record->strategicDriversData ?? []
+    ]);
 });
-
+    
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
