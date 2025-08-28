@@ -6,6 +6,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import useFoundationsStore, { initialFoundations } from '../../../store/left-lower-content/2.one-page-strategic-plan/2.foundationsStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import API_URL from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './FoundationsSection.css';
 import './RichTextEditor.css';
 import RichTextEditor from './RichTextEditor';
