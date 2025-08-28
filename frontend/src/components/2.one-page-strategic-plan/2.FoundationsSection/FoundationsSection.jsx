@@ -284,19 +284,40 @@ const FoundationsSection = () => {
   // };
 
 
+  // const handleDeleteFoundation = (id) => {
+  //   const updated = foundations.filter(item => item.id !== id);
+  //   setFoundations(updated);
+  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
+  
+  //   // 👇 Ensure at least one change is registered to show save/discharge buttons
+  //   setEdited(prev => {
+  //     const alreadyEdited = prev.some(e => e.id === id);
+  //     return alreadyEdited ? prev : [...prev, { id }];
+  //   });
+  
+  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
+  // };
+
+
   const handleDeleteFoundation = (id) => {
+    // Remove the foundation with the given id
     const updated = foundations.filter(item => item.id !== id);
+    
+    // Update store and localStorage
     setFoundations(updated);
     localStorage.setItem('foundationsData', JSON.stringify(updated));
-  
-    // 👇 Ensure at least one change is registered to show save/discharge buttons
+    
+    // Add this change to the edited state if not already present, to show save/discard buttons
     setEdited(prev => {
-      const alreadyEdited = prev.some(e => e.id === id);
-      return alreadyEdited ? prev : [...prev, { id }];
+      if (!prev.some(e => e.id === id)) {
+        return [...prev, { id }];
+      }
+      return prev;
     });
-  
+    
     console.log(`🗑️ Foundation with ID ${id} deleted.`);
   };
+  
   
   
   const handleDischargeChanges = () => {
