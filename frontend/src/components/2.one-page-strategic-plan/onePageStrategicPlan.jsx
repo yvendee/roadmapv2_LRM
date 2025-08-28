@@ -47,59 +47,65 @@ const OnePageStrategicPlan = () => {
 
   // StrategicDrivers
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include', // important for Laravel session cookies
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Strategic-Drivers data:', json);
-          loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('strategicDriversData');
+    if (!localData) {
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // important for Laravel session cookies
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Strategic-Drivers data:', json);
+            loadStrategicDriversFromAPI(json); // Assuming this function is imported from store
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization, loadStrategicDriversFromAPI, navigate]);
   
 
   //Foundations
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/one-page-strategic-plan/foundations?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
-          loadFoundationsFromAPI(json);
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('foundationsData');
+    if (!localData) {
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/one-page-strategic-plan/foundations?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
+            loadFoundationsFromAPI(json);
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization, loadFoundationsFromAPI, navigate]);
   
 
