@@ -799,7 +799,6 @@ Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function
         $driver['id'] = $index + 1;
         return $driver;
     }, $strategicDriversData, array_keys($strategicDriversData));
-    
 
     $record = OpspStrategicDriver::where('organizationName', $organization)->first();
 
