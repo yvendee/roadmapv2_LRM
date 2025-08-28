@@ -778,39 +778,6 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
 });
 
 
-// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/add', function (Request $request) {
-    $organization = $request->input('organization');
-    $newDriver = $request->input('newDriver');
-
-    if (!$organization || !$newDriver) {
-        return response()->json(['message' => 'Missing organization or newDriver data'], 400);
-    }
-
-    // Fetch the first record for this organization
-    $record = DB::table('opsp_strategic_drivers')
-        ->where('organizationName', $organization)
-        ->first();
-
-    if (!$record) {
-        return response()->json(['message' => 'Organization not found'], 404);
-    }
-
-    // Decode existing data or default to empty array
-    $currentData = $record->strategicDriversData ? json_decode($record->strategicDriversData, true) : [];
-
-    // Append new driver item to current data
-    $currentData[] = $newDriver;
-
-    // Update the database with the new JSON data
-    DB::table('opsp_strategic_drivers')
-        ->where('organizationName', $organization)
-        ->update(['strategicDriversData' => json_encode($currentData)]);
-
-    return response()->json(['message' => 'Strategic driver added successfully']);
-});
-
-
 // ref: // frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
 Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {

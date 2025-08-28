@@ -92,13 +92,29 @@ const StrategicDriversTable = () => {
   const handleAddNewDriver = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Driver:', JSON.stringify(newDriver, null, 2));
   
+    const currentDrivers = useStrategicDriversStore.getState().strategicDrivers;
+  
+    // Append new driver to the current list
+    const updated = [...currentDrivers, newDriver];
+  
+    // Reindex with new IDs
+    const reordered = updated.map((driver, index) => ({
+      ...driver,
+      id: index + 1,
+    }));
+  
+    ENABLE_CONSOLE_LOGS && console.log('🚀 Updated + Reindexed StrategicDrivers:', reordered);
+  
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
   
-      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers/add`, {
+      const org = useLayoutSettingsStore.getState().organization;
+  
+      // 🔁 Use the updated /update endpoint
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,38 +122,32 @@ const StrategicDriversTable = () => {
         },
         credentials: 'include',
         body: JSON.stringify({
-          organization,
-          newDriver,
+          organization: org,
+          strategicDriversData: reordered,
         }),
       });
   
       const data = await response.json();
-      ENABLE_CONSOLE_LOGS && console.log('Add new strategic driver response:', data);
+      ENABLE_CONSOLE_LOGS && console.log('✅ Update Driver API Response:', data);
   
-      if (!response.ok) {
-        console.error('Failed to add strategic driver:', data.message || 'Unknown error');
-        return;
+      if (response.ok && data.status === 'success') {
+        setStrategicDrivers(reordered); // Update Zustand store
+      } else {
+        console.error('❌ Failed to update drivers:', data.message);
       }
   
-      // 2. Hide Save / Discharge
-      setEditedDrivers([]);
-  
-      // 3. Remove localStorage temp data
-      localStorage.removeItem('strategicDriversData');
-  
-      // 4. Push to Zustand store
-      pushStrategicDriver(newDriver);
-  
-      // Close modal
-      setShowAddModal(false);
-  
-      // Reset form input
-      setNewDriver({ title: '', description: '', kpi: '', status: 'Tracking' });
-  
     } catch (error) {
-      console.error('Error adding new strategic driver:', error);
+      console.error('❌ Error updating strategic drivers:', error);
     }
+  
+    // Final cleanup
+    setEditedDrivers([]);
+    localStorage.removeItem('strategicDriversData');
+    setShowAddModal(false);
+    setNewDriver({ title: '', description: '', kpi: '', status: 'Tracking' });
   };
+  
+  
   
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
