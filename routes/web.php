@@ -794,6 +794,13 @@ Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function
     $organization = $validated['organization'];
     $strategicDriversData = $validated['strategicDriversData'];
 
+    // ✅ Reindex items to make sure every item has an 'id'
+    $strategicDriversData = array_map(function ($driver, $index) {
+        $driver['id'] = $index + 1;
+        return $driver;
+    }, $strategicDriversData, array_keys($strategicDriversData));
+    
+
     $record = OpspStrategicDriver::where('organizationName', $organization)->first();
 
     if (!$record) {
