@@ -788,7 +788,7 @@ Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/add', function (R
     }
 
     // Fetch the first record for this organization
-    $record = DB::table('opsp_strategic_drivers_table')
+    $record = DB::table('opsp_strategic_drivers')
         ->where('organizationName', $organization)
         ->first();
 
@@ -803,7 +803,7 @@ Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/add', function (R
     $currentData[] = $newDriver;
 
     // Update the database with the new JSON data
-    DB::table('opsp_strategic_drivers_table')
+    DB::table('opsp_strategic_drivers')
         ->where('organizationName', $organization)
         ->update(['strategicDriversData' => json_encode($currentData)]);
 
