@@ -779,7 +779,7 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-Route::post('/v1/one-page-strategic-plan/strategic-drivers/add', function (Request $request) {
+Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/add', function (Request $request) {
     $organization = $request->input('organization');
     $newDriver = $request->input('newDriver');
 
