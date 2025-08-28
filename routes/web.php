@@ -955,6 +955,34 @@ Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $req
 });
     
 
+// ref: // frontend/src/components/one-page-strategic-plan/2.FoundationsSection/FoundationsSection.jsx
+Route::post('/api/v1/one-page-strategic-plan/foundations/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'foundationsData' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $foundationsData = $validated['foundationsData'];
+
+    $record = OpspFoundation::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['status' => 'error', 'message' => 'Organization not found'], 404);
+    }
+
+    $record->foundationsData = $foundationsData;
+    $record->save();
+
+    return response()->json(['status' => 'success', 'message' => 'Foundations data updated successfully']);
+});
+
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {

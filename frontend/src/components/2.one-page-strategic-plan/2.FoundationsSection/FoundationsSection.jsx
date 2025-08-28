@@ -132,51 +132,95 @@ const FoundationsSection = () => {
 
 
 
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('foundationsData');
+  
+  //     let reordered = [];
+  
+  //     try {
+
+  //       // Reindex IDs just to be safe and consistent
+  //       const reordered = localOrder.map((item, index) => ({
+  //         ...item,
+  //         id: index + 1,
+  //       }));
+
+  //       setFoundations(reordered);
+
+  
+  //       // ✅ Log updated data
+  //       ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
+  
+  //       // ✅ Hide Save/Discharge buttons
+  //       setEdited([]);
+  //       localStorage.removeItem('foundationsData');
+  //     } catch (err) {
+  //       console.error('❌ Error parsing foundationsData on save:', err);
+  //     }
+  //   }, 1000);
+  // };
+
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
-      const storedData = localStorage.getItem('foundationsData');
-  
-      let reordered = [];
-  
       try {
-
-        // if (storedData) {
-        //   const parsedData = JSON.parse(storedData);
-        //   reordered = parsedData.map((item, index) => ({
-        //     ...item,
-        //     id: index + 1,
-        //   }));
-        // } else {
-        //   reordered = foundations.map((item, index) => ({
-        //     ...item,
-        //     id: index + 1,
-        //   }));
-        // }
-
-        // Reindex IDs just to be safe and consistent
+        // Reindex IDs
         const reordered = localOrder.map((item, index) => ({
           ...item,
           id: index + 1,
         }));
-
-        setFoundations(reordered);
-
   
-        // ✅ Log updated data
+        setFoundations(reordered);
+  
         ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
   
-        // ✅ Hide Save/Discharge buttons
+        // Fetch CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const organization = useLayoutSettingsStore.getState().organization;
+  
+        // Send update to backend
+        const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/foundations/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            foundationsData: reordered,
+          }),
+        });
+  
+        const data = await res.json();
+  
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Foundations Update API Response:', data);
+        } else {
+          console.error('❌ Failed to update foundations:', data.message);
+        }
+  
         setEdited([]);
         localStorage.removeItem('foundationsData');
+  
       } catch (err) {
-        console.error('❌ Error parsing foundationsData on save:', err);
+        console.error('❌ Error parsing or updating foundationsData:', err);
       }
     }, 1000);
   };
+  
 
   // const handleDeleteFoundation = (id) => {
   //   const updated = foundations.filter(item => item.id !== id);
