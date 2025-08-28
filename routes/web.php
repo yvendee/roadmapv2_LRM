@@ -23,6 +23,7 @@ use App\Models\AuthUser;
 use App\Models\Organization;
 use App\Models\OpspLayoutSetting;
 use App\Models\OpspStrategicDriver;
+use App\Models\OpspFoundation;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -813,122 +814,146 @@ Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function
 });
 
 
+//
+    // // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => 'Our Aspiration',
+    //                 'content' => '"To be renowned as the premier coaching organization that transforms how companies achieve their optimal exits."',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => 'Our Purpose / Mission',
+    //                 'content' => "Our purpose is:\n\nDevelop transformative coaching methodologies and frameworks.\nDeliver extraordinary, measurable results for our clients.\n\nOur organizational culture is designed so all team members win.",
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => 'Brand Promise',
+    //                 'content' => '',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'title' => 'Profit Per X',
+    //                 'content' => '',
+    //             ],
+    //             [
+    //                 'id' => 5,
+    //                 'title' => 'BHAG',
+    //                 'content' => '$100 Billion in Exit Value',
+    //             ],
+    //             [
+    //                 'id' => 6,
+    //                 'title' => '3HAG',
+    //                 'content' => '$7Mil in Revenue by 2027',
+    //             ],
+    //         ],
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => 'Our Aspiration',
+    //                 'content' => '"To be a trusted partner driving financial wellness and community growth."',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => 'Our Purpose / Mission',
+    //                 'content' => "Empower members with innovative financial solutions.\nFoster a culture of inclusion and service excellence.",
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => 'Brand Promise',
+    //                 'content' => 'Reliable, Friendly, Innovative.',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'title' => 'Profit Per X',
+    //                 'content' => 'Maximize member value through sustainable growth.',
+    //             ],
+    //             [
+    //                 'id' => 5,
+    //                 'title' => 'BHAG',
+    //                 'content' => '$50 Million in Community Investments',
+    //             ],
+    //             [
+    //                 'id' => 6,
+    //                 'title' => '3HAG',
+    //                 'content' => '$12Mil in Revenue by 2028',
+    //             ],
+    //         ],
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => '-',
+    //                 'content' => '-',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => '-',
+    //                 'content' => "-",
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => '-',
+    //                 'content' => '-',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'title' => '-',
+    //                 'content' => '-',
+    //             ],
+    //             [
+    //                 'id' => 5,
+    //                 'title' => '-',
+    //                 'content' => '-',
+    //             ],
+    //             [
+    //                 'id' => 6,
+    //                 'title' => '-',
+    //                 'content' => '-',
+    //             ],
+    //         ],
+    //     ];
+
+    //     $organization = $request->query('organization');
+
+    //     if ($organization && isset($data[$organization])) {
+    //         return response()->json($data[$organization]);
+    //     }
+
+    //     return response()->json(['message' => 'Organization not found or no organization provided.'], 404);
+    // });
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
-
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'title' => 'Our Aspiration',
-                'content' => '"To be renowned as the premier coaching organization that transforms how companies achieve their optimal exits."',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Our Purpose / Mission',
-                'content' => "Our purpose is:\n\nDevelop transformative coaching methodologies and frameworks.\nDeliver extraordinary, measurable results for our clients.\n\nOur organizational culture is designed so all team members win.",
-            ],
-            [
-                'id' => 3,
-                'title' => 'Brand Promise',
-                'content' => '',
-            ],
-            [
-                'id' => 4,
-                'title' => 'Profit Per X',
-                'content' => '',
-            ],
-            [
-                'id' => 5,
-                'title' => 'BHAG',
-                'content' => '$100 Billion in Exit Value',
-            ],
-            [
-                'id' => 6,
-                'title' => '3HAG',
-                'content' => '$7Mil in Revenue by 2027',
-            ],
-        ],
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'title' => 'Our Aspiration',
-                'content' => '"To be a trusted partner driving financial wellness and community growth."',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Our Purpose / Mission',
-                'content' => "Empower members with innovative financial solutions.\nFoster a culture of inclusion and service excellence.",
-            ],
-            [
-                'id' => 3,
-                'title' => 'Brand Promise',
-                'content' => 'Reliable, Friendly, Innovative.',
-            ],
-            [
-                'id' => 4,
-                'title' => 'Profit Per X',
-                'content' => 'Maximize member value through sustainable growth.',
-            ],
-            [
-                'id' => 5,
-                'title' => 'BHAG',
-                'content' => '$50 Million in Community Investments',
-            ],
-            [
-                'id' => 6,
-                'title' => '3HAG',
-                'content' => '$12Mil in Revenue by 2028',
-            ],
-        ],
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'title' => '-',
-                'content' => '-',
-            ],
-            [
-                'id' => 2,
-                'title' => '-',
-                'content' => "-",
-            ],
-            [
-                'id' => 3,
-                'title' => '-',
-                'content' => '-',
-            ],
-            [
-                'id' => 4,
-                'title' => '-',
-                'content' => '-',
-            ],
-            [
-                'id' => 5,
-                'title' => '-',
-                'content' => '-',
-            ],
-            [
-                'id' => 6,
-                'title' => '-',
-                'content' => '-',
-            ],
-        ],
-    ];
 
     $organization = $request->query('organization');
 
-    if ($organization && isset($data[$organization])) {
-        return response()->json($data[$organization]);
+    if (!$organization) {
+        return response()->json(['message' => 'Organization query parameter is required.'], 400);
     }
 
-    return response()->json(['message' => 'Organization not found or no organization provided.'], 404);
+    $record = OpspFoundation::where('organizationName', $organization)->first();
+
+    if (!$record || !$record->foundationsData) {
+        return response()->json(['message' => 'Foundations data not found for the given organization.'], 404);
+    }
+
+    return response()->json($record->foundationsData);
 });
+    
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
