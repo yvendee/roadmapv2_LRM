@@ -4,7 +4,9 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import useStrategicDriversStore, { initialStrategicDrivers } from '../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './StrategicDriversTable.css';
 
 const StrategicDriversTable = () => {
@@ -12,6 +14,7 @@ const StrategicDriversTable = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
+  const organization = useLayoutSettingsStore((state) => state.organization);
 
   const loggedUser = useLoginStore((state) => state.user);
   const strategicDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
@@ -119,7 +122,7 @@ const StrategicDriversTable = () => {
 
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('strategicDriversData');
@@ -149,6 +152,37 @@ const StrategicDriversTable = () => {
   
           // 4. Remove from localStorage
           localStorage.removeItem('strategicDriversData');
+
+          // Now update backend with Reindexed data
+          try {
+            const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+              credentials: 'include',
+            });
+            const { csrf_token } = await csrfRes.json();
+
+            const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers/update`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf_token,
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                organization,
+                strategicDriversData: reordered,
+              }),
+            });
+
+            const data = await response.json();
+            ENABLE_CONSOLE_LOGS && console.log('Update strategic drivers response:', data);
+
+            if (!response.ok) {
+              console.error('Failed to update strategic drivers:', data.message || 'Unknown error');
+            }
+          } catch (error) {
+            console.error('Error updating strategic drivers:', error);
+          }
+
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing strategicDriversData on save:', err);
         }
@@ -167,6 +201,37 @@ const StrategicDriversTable = () => {
 
         // Remove from localStorage
         localStorage.removeItem('strategicDriversData');
+
+
+        // Now update backend with reordered data
+        try {
+          const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+            credentials: 'include',
+          });
+          const { csrf_token } = await csrfRes.json();
+
+          const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/strategic-drivers/update`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrf_token,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              organization,
+              strategicDriversData: reordered,
+            }),
+          });
+
+          const data = await response.json();
+          ENABLE_CONSOLE_LOGS && console.log('Update strategic drivers response:', data);
+
+          if (!response.ok) {
+            console.error('Failed to update strategic drivers:', data.message || 'Unknown error');
+          }
+        } catch (error) {
+          console.error('Error updating strategic drivers:', error);
+        }
 
       }
     }, 1000);

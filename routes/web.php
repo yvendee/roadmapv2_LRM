@@ -756,7 +756,7 @@ Route::get('/api/keep-alive', function (Request $request) {
     //     // Return data for the requested organization or empty array
     //     return response()->json($data[$organization] ?? []);
     // });
-    
+
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -777,7 +777,35 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
     return response()->json($record?->strategicDriversData ?? []);
 });
     
-    
+
+// ref: // frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
+Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'strategicDriversData' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $strategicDriversData = $validated['strategicDriversData'];
+
+    $record = OpspStrategicDriver::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['status' => 'error', 'message' => 'Organization not found'], 404);
+    }
+
+    $record->strategicDriversData = $strategicDriversData;
+    $record->save();
+
+    return response()->json(['status' => 'success', 'message' => 'Strategic Drivers updated successfully']);
+});
+
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/foundations', function (Request $request) use ($API_secure) {
