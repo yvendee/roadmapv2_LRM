@@ -756,6 +756,8 @@ Route::get('/api/keep-alive', function (Request $request) {
     //     // Return data for the requested organization or empty array
     //     return response()->json($data[$organization] ?? []);
     // });
+    
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -766,21 +768,15 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
     $organization = $request->query('organization');
 
     if (!$organization) {
-        return response()->json(['message' => 'Organization name is required'], 400);
+        return response()->json([], 400); // return empty if no org provided
     }
 
     $record = OpspStrategicDriver::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json(['message' => 'No strategic drivers found for this organization'], 404);
-    }
-
-    return response()->json([
-        'status' => 'success',
-        'organization' => $organization,
-        'strategicDriversData' => $record->strategicDriversData ?? []
-    ]);
+    // Return just the data (or empty array) like your mock structure
+    return response()->json($record?->strategicDriversData ?? []);
 });
+    
     
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
