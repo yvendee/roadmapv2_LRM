@@ -984,6 +984,51 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/update', function (Requ
 });
 
 
+// ref:
+Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'newFoundation' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $newFoundation = $validated['newFoundation'];
+
+    // Find the record
+    $record = OpspFoundation::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    // Decode current data or start with empty array
+    $data = $record->foundationsData ?? [];
+    $data = is_string($data) ? json_decode($data, true) : $data;
+
+    // Assign new ID
+    $newFoundation['id'] = count($data) + 1;
+
+    // Append new item
+    $data[] = $newFoundation;
+
+    $record->foundationsData = $data;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'New foundation added successfully',
+        'updatedData' => $data
+    ]);
+});
+
+
+
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
     if ($API_secure) {

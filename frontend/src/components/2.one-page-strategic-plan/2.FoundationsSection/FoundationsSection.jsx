@@ -100,18 +100,67 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
-  const handleAddFoundation = () => {
-    const updated = [...foundations, newFoundation];
-    pushFoundation(newFoundation);
+  // const handleAddFoundation = () => {
+  //   const updated = [...foundations, newFoundation];
+  //   pushFoundation(newFoundation);
   
-    ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
-    ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', updated);
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
+  //   ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', updated);
+  
+  //   setNewFoundation({ title: '', content: '' });
+  //   setShowAddModal(false);
+  //   localStorage.removeItem('foundationsData');
+  //   setEdited([]);
+  // };
+
+
+  const handleAddFoundation = async () => {
+    ENABLE_CONSOLE_LOGS && console.log('🆕 New Foundation:', newFoundation);
+  
+    const updated = [...foundations, newFoundation];
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const organization = useLayoutSettingsStore.getState().organization;
+  
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/foundations/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newFoundation,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.status === 'success') {
+        ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
+        ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', data.updatedData);
+  
+        // Update store with the new list
+        setFoundations(data.updatedData);
+      } else {
+        console.error('❌ Failed to add new foundation:', data.message);
+      }
+    } catch (error) {
+      console.error('❌ Error adding new foundation:', error);
+    }
   
     setNewFoundation({ title: '', content: '' });
     setShowAddModal(false);
     localStorage.removeItem('foundationsData');
     setEdited([]);
   };
+  
 
   // const handleSaveChanges = () => {
   //   setLoadingSave(true);
