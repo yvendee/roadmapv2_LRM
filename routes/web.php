@@ -1112,6 +1112,7 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     }
 
     $organization = $request->query('organization');
+
     if (!$organization) {
         return response()->json(['message' => 'Missing organization parameter'], 400);
     }
@@ -1119,28 +1120,32 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
     if (!$record || !$record->threeyearOutlookData) {
-        return response()->json(['message' => 'Three Year Outlook data not found for the given organization.'], 404);
+        // Return empty array if not found, matching frontend expectations
+        return response()->json([]);
     }
 
-    // Double decode to fix the double-escaped JSON string from DB
-    $firstDecode = json_decode($record->threeyearOutlookData, true);
-    if (is_string($firstDecode)) {
-        // If first decode gives string, decode again
-        $data = json_decode($firstDecode, true);
-    } else {
-        $data = $firstDecode;
+    // DB field might have double-encoded JSON string with extra quotes
+    $jsonData = $record->threeyearOutlookData;
+
+    // Fix for double encoding with extra quotes (escaped quotes inside string)
+    // First remove extra quotes if needed (strip surrounding quotes)
+    if (substr($jsonData, 0, 1) === '"' && substr($jsonData, -1) === '"') {
+        $jsonData = substr($jsonData, 1, -1);
+        // Also fix escaped quotes inside string
+        $jsonData = str_replace('""', '"', $jsonData);
     }
+
+    $data = json_decode($jsonData, true);
 
     if (!is_array($data)) {
-        // If decoding failed, fallback to empty array
+        // fallback empty array
         $data = [];
     }
 
-    // Return JSON response with organization as key, and the array of outlooks as value (like your example)
-    return response()->json([
-        $organization => $data
-    ]);
+    // Return exactly the array of objects expected by frontend
+    return response()->json($data);
 });
+
 
 
 
