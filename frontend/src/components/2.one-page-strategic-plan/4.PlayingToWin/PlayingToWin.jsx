@@ -138,7 +138,7 @@ const PlayingToWin = () => {
         // ✅ Update localOrder to reflect immediately
         setLocalOrder((prev) => [...prev, data.newItem]);
       
-        markEdited(data.newItem.id);
+        // markEdited(data.newItem.id);
         setNewPlayingToWin({ title: '', value: '' });
         setShowAddModal(false);
         localStorage.removeItem('PlayingToWin');
