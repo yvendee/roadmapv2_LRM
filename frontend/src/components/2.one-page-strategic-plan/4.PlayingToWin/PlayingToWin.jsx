@@ -130,15 +130,18 @@ const PlayingToWin = () => {
       const data = await res.json();
   
       if (res.ok) {
-        // ✅ Immediately reflect in UI
         ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', data.newItem);
-        pushPlayingToWin(data.newItem);        // <- Zustand store update
-        markEdited(data.newItem.id);           // <- Mark as edited
+      
+        // ✅ Update store
+        pushPlayingToWin(data.newItem);
+      
+        // ✅ Update localOrder to reflect immediately
+        setLocalOrder((prev) => [...prev, data.newItem]);
+      
+        markEdited(data.newItem.id);
         setNewPlayingToWin({ title: '', value: '' });
         setShowAddModal(false);
         localStorage.removeItem('PlayingToWin');
-      } else {
-        console.error('❌ Failed to add new PlayingToWin item:', data.message);
       }
   
     } catch (err) {
