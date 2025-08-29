@@ -1137,6 +1137,41 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
 });
 
 
+// ref:
+Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', function (Request $request) use ($API_secure) {
+    // 🔐 Optional session auth
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // 🧾 Validate incoming data
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'outlooks' => 'required|array|min:1',
+        'outlooks.*.id' => 'required|integer',
+        'outlooks.*.year' => 'required|string',
+        'outlooks.*.value' => 'required|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $outlooks = $validated['outlooks'];
+
+    // 📦 Fetch or create record
+    $record = OpspThreeyearOutlook::firstOrNew([
+        'organizationName' => $organization,
+    ]);
+
+    // 💾 Save updated data as JSON
+    $record->threeyearOutlookData = json_encode($outlooks);
+    $record->save();
+
+    return response()->json([
+        'message' => 'Three Year Outlook updated successfully.',
+        'data' => $outlooks,
+    ]);
+});
+
+
 
 
 

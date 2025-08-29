@@ -4,7 +4,9 @@ import useLoginStore from '../../../store/loginStore';
 import useThreeYearOutlookStore, { initialOutlooks } from '../../../store/left-lower-content/2.one-page-strategic-plan/3.threeYearOutlookStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS} from '../../../configs/config';
 import './ThreeYearOutlook.css';
 
 const ThreeYearOutlook = () => {
@@ -91,20 +93,73 @@ const ThreeYearOutlook = () => {
     // ENABLE_CONSOLE_LOGS && console.log('📦 Updated Outlooks:', updated);
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+
+  //     ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', outlooks);
+  //     setEdited([]);
+  //     localStorage.removeItem('threeYearOutlook');
+  
+  //   }, 1000);
+
+  // };
+
+  const handleSave = async () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
-
-      ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', outlooks);
-      setEdited([]);
-      localStorage.removeItem('threeYearOutlook');
   
+      try {
+        ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', outlooks);
+  
+        // ✅ Step 1: Fetch CSRF Token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        // ✅ Step 2: Get organization from store
+        const organization = useLayoutSettingsStore.getState().organization;
+  
+        // ✅ Step 3: Send data to backend
+        const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            outlooks,
+          }),
+        });
+  
+        const data = await res.json();
+  
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Three-Year-Outlook Update API Response:', data);
+        } else {
+          console.error('❌ Failed to update Three-Year-Outlook:', data.message || data);
+        }
+  
+        // ✅ Step 4: Clear local storage and edited state
+        setEdited([]);
+        localStorage.removeItem('threeYearOutlook');
+  
+      } catch (err) {
+        console.error('❌ Error saving Three-Year-Outlook:', err);
+      }
     }, 1000);
-
   };
+  
+  
 
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
