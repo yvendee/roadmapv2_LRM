@@ -1104,9 +1104,6 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
     // });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-use Illuminate\Http\Request;
-use App\Models\OpspThreeyearOutlook;
-
 Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
