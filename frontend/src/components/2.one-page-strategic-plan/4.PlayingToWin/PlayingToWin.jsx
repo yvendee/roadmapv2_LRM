@@ -4,7 +4,9 @@ import useLoginStore from '../../../store/loginStore';
 import usePlayingToWinStore, { initialPlayingToWin } from '../../../store/left-lower-content/2.one-page-strategic-plan/4.playingToWinStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS} from '../../../configs/config';
 import './PlayingToWin.css';
 import './RichTextEditor.css';
 import RichTextEditor from './RichTextEditor';
@@ -85,19 +87,64 @@ const PlayingToWin = () => {
     setEditing({ field: null, id: null });
   };
 
-  const handleAdd = () => {
+  // const handleAdd = () => {
+  //   const nextId = Math.max(0, ...playingtowins.map(o => o.id || 0)) + 1;
+  //   const newItem = { id: nextId, ...newPlayingToWin };
+  //   pushPlayingToWin(newItem);
+  //   localStorage.removeItem('PlayingToWin');
+  //   setNewPlayingToWin({ title: '', value: '' });
+  //   setShowAddModal(false);
+  //   markEdited(nextId);
+  //   // setEdited([...edited, nextId]);
+
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', newItem);
+  //   // console.log('📦 Full Updated PlayingToWin:', [...playingtowins, newItem]);
+  // };
+
+  const handleAdd = async () => {
     const nextId = Math.max(0, ...playingtowins.map(o => o.id || 0)) + 1;
     const newItem = { id: nextId, ...newPlayingToWin };
-    pushPlayingToWin(newItem);
-    localStorage.removeItem('PlayingToWin');
-    setNewPlayingToWin({ title: '', value: '' });
-    setShowAddModal(false);
-    markEdited(nextId);
-    // setEdited([...edited, nextId]);
-
-    ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', newItem);
-    // console.log('📦 Full Updated PlayingToWin:', [...playingtowins, newItem]);
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      // Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // POST new item to backend
+      const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newItem,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', data.newItem);
+        pushPlayingToWin(data.newItem);
+        markEdited(nextId);
+        localStorage.removeItem('PlayingToWin');
+        setNewPlayingToWin({ title: '', value: '' });
+        setShowAddModal(false);
+      } else {
+        console.error('❌ Failed to add new PlayingToWin item:', data.message);
+      }
+  
+    } catch (err) {
+      console.error('❌ Error adding new PlayingToWin:', err);
+    }
   };
+  
 
   const handleAddOutlookClick = () => {
     setLoading(true);
@@ -136,16 +183,64 @@ const PlayingToWin = () => {
 
   // };
 
-  const handleSave = () => {
+  // const handleSave = () => {
+  //   setLoadingSave(true);
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //     setEdited([]);
+  //     localStorage.removeItem('PlayingToWin');
+  //     ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', localOrder);
+  //     setPlayingToWin(localOrder);
+  //   }, 1000);
+  // };
+
+  const handleSave = async () => {
     setLoadingSave(true);
-    setTimeout(() => {
+  
+    setTimeout(async () => {
       setLoadingSave(false);
       setEdited([]);
       localStorage.removeItem('PlayingToWin');
+  
       ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', localOrder);
       setPlayingToWin(localOrder);
+  
+      try {
+        // Fetch CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const organization = useLayoutSettingsStore.getState().organization;
+  
+        const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            playingToWinStrategyData: localOrder,
+          }),
+        });
+  
+        const data = await res.json();
+  
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ PlayingToWinStrategyData updated:', data);
+        } else {
+          console.error('❌ Failed to update playingToWinStrategyData:', data.message);
+        }
+      } catch (err) {
+        console.error('❌ Error updating playingToWinStrategyData:', err);
+      }
+  
     }, 1000);
   };
+  
 
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);

@@ -25,6 +25,7 @@ use App\Models\OpspLayoutSetting;
 use App\Models\OpspStrategicDriver;
 use App\Models\OpspFoundation;
 use App\Models\OpspThreeyearOutlook;
+use App\Models\OpspPlayingtowinStrategy;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1208,78 +1209,170 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+// Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');  // <-- get from query params
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'title' => '2026',
+//                 'value' => '1.0 Revenue of $4 Million',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'title' => '2027',
+//                 'value' => '2.0 Revenue of $7 Million',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'title' => '2028',
+//                 'value' => '3.0 Revenue of $9 Million',
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'title' => '2029',
+//                 'value' => '4.0 Revenue of $10 Million',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'title' => '2030',
+//                 'value' => '5.0 Revenue of $11 Million',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'title' => '2031',
+//                 'value' => '6.0 Revenue of $12 Million',
+//             ],
+//         ],
+
+//         'Test Skeleton Loading' => [
+//             [
+//                 'id' => 1,
+//                 'title' => '-',
+//                 'value' => '-',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'title' => '-',
+//                 'value' => '-',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'title' => '-',
+//                 'value' => '-',
+//             ],
+//         ],
+      
+//     ];
+
+//     return response()->json([
+//         $organization => $data[$organization] ?? [],
+//     ]);
+// });
+
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-
-        $user = $request->session()->get('user');
     }
 
-    $organization = $request->query('organization');  // <-- get from query params
+    $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'title' => '2026',
-                'value' => '1.0 Revenue of $4 Million',
-            ],
-            [
-                'id' => 2,
-                'title' => '2027',
-                'value' => '2.0 Revenue of $7 Million',
-            ],
-            [
-                'id' => 3,
-                'title' => '2028',
-                'value' => '3.0 Revenue of $9 Million',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization query parameter is required.'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'title' => '2029',
-                'value' => '4.0 Revenue of $10 Million',
-            ],
-            [
-                'id' => 2,
-                'title' => '2030',
-                'value' => '5.0 Revenue of $11 Million',
-            ],
-            [
-                'id' => 3,
-                'title' => '2031',
-                'value' => '6.0 Revenue of $12 Million',
-            ],
-        ],
+    $record = OpspPlayingtowinStrategy::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'title' => '-',
-                'value' => '-',
-            ],
-            [
-                'id' => 2,
-                'title' => '-',
-                'value' => '-',
-            ],
-            [
-                'id' => 3,
-                'title' => '-',
-                'value' => '-',
-            ],
-        ],
-      
-    ];
+    if (!$record || !$record->playingToWinStrategyData) {
+        return response()->json(['message' => 'playingToWinStrategyData not found for the given organization.'], 404);
+    }
+
+    return response()->json($record->playingToWinStrategyData);
+});
+
+
+Route::post('/api/v1/one-page-strategic-plan/playing-to-win/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'playingToWinStrategyData' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $newData = $validated['playingToWinStrategyData'];
+
+    $record = OpspPlayingtowinStrategy::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found.'], 404);
+    }
+
+    $record->playingToWinStrategyData = $newData;
+    $record->save();
 
     return response()->json([
-        $organization => $data[$organization] ?? [],
+        'message' => 'playingToWinStrategyData updated successfully.',
+        'data' => $newData
     ]);
 });
+
+
+Route::post('/api/v1/one-page-strategic-plan/playing-to-win/add', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'newItem' => 'required|array',
+        'newItem.id' => 'required|integer',
+        'newItem.title' => 'required|string',
+        'newItem.value' => 'required|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $newItem = $validated['newItem'];
+
+    $record = OpspPlayingtowinStrategy::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found.'], 404);
+    }
+
+    $data = $record->playingToWinStrategyData ?? [];
+    $data[] = $newItem;
+
+    $record->playingToWinStrategyData = $data;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New item added to playingToWinStrategyData.',
+        'newItem' => $newItem,
+    ]);
+});
+
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/core-capabilities', function (Request $request) use ($API_secure) {
