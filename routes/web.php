@@ -1122,21 +1122,11 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     // ✅ Fetch the first record matching the organization
     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json(['message' => 'Organization not found'], 404);
+    if (!$record || !$record->threeyearOutlookData) {
+        return response()->json(['message' => 'Three Year Outlook data not found for the given organization.'], 404);
     }
 
-    // ✅ Decode JSON safely
-    $data = [];
-    if (!empty($record->threeyearOutlookData)) {
-        $decoded = json_decode($record->threeyearOutlookData, true);
-        $data = is_array($decoded) ? $decoded : [];
-    }
-
-    // ✅ Return in the expected format
-    return response()->json([
-        $organization => $data,
-    ]);
+    return response()->json($record->threeyearOutlookData);
 });
 
 
