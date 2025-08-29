@@ -1042,23 +1042,23 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
     //     $organization = $request->query('organization');  // <-- get from query params
 
     //     $data = [
-            // 'Chuck Gulledge Advisors, LLC' => [
-            //     [
-            //         'id' => 1,
-            //         'year' => '2026',
-            //         'value' => '1.0 Revenue of $4 Million',
-            //     ],
-            //     [
-            //         'id' => 2,
-            //         'year' => '2027',
-            //         'value' => '2.0 Revenue of $7 Million',
-            //     ],
-            //     [
-            //         'id' => 3,
-            //         'year' => '2028',
-            //         'value' => '3.0 Revenue of $9 Million',
-            //     ],
-            // ],
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '2026',
+    //                 'value' => '1.0 Revenue of $4 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '2027',
+    //                 'value' => '2.0 Revenue of $7 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '2028',
+    //                 'value' => '3.0 Revenue of $9 Million',
+    //             ],
+    //         ],
 
     //         'Collins Credit Union' => [
     //             [
@@ -1122,28 +1122,26 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
         return response()->json(['message' => 'Three Year Outlook data not found for the given organization.'], 404);
     }
 
-    $data = json_decode($record->threeyearOutlookData, true);
+    // Double decode to fix the double-escaped JSON string from DB
+    $firstDecode = json_decode($record->threeyearOutlookData, true);
+    if (is_string($firstDecode)) {
+        // If first decode gives string, decode again
+        $data = json_decode($firstDecode, true);
+    } else {
+        $data = $firstDecode;
+    }
 
-    $arrayToPhpString = function(array $array, $indentLevel = 1) use (&$arrayToPhpString) {
-        $indent = str_repeat('    ', $indentLevel);
-        $result = "[\n";
-        foreach ($array as $item) {
-            $result .= $indent . "[\n";
-            foreach ($item as $key => $value) {
-                $value = addslashes($value);
-                $result .= $indent . "    '" . $key . "' => '" . $value . "',\n";
-            }
-            $result .= $indent . "],\n";
-        }
-        $result .= str_repeat('    ', $indentLevel - 1) . "]";
-        return $result;
-    };
+    if (!is_array($data)) {
+        // If decoding failed, fallback to empty array
+        $data = [];
+    }
 
-    $formattedString = $arrayToPhpString($data);
-
-    return response($formattedString, 200)
-        ->header('Content-Type', 'text/plain');
+    // Return JSON response with organization as key, and the array of outlooks as value (like your example)
+    return response()->json([
+        $organization => $data
+    ]);
 });
+
 
 
 
