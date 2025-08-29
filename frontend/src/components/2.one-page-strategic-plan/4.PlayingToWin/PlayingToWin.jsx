@@ -130,12 +130,13 @@ const PlayingToWin = () => {
       const data = await res.json();
   
       if (res.ok) {
+        // ✅ Immediately reflect in UI
         ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', data.newItem);
-        pushPlayingToWin(data.newItem);
-        markEdited(nextId);
-        localStorage.removeItem('PlayingToWin');
+        pushPlayingToWin(data.newItem);        // <- Zustand store update
+        markEdited(data.newItem.id);           // <- Mark as edited
         setNewPlayingToWin({ title: '', value: '' });
         setShowAddModal(false);
+        localStorage.removeItem('PlayingToWin');
       } else {
         console.error('❌ Failed to add new PlayingToWin item:', data.message);
       }
@@ -144,6 +145,7 @@ const PlayingToWin = () => {
       console.error('❌ Error adding new PlayingToWin:', err);
     }
   };
+  
   
 
   const handleAddOutlookClick = () => {
