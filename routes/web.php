@@ -1042,23 +1042,23 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
     //     $organization = $request->query('organization');  // <-- get from query params
 
     //     $data = [
-    //         'Chuck Gulledge Advisors, LLC' => [
-    //             [
-    //                 'id' => 1,
-    //                 'year' => '2026',
-    //                 'value' => '1.0 Revenue of $4 Million',
-    //             ],
-    //             [
-    //                 'id' => 2,
-    //                 'year' => '2027',
-    //                 'value' => '2.0 Revenue of $7 Million',
-    //             ],
-    //             [
-    //                 'id' => 3,
-    //                 'year' => '2028',
-    //                 'value' => '3.0 Revenue of $9 Million',
-    //             ],
-    //         ],
+            // 'Chuck Gulledge Advisors, LLC' => [
+            //     [
+            //         'id' => 1,
+            //         'year' => '2026',
+            //         'value' => '1.0 Revenue of $4 Million',
+            //     ],
+            //     [
+            //         'id' => 2,
+            //         'year' => '2027',
+            //         'value' => '2.0 Revenue of $7 Million',
+            //     ],
+            //     [
+            //         'id' => 3,
+            //         'year' => '2028',
+            //         'value' => '3.0 Revenue of $9 Million',
+            //     ],
+            // ],
 
     //         'Collins Credit Union' => [
     //             [
@@ -1112,7 +1112,6 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     }
 
     $organization = $request->query('organization');
-
     if (!$organization) {
         return response()->json(['message' => 'Missing organization parameter'], 400);
     }
@@ -1120,15 +1119,32 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
     if (!$record || !$record->threeyearOutlookData) {
-        // Return an empty array inside an array
-        return response()->json([[]]);
+        return response()->json(['message' => 'Three Year Outlook data not found for the given organization.'], 404);
     }
 
     $data = json_decode($record->threeyearOutlookData, true);
 
-    // Return the data wrapped inside an outer array to match your exact structure
-    return response()->json([ $data ]);
+    $arrayToPhpString = function(array $array, $indentLevel = 1) use (&$arrayToPhpString) {
+        $indent = str_repeat('    ', $indentLevel);
+        $result = "[\n";
+        foreach ($array as $item) {
+            $result .= $indent . "[\n";
+            foreach ($item as $key => $value) {
+                $value = addslashes($value);
+                $result .= $indent . "    '" . $key . "' => '" . $value . "',\n";
+            }
+            $result .= $indent . "],\n";
+        }
+        $result .= str_repeat('    ', $indentLevel - 1) . "]";
+        return $result;
+    };
+
+    $formattedString = $arrayToPhpString($data);
+
+    return response($formattedString, 200)
+        ->header('Content-Type', 'text/plain');
 });
+
 
 
 
