@@ -1112,6 +1112,7 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     }
 
     $organization = $request->query('organization');
+
     if (!$organization) {
         return response()->json(['message' => 'Missing organization parameter'], 400);
     }
@@ -1119,14 +1120,16 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
     if (!$record || !$record->threeyearOutlookData) {
-        return response()->json(['message' => 'Three Year Outlook data not found for the given organization.'], 404);
+        // Return an empty array inside an array
+        return response()->json([[]]);
     }
 
-    // ✅ Properly decode the JSON string before returning
     $data = json_decode($record->threeyearOutlookData, true);
 
-    return response()->json($data ?? []);
+    // Return the data wrapped inside an outer array to match your exact structure
+    return response()->json([ $data ]);
 });
+
 
 
 
