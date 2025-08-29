@@ -1172,6 +1172,35 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
 });
 
 
+Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (Request $request) {
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'newItem' => 'required|array',
+        'newItem.id' => 'required|integer',
+        'newItem.year' => 'required|string',
+        'newItem.value' => 'required|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $newItem = $validated['newItem'];
+
+    $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found.'], 404);
+    }
+
+    $data = json_decode($record->threeyearOutlookData, true) ?? [];
+    $data[] = $newItem;
+
+    $record->threeyearOutlookData = json_encode($data);
+    $record->save();
+
+    return response()->json([
+        'message' => 'New outlook added successfully.',
+        'data' => $newItem,
+    ]);
+});
 
 
 

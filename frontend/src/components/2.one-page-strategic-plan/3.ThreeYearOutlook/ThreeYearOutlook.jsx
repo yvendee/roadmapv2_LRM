@@ -61,18 +61,66 @@ const ThreeYearOutlook = () => {
     setEditing({ field: null, id: null });
   };
 
-  const handleAdd = () => {
-    const nextId = Math.max(0, ...outlooks.map(o => o.id || 0)) + 1;
-    const newItem = { id: nextId, ...newOutlook };
-    pushOutlook(newItem);
-    localStorage.removeItem('threeYearOutlook');
-    setNewOutlook({ year: '', value: '' });
-    setShowAddModal(false);
-    // setEdited([...edited, nextId]);
+  // const handleAdd = () => {
+  //   const nextId = Math.max(0, ...outlooks.map(o => o.id || 0)) + 1;
+  //   const newItem = { id: nextId, ...newOutlook };
+  //   pushOutlook(newItem);
+  //   localStorage.removeItem('threeYearOutlook');
+  //   setNewOutlook({ year: '', value: '' });
+  //   setShowAddModal(false);
+  //   // setEdited([...edited, nextId]);
 
-    ENABLE_CONSOLE_LOGS && console.log('✅ New 3-Year Outlook Added:', newItem);
-    // console.log('📦 Full Updated Outlooks:', [...outlooks, newItem]);
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New 3-Year Outlook Added:', newItem);
+  //   // console.log('📦 Full Updated Outlooks:', [...outlooks, newItem]);
+  // };
+
+  const handleAdd = async () => {
+    const nextId = Math.max(0, ...outlooks.map((o) => o.id || 0)) + 1;
+    const newItem = { id: nextId, ...newOutlook };
+  
+    try {
+      ENABLE_CONSOLE_LOGS && console.log('✅ New 3-Year Outlook:', newItem);
+  
+      // Fetch CSRF Token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const organization = useLayoutSettingsStore.getState().organization;
+  
+      // Send POST to backend
+      const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newItem,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('📤 Added outlook to backend:', data);
+  
+        // Update local store
+        pushOutlook(newItem);
+        localStorage.removeItem('threeYearOutlook');
+        setNewOutlook({ year: '', value: '' });
+        setShowAddModal(false);
+      } else {
+        console.error('❌ Failed to add new outlook:', data.message);
+      }
+    } catch (err) {
+      console.error('❌ Error adding new outlook:', err);
+    }
   };
+  
 
   const handleAddOutlookClick = () => {
     setLoading(true);
