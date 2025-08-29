@@ -1114,36 +1114,16 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
     $organization = $request->query('organization');
 
     if (!$organization) {
-        return response()->json(['message' => 'Missing organization parameter'], 400);
+        return response()->json(['message' => 'Organization query parameter is required.'], 400);
     }
 
     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
     if (!$record || !$record->threeyearOutlookData) {
-        // Return empty array if not found, matching frontend expectations
-        return response()->json([]);
+        return response()->json(['message' => 'threeyearOutlook data not found for the given organization.'], 404);
     }
 
-    // DB field might have double-encoded JSON string with extra quotes
-    $jsonData = $record->threeyearOutlookData;
-
-    // Fix for double encoding with extra quotes (escaped quotes inside string)
-    // First remove extra quotes if needed (strip surrounding quotes)
-    if (substr($jsonData, 0, 1) === '"' && substr($jsonData, -1) === '"') {
-        $jsonData = substr($jsonData, 1, -1);
-        // Also fix escaped quotes inside string
-        $jsonData = str_replace('""', '"', $jsonData);
-    }
-
-    $data = json_decode($jsonData, true);
-
-    if (!is_array($data)) {
-        // fallback empty array
-        $data = [];
-    }
-
-    // Return exactly the array of objects expected by frontend
-    return response()->json($data);
+    return response()->json($record->threeyearOutlookData);
 });
 
 
