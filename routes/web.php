@@ -984,7 +984,7 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/update', function (Requ
 });
 
 
-// ref:
+// ref: frontend/src/components/one-page-strategic-plan/2.FoundationsSection/FoundationsSection.jsx
 Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -1026,7 +1026,6 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
         'updatedData' => $data
     ]);
 });
-
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
