@@ -1282,27 +1282,36 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (
 //     ]);
 // });
 
-// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    // 🔐 Secure session check
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    // 🏢 Validate organization query parameter
     $organization = $request->query('organization');
-
     if (!$organization) {
         return response()->json(['message' => 'Organization query parameter is required.'], 400);
     }
 
+    // 📦 Fetch from DB
     $record = OpspPlayingtowinStrategy::where('organizationName', $organization)->first();
-
     if (!$record || !$record->playingToWinStrategyData) {
-        return response()->json(['message' => 'playingToWinStrategyData not found for the given organization.'], 404);
+        return response()->json([$organization => []]); // Always return keyed response
     }
 
-    return response()->json($record->playingToWinStrategyData);
+    // 🧹 Handle JSON stored with extra quotes
+    $rawData = $record->playingToWinStrategyData;
+    $decodedData = is_string($rawData) ? json_decode($rawData, true) : $rawData;
+
+    if (!is_array($decodedData)) {
+        return response()->json(['message' => 'Invalid data format in playingToWinStrategyData.'], 500);
+    }
+
+    // ✅ Return in the shape expected by frontend
+    return response()->json([
+        $organization => $decodedData,
+    ]);
 });
 
 
