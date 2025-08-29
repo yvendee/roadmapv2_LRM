@@ -1030,101 +1030,115 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
 
 //
     // // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-    Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
-        if ($API_secure) {
-            if (!$request->session()->get('logged_in')) {
-                return response()->json(['message' => 'Unauthorized'], 401);
-            }
+    // Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
 
-            $user = $request->session()->get('user');
-        }
+    //         $user = $request->session()->get('user');
+    //     }
 
-        $organization = $request->query('organization');  // <-- get from query params
+    //     $organization = $request->query('organization');  // <-- get from query params
 
-        $data = [
-            'Chuck Gulledge Advisors, LLC' => [
-                [
-                    'id' => 1,
-                    'year' => '2026',
-                    'value' => '1.0 Revenue of $4 Million',
-                ],
-                [
-                    'id' => 2,
-                    'year' => '2027',
-                    'value' => '2.0 Revenue of $7 Million',
-                ],
-                [
-                    'id' => 3,
-                    'year' => '2028',
-                    'value' => '3.0 Revenue of $9 Million',
-                ],
-            ],
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '2026',
+    //                 'value' => '1.0 Revenue of $4 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '2027',
+    //                 'value' => '2.0 Revenue of $7 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '2028',
+    //                 'value' => '3.0 Revenue of $9 Million',
+    //             ],
+    //         ],
 
-            'Collins Credit Union' => [
-                [
-                    'id' => 1,
-                    'year' => '2029',
-                    'value' => '4.0 Revenue of $10 Million',
-                ],
-                [
-                    'id' => 2,
-                    'year' => '2030',
-                    'value' => '5.0 Revenue of $11 Million',
-                ],
-                [
-                    'id' => 3,
-                    'year' => '2031',
-                    'value' => '6.0 Revenue of $12 Million',
-                ],
-            ],
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '2029',
+    //                 'value' => '4.0 Revenue of $10 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '2030',
+    //                 'value' => '5.0 Revenue of $11 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '2031',
+    //                 'value' => '6.0 Revenue of $12 Million',
+    //             ],
+    //         ],
 
-            'Test Skeleton Loading' => [
-                [
-                    'id' => 1,
-                    'year' => '-',
-                    'value' => '-',
-                ],
-                [
-                    'id' => 2,
-                    'year' => '-',
-                    'value' => '-',
-                ],
-                [
-                    'id' => 3,
-                    'year' => '-',
-                    'value' => '-',
-                ],
-            ],
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '-',
+    //                 'value' => '-',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '-',
+    //                 'value' => '-',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '-',
+    //                 'value' => '-',
+    //             ],
+    //         ],
         
-        ];
+    //     ];
 
-        return response()->json([
-            $organization => $data[$organization] ?? [],
-        ]);
-    });
+    //     return response()->json([
+    //         $organization => $data[$organization] ?? [],
+    //     ]);
+    // });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-// Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//     }
+use Illuminate\Http\Request;
+use App\Models\OpspThreeyearOutlook;
 
-//     $organization = $request->query('organization');
+Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
+    // 🔐 Secure session check
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
 
-//     if (!$organization) {
-//         return response()->json(['message' => 'Organization query parameter is required.'], 400);
-//     }
+    // 🏢 Validate organization query parameter
+    $organization = $request->query('organization');
+    if (!$organization) {
+        return response()->json(['message' => 'Organization query parameter is required.'], 400);
+    }
 
-//     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
+    // 📦 Fetch from DB
+    $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
+    if (!$record || !$record->threeyearOutlookData) {
+        return response()->json([$organization => []]); // Always return keyed response
+    }
 
-//     if (!$record || !$record->threeyearOutlookData) {
-//         return response()->json(['message' => 'threeyearOutlook data not found for the given organization.'], 404);
-//     }
+    // 🧹 Handle JSON stored with extra quotes
+    $rawData = $record->threeyearOutlookData;
+    $decodedData = is_string($rawData) ? json_decode($rawData, true) : $rawData;
 
-//     return response()->json($record->threeyearOutlookData);
-// });
+    if (!is_array($decodedData)) {
+        return response()->json(['message' => 'Invalid data format in threeyearOutlookData.'], 500);
+    }
+
+    // ✅ Return in the shape expected by frontend
+    return response()->json([
+        $organization => $decodedData,
+    ]);
+});
+
 
 
 
