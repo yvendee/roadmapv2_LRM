@@ -24,6 +24,7 @@ use App\Models\Organization;
 use App\Models\OpspLayoutSetting;
 use App\Models\OpspStrategicDriver;
 use App\Models\OpspFoundation;
+use App\Models\OpspThreeyearOutlook;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1027,6 +1028,80 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
     ]);
 });
 
+//
+    // // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+
+    //         $user = $request->session()->get('user');
+    //     }
+
+    //     $organization = $request->query('organization');  // <-- get from query params
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '2026',
+    //                 'value' => '1.0 Revenue of $4 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '2027',
+    //                 'value' => '2.0 Revenue of $7 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '2028',
+    //                 'value' => '3.0 Revenue of $9 Million',
+    //             ],
+    //         ],
+
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '2029',
+    //                 'value' => '4.0 Revenue of $10 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '2030',
+    //                 'value' => '5.0 Revenue of $11 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '2031',
+    //                 'value' => '6.0 Revenue of $12 Million',
+    //             ],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'id' => 1,
+    //                 'year' => '-',
+    //                 'value' => '-',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'year' => '-',
+    //                 'value' => '-',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'year' => '-',
+    //                 'value' => '-',
+    //             ],
+    //         ],
+        
+    //     ];
+
+    //     return response()->json([
+    //         $organization => $data[$organization] ?? [],
+    //     ]);
+    // });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
@@ -1034,74 +1109,26 @@ Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Reque
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-
-        $user = $request->session()->get('user');
     }
 
-    $organization = $request->query('organization');  // <-- get from query params
+    $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'year' => '2026',
-                'value' => '1.0 Revenue of $4 Million',
-            ],
-            [
-                'id' => 2,
-                'year' => '2027',
-                'value' => '2.0 Revenue of $7 Million',
-            ],
-            [
-                'id' => 3,
-                'year' => '2028',
-                'value' => '3.0 Revenue of $9 Million',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'year' => '2029',
-                'value' => '4.0 Revenue of $10 Million',
-            ],
-            [
-                'id' => 2,
-                'year' => '2030',
-                'value' => '5.0 Revenue of $11 Million',
-            ],
-            [
-                'id' => 3,
-                'year' => '2031',
-                'value' => '6.0 Revenue of $12 Million',
-            ],
-        ],
+    $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'year' => '-',
-                'value' => '-',
-            ],
-            [
-                'id' => 2,
-                'year' => '-',
-                'value' => '-',
-            ],
-            [
-                'id' => 3,
-                'year' => '-',
-                'value' => '-',
-            ],
-        ],
-      
-    ];
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $data = json_decode($record->threeyearOutlookData, true) ?? [];
 
     return response()->json([
-        $organization => $data[$organization] ?? [],
+        $organization => $data,
     ]);
 });
-
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
