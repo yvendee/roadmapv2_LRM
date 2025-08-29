@@ -1104,30 +1104,33 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request
     // });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+use Illuminate\Http\Request;
+use App\Models\OpspThreeyearOutlook;
+
 Route::get('/api/v1/one-page-strategic-plan/three-year-outlook', function (Request $request) use ($API_secure) {
-    // ✅ Check for session auth if API is secure
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user'); // Optional: use if needed
     }
 
-    // ✅ Ensure organization param exists
     $organization = $request->query('organization');
     if (!$organization) {
         return response()->json(['message' => 'Missing organization parameter'], 400);
     }
 
-    // ✅ Fetch the first record matching the organization
     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
 
     if (!$record || !$record->threeyearOutlookData) {
         return response()->json(['message' => 'Three Year Outlook data not found for the given organization.'], 404);
     }
 
-    return response()->json($record->threeyearOutlookData);
+    // ✅ Properly decode the JSON string before returning
+    $data = json_decode($record->threeyearOutlookData, true);
+
+    return response()->json($data ?? []);
 });
+
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
