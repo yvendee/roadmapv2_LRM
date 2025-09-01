@@ -339,12 +339,12 @@ const FoundationsSection = () => {
   // };
 
   const confirmDischarge = () => {
-    localStorage.removeItem('foundationsData');   // remove local changes
-    setEdited([]);                                // clear edited flags
-    const currentState = useFoundationsStore.getState().foundations;  // get current Zustand store value
-    setFoundations(currentState);                  // reset local state to current store data
-    ENABLE_CONSOLE_LOGS && console.log('Resetting foundations to current store state:', currentState);
-    setShowConfirmModal(false);                    // close modal
+    localStorage.removeItem('foundationsData');
+    setEdited([]);
+    const currentState = useFoundationsStore.getState().foundations;
+    console.log('Resetting foundations to current store state:', currentState);
+    setLocalOrder(currentState);  // reset local UI state to last saved store state
+    setShowConfirmModal(false);
   };
 
   function unescapeHtml(escapedStr) {
