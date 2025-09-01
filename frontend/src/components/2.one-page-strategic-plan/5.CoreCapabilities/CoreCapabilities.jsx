@@ -199,10 +199,18 @@ const CoreCapabilities = () => {
     }, 1000);
   };
 
+  // const confirmDischarge = () => {
+  //   localStorage.removeItem('CoreCapabilities');
+  //   setEdited([]);
+  //   setCoreCapabilities(initialCoreCapabilities);
+  //   setShowConfirmModal(false);
+  // };
+
   const confirmDischarge = () => {
     localStorage.removeItem('CoreCapabilities');
     setEdited([]);
-    setCoreCapabilities(initialCoreCapabilities);
+    const currentState = useCoreCapabilitiesStore.getState().coreCapabilities;
+    setCoreCapabilities(currentState); // Use what's in the store, not initial
     setShowConfirmModal(false);
   };
 
