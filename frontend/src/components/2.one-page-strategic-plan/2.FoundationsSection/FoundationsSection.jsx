@@ -334,7 +334,10 @@ const FoundationsSection = () => {
   const confirmDischarge = () => {
     localStorage.removeItem('foundationsData');
     setEdited([]);
-    setFoundations(initialFoundations);
+    // setFoundations(initialFoundations);
+      // reset foundations to the current default in the store file
+    const defaultFoundations = useFoundationsStore.getState().foundations;
+    setFoundations(defaultFoundations);
     setShowConfirmModal(false);
   };
 
