@@ -74,7 +74,7 @@ const FoundationsSection = () => {
       prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
     );
 
-    const updated = foundations.map(f =>
+    const updated = localOrder.map(f =>
       f.id === id ? { ...f, [field]: value } : f
     );
     localStorage.setItem('foundationsData', JSON.stringify(updated));
