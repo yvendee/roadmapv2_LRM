@@ -213,32 +213,6 @@ const FoundationsSection = () => {
   };
   
 
-  // const handleDeleteFoundation = (id) => {
-  //   const updated = foundations.filter(item => item.id !== id);
-  //   setFoundations(updated);
-  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
-  //   setEdited(prev => prev.filter(e => e.id !== id));
-  
-  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
-  //   // console.log('📦 Updated Foundations List:', updated);   
-  // };
-
-
-  // const handleDeleteFoundation = (id) => {
-  //   const updated = foundations.filter(item => item.id !== id);
-  //   setFoundations(updated);
-  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
-  
-  //   // 👇 Ensure at least one change is registered to show save/discharge buttons
-  //   setEdited(prev => {
-  //     const alreadyEdited = prev.some(e => e.id === id);
-  //     return alreadyEdited ? prev : [...prev, { id }];
-  //   });
-  
-  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
-  // };
-
-
   const handleDeleteFoundation = (id) => {
     // Remove the foundation with the given id
     const updated = foundations.filter(item => item.id !== id);
@@ -319,6 +293,16 @@ const FoundationsSection = () => {
 
   const handleDragEnd = () => {
     setDraggedId(null);
+  };
+
+
+  const handleContentChange = (id, value) => {
+    setLocalOrder(prev =>
+      prev.map(f => (f.id === id ? { ...f, content: value } : f))
+    );
+  
+    // Mark as edited if not already
+    setEdited(prev => (prev.some(e => e.id === id) ? prev : [...prev, { id }]));
   };
   
 
@@ -459,7 +443,9 @@ const FoundationsSection = () => {
                   <RichTextEditor
                     // value={foundations.find(f => f.id === item.id)?.content || ''}
                     value={localOrder.find(f => f.id === item.id)?.content || ''}
-                    onChange={(val) => updateFoundationField(item.id, 'content', val)}
+                    // onChange={(val) => updateFoundationField(item.id, 'content', val)}
+                    onChange={(val) => handleContentChange(item.id, val)}
+                    
                     autoFocus
                     onBlur={(finalHtml) => handleInputBlur(item.id, 'content', finalHtml)} 
                   />
