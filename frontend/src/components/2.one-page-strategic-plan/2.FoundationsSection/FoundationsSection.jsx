@@ -42,6 +42,7 @@ const FoundationsSection = () => {
   useEffect(() => {
     if (edited.length === 0) {
       setLocalOrder(foundations);
+      setEditingCell({ id: null, field: null });
     }
   }, [foundations, edited]);
 
