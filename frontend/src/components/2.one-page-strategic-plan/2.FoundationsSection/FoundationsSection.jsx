@@ -66,6 +66,7 @@ const FoundationsSection = () => {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
+        setFoundations(parsed);            // <- Updates Zustand store
         setLocalOrder(parsed);             // <- Updates local UI state
         setEdited(parsed.map(f => ({ id: f.id }))); // <- Marks everything as "edited"
       } catch (e) {
