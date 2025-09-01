@@ -26,6 +26,7 @@ use App\Models\OpspStrategicDriver;
 use App\Models\OpspFoundation;
 use App\Models\OpspThreeyearOutlook;
 use App\Models\OpspPlayingtowinStrategy;
+use App\Models\OpspCoreCapability;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1204,84 +1205,81 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (
 });
 
 
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
 
+    //         $user = $request->session()->get('user');
+    //     }
 
+    //     $organization = $request->query('organization');  // <-- get from query params
 
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => '2026',
+    //                 'value' => '1.0 Revenue of $4 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => '2027',
+    //                 'value' => '2.0 Revenue of $7 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => '2028',
+    //                 'value' => '3.0 Revenue of $9 Million',
+    //             ],
+    //         ],
+
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => '2029',
+    //                 'value' => '4.0 Revenue of $10 Million',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => '2030',
+    //                 'value' => '5.0 Revenue of $11 Million',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => '2031',
+    //                 'value' => '6.0 Revenue of $12 Million',
+    //             ],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'id' => 1,
+    //                 'title' => '-',
+    //                 'value' => '-',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'title' => '-',
+    //                 'value' => '-',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'title' => '-',
+    //                 'value' => '-',
+    //             ],
+    //         ],
+        
+    //     ];
+
+    //     return response()->json([
+    //         $organization => $data[$organization] ?? [],
+    //     ]);
+    // });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
-// Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-
-//         $user = $request->session()->get('user');
-//     }
-
-//     $organization = $request->query('organization');  // <-- get from query params
-
-//     $data = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             [
-//                 'id' => 1,
-//                 'title' => '2026',
-//                 'value' => '1.0 Revenue of $4 Million',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'title' => '2027',
-//                 'value' => '2.0 Revenue of $7 Million',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'title' => '2028',
-//                 'value' => '3.0 Revenue of $9 Million',
-//             ],
-//         ],
-
-//         'Collins Credit Union' => [
-//             [
-//                 'id' => 1,
-//                 'title' => '2029',
-//                 'value' => '4.0 Revenue of $10 Million',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'title' => '2030',
-//                 'value' => '5.0 Revenue of $11 Million',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'title' => '2031',
-//                 'value' => '6.0 Revenue of $12 Million',
-//             ],
-//         ],
-
-//         'Test Skeleton Loading' => [
-//             [
-//                 'id' => 1,
-//                 'title' => '-',
-//                 'value' => '-',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'title' => '-',
-//                 'value' => '-',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'title' => '-',
-//                 'value' => '-',
-//             ],
-//         ],
-      
-//     ];
-
-//     return response()->json([
-//         $organization => $data[$organization] ?? [],
-//     ]);
-// });
-
 Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $request) use ($API_secure) {
     // 🔐 Secure session check
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -1315,6 +1313,7 @@ Route::get('/api/v1/one-page-strategic-plan/playing-to-win', function (Request $
 });
 
 
+// ref: frontend\src\components\one-page-strategic-plan\4.PlayingToWin\PlayingToWin.jsx
 Route::post('/api/v1/one-page-strategic-plan/playing-to-win/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -1345,7 +1344,7 @@ Route::post('/api/v1/one-page-strategic-plan/playing-to-win/update', function (R
     ]);
 });
 
-
+// ref: frontend\src\components\one-page-strategic-plan\4.PlayingToWin\PlayingToWin.jsx
 Route::post('/api/v1/one-page-strategic-plan/playing-to-win/add', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -1384,6 +1383,33 @@ Route::post('/api/v1/one-page-strategic-plan/playing-to-win/add', function (Requ
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/core-capabilities', function (Request $request) use ($API_secure) {
+    //     if ($API_secure && !$request->session()->get('logged_in')) {
+    //         return response()->json(['message' => 'Unauthorized'], 401);
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             ['id' => 1, 'description' => 'Leadership Training', 'orig' => '✓', 'q1' => 'x', 'q2' => 'x', 'q3' => 'x', 'q4' => 'x'],
+    //             ['id' => 2, 'description' => 'Technology Stack', 'orig' => 'x', 'q1' => '✓', 'q2' => 'x', 'q3' => 'x', 'q4' => 'x'],
+    //         ],
+    //         'Collins Credit Union' => [
+    //             ['id' => 1, 'description' => 'Customer Loyalty', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => 'x', 'q4' => 'x'],
+    //         ],
+    //         'Test Skeleton Loading' => [
+    //             ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //         ],
+    //     ];
+
+    //     return response()->json([
+    //         $organization => $data[$organization] ?? [],
+    //     ]);
+    // });
+
+
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/core-capabilities', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -1391,21 +1417,18 @@ Route::get('/api/v1/one-page-strategic-plan/core-capabilities', function (Reques
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            ['id' => 1, 'description' => 'Leadership Training', 'orig' => '✓', 'q1' => 'x', 'q2' => 'x', 'q3' => 'x', 'q4' => 'x'],
-            ['id' => 2, 'description' => 'Technology Stack', 'orig' => 'x', 'q1' => '✓', 'q2' => 'x', 'q3' => 'x', 'q4' => 'x'],
-        ],
-        'Collins Credit Union' => [
-            ['id' => 1, 'description' => 'Customer Loyalty', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => 'x', 'q4' => 'x'],
-        ],
-        'Test Skeleton Loading' => [
-            ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
+
+    $record = OpspCoreCapability::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([$organization => []]); // return empty array if not found
+    }
 
     return response()->json([
-        $organization => $data[$organization] ?? [],
+        $organization => $record->coreCapabilitiesData ?? [],
     ]);
 });
 
