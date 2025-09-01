@@ -55,26 +55,27 @@ const FoundationsSection = () => {
   //   }
   // }, [setFoundations]);
 
-  // const handleCellClick = (id, field) => {
-  //   if (loggedUser?.role === 'superadmin') {
-  //     setEditingCell({ id, field });
-  //   }
-  // };
+  const handleCellClick = (id, field) => {
+    if (loggedUser?.role === 'superadmin') {
+      setEditingCell({ id, field });
+    }
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem('foundationsData');
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setFoundations(parsed);            // <- Updates Zustand store
+        // setFoundations(parsed);            // <- Updates Zustand store
         setLocalOrder(parsed);             // <- Updates local UI state
         setEdited(parsed.map(f => ({ id: f.id }))); // <- Marks everything as "edited"
       } catch (e) {
         console.error('Invalid foundationsData:', e);
       }
-    } else {
-      setLocalOrder(foundations); // fallback to store
-    }
+    } 
+    // else {
+    //   setLocalOrder(foundations); // fallback to store
+    // }
   }, []);
   
 
