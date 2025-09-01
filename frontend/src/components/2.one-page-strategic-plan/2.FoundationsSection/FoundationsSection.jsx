@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import useFoundationsStore, { initialFoundations } from '../../../store/left-lower-content/2.one-page-strategic-plan/2.foundationsStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import API_URL from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './FoundationsSection.css';
 import './RichTextEditor.css';
 import RichTextEditor from './RichTextEditor';
@@ -98,18 +100,67 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
-  const handleAddFoundation = () => {
-    const updated = [...foundations, newFoundation];
-    pushFoundation(newFoundation);
+  // const handleAddFoundation = () => {
+  //   const updated = [...foundations, newFoundation];
+  //   pushFoundation(newFoundation);
   
-    ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
-    ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', updated);
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
+  //   ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', updated);
+  
+  //   setNewFoundation({ title: '', content: '' });
+  //   setShowAddModal(false);
+  //   localStorage.removeItem('foundationsData');
+  //   setEdited([]);
+  // };
+
+
+  const handleAddFoundation = async () => {
+    ENABLE_CONSOLE_LOGS && console.log('🆕 New Foundation:', newFoundation);
+  
+    const updated = [...foundations, newFoundation];
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const organization = useLayoutSettingsStore.getState().organization;
+  
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/foundations/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newFoundation,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.status === 'success') {
+        ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
+        ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', data.updatedData);
+  
+        // Update store with the new list
+        setFoundations(data.updatedData);
+      } else {
+        console.error('❌ Failed to add new foundation:', data.message);
+      }
+    } catch (error) {
+      console.error('❌ Error adding new foundation:', error);
+    }
   
     setNewFoundation({ title: '', content: '' });
     setShowAddModal(false);
     localStorage.removeItem('foundationsData');
     setEdited([]);
   };
+  
 
   // const handleSaveChanges = () => {
   //   setLoadingSave(true);
@@ -132,51 +183,95 @@ const FoundationsSection = () => {
 
 
 
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('foundationsData');
+  
+  //     let reordered = [];
+  
+  //     try {
+
+  //       // Reindex IDs just to be safe and consistent
+  //       const reordered = localOrder.map((item, index) => ({
+  //         ...item,
+  //         id: index + 1,
+  //       }));
+
+  //       setFoundations(reordered);
+
+  
+  //       // ✅ Log updated data
+  //       ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
+  
+  //       // ✅ Hide Save/Discharge buttons
+  //       setEdited([]);
+  //       localStorage.removeItem('foundationsData');
+  //     } catch (err) {
+  //       console.error('❌ Error parsing foundationsData on save:', err);
+  //     }
+  //   }, 1000);
+  // };
+
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
-      const storedData = localStorage.getItem('foundationsData');
-  
-      let reordered = [];
-  
       try {
-
-        // if (storedData) {
-        //   const parsedData = JSON.parse(storedData);
-        //   reordered = parsedData.map((item, index) => ({
-        //     ...item,
-        //     id: index + 1,
-        //   }));
-        // } else {
-        //   reordered = foundations.map((item, index) => ({
-        //     ...item,
-        //     id: index + 1,
-        //   }));
-        // }
-
-        // Reindex IDs just to be safe and consistent
+        // Reindex IDs
         const reordered = localOrder.map((item, index) => ({
           ...item,
           id: index + 1,
         }));
-
-        setFoundations(reordered);
-
   
-        // ✅ Log updated data
+        setFoundations(reordered);
+  
         ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
   
-        // ✅ Hide Save/Discharge buttons
+        // Fetch CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const organization = useLayoutSettingsStore.getState().organization;
+  
+        // Send update to backend
+        const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/foundations/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            foundationsData: reordered,
+          }),
+        });
+  
+        const data = await res.json();
+  
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Foundations Update API Response:', data);
+        } else {
+          console.error('❌ Failed to update foundations:', data.message);
+        }
+  
         setEdited([]);
         localStorage.removeItem('foundationsData');
+  
       } catch (err) {
-        console.error('❌ Error parsing foundationsData on save:', err);
+        console.error('❌ Error parsing or updating foundationsData:', err);
       }
     }, 1000);
   };
+  
 
   // const handleDeleteFoundation = (id) => {
   //   const updated = foundations.filter(item => item.id !== id);
@@ -189,19 +284,43 @@ const FoundationsSection = () => {
   // };
 
 
+  // const handleDeleteFoundation = (id) => {
+  //   const updated = foundations.filter(item => item.id !== id);
+  //   setFoundations(updated);
+  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
+  
+  //   // 👇 Ensure at least one change is registered to show save/discharge buttons
+  //   setEdited(prev => {
+  //     const alreadyEdited = prev.some(e => e.id === id);
+  //     return alreadyEdited ? prev : [...prev, { id }];
+  //   });
+  
+  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
+  // };
+
+
   const handleDeleteFoundation = (id) => {
+    // Remove the foundation with the given id
     const updated = foundations.filter(item => item.id !== id);
+    
+    // Update store and localStorage
     setFoundations(updated);
     localStorage.setItem('foundationsData', JSON.stringify(updated));
-  
-    // 👇 Ensure at least one change is registered to show save/discharge buttons
+
+    // Update localOrder state for immediate UI update
+    setLocalOrder(updated);
+    
+    // Add this change to the edited state if not already present, to show save/discard buttons
     setEdited(prev => {
-      const alreadyEdited = prev.some(e => e.id === id);
-      return alreadyEdited ? prev : [...prev, { id }];
+      if (!prev.some(e => e.id === id)) {
+        return [...prev, { id }];
+      }
+      return prev;
     });
-  
+    
     console.log(`🗑️ Foundation with ID ${id} deleted.`);
   };
+  
   
   
   const handleDischargeChanges = () => {
@@ -218,6 +337,16 @@ const FoundationsSection = () => {
     setFoundations(initialFoundations);
     setShowConfirmModal(false);
   };
+
+  // const confirmDischarge = () => {
+  //   localStorage.removeItem('foundationsData');
+  //   setEdited([]);
+  
+  //   // Reset local UI state to current store state
+  //   setLocalOrder(foundations);
+  
+  //   setShowConfirmModal(false);
+  // };
 
   function unescapeHtml(escapedStr) {
     const doc = new DOMParser().parseFromString(escapedStr, "text/html");
