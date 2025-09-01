@@ -222,7 +222,7 @@ const ThreeYearOutlook = () => {
     setEdited([]);
     // ✅ Get current value from Zustand store (not the initial)
     const currentState = useThreeYearOutlookStore.getState().outlooks;
-    setOutlooks(initialOutlooks);
+    setOutlooks(currentState);
     setShowConfirmModal(false);
   };
   
