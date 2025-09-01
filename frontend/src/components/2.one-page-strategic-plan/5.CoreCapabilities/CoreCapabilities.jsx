@@ -12,7 +12,10 @@ import './CoreCapabilities.css';
 
 const CoreCapabilities = () => {
   const user = useLoginStore((state) => state.user);
-  const { coreCapabilities, setCoreCapabilities, pushCoreCapability } = useCoreCapabilitiesStore();
+  // const { coreCapabilities, setCoreCapabilities, pushCoreCapability } = useCoreCapabilitiesStore();
+
+  const storeCapabilities = useCoreCapabilitiesStore((state) => state.coreCapabilities);
+  const [coreCapabilities, setCoreCapabilities] = useState([]); // Local copy
 
   const [editing, setEditing] = useState({ rowId: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -25,6 +28,10 @@ const CoreCapabilities = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
 
   
+  useEffect(() => {
+    setCoreCapabilities(storeCapabilities); // Copy from global store once
+  }, [storeCapabilities]);
+
 
   const hasRealData = coreCapabilities.some(
     (item) =>
@@ -131,14 +138,15 @@ const CoreCapabilities = () => {
 
   const handleDelete = (id) => {
     const updated = coreCapabilities.filter((item) => item.id !== id);
-    setCoreCapabilities(updated);
+    setCoreCapabilities(updated); // ONLY updates local UI state
     localStorage.setItem('CoreCapabilities', JSON.stringify(updated));
     if (!edited.includes(id)) setEdited([...edited, id]);
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ CoreCapability with ID ${id} deleted.`);
-  
-    // Also update the global store
-    // useCoreCapabilitiesStore.getState().removeCoreCapability(id);
+
+    // ❌ Don't update the global store
+    // useCoreCapabilitiesStore.getState().removeCoreCapability(id); // <--- leave this out
   };
+
 
   // const handleSave = () => {
   //   setLoadingSave(true);
