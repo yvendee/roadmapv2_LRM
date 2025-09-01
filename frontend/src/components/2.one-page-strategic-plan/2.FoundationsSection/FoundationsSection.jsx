@@ -62,7 +62,7 @@ const FoundationsSection = () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    updateFoundationField(id, field, value);
+    // updateFoundationField(id, field, value);
 
     setEdited(prev => {
       if (!prev.some(e => e.id === id)) return [...prev, { id }];
@@ -80,6 +80,8 @@ const FoundationsSection = () => {
     localStorage.setItem('foundationsData', JSON.stringify(updated));
     setEditingCell({ id: null, field: null });
   };
+
+  
 
   
 
