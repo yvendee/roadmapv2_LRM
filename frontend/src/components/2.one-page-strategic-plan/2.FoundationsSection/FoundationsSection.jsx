@@ -331,10 +331,18 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
+  // const confirmDischarge = () => {
+  //   localStorage.removeItem('foundationsData');
+  //   setEdited([]);
+  //   setFoundations(initialFoundations);
+  //   setShowConfirmModal(false);
+  // };
+
   const confirmDischarge = () => {
-    localStorage.removeItem('foundationsData');
+    localStorage.removeItem('foundationsData'); // or your specific localStorage key
     setEdited([]);
-    setFoundations(initialFoundations);
+    const currentState = useFoundationsStore.getState().foundations;
+    setLocalOrder(currentState);  // reset local UI state to store state
     setShowConfirmModal(false);
   };
 
