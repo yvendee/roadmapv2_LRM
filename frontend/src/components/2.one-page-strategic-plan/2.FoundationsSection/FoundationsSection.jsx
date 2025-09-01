@@ -92,6 +92,11 @@ const FoundationsSection = () => {
     setLocalOrder(prev =>
       prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
     );
+
+    const updated = localOrder.map(f =>
+      f.id === id ? { ...f, [field]: value } : f
+    );
+
     localStorage.setItem('foundationsData', JSON.stringify(updated));
     setEditingCell({ id: null, field: null });
   };
