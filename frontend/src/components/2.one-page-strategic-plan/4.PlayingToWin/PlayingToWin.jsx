@@ -255,13 +255,26 @@ const PlayingToWin = () => {
     }, 1000);
   };
 
+  // const confirmDischarge = () => {
+  //   localStorage.removeItem('PlayingToWin');
+  //   setEdited([]);
+  //   setLocalOrder(playingtowins);
+  //   setPlayingToWin(initialPlayingToWin);
+  //   setShowConfirmModal(false);
+  // };
+
   const confirmDischarge = () => {
     localStorage.removeItem('PlayingToWin');
     setEdited([]);
-    setLocalOrder(playingtowins);
-    setPlayingToWin(initialPlayingToWin);
+
+    // ✅ Get current value from Zustand store (not the initial)
+    const currentState = usePlayingToWinStore.getState().playingtowins;
+
+    // ✅ Update local state with what's in the store
+    setLocalOrder(currentState);
     setShowConfirmModal(false);
   };
+
 
   // Drag-and-drop handlers
   const handleDragStart = (e, id) => {

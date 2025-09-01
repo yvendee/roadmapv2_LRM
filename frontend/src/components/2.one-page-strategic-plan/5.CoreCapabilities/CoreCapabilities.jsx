@@ -15,8 +15,6 @@ const CoreCapabilities = () => {
   // const { coreCapabilities, setCoreCapabilities, pushCoreCapability } = useCoreCapabilitiesStore();
 
   const pushCoreCapability = useCoreCapabilitiesStore((state) => state.pushCoreCapability);
-
-
   const storeCapabilities = useCoreCapabilitiesStore((state) => state.coreCapabilities);
   const [coreCapabilities, setCoreCapabilities] = useState([]); // Local copy
 
