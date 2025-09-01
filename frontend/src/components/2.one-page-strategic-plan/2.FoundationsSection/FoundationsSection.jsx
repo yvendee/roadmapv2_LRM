@@ -35,16 +35,9 @@ const FoundationsSection = () => {
   const [localOrder, setLocalOrder] = useState(foundations);
 
   // Sync local order when store foundations changes, unless user is editing (avoid overwriting)
-  // useEffect(() => {
-  //   if (edited.length === 0) setLocalOrder(foundations);
-  // }, [foundations, edited.length]);
-
   useEffect(() => {
-    if (edited.length === 0) {
-      setLocalOrder(foundations);
-      setEditingCell({ id: null, field: null });
-    }
-  }, [foundations, edited]);
+    if (edited.length === 0) setLocalOrder(foundations);
+  }, [foundations, edited.length]);
 
   // const [editedFoundations, setEditedFoundations] = useState([]);
 
@@ -68,45 +61,26 @@ const FoundationsSection = () => {
     }
   };
 
-  // const handleInputBlur = (id, field, value) => {
-  //   // updateFoundationField(id, field, value);
-
-  //   setEdited(prev => {
-  //     if (!prev.some(e => e.id === id)) return [...prev, { id }];
-  //     return prev;
-  //   });
-
-  //   // Update local order also to reflect changes immediately
-  //   setLocalOrder(prev =>
-  //     prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
-  //   );
-
-  //   const updated = localOrder.map(f =>
-  //     f.id === id ? { ...f, [field]: value } : f
-  //   );
-  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
-  //   setEditingCell({ id: null, field: null });
-  // };
-
-  
   const handleInputBlur = (id, field, value) => {
-    // Don't update Zustand store yet
     // updateFoundationField(id, field, value);
-  
-    setEdited((prev) => {
-      if (!prev.some((e) => e.id === id)) return [...prev, { id }];
+
+    setEdited(prev => {
+      if (!prev.some(e => e.id === id)) return [...prev, { id }];
       return prev;
     });
-  
-    // Update localOrder and save to localStorage with the latest data
-    setLocalOrder((prev) => {
-      const updated = prev.map((f) => (f.id === id ? { ...f, [field]: value } : f));
-      localStorage.setItem('foundationsData', JSON.stringify(updated));
-      return updated;
-    });
-  
+
+    // Update local order also to reflect changes immediately
+    setLocalOrder(prev =>
+      prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
+    );
+
+    const updated = localOrder.map(f =>
+      f.id === id ? { ...f, [field]: value } : f
+    );
+    localStorage.setItem('foundationsData', JSON.stringify(updated));
     setEditingCell({ id: null, field: null });
   };
+
   
 
   
