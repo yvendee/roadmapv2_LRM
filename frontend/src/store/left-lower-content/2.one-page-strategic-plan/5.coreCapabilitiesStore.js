@@ -14,6 +14,15 @@ export const initialCoreCapabilities = [
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 4 },
 ];
 
+// const useCoreCapabilitiesStore = create((set) => ({
+//   coreCapabilities: initialCoreCapabilities,
+//   setCoreCapabilities: (data) => set({ coreCapabilities: data }),
+//   pushCoreCapability: (item) =>
+//     set((state) => ({
+//       coreCapabilities: [...state.coreCapabilities, item],
+//     })),
+// }));
+
 const useCoreCapabilitiesStore = create((set) => ({
   coreCapabilities: initialCoreCapabilities,
   setCoreCapabilities: (data) => set({ coreCapabilities: data }),
@@ -21,6 +30,11 @@ const useCoreCapabilitiesStore = create((set) => ({
     set((state) => ({
       coreCapabilities: [...state.coreCapabilities, item],
     })),
+  removeCoreCapability: (id) =>
+    set((state) => ({
+      coreCapabilities: state.coreCapabilities.filter((item) => item.id !== id),
+    })),
 }));
+
 
 export default useCoreCapabilitiesStore;

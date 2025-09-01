@@ -121,12 +121,23 @@ const CoreCapabilities = () => {
     }, 1000);
   };
 
+  // const handleDelete = (id) => {
+  //   const updated = coreCapabilities.filter((item) => item.id !== id);
+  //   setCoreCapabilities(updated);
+  //   localStorage.setItem('CoreCapabilities', JSON.stringify(updated));
+  //   if (!edited.includes(id)) setEdited([...edited, id]);
+  //   ENABLE_CONSOLE_LOGS && console.log(`🗑️ CoreCapability with ID ${id} deleted.`);
+  // };
+
   const handleDelete = (id) => {
     const updated = coreCapabilities.filter((item) => item.id !== id);
     setCoreCapabilities(updated);
     localStorage.setItem('CoreCapabilities', JSON.stringify(updated));
     if (!edited.includes(id)) setEdited([...edited, id]);
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ CoreCapability with ID ${id} deleted.`);
+  
+    // Also update the global store
+    useCoreCapabilitiesStore.getState().removeCoreCapability(id);
   };
 
   // const handleSave = () => {

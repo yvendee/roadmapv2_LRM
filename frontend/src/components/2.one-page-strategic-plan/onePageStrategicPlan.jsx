@@ -111,171 +111,187 @@ const OnePageStrategicPlan = () => {
 
   // Three-Year-Outlook
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched 3-Year-Outlook data:', json);
-  
-          const outlookArr = json[organization];
-  
-          if (Array.isArray(outlookArr)) {
-            loadOutlooksFromAPI(outlookArr);
-          } else {
-            console.error(`⚠️ No outlooks found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('threeYearOutlook');
+    if (!localData) {
+
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/one-page-strategic-plan/three-year-outlook?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched 3-Year-Outlook data:', json);
+    
+            const outlookArr = json[organization];
+    
+            if (Array.isArray(outlookArr)) {
+              loadOutlooksFromAPI(outlookArr);
+            } else {
+              console.error(`⚠️ No outlooks found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization, loadOutlooksFromAPI, navigate]);
   
 
   // Playing-To-Win
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Playing-To-Win data:', json);
-  
-          const playingToWinArr = json[organization];
-  
-          if (Array.isArray(playingToWinArr)) {
-            loadPlayingToWinFromAPI(playingToWinArr);
-          } else {
-            console.error(`⚠️ No Playing-To-Win found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('PlayingToWin');
+    if (!localData) {
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/one-page-strategic-plan/playing-to-win?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Playing-To-Win data:', json);
+    
+            const playingToWinArr = json[organization];
+    
+            if (Array.isArray(playingToWinArr)) {
+              loadPlayingToWinFromAPI(playingToWinArr);
+            } else {
+              console.error(`⚠️ No Playing-To-Win found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization, loadPlayingToWinFromAPI, navigate]);
   
   // Core-Capabilities
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          const capabilitiesArr = json[organization];
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Core-Capabilities data:', capabilitiesArr);
-          if (Array.isArray(capabilitiesArr)) {
-            loadCoreCapabilitieFromAPI(capabilitiesArr);
-          } else {
-            console.error(`⚠️ No Core-Capabilities found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('CoreCapabilities');
+    if (!localData) {
+        
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            const capabilitiesArr = json[organization];
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Core-Capabilities data:', capabilitiesArr);
+            if (Array.isArray(capabilitiesArr)) {
+              loadCoreCapabilitieFromAPI(capabilitiesArr);
+            } else {
+              console.error(`⚠️ No Core-Capabilities found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization]);
 
   // Four-Decisions
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-    fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          const decisionsArr = json[organization];
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Four-Decisions data:', decisionsArr);
-          if (Array.isArray(decisionsArr)) {
-            loadFourDesicionsFromAPI(decisionsArr); 
-          } else {
-            console.error(`⚠️ No Four-Decisions found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('FourDecisions');
+    if (!localData) {
+      const encodedOrg = encodeURIComponent(organization);
+      fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-    .catch((err) => {
-      console.error('API error:', err);
-    });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            const decisionsArr = json[organization];
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Four-Decisions data:', decisionsArr);
+            if (Array.isArray(decisionsArr)) {
+              loadFourDesicionsFromAPI(decisionsArr); 
+            } else {
+              console.error(`⚠️ No Four-Decisions found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+    }
   }, [organization]);
   
   // Constraints-Tracker
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-    fetch(`${API_URL}/v1/one-page-strategic-plan/constraints-tracker?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          const constraintsArr = json[organization];
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Constraints Tracker data:', constraintsArr);
-          if (Array.isArray(constraintsArr)) {
-            loadConstraintsTrackerFromAPI(constraintsArr); 
-          } else {
-            console.error(`⚠️ No Constraints Tracker data found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('ConstraintsTracker');
+    if (!localData) {
+      const encodedOrg = encodeURIComponent(organization);
+      fetch(`${API_URL}/v1/one-page-strategic-plan/constraints-tracker?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            const constraintsArr = json[organization];
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Constraints Tracker data:', constraintsArr);
+            if (Array.isArray(constraintsArr)) {
+              loadConstraintsTrackerFromAPI(constraintsArr); 
+            } else {
+              console.error(`⚠️ No Constraints Tracker data found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+      }
   }, [organization]);
 
   return (
