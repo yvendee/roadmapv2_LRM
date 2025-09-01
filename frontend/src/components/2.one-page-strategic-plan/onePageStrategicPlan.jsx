@@ -34,7 +34,6 @@ const OnePageStrategicPlan = () => {
   const loadConstraintsTrackerFromAPI = useConstraintsTracker((state) => state.setConstraintsTracker);
 
 
-
   const navigate = useNavigate(); // Ensure it's inside your component
   const toggles = useLayoutSettingsStore((state) => state.toggles);
   const organization = useLayoutSettingsStore((state) => state.organization);

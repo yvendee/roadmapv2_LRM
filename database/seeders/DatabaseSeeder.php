@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(OrganizationSeeder::class);
         // $this->call(OpspLayoutSettingsSeeder::class);
         // $this->call(OpspStrategicDriversSeeder::class);
-        $this->call(OpspFoundationsSeeder::class);
+        // $this->call(OpspFoundationsSeeder::class);
         // $this->call(OpspThreeyearOutlookSeeder::class);
         // $this->call(OpspPlayingtowinStrategySeeder::class);
         // $this->call(OpspCoreCapabilitiesSeeder::class);

@@ -338,16 +338,6 @@ const FoundationsSection = () => {
     setShowConfirmModal(false);
   };
 
-  // const confirmDischarge = () => {
-  //   localStorage.removeItem('foundationsData');
-  //   setEdited([]);
-  
-  //   // Reset local UI state to current store state
-  //   setLocalOrder(foundations);
-  
-  //   setShowConfirmModal(false);
-  // };
-
   function unescapeHtml(escapedStr) {
     const doc = new DOMParser().parseFromString(escapedStr, "text/html");
     return doc.documentElement.textContent;
