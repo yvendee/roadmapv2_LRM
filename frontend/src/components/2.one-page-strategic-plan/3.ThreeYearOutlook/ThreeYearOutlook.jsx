@@ -55,7 +55,7 @@ const ThreeYearOutlook = () => {
     const updatedOutlooks = outlooks.map((item) =>
       item.id === id ? { ...item, [field]: newValue } : item
     );
-    setOutlooks(updatedOutlooks);
+    // setOutlooks(updatedOutlooks);
     localStorage.setItem('threeYearOutlook', JSON.stringify(updatedOutlooks));
     if (!edited.includes(id)) setEdited([...edited, id]);
     setEditing({ field: null, id: null });
