@@ -11,7 +11,12 @@ import './ThreeYearOutlook.css';
 
 const ThreeYearOutlook = () => {
   const user = useLoginStore((state) => state.user);
-  const { outlooks, setOutlooks, updateOutlook, pushOutlook } = useThreeYearOutlookStore();
+  const { updateOutlook, pushOutlook } = useThreeYearOutlookStore();
+
+  const storeOutlooks = useThreeYearOutlookStore((state) => state.outlooks);
+  const [outlooks, setOutlooks] = useState([]);
+
+
 
   const [editing, setEditing] = useState({ field: null, id: null });
   const [edited, setEdited] = useState([]);
@@ -36,6 +41,10 @@ const ThreeYearOutlook = () => {
   //   }
   // }, [setOutlooks]);
 
+  useEffect(() => {
+    setOutlooks(storeOutlooks);
+  }, [storeOutlooks]);
+
   // Load from localStorage
   useEffect(() => {
     const stored = localStorage.getItem('threeYearOutlook');
@@ -55,7 +64,7 @@ const ThreeYearOutlook = () => {
     const updatedOutlooks = outlooks.map((item) =>
       item.id === id ? { ...item, [field]: newValue } : item
     );
-    // setOutlooks(updatedOutlooks);
+    setOutlooks(updatedOutlooks);
     localStorage.setItem('threeYearOutlook', JSON.stringify(updatedOutlooks));
     if (!edited.includes(id)) setEdited([...edited, id]);
     setEditing({ field: null, id: null });
