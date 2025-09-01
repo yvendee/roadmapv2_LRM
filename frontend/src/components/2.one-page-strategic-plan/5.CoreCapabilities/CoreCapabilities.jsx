@@ -137,7 +137,7 @@ const CoreCapabilities = () => {
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ CoreCapability with ID ${id} deleted.`);
   
     // Also update the global store
-    useCoreCapabilitiesStore.getState().removeCoreCapability(id);
+    // useCoreCapabilitiesStore.getState().removeCoreCapability(id);
   };
 
   // const handleSave = () => {
