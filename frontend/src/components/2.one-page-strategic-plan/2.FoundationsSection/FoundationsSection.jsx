@@ -18,7 +18,6 @@ const FoundationsSection = () => {
   const setFoundations = useFoundationsStore((state) => state.setFoundations);
   const updateFoundationField = useFoundationsStore((state) => state.updateFoundationField);
   const pushFoundation = useFoundationsStore((state) => state.pushFoundation);
-  const [originalFoundations, setOriginalFoundations] = useState([]);
 
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -48,18 +47,11 @@ const FoundationsSection = () => {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setOriginalFoundations(parsed);
         setFoundations(parsed);
         setEdited(parsed.map(f => ({ id: f.id })));
       } catch (e) {
         console.error('Invalid foundationsData:', e);
       }
-    }
-
-    else {
-      const defaults = useFoundationsStore.getState().foundations;
-      setOriginalFoundations(defaults);
-      setFoundations(defaults);
     }
   }, [setFoundations]);
 
@@ -339,13 +331,20 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
+  // const confirmDischarge = () => {
+  //   localStorage.removeItem('foundationsData');
+  //   setEdited([]);
+  //   setFoundations(initialFoundations);
+  //   setShowConfirmModal(false);
+  // };
+
   const confirmDischarge = () => {
-    localStorage.removeItem('foundationsData');
-    setEdited([]);
-    // setFoundations(initialFoundations);
-    // reset foundations to the current default in the store file
-    setFoundations(originalFoundations);
-    setShowConfirmModal(false);
+    localStorage.removeItem('foundationsData');   // remove local changes
+    setEdited([]);                                // clear edited flags
+    const currentState = useFoundationsStore.getState().foundations;  // get current Zustand store value
+    setFoundations(currentState);                  // reset local state to current store data
+    ENABLE_CONSOLE_LOGS && console.log('Resetting foundations to current store state:', currentState);
+    setShowConfirmModal(false);                    // close modal
   };
 
   function unescapeHtml(escapedStr) {
