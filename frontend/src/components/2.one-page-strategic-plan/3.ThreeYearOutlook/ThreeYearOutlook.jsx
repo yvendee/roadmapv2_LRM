@@ -220,6 +220,8 @@ const ThreeYearOutlook = () => {
   const confirmDischarge = () => {
     localStorage.removeItem('threeYearOutlook');
     setEdited([]);
+    // ✅ Get current value from Zustand store (not the initial)
+    const currentState = useThreeYearOutlookStore.getState().outlooks;
     setOutlooks(initialOutlooks);
     setShowConfirmModal(false);
   };
