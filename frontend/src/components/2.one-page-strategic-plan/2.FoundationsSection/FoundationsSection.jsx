@@ -14,10 +14,14 @@ import RichTextEditor from './RichTextEditor';
 const FoundationsSection = () => {
   const loggedUser = useLoginStore((state) => state.user);
 
-  const foundations = useFoundationsStore((state) => state.foundations);
-  const setFoundations = useFoundationsStore((state) => state.setFoundations);
+  // const foundations = useFoundationsStore((state) => state.foundations);
+  // const setFoundations = useFoundationsStore((state) => state.setFoundations);
   const updateFoundationField = useFoundationsStore((state) => state.updateFoundationField);
   const pushFoundation = useFoundationsStore((state) => state.pushFoundation);
+  const storeFoundations = useFoundationsStore(state => state.foundations);
+  const [foundations, setFoundations] = useState(storeFoundations);
+
+
 
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -42,6 +46,7 @@ const FoundationsSection = () => {
   useEffect(() => {
     setFoundations(storeFoundations);
   }, [storeFoundations]);
+  
 
   // const [editedFoundations, setEditedFoundations] = useState([]);
 
@@ -355,6 +360,30 @@ const FoundationsSection = () => {
     return doc.documentElement.textContent;
   }
 
+
+  const handleEdit = (id, field, value) => {
+    // Update local state for immediate UI update
+    setFoundations(prev =>
+      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  
+    // Mark as edited
+    setEdited(prev => {
+      if (!prev.some(e => e.id === id)) return [...prev, { id }];
+      return prev;
+    });
+  
+    // Also update localOrder to reflect changes immediately if you use it for rendering
+    setLocalOrder(prev =>
+      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  
+    // Save intermediate state to localStorage for persistence
+    const updated = foundations.map(f => (f.id === id ? { ...f, [field]: value } : f));
+    localStorage.setItem('foundationsData', JSON.stringify(updated));
+  };
+  
+
   // Drag and Drop handlers
   const handleDragStart = (e, id) => {
     setDraggedId(id);
@@ -487,6 +516,7 @@ const FoundationsSection = () => {
                     autoFocus
                     type="text"
                     defaultValue={item.title}
+                    onChange={(e) => handleEdit(item.id, 'title', e.target.value)}
                     onBlur={(e) => handleInputBlur(item.id, 'title', e.target.value)}
                     className="w-full px-1 py-0.5 border rounded text-xs"
                   />
