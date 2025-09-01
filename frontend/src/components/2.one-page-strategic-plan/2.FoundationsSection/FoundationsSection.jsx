@@ -42,24 +42,39 @@ const FoundationsSection = () => {
   // const [editedFoundations, setEditedFoundations] = useState([]);
 
   // Load from localStorage
+  // useEffect(() => {
+  //   const stored = localStorage.getItem('foundationsData');
+  //   if (stored) {
+  //     try {
+  //       const parsed = JSON.parse(stored);
+  //       setFoundations(parsed);
+  //       setEdited(parsed.map(f => ({ id: f.id })));
+  //     } catch (e) {
+  //       console.error('Invalid foundationsData:', e);
+  //     }
+  //   }
+  // }, [setFoundations]);
+
+  // const handleCellClick = (id, field) => {
+  //   if (loggedUser?.role === 'superadmin') {
+  //     setEditingCell({ id, field });
+  //   }
+  // };
+
   useEffect(() => {
     const stored = localStorage.getItem('foundationsData');
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setFoundations(parsed);
-        setEdited(parsed.map(f => ({ id: f.id })));
+        setFoundations(parsed);            // <- Updates Zustand store
+        setLocalOrder(parsed);             // <- Updates local UI state
+        setEdited(parsed.map(f => ({ id: f.id }))); // <- Marks everything as "edited"
       } catch (e) {
         console.error('Invalid foundationsData:', e);
       }
     }
-  }, [setFoundations]);
-
-  const handleCellClick = (id, field) => {
-    if (loggedUser?.role === 'superadmin') {
-      setEditingCell({ id, field });
-    }
-  };
+  }, []);
+  
 
   // const handleInputBlur = (id, field, value) => {
   //   // updateFoundationField(id, field, value);
