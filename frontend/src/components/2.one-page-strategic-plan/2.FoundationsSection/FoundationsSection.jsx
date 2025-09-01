@@ -334,7 +334,6 @@ const FoundationsSection = () => {
   const confirmDischarge = () => {
     localStorage.removeItem('foundationsData');
     setEdited([]);
-    setFoundations(initialFoundations);
     // ✅ Get current value from Zustand store (not the initial)
     const currentState = useFoundationsStore.getState().foundations;
     setFoundations(currentState);
