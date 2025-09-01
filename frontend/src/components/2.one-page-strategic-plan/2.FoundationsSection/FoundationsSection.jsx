@@ -18,6 +18,7 @@ const FoundationsSection = () => {
   const setFoundations = useFoundationsStore((state) => state.setFoundations);
   const updateFoundationField = useFoundationsStore((state) => state.updateFoundationField);
   const pushFoundation = useFoundationsStore((state) => state.pushFoundation);
+  const [originalFoundations, setOriginalFoundations] = useState([]);
 
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -47,11 +48,18 @@ const FoundationsSection = () => {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
+        setOriginalFoundations(parsed);
         setFoundations(parsed);
         setEdited(parsed.map(f => ({ id: f.id })));
       } catch (e) {
         console.error('Invalid foundationsData:', e);
       }
+    }
+
+    else {
+      const defaults = useFoundationsStore.getState().foundations;
+      setOriginalFoundations(defaults);
+      setFoundations(defaults);
     }
   }, [setFoundations]);
 
@@ -335,9 +343,8 @@ const FoundationsSection = () => {
     localStorage.removeItem('foundationsData');
     setEdited([]);
     // setFoundations(initialFoundations);
-      // reset foundations to the current default in the store file
-    const defaultFoundations = useFoundationsStore.getState().foundations;
-    setFoundations(defaultFoundations);
+    // reset foundations to the current default in the store file
+    setFoundations(originalFoundations);
     setShowConfirmModal(false);
   };
 
