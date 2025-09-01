@@ -98,15 +98,6 @@ const FoundationsSection = () => {
   
 
   
-
-  // const handleAddFoundation = () => {
-  //   pushFoundation(newFoundation);
-  //   setNewFoundation({ title: '', content: '' });
-  //   setShowAddModal(false);
-  //   localStorage.removeItem('foundationsData');
-  //   setEdited([]);
-  // };
-
   const handleAddFoundationClick = () => {
     setLoading(true);
     setTimeout(() => {
@@ -115,19 +106,6 @@ const FoundationsSection = () => {
       setShowAddModal(true);
     }, 1000);
   };
-
-  // const handleAddFoundation = () => {
-  //   const updated = [...foundations, newFoundation];
-  //   pushFoundation(newFoundation);
-  
-  //   ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
-  //   ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', updated);
-  
-  //   setNewFoundation({ title: '', content: '' });
-  //   setShowAddModal(false);
-  //   localStorage.removeItem('foundationsData');
-  //   setEdited([]);
-  // };
 
 
   const handleAddFoundation = async () => {
@@ -177,60 +155,6 @@ const FoundationsSection = () => {
     setEdited([]);
   };
   
-
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-  //   setTimeout(() => {
-  //     const stored = localStorage.getItem('foundationsData');
-  //     if (stored) {
-  //       try {
-  //         const parsed = JSON.parse(stored);
-  //         const reindexed = parsed.map((f, i) => ({ ...f, id: i + 1 }));
-  //         setFoundations(reindexed);
-  //         localStorage.removeItem('foundationsData');
-  //         setEdited([]);
-  //       } catch (e) {
-  //         ENABLE_CONSOLE_LOGS && console.error('Save Error:', e);
-  //       }
-  //     }
-  //     setLoadingSave(false);
-  //   }, 1000);
-  // };
-
-
-
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  
-  //     const storedData = localStorage.getItem('foundationsData');
-  
-  //     let reordered = [];
-  
-  //     try {
-
-  //       // Reindex IDs just to be safe and consistent
-  //       const reordered = localOrder.map((item, index) => ({
-  //         ...item,
-  //         id: index + 1,
-  //       }));
-
-  //       setFoundations(reordered);
-
-  
-  //       // ✅ Log updated data
-  //       ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
-  
-  //       // ✅ Hide Save/Discharge buttons
-  //       setEdited([]);
-  //       localStorage.removeItem('foundationsData');
-  //     } catch (err) {
-  //       console.error('❌ Error parsing foundationsData on save:', err);
-  //     }
-  //   }, 1000);
-  // };
 
   const handleSaveChanges = async () => {
     setLoadingSave(true);
