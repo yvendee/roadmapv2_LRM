@@ -241,7 +241,7 @@ const FoundationsSection = () => {
     const updated = foundations.filter(item => item.id !== id);
     
     // Update store and localStorage
-    setFoundations(updated);
+    // setFoundations(updated);
     localStorage.setItem('foundationsData', JSON.stringify(updated));
 
     // Update localOrder state for immediate UI update
