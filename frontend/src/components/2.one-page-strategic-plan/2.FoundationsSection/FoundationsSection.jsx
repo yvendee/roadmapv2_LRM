@@ -61,26 +61,41 @@ const FoundationsSection = () => {
     }
   };
 
-  const handleInputBlur = (id, field, value) => {
-    // updateFoundationField(id, field, value);
+  // const handleInputBlur = (id, field, value) => {
+  //   // updateFoundationField(id, field, value);
 
+  //   setEdited(prev => {
+  //     if (!prev.some(e => e.id === id)) return [...prev, { id }];
+  //     return prev;
+  //   });
+
+  //   // Update local order also to reflect changes immediately
+  //   setLocalOrder(prev =>
+  //     prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
+  //   );
+
+  //   const updated = localOrder.map(f =>
+  //     f.id === id ? { ...f, [field]: value } : f
+  //   );
+
+  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
+  //   setEditingCell({ id: null, field: null });
+  // };
+
+  const handleInputBlur = (id, field, value) => {
     setEdited(prev => {
       if (!prev.some(e => e.id === id)) return [...prev, { id }];
       return prev;
     });
-
-    // Update local order also to reflect changes immediately
+  
+    // Update localOrder only (local UI state)
     setLocalOrder(prev =>
       prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
     );
-
-    const updated = localOrder.map(f =>
-      f.id === id ? { ...f, [field]: value } : f
-    );
-    
-    localStorage.setItem('foundationsData', JSON.stringify(updated));
+  
     setEditingCell({ id: null, field: null });
   };
+  
 
   
 
