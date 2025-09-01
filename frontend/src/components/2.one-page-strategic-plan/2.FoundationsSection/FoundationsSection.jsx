@@ -62,36 +62,27 @@ const FoundationsSection = () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    // updateFoundationField(id, field, value);
-
     setEdited(prev => {
       if (!prev.some(e => e.id === id)) return [...prev, { id }];
       return prev;
     });
-
-    // Update local order also to reflect changes immediately
+  
+    // Only update localOrder and localStorage — do NOT update store here
     setLocalOrder(prev =>
       prev.map(f => (f.id === id ? { ...f, [field]: value } : f))
     );
-
+  
     const updated = localOrder.map(f =>
       f.id === id ? { ...f, [field]: value } : f
     );
     localStorage.setItem('foundationsData', JSON.stringify(updated));
+  
     setEditingCell({ id: null, field: null });
   };
-
   
 
   
 
-  // const handleAddFoundation = () => {
-  //   pushFoundation(newFoundation);
-  //   setNewFoundation({ title: '', content: '' });
-  //   setShowAddModal(false);
-  //   localStorage.removeItem('foundationsData');
-  //   setEdited([]);
-  // };
 
   const handleAddFoundationClick = () => {
     setLoading(true);
@@ -102,18 +93,7 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
-  // const handleAddFoundation = () => {
-  //   const updated = [...foundations, newFoundation];
-  //   pushFoundation(newFoundation);
-  
-  //   ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
-  //   ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', updated);
-  
-  //   setNewFoundation({ title: '', content: '' });
-  //   setShowAddModal(false);
-  //   localStorage.removeItem('foundationsData');
-  //   setEdited([]);
-  // };
+
 
 
   const handleAddFoundation = async () => {
@@ -164,59 +144,6 @@ const FoundationsSection = () => {
   };
   
 
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-  //   setTimeout(() => {
-  //     const stored = localStorage.getItem('foundationsData');
-  //     if (stored) {
-  //       try {
-  //         const parsed = JSON.parse(stored);
-  //         const reindexed = parsed.map((f, i) => ({ ...f, id: i + 1 }));
-  //         setFoundations(reindexed);
-  //         localStorage.removeItem('foundationsData');
-  //         setEdited([]);
-  //       } catch (e) {
-  //         ENABLE_CONSOLE_LOGS && console.error('Save Error:', e);
-  //       }
-  //     }
-  //     setLoadingSave(false);
-  //   }, 1000);
-  // };
-
-
-
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  
-  //     const storedData = localStorage.getItem('foundationsData');
-  
-  //     let reordered = [];
-  
-  //     try {
-
-  //       // Reindex IDs just to be safe and consistent
-  //       const reordered = localOrder.map((item, index) => ({
-  //         ...item,
-  //         id: index + 1,
-  //       }));
-
-  //       setFoundations(reordered);
-
-  
-  //       // ✅ Log updated data
-  //       ENABLE_CONSOLE_LOGS && console.log('✅ Updated Foundations Saved to Store:', reordered);
-  
-  //       // ✅ Hide Save/Discharge buttons
-  //       setEdited([]);
-  //       localStorage.removeItem('foundationsData');
-  //     } catch (err) {
-  //       console.error('❌ Error parsing foundationsData on save:', err);
-  //     }
-  //   }, 1000);
-  // };
 
   const handleSaveChanges = async () => {
     setLoadingSave(true);
@@ -275,32 +202,6 @@ const FoundationsSection = () => {
   };
   
 
-  // const handleDeleteFoundation = (id) => {
-  //   const updated = foundations.filter(item => item.id !== id);
-  //   setFoundations(updated);
-  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
-  //   setEdited(prev => prev.filter(e => e.id !== id));
-  
-  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
-  //   // console.log('📦 Updated Foundations List:', updated);   
-  // };
-
-
-  // const handleDeleteFoundation = (id) => {
-  //   const updated = foundations.filter(item => item.id !== id);
-  //   setFoundations(updated);
-  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
-  
-  //   // 👇 Ensure at least one change is registered to show save/discharge buttons
-  //   setEdited(prev => {
-  //     const alreadyEdited = prev.some(e => e.id === id);
-  //     return alreadyEdited ? prev : [...prev, { id }];
-  //   });
-  
-  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
-  // };
-
-
   const handleDeleteFoundation = (id) => {
     // Remove the foundation with the given id
     const updated = foundations.filter(item => item.id !== id);
@@ -333,32 +234,19 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
-  // const confirmDischarge = () => {
-  //   localStorage.removeItem('foundationsData');
-  //   setEdited([]);
-  //   // ✅ Get current value from Zustand store (not the initial)
-  //   const currentState = useFoundationsStore.getState().foundations;
-  //   // setFoundations(currentState);
-  //   setLocalOrder(currentState);
-  //   setShowConfirmModal(false);
-  // };
-
 
   const confirmDischarge = () => {
-    // 🔁 Remove local edits
+    // Remove local edits
     localStorage.removeItem('foundationsData');
     setEdited([]);
   
-    // ✅ Get the current value from the Zustand store (not initial)
+    // Reset local UI to current store state (which was never changed by edits)
     const currentState = useFoundationsStore.getState().foundations;
-  
-    // ✅ Reset local state that drives UI
     setLocalOrder(currentState);
-  
-    // ❌ Do NOT call setFoundations(currentState), it's already in the store
   
     setShowConfirmModal(false);
   };
+  
   
 
   function unescapeHtml(escapedStr) {
