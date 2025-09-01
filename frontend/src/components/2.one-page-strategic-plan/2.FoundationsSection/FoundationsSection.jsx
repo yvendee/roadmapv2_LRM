@@ -35,9 +35,13 @@ const FoundationsSection = () => {
   const [localOrder, setLocalOrder] = useState(foundations);
 
   // Sync local order when store foundations changes, unless user is editing (avoid overwriting)
+  // useEffect(() => {
+  //   if (edited.length === 0) setLocalOrder(foundations);
+  // }, [foundations, edited.length]);
+
   useEffect(() => {
-    if (edited.length === 0) setLocalOrder(foundations);
-  }, [foundations, edited.length]);
+    setFoundations(storeFoundations);
+  }, [storeFoundations]);
 
   // const [editedFoundations, setEditedFoundations] = useState([]);
 
@@ -339,13 +343,11 @@ const FoundationsSection = () => {
   // };
 
   const confirmDischarge = () => {
-    localStorage.removeItem('foundationsData');
-    setEdited([]);
-  
-    // Reset local UI state to current store state
-    setLocalOrder(foundations);
-  
-    setShowConfirmModal(false);
+    localStorage.removeItem('Foundations'); // clear localStorage
+    setEdited([]); // clear local edited ids if you have this state
+    const currentState = useFoundationsStore.getState().foundations; // get store state
+    setFoundations(currentState); // reset local UI state to store state
+    setShowConfirmModal(false); // close modal
   };
 
   function unescapeHtml(escapedStr) {
