@@ -336,7 +336,9 @@ const FoundationsSection = () => {
     setEdited([]);
     // ✅ Get current value from Zustand store (not the initial)
     const currentState = useFoundationsStore.getState().foundations;
-    setFoundations(currentState);
+    // setFoundations(currentState);
+    // Update localOrder state for immediate UI update
+    setLocalOrder(currentState);
     setShowConfirmModal(false);
   };
 
