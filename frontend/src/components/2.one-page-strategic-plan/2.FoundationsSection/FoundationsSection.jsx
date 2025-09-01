@@ -331,16 +331,33 @@ const FoundationsSection = () => {
     }, 1000);
   };
 
+  // const confirmDischarge = () => {
+  //   localStorage.removeItem('foundationsData');
+  //   setEdited([]);
+  //   // ✅ Get current value from Zustand store (not the initial)
+  //   const currentState = useFoundationsStore.getState().foundations;
+  //   // setFoundations(currentState);
+  //   setLocalOrder(currentState);
+  //   setShowConfirmModal(false);
+  // };
+
+
   const confirmDischarge = () => {
+    // 🔁 Remove local edits
     localStorage.removeItem('foundationsData');
     setEdited([]);
-    // ✅ Get current value from Zustand store (not the initial)
+  
+    // ✅ Get the current value from the Zustand store (not initial)
     const currentState = useFoundationsStore.getState().foundations;
-    // setFoundations(currentState);
-    // Update localOrder state for immediate UI update
+  
+    // ✅ Reset local state that drives UI
     setLocalOrder(currentState);
+  
+    // ❌ Do NOT call setFoundations(currentState), it's already in the store
+  
     setShowConfirmModal(false);
   };
+  
 
   function unescapeHtml(escapedStr) {
     const doc = new DOMParser().parseFromString(escapedStr, "text/html");
