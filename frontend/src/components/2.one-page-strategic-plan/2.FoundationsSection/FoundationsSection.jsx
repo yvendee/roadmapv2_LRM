@@ -242,7 +242,8 @@ const FoundationsSection = () => {
   
     // Reset local UI to current store state (which was never changed by edits)
     const currentState = useFoundationsStore.getState().foundations;
-    setLocalOrder(currentState);
+    setLocalOrder([...currentState]); // clone array to force state update
+
   
     setShowConfirmModal(false);
   };
