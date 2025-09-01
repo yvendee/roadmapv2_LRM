@@ -1432,6 +1432,76 @@ Route::get('/api/v1/one-page-strategic-plan/core-capabilities', function (Reques
     ]);
 });
 
+
+// ref: frontend\src\components\2.one-page-strategic-plan\5.CoreCapabilities\CoreCapabilities.jsx
+Route::post('/api/v1/one-page-strategic-plan/core-capabilities/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $coreCapabilities = $request->input('coreCapabilities');
+
+    if (!$organization || !$coreCapabilities) {
+        return response()->json(['message' => 'Missing required fields'], 400);
+    }
+
+    $record = OpspCoreCapability::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $record->coreCapabilitiesData = $coreCapabilities;
+    $record->save();
+
+    return response()->json(['message' => 'Core Capabilities updated successfully']);
+});
+
+
+// ref:
+Route::post('/api/v1/one-page-strategic-plan/core-capabilities/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $newCapability = $request->input('newCapability');
+
+    if (!$organization || !$newCapability) {
+        return response()->json(['message' => 'Missing required fields'], 400);
+    }
+
+    $record = OpspCoreCapability::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $existingData = $record->coreCapabilitiesData ?? [];
+
+    // Ensure it's an array
+    if (!is_array($existingData)) {
+        $existingData = [];
+    }
+
+    // Determine next ID based on highest current ID
+    $maxId = collect($existingData)->max('id') ?? 0;
+    $newCapability['id'] = $maxId + 1;
+
+    $updatedData = [...$existingData, $newCapability];
+
+    $record->coreCapabilitiesData = $updatedData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Core Capability added successfully',
+        'newItem' => $newCapability,
+        'updatedData' => $updatedData,
+    ]);
+});
+
+
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {

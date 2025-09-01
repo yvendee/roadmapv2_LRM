@@ -4,7 +4,10 @@ import useLoginStore from '../../../store/loginStore';
 import useCoreCapabilitiesStore, { initialCoreCapabilities } from '../../../store/left-lower-content/2.one-page-strategic-plan/5.coreCapabilitiesStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+
 import './CoreCapabilities.css';
 
 const CoreCapabilities = () => {
@@ -19,6 +22,9 @@ const CoreCapabilities = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const organization = useLayoutSettingsStore((state) => state.organization);
+
+  
 
   const hasRealData = coreCapabilities.some(
     (item) =>
@@ -53,14 +59,57 @@ const CoreCapabilities = () => {
     setEditing({ rowId: null, field: null });
   };
 
-  const handleAdd = () => {
+  // const handleAdd = () => {
+  //   const nextId = Math.max(0, ...coreCapabilities.map((o) => o.id || 0)) + 1;
+  //   const newItem = { id: nextId, ...newCapability };
+  //   pushCoreCapability(newItem);
+  //   localStorage.removeItem('CoreCapabilities');
+  //   setNewCapability({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
+  //   setShowAddModal(false);
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New CoreCapability Added:', newItem);
+  // };
+
+  const handleAdd = async () => {
     const nextId = Math.max(0, ...coreCapabilities.map((o) => o.id || 0)) + 1;
     const newItem = { id: nextId, ...newCapability };
-    pushCoreCapability(newItem);
-    localStorage.removeItem('CoreCapabilities');
-    setNewCapability({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
-    setShowAddModal(false);
-    ENABLE_CONSOLE_LOGS && console.log('✅ New CoreCapability Added:', newItem);
+  
+    ENABLE_CONSOLE_LOGS && console.log('📤 Adding CoreCapability:', newItem);
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newCapability: newItem,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ New CoreCapability Added:', data.newItem);
+        pushCoreCapability(data.newItem); // Update your store
+        setEdited([]);
+        localStorage.removeItem('CoreCapabilities');
+        setNewCapability({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
+        setShowAddModal(false);
+      } else {
+        console.error('❌ Add failed:', data.message || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Add request error:', error);
+    }
   };
 
   const handleAddCapabilityClick = () => {
@@ -80,14 +129,55 @@ const CoreCapabilities = () => {
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ CoreCapability with ID ${id} deleted.`);
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
+  //   setLoadingSave(true);
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //     console.log('📤 Saving CoreCapabilities:', coreCapabilities);
+  //     setEdited([]);
+  //     localStorage.removeItem('CoreCapabilities');
+  //   }, 1000);
+  // };
+
+
+  const handleSave = async () => {
     setLoadingSave(true);
-    setTimeout(() => {
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/core-capabilities/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          coreCapabilities,
+        }),
+      });
+  
+      const data = await response.json();
+  
       setLoadingSave(false);
-      console.log('📤 Saving CoreCapabilities:', coreCapabilities);
-      setEdited([]);
-      localStorage.removeItem('CoreCapabilities');
-    }, 1000);
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ CoreCapabilities updated:', data);
+        setEdited([]);
+        localStorage.removeItem('CoreCapabilities');
+      } else {
+        console.error('❌ Update failed:', data.message || 'Unknown error');
+      }
+    } catch (error) {
+      setLoadingSave(false);
+      console.error('❌ Update request error:', error);
+    }
   };
 
   const handleDischargeChanges = () => {
