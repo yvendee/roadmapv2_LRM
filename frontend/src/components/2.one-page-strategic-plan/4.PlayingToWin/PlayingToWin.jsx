@@ -163,7 +163,7 @@ const PlayingToWin = () => {
   const handleDelete = (id) => {
     // const updated = playingtowins.filter(o => o.id !== id);
     // setPlayingToWin(updated);
-    setPlayingToWin(playingtowins.filter((o) => o.id !== id));
+    // setPlayingToWin(playingtowins.filter((o) => o.id !== id));
     setLocalOrder((prev) => prev.filter((o) => o.id !== id));
     // localStorage.setItem('PlayingToWin', JSON.stringify(updated));
     // if (!edited.includes(id)) setEdited([...edited, id]);
