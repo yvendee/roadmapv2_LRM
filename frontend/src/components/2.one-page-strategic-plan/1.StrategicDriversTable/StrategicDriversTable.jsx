@@ -65,30 +65,6 @@ const StrategicDriversTable = () => {
     }, 1000);
   };
 
-  // const handleAddNewDriver = () => {
-  //   ENABLE_CONSOLE_LOGS &&  console.log('New Driver:', JSON.stringify(newDriver, null, 2));
-
-    
-
-  //   // 2. Hide Save / Discharge
-  //   setEditedDrivers([]);
-  
-  //   // 3. Remove localStorage temp data
-  //   localStorage.removeItem('strategicDriversData');
-  
-  //   // 4. Push to Zustand store
-  //   pushStrategicDriver(newDriver);
-  
-  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
-  //   // Not required unless you deep reset from localStorage elsewhere
-  
-  //   // Close modal
-  //   setShowAddModal(false);
-  
-  //   // Reset form input
-  //   setNewDriver({ title: '', description: '', kpi: '', status: 'Tracking' });
-  // };
-
   const handleAddNewDriver = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Driver:', JSON.stringify(newDriver, null, 2));
   
@@ -147,8 +123,6 @@ const StrategicDriversTable = () => {
     setNewDriver({ title: '', description: '', kpi: '', status: 'Tracking' });
   };
   
-  
-  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -178,8 +152,6 @@ const StrategicDriversTable = () => {
     setEditingCell({ id: null, field: null });
   };
 
-
-  
   const handleSaveChanges = () => {
 
     setLoadingSave(true);
@@ -316,7 +288,9 @@ const StrategicDriversTable = () => {
     setEditedDrivers([]);
 
     // 3. Update Zustand store
-    setStrategicDrivers(initialStrategicDrivers);
+    // setStrategicDrivers(initialStrategicDrivers);
+    const currentState = useStrategicDriversStore.getState().strategicDrivers;
+    setStrategicDrivers(currentState); // Use what's in the store, not initial
 
     // 4. Hide Modal
     setShowConfirmModal(false);
