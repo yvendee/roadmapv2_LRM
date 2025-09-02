@@ -362,12 +362,13 @@ const ConstraintsTracker = () => {
                   >
                     {item[field] === '-' ? (
                       <div className="skeleton w-full h-4"></div>
-                    ) : item[field] === '' ? (
-                      <span className="italic text-gray-400">Empty</span>
                     ) : (
-                      item[field]
+                      <span className={item[field] === '' ? 'italic text-gray-400' : ''}>
+                        {item[field] === '' ? 'Empty' : item[field]}
+                      </span>
                     )}
                   </span>
+
                 )}
               </td>
             ))}
