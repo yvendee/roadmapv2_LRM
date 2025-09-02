@@ -60,10 +60,6 @@ const StrategicDriversTable = () => {
   // }, [setStrategicDrivers]);
 
   useEffect(() => {
-    setStrategicDrivers(storeDrivers); // Copy from global store once
-  }, [storeDrivers]);
-
-  useEffect(() => {
     const stored = localStorage.getItem('strategicDriversData');
     if (stored) {
       try {
@@ -74,10 +70,10 @@ const StrategicDriversTable = () => {
         console.error('Error parsing strategicDriversData:', err);
       }
     }
-    // else {
-    //   setStrategicDrivers(storeDrivers); // fallback to store if no localStorage
-    // }
-  }, [setStrategicDrivers]);
+    else {
+      setStrategicDrivers(storeDrivers); // fallback to store if no localStorage
+    }
+  }, [storeDrivers]);
 
   
   const handleAddDriverClick = () => {
