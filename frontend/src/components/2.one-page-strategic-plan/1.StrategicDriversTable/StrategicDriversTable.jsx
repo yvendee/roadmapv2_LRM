@@ -130,7 +130,7 @@ const StrategicDriversTable = () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    updateDriverField(id, field, value);
+    // updateDriverField(id, field, value);
 
     // Update local state for Save/Discharge buttons
     setEditedDrivers((prev) => {
