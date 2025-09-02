@@ -339,6 +339,21 @@ const ConstraintsTracker = () => {
                     {item.status}
                   </span>
                 ) : (
+                  // <span
+                  //   className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
+                  //   onClick={() =>
+                  //     user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                  //   }
+                  // >
+                  //   {item[field] === '-' ? (
+                  //     <div className="skeleton w-full h-4"></div>
+                  //   ) : item[field] === '' ? (
+                  //     <span className="italic text-gray-400">Empty</span>
+                  //   ) : (
+                  //     item[field]
+                  //   )}
+                  // </span>
+
                   <span
                     className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
                     onClick={() =>
