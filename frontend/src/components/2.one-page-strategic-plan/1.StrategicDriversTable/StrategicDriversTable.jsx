@@ -292,6 +292,8 @@ const StrategicDriversTable = () => {
     const currentState = useStrategicDriversStore.getState().strategicDrivers;
     setStrategicDrivers(currentState); // Use what's in the store, not initial
 
+    console.log("Resetting Strategic Driver: ",currentState);
+
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
