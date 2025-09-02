@@ -60,6 +60,10 @@ const StrategicDriversTable = () => {
   // }, [setStrategicDrivers]);
 
   useEffect(() => {
+    setStrategicDrivers(storeDrivers); // Copy from global store once
+  }, [storeDrivers]);
+
+  useEffect(() => {
     const stored = localStorage.getItem('strategicDriversData');
     if (stored) {
       try {
