@@ -12,7 +12,7 @@ import './FourDecisions.css';
 
 const FourDecisions = () => {
   const user = useLoginStore((state) => state.user);
-  const { fourDecisions, setFourDecisions, pushCoreCapability } = useFourDecisions();
+  const { fourDecisions, setFourDecisions, pushFourDecisions } = useFourDecisions();
   const organization = useLayoutSettingsStore((state) => state.organization);
 
   const [editing, setEditing] = useState({ rowId: null, field: null });
