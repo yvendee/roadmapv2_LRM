@@ -219,7 +219,7 @@ const ConstraintsTracker = () => {
     setEdited([]);
     // setConstraintsTracker(initialConstraintsTracker);
     const currentState = useCompanyTractionUserStore.getState().constraintsTracker;
-    setCoreCapabilities(currentState); // Use what's in the store, not initial
+    setConstraintsTracker(currentState); // Use what's in the store, not initial
     setShowConfirmModal(false);
   };
 
