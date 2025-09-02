@@ -355,6 +355,7 @@ const StrategicDriversTable = () => {
   
     const currentState = useStrategicDriversStore.getState().strategicDrivers;
     setStrategicDrivers(currentState); // rollback to store state
+    setCurrentOrder(currentState);
   
     setShowConfirmModal(false);
   };
