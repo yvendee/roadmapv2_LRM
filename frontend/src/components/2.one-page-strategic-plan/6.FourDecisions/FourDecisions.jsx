@@ -12,8 +12,13 @@ import './FourDecisions.css';
 
 const FourDecisions = () => {
   const user = useLoginStore((state) => state.user);
-  const { fourDecisions, setFourDecisions, pushFourDecisions } = useFourDecisions();
+  // const { fourDecisions, setFourDecisions, pushFourDecisions } = useFourDecisions();
   const organization = useLayoutSettingsStore((state) => state.organization);
+
+
+  const pushFourDecisions = useFourDecisions((state) => state.pushFourDecisions);
+  const storeFourDecisions = useFourDecisions((state) => state.fourDecisions);
+  const [fourDecisions, setFourDecisions] = useState([]); // Local copy
 
   const [editing, setEditing] = useState({ rowId: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -24,6 +29,10 @@ const FourDecisions = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
+
+  useEffect(() => {
+    setFourDecisions(storeFourDecisions); // Copy from global store once
+  }, [storeFourDecisions]);
 
   const hasRealData = fourDecisions.some(
     (item) =>
@@ -188,6 +197,10 @@ const FourDecisions = () => {
     localStorage.removeItem('FourDecisions');
     setEdited([]);
     setFourDecisions(initialFourDecisions);
+    setShowConfirmModal(false);
+
+    const currentState = useFourDecisions.getState().fourDecisions;
+    setFourDecisions(currentState); // Use what's in the store, not initial
     setShowConfirmModal(false);
   };
 
