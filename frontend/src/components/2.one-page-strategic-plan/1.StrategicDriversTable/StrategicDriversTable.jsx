@@ -16,9 +16,12 @@ const StrategicDriversTable = () => {
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const organization = useLayoutSettingsStore((state) => state.organization);
 
+  const storeDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
+  const [strategicDrivers, setStrategicDrivers] = useState([]);
+
   const loggedUser = useLoginStore((state) => state.user);
-  const strategicDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
-  const setStrategicDrivers = useStrategicDriversStore((state) => state.setStrategicDrivers);
+  // const strategicDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
+  // const setStrategicDrivers = useStrategicDriversStore((state) => state.setStrategicDrivers);
   const updateDriverField = useStrategicDriversStore((state) => state.updateDriverField);
   const pushStrategicDriver = useStrategicDriversStore((state) => state.pushStrategicDriver);
 
@@ -40,22 +43,38 @@ const StrategicDriversTable = () => {
   
 
   // Load from localStorage if available
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('strategicDriversData');
+  //   if (storedData) {
+  //     try {
+  //       const parsedData = JSON.parse(storedData);
+  //       setStrategicDrivers(parsedData);
+
+  //       // ✅ Treat this as unsaved state, trigger the buttons
+  //       setEditedDrivers(parsedData.map((d) => ({ id: d.id })));
+
+  //     } catch (err) {
+  //       ENABLE_CONSOLE_LOGS && console.error('Failed to parse strategicDriversData from localStorage:', err);
+  //     }
+  //   }
+  // }, [setStrategicDrivers]);
+
   useEffect(() => {
-    const storedData = localStorage.getItem('strategicDriversData');
-    if (storedData) {
+    const stored = localStorage.getItem('strategicDriversData');
+    if (stored) {
       try {
-        const parsedData = JSON.parse(storedData);
-        setStrategicDrivers(parsedData);
-
-        // ✅ Treat this as unsaved state, trigger the buttons
-        setEditedDrivers(parsedData.map((d) => ({ id: d.id })));
-
+        const parsed = JSON.parse(stored);
+        setStrategicDrivers(parsed);
+        setEditedDrivers(parsed.map((d) => ({ id: d.id })));
       } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse strategicDriversData from localStorage:', err);
+        console.error('Error parsing strategicDriversData:', err);
       }
+    } else {
+      setStrategicDrivers(storeDrivers); // fallback to store if no localStorage
     }
-  }, [setStrategicDrivers]);
+  }, [storeDrivers]);
 
+  
   const handleAddDriverClick = () => {
     setLoading(true);
     setTimeout(() => {
@@ -129,29 +148,46 @@ const StrategicDriversTable = () => {
     }
   };
 
+  // const handleInputBlur = (id, field, value) => {
+  //   // updateDriverField(id, field, value);
+
+  //   // Update local state for Save/Discharge buttons
+  //   setEditedDrivers((prev) => {
+  //     const existing = prev.find((d) => d.id === id);
+  //     if (existing) {
+  //       return prev.map((d) =>
+  //         d.id === id ? { ...d, [field]: value } : d
+  //       );
+  //     }
+  //     return [...prev, { id, [field]: value }];
+  //   });
+
+  //   // Update localStorage
+  //   const updatedDrivers = strategicDrivers.map((driver) =>
+  //     driver.id === id ? { ...driver, [field]: value } : driver
+  //   );
+  //   localStorage.setItem('strategicDriversData', JSON.stringify(updatedDrivers));
+
+  //   setEditingCell({ id: null, field: null });
+  // };
+
+
   const handleInputBlur = (id, field, value) => {
-    // updateDriverField(id, field, value);
-
-    // Update local state for Save/Discharge buttons
-    setEditedDrivers((prev) => {
-      const existing = prev.find((d) => d.id === id);
-      if (existing) {
-        return prev.map((d) =>
-          d.id === id ? { ...d, [field]: value } : d
-        );
-      }
-      return [...prev, { id, [field]: value }];
-    });
-
-    // Update localStorage
-    const updatedDrivers = strategicDrivers.map((driver) =>
+    const updated = strategicDrivers.map((driver) =>
       driver.id === id ? { ...driver, [field]: value } : driver
     );
-    localStorage.setItem('strategicDriversData', JSON.stringify(updatedDrivers));
-
+  
+    setStrategicDrivers(updated);
+    localStorage.setItem('strategicDriversData', JSON.stringify(updated));
+  
+    if (!editedDrivers.some((d) => d.id === id)) {
+      setEditedDrivers([...editedDrivers, { id }]);
+    }
+  
     setEditingCell({ id: null, field: null });
   };
 
+  
   const handleSaveChanges = () => {
 
     setLoadingSave(true);
@@ -186,6 +222,7 @@ const StrategicDriversTable = () => {
   
           // 4. Remove from localStorage
           localStorage.removeItem('strategicDriversData');
+          
 
           // Now update backend with Reindexed data
           try {
@@ -280,27 +317,48 @@ const StrategicDriversTable = () => {
     }, 1000);
   };
 
+  // const confirmDischargeChanges = () => {
+  //   // 1. Remove from localStorage
+  //   localStorage.removeItem('strategicDriversData');
+
+  //   // 2. Clear edited state (hides buttons)
+  //   setEditedDrivers([]);
+
+  //   // 3. Update Zustand store
+  //   // setStrategicDrivers(initialStrategicDrivers);
+  //   const currentState = useStrategicDriversStore.getState().strategicDrivers;
+  //   setStrategicDrivers(currentState); // Use what's in the store, not initial
+
+  //   console.log("Resetting Strategic Driver: ",currentState);
+
+  //   // 4. Hide Modal
+  //   setShowConfirmModal(false);
+  // };
+
+
+  // const confirmDischargeChanges = () => {
+  //   localStorage.removeItem('strategicDriversData');
+  //   setEditedDrivers([]);
+  //   const currentState = useStrategicDriversStore.getState().strategicDrivers;
+  //   setStrategicDrivers(currentState); // Use what's in the store, not initial
+  //   console.log("Resetting Strategic Driver: ", currentState);
+  //   setShowConfirmModal(false);
+  // };
+  
+  // const cancelDischargeChanges = () => {
+  //   setShowConfirmModal(false);
+  // };
+
   const confirmDischargeChanges = () => {
-    // 1. Remove from localStorage
     localStorage.removeItem('strategicDriversData');
-
-    // 2. Clear edited state (hides buttons)
     setEditedDrivers([]);
-
-    // 3. Update Zustand store
-    // setStrategicDrivers(initialStrategicDrivers);
+  
     const currentState = useStrategicDriversStore.getState().strategicDrivers;
-    setStrategicDrivers(currentState); // Use what's in the store, not initial
-
-    console.log("Resetting Strategic Driver: ",currentState);
-
-    // 4. Hide Modal
+    setStrategicDrivers(currentState); // rollback to store state
+  
     setShowConfirmModal(false);
   };
-
-  const cancelDischargeChanges = () => {
-    setShowConfirmModal(false);
-  };
+  
 
 
   // Sync initial and store changes:
