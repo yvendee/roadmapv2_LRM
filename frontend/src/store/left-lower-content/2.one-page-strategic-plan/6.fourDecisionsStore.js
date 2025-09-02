@@ -25,12 +25,13 @@ export const initialFourDecisions = [
 ];
 
 const useFourDecisions = create((set) => ({
-    fourDecisions: initialFourDecisions,
-    setFourDecisions: (data) => set({ fourDecisions: data }),
-    pushFourDecisions: (item) =>
+  fourDecisions: initialFourDecisions,
+  setFourDecisions: (data) => set({ fourDecisions: data }),
+  pushFourDecisions: (item) =>
     set((state) => ({
       fourDecisions: [...state.fourDecisions, item],
     })),
 }));
+
 
 export default useFourDecisions;
