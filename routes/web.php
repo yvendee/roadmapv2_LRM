@@ -1603,6 +1603,36 @@ Route::post('/api/v1/one-page-strategic-plan/four-decisions/update', function (R
     ]);
 });
 
+Route::post('/api/v1/one-page-strategic-plan/four-decisions/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $newItem = $request->input('newItem');
+
+    if (!$organization || !$newItem || !is_array($newItem)) {
+        return response()->json(['message' => 'Missing or invalid data'], 400);
+    }
+
+    $record = OpspFourDecision::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $data = $record->fourDecisionsData ?? [];
+    $data[] = $newItem; // append to the end
+    $record->fourDecisionsData = $data;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New FourDecisions item added successfully',
+        'newData' => $data,
+    ]);
+});
+
+
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/constraints-tracker', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {

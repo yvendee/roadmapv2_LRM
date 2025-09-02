@@ -58,15 +58,55 @@ const FourDecisions = () => {
     setEditing({ rowId: null, field: null });
   };
 
-  const handleAdd = () => {
+  // const handleAdd = () => {
+  //   const nextId = Math.max(0, ...fourDecisions.map((o) => o.id || 0)) + 1;
+  //   const newItem = { id: nextId, ...newFourDecisions };
+  //   pushFourDecisions(newItem);
+  //   localStorage.removeItem('FourDecisions');
+  //   setNewFourDecisions({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
+  //   setShowAddModal(false);
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New FourDecisions Added:', newItem);
+  // };
+
+  const handleAdd = async () => {
     const nextId = Math.max(0, ...fourDecisions.map((o) => o.id || 0)) + 1;
     const newItem = { id: nextId, ...newFourDecisions };
-    pushFourDecisions(newItem);
-    localStorage.removeItem('FourDecisions');
-    setNewFourDecisions({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
-    setShowAddModal(false);
-    ENABLE_CONSOLE_LOGS && console.log('✅ New FourDecisions Added:', newItem);
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newItem,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ New FourDecisions Added to DB:', data.newData);
+        pushFourDecisions(newItem); // Update local state
+        localStorage.removeItem('FourDecisions');
+        setNewFourDecisions({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
+        setShowAddModal(false);
+      } else {
+        console.error('❌ Failed to add FourDecisions:', data.message || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Add request error:', error);
+    }
   };
+  
 
 
   const handleAddDecisionClick = () => {
