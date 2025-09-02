@@ -218,7 +218,7 @@ const ConstraintsTracker = () => {
     localStorage.removeItem('ConstraintsTracker');
     setEdited([]);
     // setConstraintsTracker(initialConstraintsTracker);
-    const currentState = useCompanyTractionUserStore.getState().constraintsTracker;
+    const currentState = useConstraintsTracker.getState().constraintsTracker;
     setConstraintsTracker(currentState); // Use what's in the store, not initial
     setShowConfirmModal(false);
   };
