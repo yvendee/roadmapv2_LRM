@@ -28,6 +28,7 @@ use App\Models\OpspThreeyearOutlook;
 use App\Models\OpspPlayingtowinStrategy;
 use App\Models\OpspCoreCapability;
 use App\Models\OpspFourDecision;
+use App\Models\OpspConstraintsTracker;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1632,6 +1633,52 @@ Route::post('/api/v1/one-page-strategic-plan/four-decisions/add', function (Requ
     ]);
 });
 
+//
+    // // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/constraints-tracker', function (Request $request) use ($API_secure) {
+    //     if ($API_secure && !$request->session()->get('logged_in')) {
+    //         return response()->json(['message' => 'Unauthorized'], 401);
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             ['id' => 1, 'constraintTitle' => 'Leadership Training', 'description' => 'Pending', 'owner' => 'John Doe', 'actions' => 'In Progress', 'status' => 'Not Started'],
+    //             ['id' => 2, 'constraintTitle' => 'Technology Stack', 'description' => 'Completed', 'owner' => 'Alice Smith', 'actions' => 'Ongoing', 'status' => 'Active'],
+    //             ['id' => 3, 'constraintTitle' => 'Budget Allocation', 'description' => 'Reviewed', 'owner' => 'Sarah Lee', 'actions' => 'Scheduled', 'status' => 'Not Started'],
+    //             ['id' => 4, 'constraintTitle' => 'Customer Feedback', 'description' => 'Pending', 'owner' => 'Mark Johnson', 'actions' => 'Completed', 'status' => 'Active'],
+    //             ['id' => 5, 'constraintTitle' => 'Product Launch', 'description' => 'Approved', 'owner' => 'Linda Green', 'actions' => 'In Progress', 'status' => 'Active'],
+    //             ['id' => 6, 'constraintTitle' => 'Team Collaboration', 'description' => 'In Progress', 'owner' => 'Emma Brown', 'actions' => 'Scheduled', 'status' => 'Not Started'],
+    //             ['id' => 7, 'constraintTitle' => 'Market Research', 'description' => 'Completed', 'owner' => 'David White', 'actions' => 'Pending', 'status' => 'Inactive'],
+    //         ],
+            
+    //         'Collins Credit Union' => [
+    //             ['id' => 1, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 2, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 3, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 4, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 5, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 6, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 7, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             ['id' => 1, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 2, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 3, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 4, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 5, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 6, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //             ['id' => 7, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
+    //         ],
+    //     ];
+
+    //     return response()->json([
+    //         $organization => $data[$organization] ?? [],
+    //     ]);
+    // });
+
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/constraints-tracker', function (Request $request) use ($API_secure) {
@@ -1641,42 +1688,88 @@ Route::get('/api/v1/one-page-strategic-plan/constraints-tracker', function (Requ
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            ['id' => 1, 'constraintTitle' => 'Leadership Training', 'description' => 'Pending', 'owner' => 'John Doe', 'actions' => 'In Progress', 'status' => 'Not Started'],
-            ['id' => 2, 'constraintTitle' => 'Technology Stack', 'description' => 'Completed', 'owner' => 'Alice Smith', 'actions' => 'Ongoing', 'status' => 'Active'],
-            ['id' => 3, 'constraintTitle' => 'Budget Allocation', 'description' => 'Reviewed', 'owner' => 'Sarah Lee', 'actions' => 'Scheduled', 'status' => 'Not Started'],
-            ['id' => 4, 'constraintTitle' => 'Customer Feedback', 'description' => 'Pending', 'owner' => 'Mark Johnson', 'actions' => 'Completed', 'status' => 'Active'],
-            ['id' => 5, 'constraintTitle' => 'Product Launch', 'description' => 'Approved', 'owner' => 'Linda Green', 'actions' => 'In Progress', 'status' => 'Active'],
-            ['id' => 6, 'constraintTitle' => 'Team Collaboration', 'description' => 'In Progress', 'owner' => 'Emma Brown', 'actions' => 'Scheduled', 'status' => 'Not Started'],
-            ['id' => 7, 'constraintTitle' => 'Market Research', 'description' => 'Completed', 'owner' => 'David White', 'actions' => 'Pending', 'status' => 'Inactive'],
-        ],
-        
-        'Collins Credit Union' => [
-            ['id' => 1, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 2, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 3, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 4, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 5, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 6, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 7, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-        ],
+    $record = OpspConstraintsTracker::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
-            ['id' => 1, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 2, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 3, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 4, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 5, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 6, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-            ['id' => 7, 'constraintTitle' => '-', 'description' => '-', 'owner' => '-', 'actions' => '-', 'status' => '-'],
-        ],
-    ];
+    if (!$record) {
+        return response()->json([
+            $organization => []
+        ], 200);
+    }
 
     return response()->json([
-        $organization => $data[$organization] ?? [],
+        $organization => $record->constraintsTrackerData ?? []
     ]);
 });
+
+// ref: frontend\src\components\one-page-strategic-plan\7.ConstraintsTracker\ConstraintsTracker.jsx
+Route::put('/api/v1/one-page-strategic-plan/constraints-tracker/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $updatedData = $request->input('constraintsTrackerData');
+
+    if (!$organization || !is_array($updatedData)) {
+        return response()->json(['message' => 'Invalid input.'], 400);
+    }
+
+    $record = OpspConstraintsTracker::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found.'], 404);
+    }
+
+    $record->constraintsTrackerData = $updatedData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Constraints Tracker data updated successfully.',
+        'updatedData' => $record->constraintsTrackerData,
+    ]);
+});
+
+// ref: frontend\src\components\2.one-page-strategic-plan\7.ConstraintsTracker\ConstraintsTracker.jsx
+Route::post('/api/v1/one-page-strategic-plan/constraints-tracker/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $newItem = $request->input('newItem');
+
+    if (!$organization || !is_array($newItem)) {
+        return response()->json(['message' => 'Invalid input.'], 400);
+    }
+
+    $record = OpspConstraintsTracker::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found.'], 404);
+    }
+
+    $existingData = $record->constraintsTrackerData ?? [];
+
+    // Ensure it's a proper array
+    if (!is_array($existingData)) {
+        $existingData = json_decode($existingData, true) ?? [];
+    }
+
+    // Assign next ID
+    $nextId = collect($existingData)->pluck('id')->max() + 1;
+    $newItem['id'] = $nextId;
+
+    $existingData[] = $newItem;
+
+    $record->constraintsTrackerData = $existingData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New constraint tracker item added successfully.',
+        'newItem' => $newItem,
+    ]);
+});
+
 
 
 // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx

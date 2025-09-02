@@ -6,12 +6,19 @@ import useConstraintsTracker, { initialConstraintsTracker } from '../../../store
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './ConstraintsTracker.css';
 
 const ConstraintsTracker = () => {
   const user = useLoginStore((state) => state.user);
-  const { constraintsTracker, setConstraintsTracker, pushConstraintsTracker } = useConstraintsTracker();
+  // const { constraintsTracker, setConstraintsTracker, pushConstraintsTracker } = useConstraintsTracker();
+  const pushConstraintsTracker = useConstraintsTracker((state) => state.pushConstraintsTracker);
+  const storeConstraintsTracker = useConstraintsTracker((state) => state.constraintsTracker);
+  const [constraintsTracker, setConstraintsTracker] = useState([]); // Local copy
+
+  const organization = useLayoutSettingsStore((state) => state.organization);
   const users = useCompanyTractionUserStore((state) => state.users);
   const [editing, setEditing] = useState({ rowId: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -23,6 +30,10 @@ const ConstraintsTracker = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [formError, setFormError] = useState('');
 
+
+  useEffect(() => {
+    setConstraintsTracker(storeConstraintsTracker); // Copy from global store once
+  }, [storeConstraintsTracker]);
 
   const hasRealData = constraintsTracker.some(
     (item) =>
@@ -56,23 +67,77 @@ const ConstraintsTracker = () => {
     setEditing({ rowId: null, field: null });
   };
 
-  const handleAdd = () => {
+  // const handleAdd = () => {
 
+  //   const { constraintTitle, description, owner, actions, status } = newConstraintsTracker;
+  //   // Validation logic
+  //   if (!status || !owner) {
+  //     setFormError('Please fill in all required fields: Owner and Status.');
+  //     return;
+  //   }
+
+  //   const nextId = Math.max(0, ...constraintsTracker.map((o) => o.id || 0)) + 1;
+  //   const newItem = { id: nextId, ...newConstraintsTracker };
+  //   pushConstraintsTracker(newItem);
+  //   localStorage.removeItem('ConstraintsTracker');
+  //   setNewConstraintsTracker({ constraintTitle: '', description: '', owner: '', actions: '', status: ''});
+  //   setShowAddModal(false);
+  //   ENABLE_CONSOLE_LOGS && console.log('✅ New Constraints Tracker Added:', newItem);
+  // };
+
+  const handleAdd = async () => {
     const { constraintTitle, description, owner, actions, status } = newConstraintsTracker;
-    // Validation logic
+  
     if (!status || !owner) {
       setFormError('Please fill in all required fields: Owner and Status.');
       return;
     }
-
+  
     const nextId = Math.max(0, ...constraintsTracker.map((o) => o.id || 0)) + 1;
-    const newItem = { id: nextId, ...newConstraintsTracker };
-    pushConstraintsTracker(newItem);
-    localStorage.removeItem('ConstraintsTracker');
-    setNewConstraintsTracker({ constraintTitle: '', description: '', owner: '', actions: '', status: ''});
-    setShowAddModal(false);
-    ENABLE_CONSOLE_LOGS && console.log('✅ New Constraints Tracker Added:', newItem);
+    const newItem = {
+      id: nextId,
+      constraintTitle,
+      description,
+      owner,
+      actions,
+      status,
+    };
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/one-page-strategic-plan/constraints-tracker/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newItem,
+        }),
+      });
+  
+      const result = await res.json();
+  
+      if (res.ok) {
+        pushConstraintsTracker(result.newItem);
+        localStorage.removeItem('ConstraintsTracker');
+        setNewConstraintsTracker({ constraintTitle: '', description: '', owner: '', actions: '', status: '' });
+        setShowAddModal(false);
+        ENABLE_CONSOLE_LOGS && console.log('✅ New Constraints Tracker Added:', result.newItem);
+      } else {
+        console.error('❌ Error adding new item:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ API error:', error);
+    }
   };
+  
 
 
   const handleAddDecisionClick = () => {
@@ -93,14 +158,52 @@ const ConstraintsTracker = () => {
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ Constraints Tracker with ID ${id} deleted.`);
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
+  //   setLoadingSave(true);
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //     ENABLE_CONSOLE_LOGS && console.log('📤 Saving Constraints Tracker:', constraintsTracker);
+  //     setEdited([]);
+  //     localStorage.removeItem('ConstraintsTracker');
+  //   }, 1000);
+  // };
+
+  const handleSave = async () => {
     setLoadingSave(true);
-    setTimeout(() => {
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/constraints-tracker/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          constraintsTrackerData: constraintsTracker,
+        }),
+      });
+  
+      const result = await response.json();
       setLoadingSave(false);
-      ENABLE_CONSOLE_LOGS && console.log('📤 Saving Constraints Tracker:', constraintsTracker);
-      setEdited([]);
-      localStorage.removeItem('ConstraintsTracker');
-    }, 1000);
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Constraints Tracker updated:', result.updatedData);
+        setEdited([]);
+        localStorage.removeItem('ConstraintsTracker');
+      } else {
+        console.error('❌ Update failed:', result.message);
+      }
+    } catch (err) {
+      setLoadingSave(false);
+      console.error('❌ API error:', err);
+    }
   };
 
   const handleDischargeChanges = () => {
@@ -114,7 +217,9 @@ const ConstraintsTracker = () => {
   const confirmDischarge = () => {
     localStorage.removeItem('ConstraintsTracker');
     setEdited([]);
-    setConstraintsTracker(initialConstraintsTracker);
+    // setConstraintsTracker(initialConstraintsTracker);
+    const currentState = useCompanyTractionUserStore.getState().constraintsTracker;
+    setCoreCapabilities(currentState); // Use what's in the store, not initial
     setShowConfirmModal(false);
   };
 
