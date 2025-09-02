@@ -332,13 +332,25 @@ const StrategicDriversTable = () => {
     const [moved] = newOrder.splice(draggedIndex, 1);
     newOrder.splice(overIndex, 0, moved);
     setCurrentOrder(newOrder);
-    localStorage.setItem('strategicDriversData', JSON.stringify(newOrder));
+    // localStorage.setItem('strategicDriversData', JSON.stringify(newOrder));
     setEditedDrivers(prev => prev.find(d=>d.id===draggedId) ? prev : [...prev, { id: draggedId }]);
   };
 
+  // const handleDragEnd = () => {
+  //   setDraggedId(null);
+  // };
+
   const handleDragEnd = () => {
     setDraggedId(null);
+  
+    // ✅ Save drag result to localStorage
+    localStorage.setItem('strategicDriversData', JSON.stringify(currentOrder));
+  
+    // ✅ Optionally mark all drivers as edited (or just draggedId if you prefer)
+    const editedIds = currentOrder.map((d) => ({ id: d.id }));
+    setEditedDrivers(editedIds);
   };
+  
 
   // Save drag order to store:
   const saveDraggedOrder = () => {
