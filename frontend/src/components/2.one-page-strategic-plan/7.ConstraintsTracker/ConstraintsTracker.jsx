@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import useConstraintsTracker, { initialConstraintsTracker } from '../../../store/left-lower-content/2.one-page-strategic-plan/7.constraintsTrackerStore';
+import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -11,7 +12,7 @@ import './ConstraintsTracker.css';
 const ConstraintsTracker = () => {
   const user = useLoginStore((state) => state.user);
   const { constraintsTracker, setConstraintsTracker, pushConstraintsTracker } = useConstraintsTracker();
-
+  const users = useCompanyTractionUserStore((state) => state.users);
   const [editing, setEditing] = useState({ rowId: null, field: null });
   const [edited, setEdited] = useState([]);
   const [newConstraintsTracker, setNewConstraintsTracker] = useState({ constraintTitle: '', description: '', owner: '', actions: '', status: ''});
@@ -20,6 +21,8 @@ const ConstraintsTracker = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [formError, setFormError] = useState('');
+
 
   const hasRealData = constraintsTracker.some(
     (item) =>
@@ -54,6 +57,14 @@ const ConstraintsTracker = () => {
   };
 
   const handleAdd = () => {
+
+    const { constraintTitle, description, owner, actions, status } = newConstraintsTracker;
+    // Validation logic
+    if (!status || !owner) {
+      setFormError('Please fill in all required fields: Owner and Status.');
+      return;
+    }
+
     const nextId = Math.max(0, ...constraintsTracker.map((o) => o.id || 0)) + 1;
     const newItem = { id: nextId, ...newConstraintsTracker };
     pushConstraintsTracker(newItem);
@@ -139,77 +150,121 @@ const ConstraintsTracker = () => {
       </div>
 
       <table className="min-w-full border border-gray-200 text-sm">
-        <thead className="bg-gray-50 text-green-700">
-          <tr>
-            <th className="border px-3 py-2 text-left">Constraint Title</th>
-            <th className="border px-3 py-2 text-center">Description</th>
-            <th className="border px-3 py-2 text-center">Owner</th>
-            <th className="border px-3 py-2 text-center">Actions</th>
-            <th className="border px-3 py-2 text-center">Status</th>
-            
-            {user?.role === 'superadmin' && hasRealData && (
-              <th className="border px-3 py-2 text-center"></th>
-            )}
+      <thead className="bg-gray-50 text-green-700 text-sm">
+        <tr>
+          <th className="border px-3 py-2">
+            <div className="text-left">Constraint Title</div>
+          </th>
+          <th className="border px-3 py-2">
+            <div className="flex justify-center items-center">Description</div>
+          </th>
+          <th className="border px-3 py-2">
+            <div className="flex justify-center items-center">Owner</div>
+          </th>
+          <th className="border px-3 py-2">
+            <div className="flex justify-center items-center">Actions</div>
+          </th>
+          <th className="border px-3 py-2">
+            <div className="flex justify-center items-center">Status</div>
+          </th>
+          {user?.role === 'superadmin' && hasRealData && (
+            <th className="border px-3 py-2">
+              <div className="flex justify-center items-center"></div>
+            </th>
+          )}
+        </tr>
+      </thead>
 
-          </tr>
-        </thead>
         <tbody>
-          {constraintsTracker.map((item) => (
-            <tr key={item.id} className="hover:bg-gray-50">
-              {['constraintTitle', 'description', 'owner', 'actions', 'status'].map((field) => (
-                <td
-                  key={field}
-                  className={`border px-3 py-2 ${
-                    ['description', 'owner', 'actions', 'status'].includes(field) ? 'text-center' : ''
-                  }`}
-                >
-                  {editing.rowId === item.id && editing.field === field ? (
-                    <input
+        {constraintsTracker.map((item) => (
+          <tr key={item.id} className="hover:bg-gray-50">
+            {['constraintTitle', 'description', 'owner', 'actions', 'status'].map((field) => (
+              <td
+                key={field}
+                className={`border px-3 py-2 ${
+                  ['description', 'owner', 'actions', 'status'].includes(field) ? 'text-center' : ''
+                }`}
+              >
+                {editing.rowId === item.id && editing.field === field ? (
+                  field === 'status' ? (
+                    <select
+                      autoFocus
+                      defaultValue={item.status}
+                      onBlur={(e) => handleBlur(item.id, field, e.target.value)}
+                      className="w-full px-2 py-1 border rounded text-xs text-center"
+                    >
+                      <option>Tracking</option>
+                      <option>Behind</option>
+                      <option>At Risk</option>
+                      <option>Paused</option>
+                    </select>
+                  ) : field === 'owner' ? (
+                    <select
+                      autoFocus
+                      value={item.owner || ''}
+                      onChange={(e) => handleBlur(item.id, field, e.target.value)}
+                      className="w-full px-2 py-1 border rounded text-xs text-center"
+                    >
+                      <option value="" disabled>Select Owner</option>
+                      {users.map((u) => (
+                        <option key={u} value={u}>{u}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <textarea
                       autoFocus
                       defaultValue={item[field]}
                       onBlur={(e) => handleBlur(item.id, field, e.target.value)}
-                      className="w-full border rounded p-1 text-sm"
+                      className="w-full border rounded p-1 text-sm resize-y min-h-[40px]"
                     />
-                  ) : item[field] === '-' ? (
-                    <div className="skeleton w-full h-4"></div>
-                  ) : (
-                    <span
-                      className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
-                      onClick={() =>
-                        user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
-                      }
-                    >
-                      {item[field]}
-                    </span>
-                  )}
-                </td>
-              ))}
-
-
-
-              {/* <td className="border px-3 py-2 text-center">
-                {user?.role === 'superadmin' && (
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    className="text-red-500 hover:text-red-700 cursor-pointer"
-                    onClick={() => handleDelete(item.id)}
-                  />
+                  )
+                ) : field === 'status' ? (
+                  <span
+                    className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${
+                      item.status === 'Tracking' ? 'bg-green-600' :
+                      item.status === 'Behind' ? 'bg-yellow-500' :
+                      item.status === 'At Risk' ? 'bg-red-500' :
+                      item.status === 'Paused' ? 'bg-gray-500' :
+                      'bg-gray-300'
+                    } ${user?.role === 'superadmin' ? 'cursor-pointer' : ''}`}
+                    onClick={() =>
+                      user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                    }
+                  >
+                    {item.status}
+                  </span>
+                ) : (
+                  <span
+                    className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
+                    onClick={() =>
+                      user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                    }
+                  >
+                    {item[field] === '-' ? (
+                      <div className="skeleton w-full h-4"></div>
+                    ) : item[field] === '' ? (
+                      <span className="italic text-gray-400">Empty</span>
+                    ) : (
+                      item[field]
+                    )}
+                  </span>
                 )}
-              </td> */}
+              </td>
+            ))}
 
-              {user?.role === 'superadmin' && hasRealData && (
-                <td className="border px-3 py-2 text-center">
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    className="text-red-500 cursor-pointer hover:text-red-700"
-                    onClick={() => handleDelete(item.id)}
-                    title="Delete"
-                  />
-                </td>
-              )}
+            {user?.role === 'superadmin' && hasRealData && (
+              <td className="border px-3 py-2 text-center">
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  className="text-red-500 cursor-pointer hover:text-red-700"
+                  onClick={() => handleDelete(item.id)}
+                  title="Delete"
+                />
+              </td>
+            )}
+          </tr>
+        ))}
 
-            </tr>
-          ))}
         </tbody>
       </table>
 
@@ -220,13 +275,38 @@ const ConstraintsTracker = () => {
             {/* { constraintTitle: '', description: '', owner: '', actions: '', status: ''} */}
             {['Constraint Title', 'description', 'owner', 'actions', 'status'].map((field) => (
               <div key={field}>
-                <label className="modal-add-label capitalize">{field}</label>
-                <input
+              <label className="modal-add-label capitalize">{field}</label>
+              {field === 'status' ? (
+                <select
+                  className="modal-add-input"
+                  value={newConstraintsTracker.status}
+                  onChange={(e) => setNewConstraintsTracker({ ...newConstraintsTracker, status: e.target.value })}
+                >
+                  <option value="">Select Status</option>
+                  <option>Tracking</option>
+                  <option>Behind</option>
+                  <option>At Risk</option>
+                  <option>Paused</option>
+                </select>
+              ) : field === 'owner' ? (
+                <select
+                  className="modal-add-input"
+                  value={newConstraintsTracker.owner}
+                  onChange={(e) => setNewConstraintsTracker({ ...newConstraintsTracker, owner: e.target.value })}
+                >
+                  <option value="">Select Owner</option>
+                  {users.map((u) => (
+                    <option key={u} value={u}>{u}</option>
+                  ))}
+                </select>
+              ) : (
+                <textarea
                   className="modal-add-input"
                   value={newConstraintsTracker[field]}
                   onChange={(e) => setNewConstraintsTracker({ ...newConstraintsTracker, [field]: e.target.value })}
                 />
-              </div>
+              )}
+            </div>
             ))}
             <div className="modal-add-buttons">
               <button className="btn-add" onClick={handleAdd}>
@@ -234,6 +314,11 @@ const ConstraintsTracker = () => {
               </button>
               <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
             </div>
+
+            
+            {formError && (
+              <p className="text-red-500 text-sm mt-2 text-center">{formError}</p>
+            )}
           </div>
         </div>
       )}
