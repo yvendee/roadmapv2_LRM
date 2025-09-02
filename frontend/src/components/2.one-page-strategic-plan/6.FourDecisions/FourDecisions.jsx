@@ -61,7 +61,7 @@ const FourDecisions = () => {
   const handleAdd = () => {
     const nextId = Math.max(0, ...fourDecisions.map((o) => o.id || 0)) + 1;
     const newItem = { id: nextId, ...newFourDecisions };
-    pushCoreCapability(newItem);
+    pushFourDecisions(newItem);
     localStorage.removeItem('FourDecisions');
     setNewFourDecisions({ description: '', orig: '', q1: '', q2: '', q3: '', q4: '' });
     setShowAddModal(false);
