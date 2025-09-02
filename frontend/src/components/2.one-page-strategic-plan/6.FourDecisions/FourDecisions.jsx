@@ -4,12 +4,16 @@ import useLoginStore from '../../../store/loginStore';
 import useFourDecisions, { initialFourDecisions } from '../../../store/left-lower-content/2.one-page-strategic-plan/6.fourDecisionsStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+
 import './FourDecisions.css';
 
 const FourDecisions = () => {
   const user = useLoginStore((state) => state.user);
   const { fourDecisions, setFourDecisions, pushCoreCapability } = useFourDecisions();
+  const organization = useLayoutSettingsStore((state) => state.organization);
 
   const [editing, setEditing] = useState({ rowId: null, field: null });
   const [edited, setEdited] = useState([]);
@@ -19,6 +23,7 @@ const FourDecisions = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  
 
   const hasRealData = fourDecisions.some(
     (item) =>
@@ -82,14 +87,53 @@ const FourDecisions = () => {
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ FourDecisions with ID ${id} deleted.`);
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
+  //   setLoadingSave(true);
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //     ENABLE_CONSOLE_LOGS && console.log('📤 Saving FourDecisions:', fourDecisions);
+  //     setEdited([]);
+  //     localStorage.removeItem('FourDecisions');
+  //   }, 1000);
+  // };
+
+  const handleSave = async () => {
     setLoadingSave(true);
-    setTimeout(() => {
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          fourDecisions,
+        }),
+      });
+  
+      const data = await response.json();
       setLoadingSave(false);
-      ENABLE_CONSOLE_LOGS && console.log('📤 Saving FourDecisions:', fourDecisions);
-      setEdited([]);
-      localStorage.removeItem('FourDecisions');
-    }, 1000);
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ FourDecisions updated:', data.updatedData);
+        setEdited([]);
+        localStorage.removeItem('FourDecisions');
+      } else {
+        console.error('❌ Update failed:', data.message || 'Unknown error');
+      }
+    } catch (error) {
+      setLoadingSave(false);
+      console.error('❌ Update request error:', error);
+    }
   };
 
   const handleDischargeChanges = () => {

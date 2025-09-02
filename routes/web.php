@@ -27,6 +27,7 @@ use App\Models\OpspFoundation;
 use App\Models\OpspThreeyearOutlook;
 use App\Models\OpspPlayingtowinStrategy;
 use App\Models\OpspCoreCapability;
+use App\Models\OpspFourDecision;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1503,6 +1504,55 @@ Route::post('/api/v1/one-page-strategic-plan/core-capabilities/add', function (R
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
+    // Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $request) use ($API_secure) {
+    //     if ($API_secure && !$request->session()->get('logged_in')) {
+    //         return response()->json(['message' => 'Unauthorized'], 401);
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             ['id' => 1, 'description' => 'Budget Allocation', 'orig' => 'x', 'q1' => 'x', 'q2' => '✓', 'q3' => 'x', 'q4' => '✓'],
+    //             ['id' => 2, 'description' => 'Product Launch', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => '✓', 'q4' => 'x'],
+    //             ['id' => 3, 'description' => 'Market Research', 'orig' => 'x', 'q1' => 'x', 'q2' => 'x', 'q3' => '✓', 'q4' => '✓'],
+    //             ['id' => 4, 'description' => 'Customer Feedback', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => 'x', 'q4' => '✓'],
+    //             ['id' => 5, 'description' => 'Team Collaboration', 'orig' => 'x', 'q1' => 'x', 'q2' => '✓', 'q3' => 'x', 'q4' => 'x'],
+    //             ['id' => 6, 'description' => 'Sales Strategy', 'orig' => '✓', 'q1' => 'x', 'q2' => 'x', 'q3' => '✓', 'q4' => '✓'],
+    //             ['id' => 7, 'description' => 'Quality Control', 'orig' => 'x', 'q1' => '✓', 'q2' => '✓', 'q3' => 'x', 'q4' => 'x'],
+    //             ['id' => 8, 'description' => 'Employee Engagement', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => '✓', 'q4' => 'x'],
+    //         ],
+
+    //         'Collins Credit Union' => [
+    //             ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 2, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 3, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 4, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 5, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 6, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 7, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 8, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 2, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 3, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 4, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 5, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 6, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 7, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //             ['id' => 8, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
+    //         ],
+    //     ];
+
+    //     return response()->json([
+    //         $organization => $data[$organization] ?? [],
+    //     ]);
+    // });
+
+
+// ref:
 Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -1510,43 +1560,46 @@ Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            ['id' => 1, 'description' => 'Budget Allocation', 'orig' => 'x', 'q1' => 'x', 'q2' => '✓', 'q3' => 'x', 'q4' => '✓'],
-            ['id' => 2, 'description' => 'Product Launch', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => '✓', 'q4' => 'x'],
-            ['id' => 3, 'description' => 'Market Research', 'orig' => 'x', 'q1' => 'x', 'q2' => 'x', 'q3' => '✓', 'q4' => '✓'],
-            ['id' => 4, 'description' => 'Customer Feedback', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => 'x', 'q4' => '✓'],
-            ['id' => 5, 'description' => 'Team Collaboration', 'orig' => 'x', 'q1' => 'x', 'q2' => '✓', 'q3' => 'x', 'q4' => 'x'],
-            ['id' => 6, 'description' => 'Sales Strategy', 'orig' => '✓', 'q1' => 'x', 'q2' => 'x', 'q3' => '✓', 'q4' => '✓'],
-            ['id' => 7, 'description' => 'Quality Control', 'orig' => 'x', 'q1' => '✓', 'q2' => '✓', 'q3' => 'x', 'q4' => 'x'],
-            ['id' => 8, 'description' => 'Employee Engagement', 'orig' => '✓', 'q1' => '✓', 'q2' => 'x', 'q3' => '✓', 'q4' => 'x'],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-        'Collins Credit Union' => [
-            ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 2, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 3, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 4, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 5, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 6, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 7, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 8, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-        ],
+    $record = OpspFourDecision::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
-            ['id' => 1, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 2, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 3, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 4, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 5, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 6, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 7, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-            ['id' => 8, 'description' => '-', 'orig' => '-', 'q1' => '-', 'q2' => '-', 'q3' => '-', 'q4' => '-'],
-        ],
-    ];
+    if (!$record) {
+        return response()->json([$organization => []], 200); // return empty array if not found
+    }
 
     return response()->json([
-        $organization => $data[$organization] ?? [],
+        $organization => $record->fourDecisionsData ?? [],
+    ]);
+});
+
+    
+Route::post('/api/v1/one-page-strategic-plan/four-decisions/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $fourDecisions = $request->input('fourDecisions');
+
+    if (!$organization || !$fourDecisions) {
+        return response()->json(['message' => 'Missing required fields'], 400);
+    }
+
+    $record = OpspFourDecision::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $record->fourDecisionsData = $fourDecisions;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Four Decisions data updated successfully',
+        'updatedData' => $record->fourDecisionsData,
     ]);
 });
 
