@@ -69,10 +69,11 @@ const StrategicDriversTable = () => {
       } catch (err) {
         console.error('Error parsing strategicDriversData:', err);
       }
-    } else {
-      setStrategicDrivers(storeDrivers); // fallback to store if no localStorage
     }
-  }, [storeDrivers]);
+    // else {
+    //   setStrategicDrivers(storeDrivers); // fallback to store if no localStorage
+    // }
+  }, [setStrategicDrivers]);
 
   
   const handleAddDriverClick = () => {
