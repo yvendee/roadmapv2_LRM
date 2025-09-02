@@ -1459,7 +1459,7 @@ Route::post('/api/v1/one-page-strategic-plan/core-capabilities/update', function
 });
 
 
-// ref:
+// ref: rontend\src\components\2.one-page-strategic-plan\5.CoreCapabilities\CoreCapabilities.jsx
 Route::post('/api/v1/one-page-strategic-plan/core-capabilities/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
