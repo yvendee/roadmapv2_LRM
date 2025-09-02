@@ -127,6 +127,8 @@ const StrategicDriversTable = () => {
   
       if (response.ok && data.status === 'success') {
         setStrategicDrivers(reordered); // Update Zustand store
+        setCurrentOrder(reordered); // update UI
+        
       } else {
         console.error('❌ Failed to update drivers:', data.message);
       }
