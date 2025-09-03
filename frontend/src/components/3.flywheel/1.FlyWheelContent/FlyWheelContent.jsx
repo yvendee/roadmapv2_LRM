@@ -109,9 +109,9 @@ const FlyWheelContent = () => {
 
 
       <div className="right-panel">
-        {previewURL ? (
+        {pdfUrl ? (
           <iframe
-            src={previewURL}
+            src={pdfUrl}
             title="PDF Preview"
             width="100%"
             height="600px"
@@ -123,6 +123,7 @@ const FlyWheelContent = () => {
           </div>
         )}
       </div>
+
 
 
     </div>
