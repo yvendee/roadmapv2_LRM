@@ -38,27 +38,40 @@ const FlyWheelContent = () => {
     fetchFileLink();
   }, [organization]);
 
-  const handleUpload = (e) => {
+  // const handleUpload = (e) => {
+  //   e.preventDefault();
+  //   if (!file) return;
+
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+  // };
+
+  const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return;
-
+  
     const formData = new FormData();
     formData.append('file', file);
-
-    // fetch('YOUR_UPLOAD_ENDPOINT', {
-    //   method: 'POST',
-    //   body: formData,
-    //   // headers: { Authorization: 'Bearer YOUR_TOKEN' } // if needed
-    // })
-    //   .then(res => {
-    //     if (!res.ok) throw new Error('403 Forbidden');
-    //     return res.json();
-    //   })
-    //   .catch(err => {
-    //     console.error(err);
-    //     // handle error, show toast, etc.
-    //   });
-
+    formData.append('organization', organization);
+  
+    try {
+      const response = await fetch(`${API_URL}/api/v1/flywheel/upload`, {
+        method: 'POST',
+        credentials: 'include', 
+        body: formData,
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', data.fileLink);
+        setPdfUrl(`${API_URL}/storage${data.fileLink}`);
+      } else {
+        console.error('❌ Upload failed:', data.error || data.message);
+      }
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+    }
   };
 
   const handleFileChange = (e) => {

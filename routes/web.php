@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 use Symfony\Component\HttpFoundation\Cookie;
 
-
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
 use App\Models\AuthUser;
@@ -1789,6 +1788,44 @@ Route::get('/api/v1/flywheel', function (Request $request) use ($API_secure) {
 
     return response()->json([
         'fileLink' => $record->fileLink
+    ]);
+});
+
+// ref:
+Route::post('/api/v1/flywheel/upload', function (Request $request) {
+    $organization = $request->input('organization');
+    if (!$organization) {
+        return response()->json(['error' => 'Organization is required'], 400);
+    }
+
+    if (!$request->hasFile('file')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    $record = Flywheel::where('organizationName', $organization)->first();
+    if (!$record) {
+        return response()->json(['error' => 'Organization not found'], 404);
+    }
+
+    $file = $request->file('file');
+    $uId = $record->u_id;
+    $fileName = $file->getClientOriginalName();
+    $targetPath = storage_path("app/public/flywheel/{$uId}");
+
+    if (!File::exists($targetPath)) {
+        File::makeDirectory($targetPath, 0755, true);
+    }
+
+    $file->move($targetPath, $fileName);
+
+    $fileLink = "/flywheel/{$uId}/{$fileName}";
+
+    $record->fileLink = $fileLink;
+    $record->save();
+
+    return response()->json([
+        'message' => 'File uploaded successfully',
+        'fileLink' => $fileLink,
     ]);
 });
 
