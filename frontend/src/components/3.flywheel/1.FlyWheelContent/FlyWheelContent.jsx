@@ -55,7 +55,7 @@ const FlyWheelContent = () => {
     formData.append('organization', organization);
   
     try {
-      const response = await fetch(`${API_URL}/api/v1/flywheel/upload`, {
+      const response = await fetch(`${API_URL}/v1/flywheel/upload`, {
         method: 'POST',
         credentials: 'include', 
         body: formData,
