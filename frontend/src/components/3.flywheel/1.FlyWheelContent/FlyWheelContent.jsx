@@ -1,6 +1,5 @@
 // frontend\src\components\3.flywheel\1.FlyWheelContent\FlyWheelContent.jsx
 import React, { useState, useEffect } from 'react';
-import PDFJSViewer from 'pdfjs-react-viewer';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -108,21 +107,24 @@ const FlyWheelContent = () => {
         </div>
       </div>
 
+
       <div className="right-panel">
         {previewURL ? (
-          <div className="image-preview">
-            <img src={previewURL} alt="Preview" />
-          </div>
-        ) : pdfUrl ? (
-          <div style={{ width: '100%', height: '500px' }}>
-            <PDFJSViewer pdfUrl={pdfUrl} scale={1.0} />
-          </div>
+          <iframe
+            src={previewURL}
+            title="PDF Preview"
+            width="100%"
+            height="600px"
+            style={{ border: 'none' }}
+          ></iframe>
         ) : (
           <div className="error-box">
             <h3>NO PREVIEW</h3>
           </div>
         )}
       </div>
+
+
     </div>
   );
 
