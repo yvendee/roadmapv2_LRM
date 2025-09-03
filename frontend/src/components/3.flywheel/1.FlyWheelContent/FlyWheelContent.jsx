@@ -50,29 +50,39 @@ const FlyWheelContent = () => {
     e.preventDefault();
     if (!file) return;
   
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('organization', organization);
-  
     try {
-      const response = await fetch(`${API_URL}/v1/flywheel/upload`, {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('organization', organization);
+  
+      const res = await fetch(`${API_URL}/v1/flywheel/upload`, {
         method: 'POST',
-        credentials: 'include', 
+        headers: {
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
         body: formData,
       });
   
-      const data = await response.json();
+      const json = await res.json();
   
-      if (response.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', data.fileLink);
-        setPdfUrl(`${API_URL}/storage${data.fileLink}`);
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', json.fileLink);
+        setPdfUrl(`${API_URL}/storage${json.fileLink}`);
       } else {
-        console.error('❌ Upload failed:', data.error || data.message);
+        console.error('❌ Upload failed:', json.message || json.error);
       }
-    } catch (error) {
-      console.error('❌ Upload error:', error);
+    } catch (err) {
+      console.error('❌ Upload error:', err);
     }
   };
+  
+  
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
