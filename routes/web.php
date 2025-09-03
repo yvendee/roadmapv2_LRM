@@ -29,6 +29,9 @@ use App\Models\OpspCoreCapability;
 use App\Models\OpspFourDecision;
 use App\Models\OpspConstraintsTracker;
 use App\Models\Flywheel;
+use App\Models\ScoreboardAnnualpriority;
+use App\Models\ScoreboardCompanyTractionCard;
+use App\Models\ScoreboardProjectProgressCard;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1791,7 +1794,7 @@ Route::get('/api/v1/flywheel', function (Request $request) use ($API_secure) {
     ]);
 });
 
-// ref:
+// ref: frontend\src\components\3.flywheel\1.FlyWheelContent\FlyWheelContent.jsx
 Route::post('/api/v1/flywheel/upload', function (Request $request) {
     $organization = $request->input('organization');
     if (!$organization) {
@@ -1829,6 +1832,50 @@ Route::post('/api/v1/flywheel/upload', function (Request $request) {
     ]);
 });
 
+//
+    // // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
+    // Route::get('/api/v1/scoreboard/annual-priorities', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             'average' => 64.28,
+    //             'members' => [
+    //                 ['name' => 'Maricar Aquino', 'score' => 100],
+    //                 ['name' => 'Chuck Gulledge', 'score' => 71],
+    //                 ['name' => '', 'score' => 22],
+    //             ],
+    //         ],
+
+    //         'Collins Credit Union' => [
+    //             'average' => 75.45,
+    //             'members' => [
+    //                 ['name' => 'John Smith', 'score' => 80],
+    //                 ['name' => 'Jane Doe', 'score' => 90],
+    //                 ['name' => 'Emily Davis', 'score' => 56],
+    //             ],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             'average' => 0,
+    //             'members' => [
+    //                 ['name' => '-', 'score' => 0],
+    //                 ['name' => '-', 'score' => 0],
+    //                 ['name' => '-', 'score' => 0],
+    //             ],
+    //         ],
+    //     ];
+
+    //     return response()->json($data[$organization] ?? ['average' => 0, 'members' => []]);
+    // });
+
 // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
 Route::get('/api/v1/scoreboard/annual-priorities', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -1840,38 +1887,60 @@ Route::get('/api/v1/scoreboard/annual-priorities', function (Request $request) u
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'average' => 64.28,
-            'members' => [
-                ['name' => 'Maricar Aquino', 'score' => 100],
-                ['name' => 'Chuck Gulledge', 'score' => 71],
-                ['name' => '', 'score' => 22],
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-        'Collins Credit Union' => [
-            'average' => 75.45,
-            'members' => [
-                ['name' => 'John Smith', 'score' => 80],
-                ['name' => 'Jane Doe', 'score' => 90],
-                ['name' => 'Emily Davis', 'score' => 56],
-            ],
-        ],
+    $record = ScoreboardAnnualpriority::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
+    if (!$record) {
+        return response()->json([
             'average' => 0,
-            'members' => [
-                ['name' => '-', 'score' => 0],
-                ['name' => '-', 'score' => 0],
-                ['name' => '-', 'score' => 0],
-            ],
-        ],
-    ];
+            'members' => [],
+        ]);
+    }
 
-    return response()->json($data[$organization] ?? ['average' => 0, 'members' => []]);
+    return response()->json($record->annualPrioritiesdData ?? [
+        'average' => 0,
+        'members' => [],
+    ]);
 });
 
+//
+    // // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
+    // Route::get('/api/v1/scoreboard/company-traction-cards', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             ['label' => 'Q1', 'percent' => 100],
+    //             ['label' => 'Q2', 'percent' => 93],
+    //             ['label' => 'Q3', 'percent' => 5],
+    //             ['label' => 'Q4', 'percent' => 0],
+    //         ],
+    //         'Collins Credit Union' => [
+    //             ['label' => 'Q1', 'percent' => 85],
+    //             ['label' => 'Q2', 'percent' => 75],
+    //             ['label' => 'Q3', 'percent' => 55],
+    //             ['label' => 'Q4', 'percent' => 60],
+    //         ],
+    //         'Test Skeleton Loading' => [
+    //             ['label' => 'Q1', 'percent' => 0],
+    //             ['label' => 'Q2', 'percent' => 0],
+    //             ['label' => 'Q3', 'percent' => 0],
+    //             ['label' => 'Q4', 'percent' => 0],
+    //         ],
+    //     ];
+
+    //     return response()->json($data[$organization] ?? []);
+    // });
 // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
 Route::get('/api/v1/scoreboard/company-traction-cards', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -1883,29 +1952,48 @@ Route::get('/api/v1/scoreboard/company-traction-cards', function (Request $reque
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            ['label' => 'Q1', 'percent' => 100],
-            ['label' => 'Q2', 'percent' => 93],
-            ['label' => 'Q3', 'percent' => 5],
-            ['label' => 'Q4', 'percent' => 0],
-        ],
-        'Collins Credit Union' => [
-            ['label' => 'Q1', 'percent' => 85],
-            ['label' => 'Q2', 'percent' => 75],
-            ['label' => 'Q3', 'percent' => 55],
-            ['label' => 'Q4', 'percent' => 60],
-        ],
-        'Test Skeleton Loading' => [
-            ['label' => 'Q1', 'percent' => 0],
-            ['label' => 'Q2', 'percent' => 0],
-            ['label' => 'Q3', 'percent' => 0],
-            ['label' => 'Q4', 'percent' => 0],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    $record = ScoreboardCompanyTractionCard::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([], 200);
+    }
+
+    return response()->json($record->companyTractionCardData ?? []);
 });
+
+//
+    // // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
+    // Route::get('/api/v1/scoreboard/project-progress', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     // 🧪 Sample data for multiple orgs
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             'completed' => 10,
+    //             'total' => 36,
+    //         ],
+    //         'Collins Credit Union' => [
+    //             'completed' => 28,
+    //             'total' => 30,
+    //         ],
+    //         'Test Skeleton Loading' => [
+    //             'completed' => 0,
+    //             'total' => 0,
+    //         ],
+    //     ];
+
+    //     return response()->json($data[$organization] ?? ['completed' => 0, 'total' => 0]);
+    // });
 
 // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
 Route::get('/api/v1/scoreboard/project-progress', function (Request $request) use ($API_secure) {
@@ -1917,24 +2005,19 @@ Route::get('/api/v1/scoreboard/project-progress', function (Request $request) us
 
     $organization = $request->query('organization');
 
-    // 🧪 Sample data for multiple orgs
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'completed' => 10,
-            'total' => 36,
-        ],
-        'Collins Credit Union' => [
-            'completed' => 28,
-            'total' => 30,
-        ],
-        'Test Skeleton Loading' => [
-            'completed' => 0,
-            'total' => 0,
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization name is required'], 400);
+    }
 
-    return response()->json($data[$organization] ?? ['completed' => 0, 'total' => 0]);
+    $record = ScoreboardProjectProgressCard::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['completed' => 0, 'total' => 0]);
+    }
+
+    return response()->json($record->projectProgressCardData ?? ['completed' => 0, 'total' => 0]);
 });
+
 
 
 // ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
