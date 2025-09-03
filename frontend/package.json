@@ -17,6 +17,7 @@
     "@fullcalendar/react": "^6.1.18",
     "@tailwindcss/vite": "^4.1.10",
     "date-fns": "^4.1.0",
+    "pdfjs-react-viewer": "^0.1.0-18",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",

@@ -29,6 +29,7 @@ use App\Models\OpspPlayingtowinStrategy;
 use App\Models\OpspCoreCapability;
 use App\Models\OpspFourDecision;
 use App\Models\OpspConstraintsTracker;
+use App\Models\Flywheel;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -1770,7 +1771,26 @@ Route::post('/api/v1/one-page-strategic-plan/constraints-tracker/add', function 
     ]);
 });
 
+// ref: frontend\src\components\3.flywheel\1.FlyWheelContent\FlyWheelContent.jsx
+Route::get('/api/v1/flywheel', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
 
+    $organization = $request->query('organization');
+    if (!$organization) {
+        return response()->json(['message' => 'Organization parameter is required'], 400);
+    }
+
+    $record = Flywheel::where('organizationName', $organization)->first();
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    return response()->json([
+        'fileLink' => $record->fileLink
+    ]);
+});
 
 // ref: frontend\src\components\4.scoreboard\Scoreboard.jsx
 Route::get('/api/v1/scoreboard/annual-priorities', function (Request $request) use ($API_secure) {

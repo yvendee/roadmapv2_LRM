@@ -1,5 +1,9 @@
 // frontend\src\components\3.flywheel\1.FlyWheelContent\FlyWheelContent.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PDFJSViewer from 'pdfjs-react-viewer';
+import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './FlyWheelContent.css';
 
 
@@ -7,6 +11,33 @@ const FlyWheelContent = () => {
 
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const organization = useLayoutSettingsStore((state) => state.organization);
+
+  useEffect(() => {
+    const fetchFileLink = async () => {
+      const encodedOrg = encodeURIComponent(organization);
+      try {
+        const res = await fetch(`${API_URL}/v1/flywheel?organization=${encodedOrg}`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          credentials: 'include',
+        });
+        const json = await res.json();
+        if (res.ok) {
+          const link = json.fileLink;
+          setPdfUrl(`${API_URL}/storage${link}`);
+          ENABLE_CONSOLE_LOGS && console.log('Fetched Flywheel PDF link:', link);
+        } else {
+          console.error('Error fetching flywheel:', json.message);
+        }
+      } catch (err) {
+        console.error('API fetch error:', err);
+      }
+    };
+
+    fetchFileLink();
+  }, [organization]);
 
   const handleUpload = (e) => {
     e.preventDefault();
@@ -82,9 +113,12 @@ const FlyWheelContent = () => {
           <div className="image-preview">
             <img src={previewURL} alt="Preview" />
           </div>
+        ) : pdfUrl ? (
+          <div style={{ width: '100%', height: '500px' }}>
+            <PDFJSViewer pdfUrl={pdfUrl} scale={1.0} />
+          </div>
         ) : (
           <div className="error-box">
-            {/* <h3>403 | FORBIDDEN</h3> */}
             <h3>NO PREVIEW</h3>
           </div>
         )}
