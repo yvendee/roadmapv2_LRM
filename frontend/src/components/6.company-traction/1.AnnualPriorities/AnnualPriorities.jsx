@@ -111,7 +111,7 @@ const AnnualPriorities = () => {
       });
       const { csrf_token } = await csrfRes.json();
   
-      const response = await fetch(`${API_URL}/api/v1/company-traction/annual-priorities/add`, {
+      const response = await fetch(`${API_URL}/v1/company-traction/annual-priorities/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
