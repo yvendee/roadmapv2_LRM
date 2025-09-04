@@ -4,7 +4,9 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './AnnualPriorities.css';
 
 const AnnualPriorities = () => {
@@ -12,6 +14,7 @@ const AnnualPriorities = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
+  const organization = useLayoutSettingsStore((state) => state.organization);
 
   const loggedUser = useLoginStore((state) => state.user);
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
@@ -59,14 +62,65 @@ const AnnualPriorities = () => {
     }
   }, [setAnnualPriorities]);
 
-  const handleAddDriverClick = () => {
+  // const handleAddDriverClick = () => {
+  //   setLoading(true);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     // ENABLE_CONSOLE_LOGS && console.log('Add Annual Priorities button clicked');
+  //     setShowAddModal(true);
+  //   }, 1000);
+  // };
+
+  const handleAddDriverClick = async () => {
     setLoading(true);
-    setTimeout(() => {
+  
+    setTimeout(async () => {
       setLoading(false);
-      // ENABLE_CONSOLE_LOGS && console.log('Add Annual Priorities button clicked');
-      setShowAddModal(true);
+  
+      ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newDriver, null, 2));
+  
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const org = useLayoutSettingsStore.getState().organization;
+  
+        const response = await fetch(`${API_URL}/api/v1/company-traction/annual-priorities/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organizationName: org,
+            newPriority: newDriver,
+          }),
+        });
+  
+        const result = await response.json();
+        ENABLE_CONSOLE_LOGS && console.log('✅ Insert New Priority Response:', result);
+  
+        if (response.ok && result.status === 'success') {
+          // ✅ Append to local state (Zustand or local)
+          const updated = [...useAnnualPrioritiesStore.getState().annualPriorities, result.data];
+  
+          setAnnualPriorities(updated);
+          localStorage.setItem('annualPrioritiesData', JSON.stringify(updated));
+          setShowAddModal(false);
+          setNewDriver({ description: '', status: 'Tracking' });
+        } else {
+          console.error('❌ Failed to insert new priority:', result.message);
+        }
+  
+      } catch (err) {
+        console.error('❌ Error inserting new priority:', err);
+      }
     }, 1000);
   };
+  
 
   const handleAddNewAnnualPriority = () => {
     ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
@@ -125,66 +179,156 @@ const AnnualPriorities = () => {
 
 
   
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('annualPrioritiesData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Annual Priorities after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setAnnualPriorities(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (Reindexed):', reordered);
+
+  //         setAnnualPriorities(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         // setEditedAnnualPriorities([]);
+  //         setIsEditing(false);
+
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('annualPrioritiesData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing annualPrioritiesData on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (reordered):', reordered);
+  //       setAnnualPriorities(reordered);
+  //       // setEditedAnnualPriorities([]);
+  //       setIsEditing(false);
+
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('annualPrioritiesData');
+
+  //     }
+  //   }, 1000);
+  // };
+
+
+  const handleSaveChanges = () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('annualPrioritiesData');
+  
+      let reordered = [];
   
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
   
-          // 1. Log to console
           ENABLE_CONSOLE_LOGS && console.log('Saved Annual Priorities after Save Changes Button:', parsedData);
   
-          // 2. Update Zustand store
-          setAnnualPriorities(parsedData);
-
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
+          // Reindex
+          reordered = parsedData.map((item, index) => ({
+            ...item,
             id: index + 1,
           }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (Reindexed):', reordered);
-
+  
+          ENABLE_CONSOLE_LOGS && console.log('Saved Annual Priorities (Reindexed):', reordered);
+  
+          // Update Zustand store
           setAnnualPriorities(reordered);
   
-          // 3. Clear edited state (hides buttons)
-          // setEditedAnnualPriorities([]);
-          setIsEditing(false);
-
-  
-          // 4. Remove from localStorage
+          // Remove localStorage
           localStorage.removeItem('annualPrioritiesData');
+  
+          // Clear editing state
+          setIsEditing(false);
+  
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing annualPrioritiesData on save:', err);
+          return;
         }
       } else {
-
-        // No localStorage changes, use current drag order
-
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
+        // No localStorage data, use current order
+        reordered = currentOrder.map((item, index) => ({
+          ...item,
           id: index + 1,
         }));
-
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (reordered):', reordered);
+  
+        ENABLE_CONSOLE_LOGS && console.log('Saved Annual Priorities (Reordered):', reordered);
+  
         setAnnualPriorities(reordered);
-        // setEditedAnnualPriorities([]);
         setIsEditing(false);
-
-
-        // Remove from localStorage
+  
         localStorage.removeItem('annualPrioritiesData');
-
+      }
+  
+      // 🛰️ Push to backend
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const org = useLayoutSettingsStore.getState().organization;
+  
+        const response = await fetch(`${API_URL}/api/v1/company-traction/annual-priorities/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organizationName: org,
+            annualPrioritiesData: reordered,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        ENABLE_CONSOLE_LOGS && console.log('✅ Annual Priorities Update Response:', result);
+  
+        if (!response.ok) {
+          console.error('❌ Failed to update annual priorities:', result.message || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('❌ Error sending annualPrioritiesData to server:', error);
       }
     }, 1000);
   };
+  
+  
   
   
   const handleDischargeChanges = () => {
@@ -203,9 +347,10 @@ const AnnualPriorities = () => {
     // setEditedAnnualPriorities([]);
     setIsEditing(false);
 
-
     // 3. Update Zustand store
-    setAnnualPriorities(initialAnnualPriorities);
+    // setAnnualPriorities(initialAnnualPriorities);
+    const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
+    setAnnualPriorities(currentState); // rollback to store state
 
     // 4. Hide Modal
     setShowConfirmModal(false);

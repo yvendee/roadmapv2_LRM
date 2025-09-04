@@ -34,6 +34,8 @@ use App\Models\ScoreboardCompanyTractionCard;
 use App\Models\ScoreboardProjectProgressCard;
 use App\Models\GccMetric;
 use App\Models\GccRevenueGrowth;
+use App\Models\CompanyTractionAnnualPriority;
+
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -2451,7 +2453,7 @@ Route::get('/api/v1/scoreboard/project-progress', function (Request $request) us
     //     ]);
     // });
 
-// ref:
+// ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
 Route::get('/api/v1/growth-command-center/metrics', function (Request $request) use ($API_secure)  {
 
     if ($API_secure) {
@@ -2483,106 +2485,79 @@ Route::get('/api/v1/growth-command-center/metrics', function (Request $request) 
 });
 
 //
+    // ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
+    // Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
+
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
+
+    //     $organization = $request->query('organization');
+
+    //     // Mock data for multiple organizations
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'year' => '2023',
+    //                 'revenueGrowth' => 5,
+    //                 'cogsGrowth' => 3,
+    //             ],
+    //             [
+    //                 'year' => '2024',
+    //                 'revenueGrowth' => 12,
+    //                 'cogsGrowth' => 10,
+    //             ],
+    //             [
+    //                 'year' => '2025',
+    //                 'revenueGrowth' => 9,
+    //                 'cogsGrowth' => 7,
+    //             ],
+    //         ],
+
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'year' => '2023',
+    //                 'revenueGrowth' => 4,
+    //                 'cogsGrowth' => 2,
+    //             ],
+    //             [
+    //                 'year' => '2024',
+    //                 'revenueGrowth' => 9,
+    //                 'cogsGrowth' => 7,
+    //             ],
+    //             [
+    //                 'year' => '2025',
+    //                 'revenueGrowth' => 11,
+    //                 'cogsGrowth' => 8,
+    //             ],
+    //         ],
+
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'year' => '2023',
+    //                 'revenueGrowth' => 0,
+    //                 'cogsGrowth' => 0,
+    //             ],
+    //             [
+    //                 'year' => '2024',
+    //                 'revenueGrowth' => 0,
+    //                 'cogsGrowth' => 0,
+    //             ],
+    //             [
+    //                 'year' => '2025',
+    //                 'revenueGrowth' => 0,
+    //                 'cogsGrowth' => 0,
+    //             ],
+    //         ],
+    //     ];
+
+    //     return response()->json($data[$organization] ?? []);
+    // });
+
 // ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
-// Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
-
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//         $user = $request->session()->get('user');
-//     }
-
-//     $organization = $request->query('organization');
-
-//     // Mock data for multiple organizations
-//     $data = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             [
-//                 'year' => '2023',
-//                 'revenueGrowth' => 5,
-//                 'cogsGrowth' => 3,
-//             ],
-//             [
-//                 'year' => '2024',
-//                 'revenueGrowth' => 12,
-//                 'cogsGrowth' => 10,
-//             ],
-//             [
-//                 'year' => '2025',
-//                 'revenueGrowth' => 9,
-//                 'cogsGrowth' => 7,
-//             ],
-//         ],
-
-//         'Collins Credit Union' => [
-//             [
-//                 'year' => '2023',
-//                 'revenueGrowth' => 4,
-//                 'cogsGrowth' => 2,
-//             ],
-//             [
-//                 'year' => '2024',
-//                 'revenueGrowth' => 9,
-//                 'cogsGrowth' => 7,
-//             ],
-//             [
-//                 'year' => '2025',
-//                 'revenueGrowth' => 11,
-//                 'cogsGrowth' => 8,
-//             ],
-//         ],
-
-//         'Test Skeleton Loading' => [
-//             [
-//                 'year' => '2023',
-//                 'revenueGrowth' => 0,
-//                 'cogsGrowth' => 0,
-//             ],
-//             [
-//                 'year' => '2024',
-//                 'revenueGrowth' => 0,
-//                 'cogsGrowth' => 0,
-//             ],
-//             [
-//                 'year' => '2025',
-//                 'revenueGrowth' => 0,
-//                 'cogsGrowth' => 0,
-//             ],
-//         ],
-//     ];
-
-//     return response()->json($data[$organization] ?? []);
-// });
-
-// ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
-// Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//     }
-
-//     $validator = Validator::make($request->all(), [
-//         'organization' => 'required|string|max:255',
-//     ]);
-
-//     if ($validator->fails()) {
-//         return response()->json(['message' => 'Invalid or missing organization parameter'], 400);
-//     }
-
-//     $organization = $request->query('organization');
-
-//     $record = GccRevenueGrowth::where('organizationName', $organization)->first();
-
-//     if (!$record) {
-//         return response()->json([]); // return plain empty array
-//     }
-
-//     return response()->json($record->financialGrowthData); // return just the array
-// });
-
-
 Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -2610,8 +2585,95 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
     return response()->json($record->financialGrowthData);
 });
 
+//
+// // ref: frontend\src\components\6.company-traction\companyTraction.jsx
+// Route::get('/api/v1/company-traction/annual-priorities', function (Request $request) use ($API_secure) {
+
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     // Mock data for multiple organizations
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+//                 'status' => '100.00%',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
+//                 'status' => '75.00%',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
+//                 'status' => '60.00%',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
+//                 'status' => '45.00%',
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
+//                 'status' => '85.00%',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'description' => 'Streamline operations and reduce costs while maintaining quality.',
+//                 'status' => '90.00%',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'description' => 'Implement new technologies to drive efficiency and innovation.',
+//                 'status' => '60.00%',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'description' => 'Entering new markets and increasing market share.',
+//                 'status' => '50.00%',
+//             ],
+//         ],
+
+//         'Test Skeleton Loading' => [
+//             [
+//                 'id' => 1,
+//                 'description' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'description' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'description' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'description' => '-',
+//                 'status' => '-',
+//             ],
+//         ],
+//     ];
 
 
+//     // Return data for the requested organization or empty array
+//     return response()->json($data[$organization] ?? []);
+// });
 
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::get('/api/v1/company-traction/annual-priorities', function (Request $request) use ($API_secure) {
@@ -2625,82 +2687,102 @@ Route::get('/api/v1/company-traction/annual-priorities', function (Request $requ
 
     $organization = $request->query('organization');
 
-    // Mock data for multiple organizations
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
-                'status' => '100.00%',
-            ],
-            [
-                'id' => 2,
-                'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
-                'status' => '75.00%',
-            ],
-            [
-                'id' => 3,
-                'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
-                'status' => '60.00%',
-            ],
-            [
-                'id' => 4,
-                'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
-                'status' => '45.00%',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
-                'status' => '85.00%',
-            ],
-            [
-                'id' => 2,
-                'description' => 'Streamline operations and reduce costs while maintaining quality.',
-                'status' => '90.00%',
-            ],
-            [
-                'id' => 3,
-                'description' => 'Implement new technologies to drive efficiency and innovation.',
-                'status' => '60.00%',
-            ],
-            [
-                'id' => 4,
-                'description' => 'Entering new markets and increasing market share.',
-                'status' => '50.00%',
-            ],
-        ],
+    $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'description' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 2,
-                'description' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 3,
-                'description' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 4,
-                'description' => '-',
-                'status' => '-',
-            ],
-        ],
-    ];
+    if (!$record) {
+        return response()->json([]);
+    }
 
-
-    // Return data for the requested organization or empty array
-    return response()->json($data[$organization] ?? []);
+    return response()->json($record->annualPrioritiesData ?? []);
 });
+
+// ref: 
+Route::post('/api/v1/company-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $request->validate([
+        'organizationName' => 'required|string',
+        'annualPrioritiesData' => 'required|array',
+    ]);
+
+    $organization = $request->input('organizationName');
+    $newData = $request->input('annualPrioritiesData');
+
+    $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $record->annualPrioritiesData = $newData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Annual priorities updated successfully',
+        'data' => $record->annualPrioritiesData,
+    ]);
+});
+
+
+// ref:
+Route::post('/api/v1/company-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $request->validate([
+        'organizationName' => 'required|string',
+        'newPriority' => 'required|array',
+        'newPriority.description' => 'required|string',
+        'newPriority.status' => 'required|string',
+    ]);
+
+    $organization = $request->input('organizationName');
+    $newItem = $request->input('newPriority');
+
+    $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $currentData = $record->annualPrioritiesData ?? [];
+
+    // Ensure it's an array
+    if (!is_array($currentData)) {
+        $currentData = [];
+    }
+
+    // Assign next ID
+    $newId = count($currentData) + 1;
+    $newItemWithId = array_merge($newItem, ['id' => $newId]);
+
+    // Append the new item
+    $updatedData = [...$currentData, $newItemWithId];
+
+    // Save
+    $record->annualPrioritiesData = $updatedData;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'New annual priority added',
+        'data' => $newItemWithId,
+    ]);
+});
+
 
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::get('/api/v1/company-traction/traction-data', function (Request $request) use ($API_secure) {
