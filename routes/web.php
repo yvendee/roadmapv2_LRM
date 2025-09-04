@@ -2576,13 +2576,12 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
     $record = GccRevenueGrowth::where('organizationName', $organization)->first();
 
     if (!$record) {
-        return response()->json([$organization => []]);
+        return response()->json([]); // return plain empty array
     }
 
-    return response()->json([
-        $organization => $record->financialGrowthData, 
-    ]);
+    return response()->json($record->financialGrowthData); // return just the array
 });
+
 
 
 
