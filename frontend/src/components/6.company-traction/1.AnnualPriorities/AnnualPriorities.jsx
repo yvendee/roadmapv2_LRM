@@ -19,8 +19,9 @@ const AnnualPriorities = () => {
   const storeAnnualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
   const loggedUser = useLoginStore((state) => state.user);
-  const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
-  const setAnnualPriorities = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
+  // const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
+  const [annualPriorities, setAnnualPriorities] = useState([]);
+  // const setAnnualPriorities = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
   const updateAnnualPrioritiesField = useAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
   const pushAnnualPriorities = useAnnualPrioritiesStore((state) => state.pushAnnualPriorities);
 
