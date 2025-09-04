@@ -336,16 +336,43 @@ Route::post('/api/login', function (Request $request) {
 //     ]);
 // });
 
+Route::post('/api/check-user', function (Request $request) {
+    // ✅ Check if email already exists
+    $existingUser = AuthUser::where('email', $request->input('email'))->first();
 
+    if ($existingUser) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Email already exists',
+        ], 409); // 409 Conflict
+    }
 
-Route::post('/api/create-user', function (Request $request) {
+    // ✅ Validate inputs
+    $validator = Validator::make($request->all(), [
+        'firstName'    => 'required|string',
+        'lastName'     => 'required|string',
+        'email'        => 'required|email',
+        'password'     => 'required|string|min:6',
+        'role'         => 'required|string',
+        'organization' => 'required|string',
+        'group'        => 'required|string',
+        'position'     => 'required|string',
+    ]);
 
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+        ], 422); // Unprocessable Entity
+    }
+
+    // ✅ Validation passed and email is unique — just respond
     return response()->json([
         'status' => 'success',
         'message' => 'User created successfully',
-        'user' => $user,
     ]);
 });
+
 
 Route::post('/api/create-organization', function (Request $request) {
     $validator = Validator::make($request->all(), [
