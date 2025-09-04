@@ -2483,104 +2483,104 @@ Route::get('/api/v1/growth-command-center/metrics', function (Request $request) 
 });
 
 //
-    // // ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
-    // Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
-
-    //     if ($API_secure) {
-    //         if (!$request->session()->get('logged_in')) {
-    //             return response()->json(['message' => 'Unauthorized'], 401);
-    //         }
-    //         $user = $request->session()->get('user');
-    //     }
-
-    //     $organization = $request->query('organization');
-
-    //     // Mock data for multiple organizations
-    //     $data = [
-    //         'Chuck Gulledge Advisors, LLC' => [
-    //             [
-    //                 'year' => '2023',
-    //                 'revenueGrowth' => 5,
-    //                 'cogsGrowth' => 3,
-    //             ],
-    //             [
-    //                 'year' => '2024',
-    //                 'revenueGrowth' => 12,
-    //                 'cogsGrowth' => 10,
-    //             ],
-    //             [
-    //                 'year' => '2025',
-    //                 'revenueGrowth' => 9,
-    //                 'cogsGrowth' => 7,
-    //             ],
-    //         ],
-
-    //         'Collins Credit Union' => [
-    //             [
-    //                 'year' => '2023',
-    //                 'revenueGrowth' => 4,
-    //                 'cogsGrowth' => 2,
-    //             ],
-    //             [
-    //                 'year' => '2024',
-    //                 'revenueGrowth' => 9,
-    //                 'cogsGrowth' => 7,
-    //             ],
-    //             [
-    //                 'year' => '2025',
-    //                 'revenueGrowth' => 11,
-    //                 'cogsGrowth' => 8,
-    //             ],
-    //         ],
-
-    //         'Test Skeleton Loading' => [
-    //             [
-    //                 'year' => '2023',
-    //                 'revenueGrowth' => 0,
-    //                 'cogsGrowth' => 0,
-    //             ],
-    //             [
-    //                 'year' => '2024',
-    //                 'revenueGrowth' => 0,
-    //                 'cogsGrowth' => 0,
-    //             ],
-    //             [
-    //                 'year' => '2025',
-    //                 'revenueGrowth' => 0,
-    //                 'cogsGrowth' => 0,
-    //             ],
-    //         ],
-    //     ];
-
-    //     return response()->json($data[$organization] ?? []);
-    // });
-
 // ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
 Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
+
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-    }
-
-    $validator = Validator::make($request->all(), [
-        'organization' => 'required|string|max:255',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['message' => 'Invalid or missing organization parameter'], 400);
+        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    $record = GccRevenueGrowth::where('organizationName', $organization)->first();
+    // Mock data for multiple organizations
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'year' => '2023',
+                'revenueGrowth' => 5,
+                'cogsGrowth' => 3,
+            ],
+            [
+                'year' => '2024',
+                'revenueGrowth' => 12,
+                'cogsGrowth' => 10,
+            ],
+            [
+                'year' => '2025',
+                'revenueGrowth' => 9,
+                'cogsGrowth' => 7,
+            ],
+        ],
 
-    if (!$record) {
-        return response()->json([]); // return plain empty array
-    }
+        'Collins Credit Union' => [
+            [
+                'year' => '2023',
+                'revenueGrowth' => 4,
+                'cogsGrowth' => 2,
+            ],
+            [
+                'year' => '2024',
+                'revenueGrowth' => 9,
+                'cogsGrowth' => 7,
+            ],
+            [
+                'year' => '2025',
+                'revenueGrowth' => 11,
+                'cogsGrowth' => 8,
+            ],
+        ],
 
-    return response()->json($record->financialGrowthData); // return just the array
+        'Test Skeleton Loading' => [
+            [
+                'year' => '2023',
+                'revenueGrowth' => 0,
+                'cogsGrowth' => 0,
+            ],
+            [
+                'year' => '2024',
+                'revenueGrowth' => 0,
+                'cogsGrowth' => 0,
+            ],
+            [
+                'year' => '2025',
+                'revenueGrowth' => 0,
+                'cogsGrowth' => 0,
+            ],
+        ],
+    ];
+
+    return response()->json($data[$organization] ?? []);
 });
+
+// ref: frontend\src\components\5.growth-command-center\growthCommandCenter.jsx
+// Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validator = Validator::make($request->all(), [
+//         'organization' => 'required|string|max:255',
+//     ]);
+
+//     if ($validator->fails()) {
+//         return response()->json(['message' => 'Invalid or missing organization parameter'], 400);
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $record = GccRevenueGrowth::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json([]); // return plain empty array
+//     }
+
+//     return response()->json($record->financialGrowthData); // return just the array
+// });
 
 
 
