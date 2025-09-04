@@ -29,7 +29,7 @@ const CompanyTraction = () => {
   useEffect(() => {
 
     const stored = localStorage.getItem('annualPrioritiesData');
-    if (stored) {
+    if (!stored) {
       const encodedOrg = encodeURIComponent(organization);
     
       fetch(`${API_URL}/v1/company-traction/annual-priorities?organization=${encodedOrg}`, {
