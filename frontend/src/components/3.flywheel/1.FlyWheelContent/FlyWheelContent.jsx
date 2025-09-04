@@ -11,6 +11,7 @@ const FlyWheelContent = () => {
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
   const organization = useLayoutSettingsStore((state) => state.organization);
 
   useEffect(() => {
@@ -124,7 +125,14 @@ const FlyWheelContent = () => {
               onChange={handleFileChange}
               required
             />
-            <button type="submit">Upload</button>
+            {/* <button type="submit">Upload</button> */}
+            <button type="submit" disabled={loading}>
+              {loading ? (
+                <span className="loader"></span>
+              ) : (
+                'Upload'
+              )}
+            </button>
           </form>
 
         </div>
