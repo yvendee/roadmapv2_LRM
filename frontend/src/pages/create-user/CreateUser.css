@@ -149,4 +149,41 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+
+
+.create-user-feedback {
+    margin-top: 0.75rem; /* smaller gap */
+    text-align: center;
+    font-weight: 600;
+}
+
+
+.custom-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 280px;
+    max-width: 80%;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    opacity: 0.95;
+    user-select: none;
+}
+  
+.custom-notification.success {
+    background-color: #10b981; /* green-500 */
+}
+  
+.custom-notification.error {
+    background-color: #ef4444; /* red-500 */
+}
+  
   

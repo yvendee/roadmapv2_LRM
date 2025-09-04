@@ -29,6 +29,18 @@ const CreateUser = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const alphaRegex = /^[A-Za-z]+$/;
 
+
+  // Auto-hide feedback notification after 4 seconds
+  useEffect(() => {
+    if (feedback.message) {
+      const timer = setTimeout(() => {
+        setFeedback({ type: '', message: '' });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [feedback]);
+  
+
   const resetForm = () => {
     setFirstName('');
     setLastName('');
@@ -193,9 +205,6 @@ const CreateUser = () => {
     }
   };
   
-  
-  
-  
 
   return (
     <div className="create-user-container">
@@ -305,7 +314,7 @@ const CreateUser = () => {
           </div>
         ))}
 
-        <div className="create-user-buttons">
+        {/* <div className="create-user-buttons">
         <button
             className="create-user-btn create-user-btn-blue"
             onClick={handleCreate}
@@ -320,8 +329,36 @@ const CreateUser = () => {
         >
             Back to Login
         </button>
-        </div>
+        </div> */}
 
+
+        {/* {feedback.message && (
+          <div
+            className={`create-user-feedback ${
+              feedback.type === 'success' ? 'success' : 'error'
+            }`}
+          >
+            {feedback.message}
+          </div>
+        )} */}
+
+
+        <div className="create-user-buttons">
+          <button
+            className="create-user-btn create-user-btn-blue"
+            onClick={handleCreate}
+            disabled={loading}
+          >
+            Create
+          </button>
+          <button
+            className="create-user-btn create-user-btn-red"
+            onClick={() => navigate('/')}
+            disabled={loading}
+          >
+            Back to Login
+          </button>
+        </div>
 
         {feedback.message && (
           <div
@@ -333,6 +370,18 @@ const CreateUser = () => {
           </div>
         )}
       </div>
+
+      {/* Custom Centered Notification */}
+      {feedback.message && (
+        <div
+          className={`custom-notification ${
+            feedback.type === 'success' ? 'success' : 'error'
+          }`}
+        >
+          {feedback.message}
+        </div>
+      )}
+      
     </div>
   );
 };
