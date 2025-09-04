@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GccFinancialGrowth extends Model
+class GccRevenueGrowth extends Model
 {
     protected $table = 'gcc_financial_growth';
 
