@@ -16,6 +16,8 @@ const AnnualPriorities = () => {
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const organization = useLayoutSettingsStore((state) => state.organization);
 
+  const storeAnnualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
+
   const loggedUser = useLoginStore((state) => state.user);
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
   const setAnnualPriorities = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
@@ -43,6 +45,13 @@ const AnnualPriorities = () => {
   //   status: 'Tracking',
   // });
   
+
+  // Sync initial and store changes:
+  useEffect(() => {
+    setCurrentOrder(annualPriorities);
+  }, [annualPriorities]);
+
+
   // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('annualPrioritiesData');
@@ -62,6 +71,12 @@ const AnnualPriorities = () => {
       } catch (err) {
         ENABLE_CONSOLE_LOGS && console.error('Failed to parse annualPrioritiesData from localStorage:', err);
       }
+    }
+    else {
+      setAnnualPriorities(storeAnnualPriorities); // fallback to store if no localStorage
+          // ✅ fallback if nothing in localStorage
+
+      setCurrentOrder(storeAnnualPriorities);
     }
   }, [setAnnualPriorities]);
 
@@ -363,10 +378,6 @@ const AnnualPriorities = () => {
   };
 
 
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(annualPriorities);
-  }, [annualPriorities]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {

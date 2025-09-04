@@ -27,35 +27,39 @@ const CompanyTraction = () => {
 
   // Fetch Annual-Priorities
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/company-traction/annual-priorities?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          const annualprioritiesArr = json;
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Annual-Priorities data:', annualprioritiesArr);
-          if (Array.isArray(annualprioritiesArr)) {
-            loadAnnualPrioritiesFromAPI(annualprioritiesArr);
-          } else {
-            console.error(`⚠️ No Annual-Priorities found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+
+    const stored = localStorage.getItem('annualPrioritiesData');
+    if (stored) {
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/company-traction/annual-priorities?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            const annualprioritiesArr = json;
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Annual-Priorities data:', annualprioritiesArr);
+            if (Array.isArray(annualprioritiesArr)) {
+              loadAnnualPrioritiesFromAPI(annualprioritiesArr);
+            } else {
+              console.error(`⚠️ No Annual-Priorities found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization]);
   
 
