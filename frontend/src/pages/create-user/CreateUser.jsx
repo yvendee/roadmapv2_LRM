@@ -211,171 +211,174 @@ const CreateUser = () => {
   
 
   return (
-    <div className="create-user-container">
-      <h2 className="create-user-title">Create User</h2>
+    <>
 
-      <div className="create-user-form">
-        {/* First Name */}
-        <div className="create-user-floating-input">
-          <input
-            id="first-name"
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-            className="create-user-floating-input-field"
-          />
-          <label htmlFor="first-name" className={firstName ? 'filled' : ''}>
-            First Name
-          </label>
-          {errors.firstName && <p className="create-user-error">{errors.firstName}</p>}
-        </div>
+      <div className="create-user-container">
+            <h2 className="create-user-title">Create User</h2>
 
-        {/* Last Name */}
-        <div className="create-user-floating-input">
-          <input
-            id="last-name"
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-            className="create-user-floating-input-field"
-          />
-          <label htmlFor="last-name" className={lastName ? 'filled' : ''}>
-            Last Name
-          </label>
-          {errors.lastName && <p className="create-user-error">{errors.lastName}</p>}
-        </div>
+            <div className="create-user-form">
+              {/* First Name */}
+              <div className="create-user-floating-input">
+                <input
+                  id="first-name"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  className="create-user-floating-input-field"
+                />
+                <label htmlFor="first-name" className={firstName ? 'filled' : ''}>
+                  First Name
+                </label>
+                {errors.firstName && <p className="create-user-error">{errors.firstName}</p>}
+              </div>
 
-        {/* Email */}
-        <div className="create-user-floating-input">
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="create-user-floating-input-field"
-          />
-          <label htmlFor="email" className={email ? 'filled' : ''}>
-            Email
-          </label>
-          {errors.email && <p className="create-user-error">{errors.email}</p>}
-        </div>
+              {/* Last Name */}
+              <div className="create-user-floating-input">
+                <input
+                  id="last-name"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  className="create-user-floating-input-field"
+                />
+                <label htmlFor="last-name" className={lastName ? 'filled' : ''}>
+                  Last Name
+                </label>
+                {errors.lastName && <p className="create-user-error">{errors.lastName}</p>}
+              </div>
 
-        {/* Password */}
-        <div className="create-user-floating-input">
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="create-user-floating-input-field"
-          />
-          <label htmlFor="password" className={password ? 'filled' : ''}>
-            Password
-          </label>
-          {errors.password && <p className="create-user-error">{errors.password}</p>}
-        </div>
+              {/* Email */}
+              <div className="create-user-floating-input">
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="create-user-floating-input-field"
+                />
+                <label htmlFor="email" className={email ? 'filled' : ''}>
+                  Email
+                </label>
+                {errors.email && <p className="create-user-error">{errors.email}</p>}
+              </div>
 
-        {/* Confirm Password */}
-        <div className="create-user-floating-input">
-          <input
-            id="confirm-password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="create-user-floating-input-field"
-          />
-          <label htmlFor="confirm-password" className={confirmPassword ? 'filled' : ''}>
-            Confirm Password
-          </label>
-          {errors.confirmPassword && <p className="create-user-error">{errors.confirmPassword}</p>}
-        </div>
+              {/* Password */}
+              <div className="create-user-floating-input">
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="create-user-floating-input-field"
+                />
+                <label htmlFor="password" className={password ? 'filled' : ''}>
+                  Password
+                </label>
+                {errors.password && <p className="create-user-error">{errors.password}</p>}
+              </div>
 
-        {/* Dropdowns */}
-        {[
-        //   { label: 'Organization', value: organization, set: setOrganization, options: ['Chuck Gulledge Advisors, LLC', 'Collins Credit Union'], id: 'organization' },
-          { label: 'Organization', value: organization, set: setOrganization, options: organizationOptions, id: 'organization' },  
-          { label: 'Role', value: role, set: setRole, options: ['User', 'Testuser', 'Superadmin'], id: 'role' },
-          { label: 'Position', value: position, set: setPosition, options: ['Admin', 'CEO', 'Superadmin'], id: 'position' },
-          { label: 'Group', value: group, set: setGroup, options: ['Executive', 'Operations'], id: 'group' },
-        ].map(({ label, value, set, options, id }) => (
-          <div key={id} className="create-user-select-wrapper">
-            <select
-              className="create-user-select"
-              value={value}
-              onChange={(e) => set(e.target.value)}
-            >
-              <option value="">{`Select ${label}`}</option>
-              {options.map((opt) => (
-                <option key={opt} value={opt}>{opt}</option>
+              {/* Confirm Password */}
+              <div className="create-user-floating-input">
+                <input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="create-user-floating-input-field"
+                />
+                <label htmlFor="confirm-password" className={confirmPassword ? 'filled' : ''}>
+                  Confirm Password
+                </label>
+                {errors.confirmPassword && <p className="create-user-error">{errors.confirmPassword}</p>}
+              </div>
+
+              {/* Dropdowns */}
+              {[
+              //   { label: 'Organization', value: organization, set: setOrganization, options: ['Chuck Gulledge Advisors, LLC', 'Collins Credit Union'], id: 'organization' },
+                { label: 'Organization', value: organization, set: setOrganization, options: organizationOptions, id: 'organization' },  
+                { label: 'Role', value: role, set: setRole, options: ['User', 'Testuser', 'Superadmin'], id: 'role' },
+                { label: 'Position', value: position, set: setPosition, options: ['Admin', 'CEO', 'Superadmin'], id: 'position' },
+                { label: 'Group', value: group, set: setGroup, options: ['Executive', 'Operations'], id: 'group' },
+              ].map(({ label, value, set, options, id }) => (
+                <div key={id} className="create-user-select-wrapper">
+                  <select
+                    className="create-user-select"
+                    value={value}
+                    onChange={(e) => set(e.target.value)}
+                  >
+                    <option value="">{`Select ${label}`}</option>
+                    {options.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                  {errors[id] && <p className="create-user-error">{errors[id]}</p>}
+                </div>
               ))}
-            </select>
-            {errors[id] && <p className="create-user-error">{errors[id]}</p>}
-          </div>
-        ))}
 
-        {/* <div className="create-user-buttons">
-        <button
-            className="create-user-btn create-user-btn-blue"
-            onClick={handleCreate}
-            disabled={loading}
-        >
-            Create
-        </button>
-        <button
-            className="create-user-btn create-user-btn-red"
-            onClick={() => navigate('/')}
-            disabled={loading}
-        >
-            Back to Login
-        </button>
-        </div> */}
+              {/* <div className="create-user-buttons">
+              <button
+                  className="create-user-btn create-user-btn-blue"
+                  onClick={handleCreate}
+                  disabled={loading}
+              >
+                  Create
+              </button>
+              <button
+                  className="create-user-btn create-user-btn-red"
+                  onClick={() => navigate('/')}
+                  disabled={loading}
+              >
+                  Back to Login
+              </button>
+              </div> */}
 
 
-        {/* {feedback.message && (
-          <div
-            className={`create-user-feedback ${
-              feedback.type === 'success' ? 'success' : 'error'
-            }`}
-          >
-            {feedback.message}
-          </div>
-        )} */}
+              {/* {feedback.message && (
+                <div
+                  className={`create-user-feedback ${
+                    feedback.type === 'success' ? 'success' : 'error'
+                  }`}
+                >
+                  {feedback.message}
+                </div>
+              )} */}
 
 
-        <div className="create-user-buttons">
-          <button
-            className="create-user-btn create-user-btn-blue"
-            onClick={handleCreate}
-            disabled={loading}
-          >
-            Create
-          </button>
-          <button
-            className="create-user-btn create-user-btn-red"
-            onClick={() => navigate('/')}
-            disabled={loading}
-          >
-            Back to Login
-          </button>
-        </div>
+              <div className="create-user-buttons">
+                <button
+                  className="create-user-btn create-user-btn-blue"
+                  onClick={handleCreate}
+                  disabled={loading}
+                >
+                  Create
+                </button>
+                <button
+                  className="create-user-btn create-user-btn-red"
+                  onClick={() => navigate('/')}
+                  disabled={loading}
+                >
+                  Back to Login
+                </button>
+              </div>
 
-        {feedback.message && (
-          <div
-            className={`create-user-feedback ${
-              feedback.type === 'success' ? 'success' : 'error'
-            }`}
-          >
-            {feedback.message}
-          </div>
-        )}
+              {feedback.message && (
+                <div
+                  className={`create-user-feedback ${
+                    feedback.type === 'success' ? 'success' : 'error'
+                  }`}
+                >
+                  {feedback.message}
+                </div>
+              )}
+            </div>
       </div>
 
-      {/* Custom Toast Notification */}
+      {/* ✅ Custom Toast Notification */}
       {toast && (
         <Toast
           message={toast.message}
@@ -383,8 +386,9 @@ const CreateUser = () => {
           onClose={() => setToast(null)}
         />
       )}
+    
+    </>
 
-    </div>
   );
 };
 
