@@ -87,7 +87,7 @@ const AnnualPriorities = () => {
   
         const org = useLayoutSettingsStore.getState().organization;
   
-        const response = await fetch(`${API_URL}/api/v1/company-traction/annual-priorities/add`, {
+        const response = await fetch(`${API_URL}/v1/company-traction/annual-priorities/add`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -302,7 +302,7 @@ const AnnualPriorities = () => {
   
         const org = useLayoutSettingsStore.getState().organization;
   
-        const response = await fetch(`${API_URL}/api/v1/company-traction/annual-priorities/update`, {
+        const response = await fetch(`${API_URL}/v1/company-traction/annual-priorities/update`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
