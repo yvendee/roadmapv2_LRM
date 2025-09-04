@@ -2563,7 +2563,6 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
         }
     }
 
-    // Validate query parameter
     $validator = Validator::make($request->all(), [
         'organization' => 'required|string|max:255',
     ]);
@@ -2581,9 +2580,10 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
     }
 
     return response()->json([
-        $organization => json_decode($record->financialGrowthData, true),
+        $organization => $record->financialGrowthData, 
     ]);
 });
+
 
 
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
