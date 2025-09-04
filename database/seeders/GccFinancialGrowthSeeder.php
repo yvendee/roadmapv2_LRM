@@ -13,7 +13,7 @@ class GccFinancialGrowthSeeder extends Seeder
         DB::table('gcc_financial_growth')->insert([
             'u_id' => Str::uuid(),
             'organizationName' => 'Chuck Gulledge Advisors, LLC',
-            'revenueGrowthChartData' => json_encode([
+            'financialGrowthData' => json_encode([
                 ['year' => '2023', 'revenueGrowth' => 5, 'cogsGrowth' => 3],
                 ['year' => '2024', 'revenueGrowth' => 12, 'cogsGrowth' => 10],
                 ['year' => '2025', 'revenueGrowth' => 9, 'cogsGrowth' => 7],
