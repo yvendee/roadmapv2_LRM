@@ -170,25 +170,18 @@ const AnnualPriorities = () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    updateAnnualPrioritiesField(id, field, value);
+    // updateAnnualPrioritiesField(id, field, value);
 
     // Update local state for Save/Discharge buttons
     setIsEditing(true);
-
-    // setEditedAnnualPriorities((prev) => {
-    //   const existing = prev.find((d) => d.id === id);
-    //   if (existing) {
-    //     return prev.map((d) =>
-    //       d.id === id ? { ...d, [field]: value } : d
-    //     );
-    //   }
-    //   return [...prev, { id, [field]: value }];
-    // });
 
     // Update localStorage
     const updatedDrivers = annualPriorities.map((driver) =>
       driver.id === id ? { ...driver, [field]: value } : driver
     );
+
+    setAnnualPriorities(updatedDrivers);
+
     localStorage.setItem('annualPrioritiesData', JSON.stringify(updatedDrivers));
 
     setEditingCell({ id: null, field: null });
