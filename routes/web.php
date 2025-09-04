@@ -2451,7 +2451,15 @@ Route::get('/api/v1/scoreboard/project-progress', function (Request $request) us
     // });
 
 // ref:
-Route::get('/api/v1/growth-command-center/metrics', function (Request $request) {
+Route::get('/api/v1/growth-command-center/metrics', function (Request $request) use ($API_secure)  {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
     $validator = Validator::make($request->all(), [
         'organization' => 'required|string|max:255',
     ]);
