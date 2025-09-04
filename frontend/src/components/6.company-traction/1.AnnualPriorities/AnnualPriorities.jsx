@@ -65,90 +65,89 @@ const AnnualPriorities = () => {
     }
   }, [setAnnualPriorities]);
 
-  // const handleAddDriverClick = () => {
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     // ENABLE_CONSOLE_LOGS && console.log('Add Annual Priorities button clicked');
-  //     setShowAddModal(true);
-  //   }, 1000);
-  // };
-
-  const handleAddDriverClick = async () => {
+  const handleAddDriverClick = () => {
     setLoading(true);
-  
-    setTimeout(async () => {
+    setTimeout(() => {
       setLoading(false);
-  
-      ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
-  
-      try {
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-          credentials: 'include',
-        });
-        const { csrf_token } = await csrfRes.json();
-  
-        const org = useLayoutSettingsStore.getState().organization;
-  
-        const response = await fetch(`${API_URL}/v1/company-traction/annual-priorities/add`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            organizationName: org,
-            newPriority: newAnnualPriority,
-          }),
-        });
-  
-        const result = await response.json();
-        ENABLE_CONSOLE_LOGS && console.log('✅ Insert New Priority Response:', result);
-  
-        if (response.ok && result.status === 'success') {
-          // ✅ Append to local state (Zustand or local)
-          const updated = [...useAnnualPrioritiesStore.getState().annualPriorities, result.data];
-  
-          setAnnualPriorities(updated);
-          localStorage.setItem('annualPrioritiesData', JSON.stringify(updated));
-          setShowAddModal(false);
-          setNewAnnualPriority({ description: '', status: 'Tracking' });
-        } else {
-          console.error('❌ Failed to insert new priority:', result.message);
-        }
-  
-      } catch (err) {
-        console.error('❌ Error inserting new priority:', err);
-      }
+      // ENABLE_CONSOLE_LOGS && console.log('Add Annual Priorities button clicked');
+      setShowAddModal(true);
     }, 1000);
   };
-  
 
-  const handleAddNewAnnualPriority = () => {
+
+  // const handleAddNewAnnualPriority = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
+
+  //   // 2. Hide Save / Discharge
+  //   // setEditedAnnualPriorities([]);
+  //   setIsEditing(false);
+
+  
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('annualPrioritiesData');
+  
+  //   // 4. Push to Zustand store
+  //   pushAnnualPriorities(newAnnualPriority);
+  
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
+  
+  //   // Close modal
+  //   setShowAddModal(false);
+  
+  //   // Reset form input
+  //   setNewAnnualPriority({ description: '', status: 'Tracking' });
+  // };
+
+
+  const handleAddNewAnnualPriority = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
-
-    // 2. Hide Save / Discharge
-    // setEditedAnnualPriorities([]);
-    setIsEditing(false);
-
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('annualPrioritiesData');
+    const org = useLayoutSettingsStore.getState().organization;
   
-    // 4. Push to Zustand store
-    pushAnnualPriorities(newAnnualPriority);
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+      const response = await fetch(`${API_URL}/api/v1/company-traction/annual-priorities/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: org,
+          newPriority: newAnnualPriority,
+        }),
+      });
   
-    // Close modal
-    setShowAddModal(false);
+      const result = await response.json();
+      ENABLE_CONSOLE_LOGS && console.log('📬 Insert API Response:', result);
   
-    // Reset form input
-    setNewAnnualPriority({ description: '', status: 'Tracking' });
+      if (!response.ok || result.status !== 'success') {
+        console.error('❌ Failed to insert new annual priority:', result.message);
+        return;
+      }
+  
+      const itemWithId = result.data;
+  
+      // ✅ Push to Zustand store
+      pushAnnualPriorities(itemWithId);
+  
+      // 🔄 Clean up UI
+      setIsEditing(false);
+      localStorage.removeItem('annualPrioritiesData');
+      setShowAddModal(false);
+      setNewAnnualPriority({ description: '', status: 'Tracking' });
+  
+    } catch (err) {
+      console.error('❌ Error inserting annual priority:', err);
+    }
   };
-
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
