@@ -50,6 +50,8 @@ const FlyWheelContent = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return;
+
+    setLoading(true); // show loader
   
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -80,6 +82,10 @@ const FlyWheelContent = () => {
       }
     } catch (err) {
       console.error('❌ Upload error:', err);
+    } finally {
+      setTimeout(() => {
+        setLoading(false); // stop loader after 2s
+      }, 2000);
     }
   };
   
@@ -135,7 +141,7 @@ const FlyWheelContent = () => {
             </button> */}
             <div
               role="button"
-              onClick={!loading ? handleSubmit : undefined} // Replace `handleSubmit` with your actual function
+              onClick={!loading ? handleUpload : undefined} 
               className={`px-4 py-2 rounded text-white text-center cursor-pointer transition duration-200 
                 ${loading ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
             >
