@@ -1,5 +1,5 @@
 // frontend\src\pages\create-user\CreateUser.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
 import API_URL from '../../configs/config';
@@ -381,7 +381,7 @@ const CreateUser = () => {
           {feedback.message}
         </div>
       )}
-      
+
     </div>
   );
 };
