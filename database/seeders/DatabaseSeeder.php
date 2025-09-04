@@ -34,9 +34,10 @@ class DatabaseSeeder extends Seeder
         // $this->call(OpspFourDecisionsSeeder::class);
         // $this->call(OpspConstraintsTrackerSeeder::class);
         // $this->call(FlywheelSeeder::class);
-        $this->call(ScoreboardAnnualprioritiesSeeder::class);
-        $this->call(ScoreboardCompanyTractionCardSeeder::class);
-        $this->call(ScoreboardProjectProgressCardSeeder::class);
+        // $this->call(ScoreboardAnnualprioritiesSeeder::class);
+        // $this->call(ScoreboardCompanyTractionCardSeeder::class);
+        // $this->call(ScoreboardProjectProgressCardSeeder::class);
+        $this->call(GccMetricsSeeder::class);
         
         
         
