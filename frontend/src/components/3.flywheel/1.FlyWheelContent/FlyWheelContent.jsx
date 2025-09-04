@@ -126,13 +126,26 @@ const FlyWheelContent = () => {
               required
             />
             {/* <button type="submit">Upload</button> */}
-            <button type="submit" disabled={loading}>
+            {/* <button type="submit" disabled={loading}>
               {loading ? (
                 <span className="loader"></span>
               ) : (
                 'Upload'
               )}
-            </button>
+            </button> */}
+            <div
+              role="button"
+              onClick={!loading ? handleSubmit : undefined} // Replace `handleSubmit` with your actual function
+              className={`px-4 py-2 rounded text-white text-center cursor-pointer transition duration-200 
+                ${loading ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+            >
+              {loading ? (
+                <span className="loader"></span> // You can style `.loader` in your CSS
+              ) : (
+                'Upload'
+              )}
+            </div>
+
           </form>
 
         </div>
