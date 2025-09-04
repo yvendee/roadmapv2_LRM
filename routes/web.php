@@ -33,7 +33,7 @@ use App\Models\ScoreboardAnnualpriority;
 use App\Models\ScoreboardCompanyTractionCard;
 use App\Models\ScoreboardProjectProgressCard;
 use App\Models\GccMetric;
-use App\Models\GccRevenueGrowthChart;
+use App\Models\GccRevenueGrowth;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -2574,7 +2574,7 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
 
     $organization = $request->query('organization');
 
-    $record = GccRevenueGrowthChart::where('organizationName', $organization)->first();
+    $record = GccFinancialGrowth::where('organizationName', $organization)->first();
 
     if (!$record) {
         return response()->json([$organization => []]);
