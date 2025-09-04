@@ -13,7 +13,7 @@ const Toast = ({ message, type = 'success', onClose }) => {
     return (
       <div
         style={{
-          position: 'absolute',
+          position: 'fixed',
           top: '20px',
           left: '50%',
           transform: 'translateX(-50%)',
