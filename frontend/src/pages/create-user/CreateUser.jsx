@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
+import Toast from './Toast';
 import './CreateUser.css';
 
 const CreateUser = () => {
@@ -20,6 +21,7 @@ const CreateUser = () => {
   const [group, setGroup] = useState('');
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   const { options: organizationOptions } = useCompanyFilterStore();
 
@@ -30,16 +32,15 @@ const CreateUser = () => {
   const alphaRegex = /^[A-Za-z]+$/;
 
 
-  // Auto-hide feedback notification after 4 seconds
+  // Auto-hide toast after 4 seconds
   useEffect(() => {
-    if (feedback.message) {
+    if (toast) {
       const timer = setTimeout(() => {
-        setFeedback({ type: '', message: '' });
+        setToast(null);
       }, 4000);
       return () => clearTimeout(timer);
     }
-  }, [feedback]);
-  
+  }, [toast]);
 
   const resetForm = () => {
     setFirstName('');
@@ -190,15 +191,18 @@ const CreateUser = () => {
       const data = await response.json();
   
       if (response.ok && data.status === 'success') {
+        setToast({ message: 'User has been created!', type: 'success' });
         setFeedback({ type: 'success', message: 'User has been created!' });
         resetForm(); // clear inputs
       } else {
         const errMsg = data.message || 'Failed to create user.';
+        setToast({ message: errMsg, type: 'error' });
         setFeedback({ type: 'error', message: errMsg });
         if (data.errors) setErrors(data.errors);
       }
     } catch (error) {
       console.error('Create user error:', error);
+      setToast({ message: 'Server error. Please try again later.', type: 'error' });
       setFeedback({ type: 'error', message: 'Server error. Please try again later.' });
     } finally {
       setLoading(false); // 🔓 re-enable buttons
@@ -371,15 +375,13 @@ const CreateUser = () => {
         )}
       </div>
 
-      {/* Custom Centered Notification */}
-      {feedback.message && (
-        <div
-          className={`custom-notification ${
-            feedback.type === 'success' ? 'success' : 'error'
-          }`}
-        >
-          {feedback.message}
-        </div>
+      {/* Custom Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
 
     </div>
