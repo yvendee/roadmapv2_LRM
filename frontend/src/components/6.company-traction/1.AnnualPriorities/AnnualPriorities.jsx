@@ -38,7 +38,10 @@ const AnnualPriorities = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  
+  // const [newDriver, setNewDriver] = useState({
+  //   description: '',
+  //   status: 'Tracking',
+  // });
   
   // Load from localStorage if available
   useEffect(() => {
@@ -77,7 +80,7 @@ const AnnualPriorities = () => {
     setTimeout(async () => {
       setLoading(false);
   
-      ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newDriver, null, 2));
+      ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
   
       try {
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -96,7 +99,7 @@ const AnnualPriorities = () => {
           credentials: 'include',
           body: JSON.stringify({
             organizationName: org,
-            newPriority: newDriver,
+            newPriority: newAnnualPriority,
           }),
         });
   
@@ -110,7 +113,7 @@ const AnnualPriorities = () => {
           setAnnualPriorities(updated);
           localStorage.setItem('annualPrioritiesData', JSON.stringify(updated));
           setShowAddModal(false);
-          setNewDriver({ description: '', status: 'Tracking' });
+          setNewAnnualPriority({ description: '', status: 'Tracking' });
         } else {
           console.error('❌ Failed to insert new priority:', result.message);
         }
