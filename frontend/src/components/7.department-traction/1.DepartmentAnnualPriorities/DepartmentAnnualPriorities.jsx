@@ -55,7 +55,7 @@ const DepartmentAnnualPriorities = () => {
     else {
       // Store the initial state (only once)
       const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
-      useDepartmentAnnualPrioritiesStore.getState().baselineAnnualPriorities(currentData)
+      useDepartmentAnnualPrioritiesStore.getState().setBaselineAnnualPriorities(currentData)
     }
   }, [setDepartmentAnnualPriorities]);
 
