@@ -10,7 +10,7 @@ class CreateDepartmentTractionAnnualPrioritiesTable extends Migration
     {
         Schema::create('department_traction_annual_priorities', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('u_id');
+            $table->string('u_id');
             $table->string('organizationName');
             $table->json('annualPrioritiesData')->nullable(); // JSON column
             $table->string('statusFlag')->nullable();
