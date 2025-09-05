@@ -38,8 +38,13 @@ const DepartmentAnnualPriorities = () => {
   const [isEditing, setIsEditing] = useState(false);
 
 
-  
-  
+  const departmentAnnualPrioritiesFromStore = useDepartmentAnnualPrioritiesStore(state => state.departmentAnnualPriorities);
+
+  useEffect(() => {
+    setDepartmentAnnualPriorities(departmentAnnualPrioritiesFromStore);
+  }, [departmentAnnualPrioritiesFromStore]);
+
+    
   // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
