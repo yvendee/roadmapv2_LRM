@@ -38,47 +38,21 @@ const DepartmentAnnualPriorities = () => {
   
   
   // Load from localStorage if available
-  // useEffect(() => {
-  //   const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
-  //   if (storedData) {
-  //     try {
-  //       const parsedData = JSON.parse(storedData);
-  //       setDepartmentAnnualPriorities(parsedData);
-
-  //       // ✅ Treat this as unsaved state, trigger the buttons
-  //       setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
-
-  //     } catch (err) {
-  //       ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
-  //     }
-  //   }
-  // }, [setDepartmentAnnualPriorities]);
-
-
-  
-
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
-    const store = useDepartmentAnnualPrioritiesStore.getState();
-  
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
+
+        // ✅ Treat this as unsaved state, trigger the buttons
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
+
       } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse localStorage:', err);
-      }
-    } else {
-      // ✅ Store the baseline only if not already set (e.g. avoid overwriting after edits)
-      if (!store.baselineAnnualPriorities || store.baselineAnnualPriorities.length === 0) {
-        store.setBaselineAnnualPriorities(store.departmentAnnualPriorities);
-        ENABLE_CONSOLE_LOGS && console.log('📌 Baseline set:', store.departmentAnnualPriorities);
+        ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
     }
-  }, []);
-  
-
+  }, [setDepartmentAnnualPriorities]);
 
   const handleAddDriverClick = () => {
     setLoading(true);
@@ -88,7 +62,6 @@ const DepartmentAnnualPriorities = () => {
       setShowAddModal(true);
     }, 1000);
   };
-
 
   // const handleAddNewAnnualPriority = () => {
   //   ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
@@ -113,53 +86,53 @@ const DepartmentAnnualPriorities = () => {
   // };
 
 
-  const handleAddNewAnnualPriority = async () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
+const handleAddNewAnnualPriority = async () => {
+  ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
 
-    try {
-      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-        credentials: 'include',
-      });
-      const { csrf_token } = await csrfRes.json();
+  try {
+    const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+      credentials: 'include',
+    });
+    const { csrf_token } = await csrfRes.json();
 
-      const org = useLayoutSettingsStore.getState().organization;
+    const org = useLayoutSettingsStore.getState().organization;
 
-      const response = await fetch(`${API_URL}/v1/department-traction/annual-priorities/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf_token,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          organizationName: org,
-          newAnnualPriority,
-        }),
-      });
+    const response = await fetch(`${API_URL}/v1/department-traction/annual-priorities/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrf_token,
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        organizationName: org,
+        newAnnualPriority,
+      }),
+    });
 
-      const result = await response.json();
-      ENABLE_CONSOLE_LOGS && console.log('📬 Insert API Response:', result);
+    const result = await response.json();
+    ENABLE_CONSOLE_LOGS && console.log('📬 Insert API Response:', result);
 
-      if (!response.ok || result.status !== 'success') {
-        console.error('❌ Failed to insert new department annual priority:', result.message);
-        return;
-      }
-
-      const itemWithId = result.data;
-
-      // ✅ Push to Zustand store
-      pushDepartmentAnnualPriorities(itemWithId);
-
-      // 🔄 Clean up UI
-      setEditedAnnualPriorities([]);
-      localStorage.removeItem('departmentAnnualPrioritiesData');
-      setShowAddModal(false);
-      setNewAnnualPriority({ description: '', status: '00.00%' });
-
-    } catch (err) {
-      console.error('❌ Error inserting department annual priority:', err);
+    if (!response.ok || result.status !== 'success') {
+      console.error('❌ Failed to insert new department annual priority:', result.message);
+      return;
     }
-  };
+
+    const itemWithId = result.data;
+
+    // ✅ Push to Zustand store
+    pushDepartmentAnnualPriorities(itemWithId);
+
+    // 🔄 Clean up UI
+    setEditedAnnualPriorities([]);
+    localStorage.removeItem('departmentAnnualPrioritiesData');
+    setShowAddModal(false);
+    setNewAnnualPriority({ description: '', status: '00.00%' });
+
+  } catch (err) {
+    console.error('❌ Error inserting department annual priority:', err);
+  }
+};
 
   
 
@@ -170,7 +143,7 @@ const DepartmentAnnualPriorities = () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    // updateAnnualPrioritiesField(id, field, value);
+    updateAnnualPrioritiesField(id, field, value);
 
     // Update local state for Save/Discharge buttons
     setEditedAnnualPriorities((prev) => {
@@ -278,39 +251,25 @@ const DepartmentAnnualPriorities = () => {
     }, 1000);
   };
 
-  // const confirmDischargeChanges = () => {
-  //   // 1. Remove from localStorage
-  //   localStorage.removeItem('departmentAnnualPrioritiesData');
-
-  //   // 2. Clear edited state (hides buttons)
-  //   setEditedAnnualPriorities([]);
-
-  //   // 3. Update Zustand store
-  //   setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
-
-  //   // 4. Hide Modal
-  //   setShowConfirmModal(false);
-  // };
-
-  // const cancelDischargeChanges = () => {
-  //   setShowConfirmModal(false);
-  // };
-
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
     localStorage.removeItem('departmentAnnualPrioritiesData');
-  
+
     // 2. Clear edited state (hides buttons)
     setEditedAnnualPriorities([]);
-  
-    // 3. Reset Zustand store state to baseline (not hardcoded initial)
-    const { baselineAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
-    setDepartmentAnnualPriorities(baselineAnnualPriorities);
-  
+
+    // 3. Update Zustand store
+    setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
-  
+
+  const cancelDischargeChanges = () => {
+    setShowConfirmModal(false);
+  };
+
+
   // Sync initial and store changes:
   useEffect(() => {
     setCurrentOrder(departmentAnnualPriorities);
