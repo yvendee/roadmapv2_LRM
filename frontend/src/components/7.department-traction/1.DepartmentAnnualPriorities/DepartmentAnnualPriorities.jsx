@@ -38,30 +38,30 @@ const DepartmentAnnualPriorities = () => {
   
   
   // Load from localStorage if available
-  useEffect(() => {
-    const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        setDepartmentAnnualPriorities(parsedData);
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
+  //   if (storedData) {
+  //     try {
+  //       const parsedData = JSON.parse(storedData);
+  //       setDepartmentAnnualPriorities(parsedData);
 
-        // ✅ Treat this as unsaved state, trigger the buttons
-        setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
+  //       // ✅ Treat this as unsaved state, trigger the buttons
+  //       setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
 
-      } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
-      }
-    }
-  }, [setDepartmentAnnualPriorities]);
+  //     } catch (err) {
+  //       ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
+  //     }
+  //   }
+  // }, [setDepartmentAnnualPriorities]);
 
-  // const handleAddDriverClick = () => {
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     // ENABLE_CONSOLE_LOGS && console.log('Add Department Annual Priorities button clicked');
-  //     setShowAddModal(true);
-  //   }, 1000);
-  // };
+  const handleAddDriverClick = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      // ENABLE_CONSOLE_LOGS && console.log('Add Department Annual Priorities button clicked');
+      setShowAddModal(true);
+    }, 1000);
+  };
 
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
