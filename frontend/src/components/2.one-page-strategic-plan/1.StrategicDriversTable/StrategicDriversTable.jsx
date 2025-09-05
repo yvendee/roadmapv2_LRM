@@ -84,6 +84,17 @@ const StrategicDriversTable = () => {
     }
   }, [storeDrivers]);
 
+  const confirmDischargeChanges = () => {
+    localStorage.removeItem('strategicDriversData');
+    setEditedDrivers([]);
+  
+    const currentState = useStrategicDriversStore.getState().strategicDrivers;
+    setStrategicDrivers(currentState); // rollback to store state
+    setCurrentOrder(currentState);
+  
+    setShowConfirmModal(false);
+  };
+  
   
   const handleInputBlur = (id, field, value) => {
     const updated = strategicDrivers.map((driver) =>
@@ -307,17 +318,6 @@ const StrategicDriversTable = () => {
     }, 1000);
   };
 
-
-  const confirmDischargeChanges = () => {
-    localStorage.removeItem('strategicDriversData');
-    setEditedDrivers([]);
-  
-    const currentState = useStrategicDriversStore.getState().strategicDrivers;
-    setStrategicDrivers(currentState); // rollback to store state
-    setCurrentOrder(currentState);
-  
-    setShowConfirmModal(false);
-  };
   
 
   // Drag handlers:

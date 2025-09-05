@@ -20,8 +20,9 @@ const DepartmentAnnualPriorities = () => {
   const loggedUser = useLoginStore((state) => state.user);
 
   const storeDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
-  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
-  const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
+  const [departmentAnnualPriorities, setDepartmentAnnualPriorities] = useState([]);
+  // const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
+  // const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
   const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
   const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
   // const { departmentAnnualPriorities, setDepartmentAnnualPriorities, updateAnnualPrioritiesField  } = useDepartmentAnnualPrioritiesStore();
@@ -56,11 +57,7 @@ const DepartmentAnnualPriorities = () => {
       try {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
-
         console.log("Load from localStorage: ", storedData);
-
-
-        // ✅ Treat this as unsaved state, trigger the buttons
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
 
       } catch (err) {
@@ -99,7 +96,6 @@ const DepartmentAnnualPriorities = () => {
 
     // ✅ Log the baseline data for debugging
     // console.log('🔁 Restoring from baselineDepartmentAnnualPriorities:', baselineDepartmentAnnualPriorities);
-
 
     // 4. Hide Modal
     setShowConfirmModal(false);
