@@ -511,7 +511,7 @@ const CompanyTraction = () => {
     // setCompanyTraction(initialCompanyTraction);
     // setAnnualPriorities(initialAnnualPriorities);
     const currentState = useCompanyTractionStore.getState().companyTraction;
-    setAnnualPriorities(currentState); // rollback to store state
+    setCompanyTraction(currentState); // rollback to store state
 
     // 4. Hide Modal
     setShowConfirmModal(false);
