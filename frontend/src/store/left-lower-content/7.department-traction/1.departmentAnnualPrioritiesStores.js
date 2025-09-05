@@ -67,23 +67,24 @@ export const initialDepartmentAnnualPriorities = [
 const useDepartmentAnnualPrioritiesStore = create((set) => ({
   departmentAnnualPriorities: initialDepartmentAnnualPriorities,
 
-  // Store the initial state when app loads
-  baselineAnnualPriorities: initialDepartmentAnnualPriorities,
+  baselineAnnualPriorities: [], // initially empty
 
-  setBaselineAnnualPriorities: (drivers) => set({ baselineAnnualPriorities: drivers }),
+  setBaselineAnnualPriorities: (data) => set({ baselineAnnualPriorities: data }),
 
-  
   setDepartmentAnnualPriorities: (drivers) => set({ departmentAnnualPriorities: drivers }),
+  
   addDepartmentAnnualAnnualPriorities: (driver) =>
     set((state) => ({
-        departmentAnnualPriorities: [...state.departmentAnnualPriorities, driver],
+      departmentAnnualPriorities: [...state.departmentAnnualPriorities, driver],
     })),
+
   updateAnnualPrioritiesField: (id, field, value) =>
     set((state) => ({
-        departmentAnnualPriorities: state.departmentAnnualPriorities.map((driver) =>
+      departmentAnnualPriorities: state.departmentAnnualPriorities.map((driver) =>
         driver.id === id ? { ...driver, [field]: value } : driver
       ),
     })),
+
   pushDepartmentAnnualPriorities: (driver) =>
     set((state) => {
       const newDriver = {
@@ -97,6 +98,7 @@ const useDepartmentAnnualPrioritiesStore = create((set) => ({
         departmentAnnualPriorities: [...state.departmentAnnualPriorities, newDriver],
       };
     }),
+
   loadDepartmentAnnualPrioritiesFromAPI: (drivers) => set({ departmentAnnualPriorities: drivers }),
 }));
 

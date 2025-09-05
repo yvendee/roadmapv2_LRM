@@ -59,20 +59,25 @@ const DepartmentAnnualPriorities = () => {
 
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
+    const store = useDepartmentAnnualPrioritiesStore.getState();
+  
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
       } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS && console.error('Failed to parse localStorage:', err);
       }
     } else {
-      // Save current Zustand state as baseline on first load (if no localStorage)
-      const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
-      useDepartmentAnnualPrioritiesStore.getState().setBaselineAnnualPriorities(currentData);
+      // ✅ Store the baseline only if not already set (e.g. avoid overwriting after edits)
+      if (!store.baselineAnnualPriorities || store.baselineAnnualPriorities.length === 0) {
+        store.setBaselineAnnualPriorities(store.departmentAnnualPriorities);
+        ENABLE_CONSOLE_LOGS && console.log('📌 Baseline set:', store.departmentAnnualPriorities);
+      }
     }
-  }, [setDepartmentAnnualPriorities]);
+  }, []);
+  
 
 
   const handleAddDriverClick = () => {
