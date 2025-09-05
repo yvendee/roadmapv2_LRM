@@ -38,9 +38,12 @@ const CompanyTraction = () => {
 
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
-  const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
+  // const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
 
   // const [companyTraction, setCompanyTraction] = useState(initialCompanyTraction);
+
+  const storeTraction = useCompanyTractionStore((state) => state.companyTraction);
+  const [companyTraction, setCompanyTraction] = useState([]);
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -107,22 +110,41 @@ const CompanyTraction = () => {
     : (companyTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
+
+  // Sync initial and store changes:
   useEffect(() => {
-    const storedData = localStorage.getItem('companyTractionData');
-    if (storedData) {
+    setCompanyTraction(companyTraction);
+  }, [companyTraction]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('companyTractionData');
+    if (stored) {
       setIsEditing(true); // Mark as edited
-      try {
-        // setData(JSON.parse(storedData));
-        setCompanyTraction(JSON.parse(storedData));
-      } catch (e) {
-        console.error('Failed to parse companyTractionData from localStorage', e);
-        // setData(storeData);
-      }
-    } 
-    // else {
-    //   setData(storeData);
-    // }
-  }, [setCompanyTraction]);
+      const parsed = JSON.parse(stored);
+      setCompanyTraction(parsed);
+      // setEditedTraction(parsed.map((t) => ({ id: t.id })));
+    } else {
+      setCompanyTraction(storeTraction); // fallback to Zustand
+    }
+  }, [storeTraction]);
+    
+
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('companyTractionData');
+  //   if (storedData) {
+  //     setIsEditing(true); // Mark as edited
+  //     try {
+  //       // setData(JSON.parse(storedData));
+  //       setCompanyTraction(JSON.parse(storedData));
+  //     } catch (e) {
+  //       console.error('Failed to parse companyTractionData from localStorage', e);
+  //       // setData(storeData);
+  //     }
+  //   } 
+  //   // else {
+  //   //   setData(storeData);
+  //   // }
+  // }, [setCompanyTraction]);
 
   // if (!data) return <p>Loading...</p>;
 
@@ -308,34 +330,6 @@ const CompanyTraction = () => {
   };
 
 
-  // const handleDueDateChange = (e, rowId) => {
-  //   setIsEditing(true);
-  //   handleEditChange(e, rowId, 'dueDate');
-  // };
-
-  // const handleDescriptionChange = (e, rowId) => {
-  //   setIsEditing(true); // Mark as edited
-  //   const value = e.target.value;
-  //   setDescription(value);
-  //   handleEditChange(e, rowId, 'description');
-  // };
-
-  
-  // const handleAnnualPriorityChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setAnnualPriority(value);
-  //   handleEditChange(e, rowId, 'annualPriority');
-  //   setIsEditing(true); // Mark as edited
-  // };
-
-  // const handleRankChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setRank(value);
-  //   handleEditChange(e, rowId, 'rank');
-  //   setIsEditing(true); // Mark as edited
-  // };
-
-
   const handleDueDateChange = (e, rowId) => {
     const value = e.target.value;
     updateCompanyTractionField(activeQuarter, rowId, 'dueDate', value);
@@ -379,7 +373,6 @@ const CompanyTraction = () => {
     setIsEditing(true);
   };
 
-  
 
   // Function to determine rank color
   const getRankColor = (rank) => {
@@ -395,10 +388,6 @@ const CompanyTraction = () => {
     }
   };
 
-  // const handleSaveClick = (rowId) => {
-  //   setEditing((prev) => ({ ...prev, [rowId]: false }));
-  //   handleSaveChanges();
-  // };
 
   const handleAddCompanyTractionClick = () => {
     setLoading(true);
@@ -408,24 +397,6 @@ const CompanyTraction = () => {
       setAddTractionModalOpen(true);
     }, 1000);
   }
-
-  // const handleSaveChanges = () => {
-
-  //   setLoadingSave(true);
-    
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //   // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
-    
-  //   // Parse the stored JSON data back to its original object form
-  //   const savedData = JSON.parse(localStorage.getItem('companyTractionData'));
-    
-  //   console.log('Updated data from localStorage:', savedData);
-  //   localStorage.removeItem('companyTractionData');
-  //   setIsEditing(false); // Hide the buttons after saving
-  //   }, 1000);
-
-  // };
 
 
   const handleSaveChanges = () => {
@@ -500,84 +471,29 @@ const CompanyTraction = () => {
     }, 1000);
   };
 
+  // const confirmDischargeChanges = () => {
+  //   // 1. Remove from localStorage
+  //   localStorage.removeItem('companyTractionData');
+
+  //   // 2. Clear edited state (hides buttons)
+  //   setIsEditing(false); 
+
+  //   // 3. Update Zustand store
+  //   setCompanyTraction(initialCompanyTraction);
+
+
+  //   // 4. Hide Modal
+  //   setShowConfirmModal(false);
+  // };
+
+
   const confirmDischargeChanges = () => {
-    // 1. Remove from localStorage
     localStorage.removeItem('companyTractionData');
-
-    // 2. Clear edited state (hides buttons)
-    setIsEditing(false); 
-
-    // 3. Update Zustand store
-    setCompanyTraction(initialCompanyTraction);
-
-
-    // 4. Hide Modal
+    // setEditedTraction([]);
+    setIsEditing(false); // Mark as edited
+    setCompanyTraction(useCompanyTractionStore.getState().companyTraction); // sync from Zustand store
     setShowConfirmModal(false);
   };
-
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   const updated = {
-  //     ...companyTraction,
-  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   addCompanyTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-  //   setCompanyTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
-
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   console.log('New Traction Item:', newItem);
-  
-  //   const updated = {
-  //     ...companyTraction,
-  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   console.log('Updated companyTraction object:', updated);
-  
-  //   addCompanyTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-  //   setCompanyTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
 
 
   async function handleAddNewTraction() {
