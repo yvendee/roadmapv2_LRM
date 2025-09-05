@@ -501,85 +501,22 @@ const CompanyTraction = () => {
   };
 
   const confirmDischargeChanges = () => {
-    // 1. Remove from localStorage
+    // 1. Remove temp local data
     localStorage.removeItem('companyTractionData');
-
+  
     // 2. Clear edited state (hides buttons)
     setIsEditing(false); 
-
-    // 3. Update Zustand store
-    // setCompanyTraction(initialCompanyTraction);
-    // setAnnualPriorities(initialAnnualPriorities);
-    const currentState = useCompanyTractionStore.getState().companyTraction;
-    setCompanyTraction(currentState); // rollback to store state
-
-    // 4. Hide Modal
+  
+    // 3. Reset UI from store data
+    const currentStoreData = useCompanyTractionStore.getState().companyTraction;
+    setCompanyTraction({ ...currentStoreData }); // force UI refresh with store
+  
+    // 4. Hide confirm modal
     setShowConfirmModal(false);
   };
+  
 
 
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   const updated = {
-  //     ...companyTraction,
-  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   addCompanyTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-  //   setCompanyTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
-
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   console.log('New Traction Item:', newItem);
-  
-  //   const updated = {
-  //     ...companyTraction,
-  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   console.log('Updated companyTraction object:', updated);
-  
-  //   addCompanyTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-  //   setCompanyTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
 
 
   async function handleAddNewTraction() {
