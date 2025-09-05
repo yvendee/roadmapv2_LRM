@@ -18,10 +18,14 @@ const DepartmentAnnualPriorities = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
 
   const loggedUser = useLoginStore((state) => state.user);
-  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
-  const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
-  const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
-  const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
+
+  // const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
+  // const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
+  // const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
+  // const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
+  const { departmentAnnualPriorities, setDepartmentAnnualPriorities, updateAnnualPrioritiesField  } = useDepartmentAnnualPrioritiesStore();
+
+
 
   const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
 
@@ -38,13 +42,12 @@ const DepartmentAnnualPriorities = () => {
   const [isEditing, setIsEditing] = useState(false);
 
 
-  const departmentAnnualPrioritiesFromStore = useDepartmentAnnualPrioritiesStore(state => state.departmentAnnualPriorities);
-
+  // Sync initial and store changes:
   useEffect(() => {
-    setDepartmentAnnualPriorities(departmentAnnualPrioritiesFromStore);
-  }, [departmentAnnualPrioritiesFromStore]);
+    setCurrentOrder(departmentAnnualPriorities);
+  }, [departmentAnnualPriorities]);
 
-    
+  
   // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
@@ -62,6 +65,48 @@ const DepartmentAnnualPriorities = () => {
     }
   }, [setDepartmentAnnualPriorities]);
 
+
+
+  const confirmDischargeChanges = () => {
+    // 1. Remove from localStorage
+    localStorage.removeItem('departmentAnnualPrioritiesData');
+
+    // 2. Clear edited state (hides buttons)
+    setEditedAnnualPriorities([]);
+
+    // 3. Update Zustand store
+    setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+
+    // 4. Hide Modal
+    setShowConfirmModal(false);
+  };
+
+  const handleInputBlur = (id, field, value) => {
+    // updateAnnualPrioritiesField(id, field, value);
+
+    // Update local state for Save/Discharge buttons
+    setEditedAnnualPriorities((prev) => {
+      const existing = prev.find((d) => d.id === id);
+      if (existing) {
+        return prev.map((d) =>
+          d.id === id ? { ...d, [field]: value } : d
+        );
+      }
+      return [...prev, { id, [field]: value }];
+    });
+
+    // Update localStorage
+    const updatedDrivers = departmentAnnualPriorities.map((driver) =>
+      driver.id === id ? { ...driver, [field]: value } : driver
+    );
+    localStorage.setItem('departmentAnnualPrioritiesData', JSON.stringify(updatedDrivers));
+
+    setEditingCell({ id: null, field: null });
+  };
+
+  const cancelDischargeChanges = () => {
+    setShowConfirmModal(false);
+  };
 
   
   const handleAddDriverClick = () => {
@@ -152,29 +197,6 @@ const handleAddNewAnnualPriority = async () => {
     }
   };
 
-  const handleInputBlur = (id, field, value) => {
-    // updateAnnualPrioritiesField(id, field, value);
-
-    // Update local state for Save/Discharge buttons
-    setEditedAnnualPriorities((prev) => {
-      const existing = prev.find((d) => d.id === id);
-      if (existing) {
-        return prev.map((d) =>
-          d.id === id ? { ...d, [field]: value } : d
-        );
-      }
-      return [...prev, { id, [field]: value }];
-    });
-
-    // Update localStorage
-    const updatedDrivers = departmentAnnualPriorities.map((driver) =>
-      driver.id === id ? { ...driver, [field]: value } : driver
-    );
-    localStorage.setItem('departmentAnnualPrioritiesData', JSON.stringify(updatedDrivers));
-
-    setEditingCell({ id: null, field: null });
-  };
-
 
   const handleSaveChanges = () => {
     setLoadingSave(true);
@@ -260,52 +282,6 @@ const handleAddNewAnnualPriority = async () => {
       setShowConfirmModal(true);
     }, 1000);
   };
-
-  // const confirmDischargeChanges = () => {
-  //   // 1. Remove from localStorage
-  //   localStorage.removeItem('departmentAnnualPrioritiesData');
-
-  //   // 2. Clear edited state (hides buttons)
-  //   setEditedAnnualPriorities([]);
-
-  //   // 3. Update Zustand store
-  //   setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
-
-  //   // 4. Hide Modal
-  //   setShowConfirmModal(false);
-  // };
-
-  // const cancelDischargeChanges = () => {
-  //   setShowConfirmModal(false);
-  // };
-
-
-  const confirmDischargeChanges = () => {
-    // 1. Remove from localStorage
-    localStorage.removeItem('departmentAnnualPrioritiesData');
-  
-    // 2. Clear edited state (hides buttons)
-    setEditedAnnualPriorities([]);
-  
-    // 3. Get current data from Zustand store (rollback to latest saved state)
-    const currentState = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
-  
-    // 4. Update local state with the current store data
-    setDepartmentAnnualPriorities(currentState);
-  
-    // 5. Hide Modal
-    setShowConfirmModal(false);
-  };
-  
-  const cancelDischargeChanges = () => {
-    setShowConfirmModal(false);
-  };
-  
-
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(departmentAnnualPriorities);
-  }, [departmentAnnualPriorities]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {
