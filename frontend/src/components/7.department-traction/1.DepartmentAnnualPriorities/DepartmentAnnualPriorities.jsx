@@ -56,6 +56,9 @@ const DepartmentAnnualPriorities = () => {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
 
+        Console.log("Load from localStorage: ", storedData);
+
+
         // ✅ Treat this as unsaved state, trigger the buttons
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
 
@@ -67,6 +70,7 @@ const DepartmentAnnualPriorities = () => {
       // Store the initial state (only once)
       const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
       useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(currentData)
+      Console.log("Store the initial state (only once): ", currentData);
     }
   }, [setDepartmentAnnualPriorities]);
 
@@ -81,6 +85,10 @@ const DepartmentAnnualPriorities = () => {
     // setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
     const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
     setDepartmentAnnualPriorities(baselineDepartmentAnnualPriorities);
+
+    // ✅ Log the baseline data for debugging
+    console.log('🔁 Restoring from baselineDepartmentAnnualPriorities:', baselineDepartmentAnnualPriorities);
+
 
     // 4. Hide Modal
     setShowConfirmModal(false);
