@@ -43,9 +43,9 @@ const DepartmentAnnualPriorities = () => {
 
 
   // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(departmentAnnualPriorities);
-  }, [departmentAnnualPriorities]);
+  // useEffect(() => {
+  //   setCurrentOrder(departmentAnnualPriorities);
+  // }, [departmentAnnualPriorities]);
 
   
   // Load from localStorage if available
@@ -63,9 +63,12 @@ const DepartmentAnnualPriorities = () => {
         ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
     }
+    else {
+      // Store the initial state (only once)
+      const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
+      useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(currentData)
+    }
   }, [setDepartmentAnnualPriorities]);
-
-
 
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
@@ -75,7 +78,9 @@ const DepartmentAnnualPriorities = () => {
     setEditedAnnualPriorities([]);
 
     // 3. Update Zustand store
-    setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+    // setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+    const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
+    setDepartmentAnnualPriorities(baselineDepartmentAnnualPriorities);
 
     // 4. Hide Modal
     setShowConfirmModal(false);
