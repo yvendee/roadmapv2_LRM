@@ -34,27 +34,27 @@ const CompanyTraction = () => {
     rank: '',
   });
 
+  const addCompanyTraction = useCompanyTractionStore((state) => state.addCompanyTraction);
 
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
+  const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
 
-  const addCompanyTraction = useCompanyTractionStore((state) => state.addCompanyTraction);
-  // const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
-  
-  const storeCompanyTraction= useCompanyTractionStore((state) => state.companyTraction);
-  const [companyTraction, setCompanyTraction] = useState([]);
-  const updateCompanyTractionField = useCompanyTractionStore((state) => state.updateCompanyTractionField);
-  
-  // const pushStrategicDriver = useCompanyTractionStore((state) => state.pushStrategicDriver);
   // const [companyTraction, setCompanyTraction] = useState(initialCompanyTraction);
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
 
   const { users, selectedUser, setUsers, setSelectedUser } = useCompanyTractionUserStore();
-  const [showCompleted, setShowCompleted] = useState(true);
+
   // const storeData = useCompanyTractionStore((state) => state.companyTraction);
+
+  const updateCompanyTractionField = useCompanyTractionStore(
+    (state) => state.updateCompanyTractionField
+  );
+
   // const [data, setData] = useState(null);
+
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
     return localStorage.getItem('activeQuarter') || 'Q1';
@@ -65,7 +65,7 @@ const CompanyTraction = () => {
   }, [activeQuarter]);
 
   
-  
+  const [showCompleted, setShowCompleted] = useState(true);
   
   // const [companyTraction, setCompanyTraction, updateComment] = useState(() => {
   //   // Load company traction from localStorage if available, otherwise use initial data
@@ -119,13 +119,14 @@ const CompanyTraction = () => {
         // setData(storeData);
       }
     } 
-    else {
-      // ✅ fallback if nothing in localStorage
-      setCompanyTraction(storeCompanyTraction); // fallback to store if no localStorage
-    }
-  }, [storeCompanyTraction]);
+    // else {
+    //   setData(storeData);
+    // }
+  }, [setCompanyTraction]);
 
   // if (!data) return <p>Loading...</p>;
+
+
 
   const getTimeAgo = (timestamp) => {
     const now = new Date();
@@ -510,7 +511,7 @@ const CompanyTraction = () => {
     // setCompanyTraction(initialCompanyTraction);
     // setAnnualPriorities(initialAnnualPriorities);
     const currentState = useCompanyTractionStore.getState().companyTraction;
-    setCompanyTraction(currentState); // rollback to store state
+    setAnnualPriorities(currentState); // rollback to store state
 
     // 4. Hide Modal
     setShowConfirmModal(false);
