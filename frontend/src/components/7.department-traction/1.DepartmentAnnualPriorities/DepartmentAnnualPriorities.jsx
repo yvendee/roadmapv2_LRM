@@ -54,14 +54,8 @@ const DepartmentAnnualPriorities = () => {
   //   }
   // }, [setDepartmentAnnualPriorities]);
 
-  const handleAddDriverClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // ENABLE_CONSOLE_LOGS && console.log('Add Department Annual Priorities button clicked');
-      setShowAddModal(true);
-    }, 1000);
-  };
+
+  
 
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
@@ -79,7 +73,17 @@ const DepartmentAnnualPriorities = () => {
       useDepartmentAnnualPrioritiesStore.getState().setBaselineAnnualPriorities(currentData);
     }
   }, [setDepartmentAnnualPriorities]);
-  
+
+
+  const handleAddDriverClick = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      // ENABLE_CONSOLE_LOGS && console.log('Add Department Annual Priorities button clicked');
+      setShowAddModal(true);
+    }, 1000);
+  };
+
 
   // const handleAddNewAnnualPriority = () => {
   //   ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
