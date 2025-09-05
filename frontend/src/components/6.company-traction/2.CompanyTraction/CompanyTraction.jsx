@@ -38,9 +38,12 @@ const CompanyTraction = () => {
 
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
-  const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
+  // const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
 
   // const [companyTraction, setCompanyTraction] = useState(initialCompanyTraction);
+
+  const storeTraction = useCompanyTractionStore((state) => state.companyTraction);
+  const [companyTraction, setCompanyTractionLocal] = useState([]);
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -108,21 +111,34 @@ const CompanyTraction = () => {
 
 
   useEffect(() => {
-    const storedData = localStorage.getItem('companyTractionData');
-    if (storedData) {
+    const stored = localStorage.getItem('companyTractionData');
+    if (stored) {
       setIsEditing(true); // Mark as edited
-      try {
-        // setData(JSON.parse(storedData));
-        setCompanyTraction(JSON.parse(storedData));
-      } catch (e) {
-        console.error('Failed to parse companyTractionData from localStorage', e);
-        // setData(storeData);
-      }
-    } 
-    // else {
-    //   setData(storeData);
-    // }
-  }, [setCompanyTraction]);
+      const parsed = JSON.parse(stored);
+      setCompanyTractionLocal(parsed);
+      // setEditedTraction(parsed.map((t) => ({ id: t.id })));
+    } else {
+      setCompanyTractionLocal(storeTraction); // fallback to Zustand
+    }
+  }, [storeTraction]);
+    
+
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('companyTractionData');
+  //   if (storedData) {
+  //     setIsEditing(true); // Mark as edited
+  //     try {
+  //       // setData(JSON.parse(storedData));
+  //       setCompanyTraction(JSON.parse(storedData));
+  //     } catch (e) {
+  //       console.error('Failed to parse companyTractionData from localStorage', e);
+  //       // setData(storeData);
+  //     }
+  //   } 
+  //   // else {
+  //   //   setData(storeData);
+  //   // }
+  // }, [setCompanyTraction]);
 
   // if (!data) return <p>Loading...</p>;
 
@@ -517,27 +533,11 @@ const CompanyTraction = () => {
 
 
   const confirmDischargeChanges = () => {
-    // 1. Remove from localStorage
     localStorage.removeItem('companyTractionData');
-  
-    // 2. Clear "edited" UI state
-    setIsEditing(false);
-  
-    // 3. Get current store value
-    const currentStoreData = useCompanyTractionStore.getState().companyTraction;
-
-    console.log('Resetting UI state to current store:', currentStoreData);
-  
-    // 4. Deep clone it to force React re-render
-    const clonedData = JSON.parse(JSON.stringify(currentStoreData));
-  
-    // 5. Reset local component state (UI)
-    setCompanyTraction(clonedData);
-  
-    // 6. Hide confirmation modal
+    setEditedTraction([]);
+    setCompanyTractionLocal(useCompanyTractionStore.getState().companyTraction); // sync from Zustand store
     setShowConfirmModal(false);
   };
-  
 
 
   async function handleAddNewTraction() {

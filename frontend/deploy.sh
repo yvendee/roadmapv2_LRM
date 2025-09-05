@@ -3,12 +3,17 @@
 # Exit on error
 set -e
 
+echo "🧹 Cleaning up public/assets..."
+rm -rf ../public/assets/*
+
+
 echo "🛠 Building React app..."
 npm run build
+cd ..
 
 # Paths
-SRC_DIR="dist"
-DEST_DIR="../public"
+SRC_DIR="frontend/dist"
+DEST_DIR="public"
 
 # Check if build folder exists
 if [ ! -d "$SRC_DIR" ]; then

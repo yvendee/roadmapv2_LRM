@@ -3,6 +3,10 @@
 # Exit on error
 set -e
 
+echo "🧹 Cleaning up public/assets..."
+rm -rf ../public/assets/*
+
+
 cd frontend
 echo "🛠 Building React app..."
 npm run build
