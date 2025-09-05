@@ -500,31 +500,31 @@ const CompanyTraction = () => {
     }, 1000);
   };
 
-  // const confirmDischargeChanges = () => {
-  //   // 1. Remove from localStorage
-  //   localStorage.removeItem('companyTractionData');
-
-  //   // 2. Clear edited state (hides buttons)
-  //   setIsEditing(false); 
-
-  //   // 3. Update Zustand store
-  //   // setCompanyTraction(initialCompanyTraction);
-  //   // setAnnualPriorities(initialAnnualPriorities);
-  //   const currentState = useCompanyTractionStore.getState().companyTraction;
-  //   setCompanyTraction(currentState); // rollback to store state
-
-  //   // 4. Hide Modal
-  //   setShowConfirmModal(false);
-  // };
   const confirmDischargeChanges = () => {
-    const currentStoreData = useCompanyTractionStore.getState().companyTraction;
-    console.log('🌀 Resetting UI to current store value:', currentStoreData);
+    // 1. Remove from localStorage
+    localStorage.removeItem('companyTractionData');
 
-    // Deep clone to trigger re-render
-    const clonedData = JSON.parse(JSON.stringify(currentStoreData));
-    setCompanyTraction(clonedData);
+    // 2. Clear edited state (hides buttons)
+    setIsEditing(false); 
+
+    // 3. Update Zustand store
+    setCompanyTraction(initialCompanyTraction);
+
+
+    // 4. Hide Modal
     setShowConfirmModal(false);
   };
+
+
+  // const confirmDischargeChanges = () => {
+  //   const currentStoreData = useCompanyTractionStore.getState().companyTraction;
+  //   console.log('🌀 Resetting UI to current store value:', currentStoreData);
+
+  //   // Deep clone to trigger re-render
+  //   const clonedData = JSON.parse(JSON.stringify(currentStoreData));
+  //   setCompanyTraction(clonedData);
+  //   setShowConfirmModal(false);
+  // };
 
 
   async function handleAddNewTraction() {
