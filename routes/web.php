@@ -3268,46 +3268,67 @@ Route::post('/api/v1/department-traction/annual-priorities/update', function (Re
 });
 
 // ref: 
-Route::post('/api/v1/department-traction/annual-priorities/add', function (Request $request) {
-    $validator = Validator::make($request->all(), [
+Route::post('/api/v1/department-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $request->validate([
         'organizationName' => 'required|string',
         'newAnnualPriority' => 'required|array',
         'newAnnualPriority.description' => 'required|string',
         'newAnnualPriority.status' => 'required|string',
     ]);
 
-    if ($validator->fails()) {
-        return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
-    }
-
     $organization = $request->input('organizationName');
     $newItem = $request->input('newAnnualPriority');
 
+    // Find the record
     $record = DepartmentTractionAnnualPriority::where('organizationName', $organization)->first();
 
     if (!$record) {
-        return response()->json(['message' => 'Organization not found'], 404);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Record not found for organization',
+        ], 404);
     }
 
-    // Decode current data
-    $existingData = json_decode($record->annualPrioritiesData ?? '[]', true);
+    // Get existing priorities
+    $currentData = $record->annualPrioritiesData;
 
-    // Assign new ID (max ID + 1 or 1)
-    $newId = collect($existingData)->max('id') + 1 ?? 1;
-    $newItem['id'] = $newId;
+    // If it's stored as JSON string, decode
+    if (is_string($currentData)) {
+        $currentData = json_decode($currentData, true);
+    }
 
-    // Append new item
-    $existingData[] = $newItem;
+    // Fallback to array if null or invalid
+    if (!is_array($currentData)) {
+        $currentData = [];
+    }
 
-    // Update DB
-    $record->annualPrioritiesData = json_encode($existingData);
+    // Get next ID
+    $newId = collect($currentData)->pluck('id')->max();
+    $newId = $newId ? $newId + 1 : 1;
+
+    $newItemWithId = array_merge($newItem, ['id' => $newId]);
+
+    // Append
+    $updatedData = [...$currentData, $newItemWithId];
+
+    // Save
+    $record->annualPrioritiesData = $updatedData;
     $record->save();
 
     return response()->json([
-        'message' => 'New annual priority added successfully',
-        'data' => $newItem,
+        'status' => 'success',
+        'message' => 'New department annual priority added',
+        'data' => $newItemWithId,
     ]);
 });
+
 
 
 

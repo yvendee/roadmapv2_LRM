@@ -169,64 +169,6 @@ const DepartmentAnnualPriorities = () => {
   };
 
 
-  
-  // const handleSaveChanges = () => {
-
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  
-  //     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
-  
-  //     if (storedData) {
-  //       try {
-  //         const parsedData = JSON.parse(storedData);
-  
-  //         // 1. Log to console
-  //         ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities after Save Changes Button:', parsedData);
-  
-  //         // 2. Update Zustand store
-  //         setDepartmentAnnualPriorities(parsedData);
-
-  //         // Reindex IDs
-  //         const reordered = parsedData.map((driver, index) => ({
-  //           ...driver,
-  //           id: index + 1,
-  //         }));
-
-  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (Reindexed):', reordered);
-
-  //         setDepartmentAnnualPriorities(reordered);
-  
-  //         // 3. Clear edited state (hides buttons)
-  //         setEditedAnnualPriorities([]);
-  
-  //         // 4. Remove from localStorage
-  //         localStorage.removeItem('departmentAnnualPrioritiesData');
-  //       } catch (err) {
-  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing departmentAnnualPrioritiesData on save:', err);
-  //       }
-  //     } else {
-
-  //       // No localStorage changes, use current drag order
-
-  //       const reordered = currentOrder.map((driver, index) => ({
-  //         ...driver,
-  //         id: index + 1,
-  //       }));
-
-  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (reordered):', reordered);
-  //       setDepartmentAnnualPriorities(reordered);
-  //       setEditedAnnualPriorities([]);
-
-  //       // Remove from localStorage
-  //       localStorage.removeItem('departmentAnnualPrioritiesData');
-
-  //     }
-  //   }, 1000);
-  // };
-  
   const handleSaveChanges = () => {
     setLoadingSave(true);
   
@@ -303,8 +245,6 @@ const DepartmentAnnualPriorities = () => {
       }
     }, 1000);
   };
-  
-
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
@@ -643,10 +583,11 @@ const DepartmentAnnualPriorities = () => {
               value={newAnnualPriority.status}
               onChange={(e) => setNewAnnualPriority({ ...newAnnualPriority, status: e.target.value })}
             >
-              <option>100.00%</option>
-              <option>83.33%</option>
+              
               <option>0.00%</option>
               <option>50.00%</option>
+              <option>83.33%</option>
+              <option>100.00%</option>
             </select>
 
             <div className="modal-add-buttons">
