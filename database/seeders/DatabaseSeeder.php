@@ -39,7 +39,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(ScoreboardProjectProgressCardSeeder::class);
         // $this->call(GccMetricsSeeder::class);
         // $this->call(GccFinancialGrowthSeeder::class);
-        $this->call(CompanyTractionAnnualPrioritiesSeeder::class);
+        // $this->call(CompanyTractionAnnualPrioritiesSeeder::class);
+        $this->call(CompanyTractionCompanyTractionSeeder::class);
+        
         
     
     }

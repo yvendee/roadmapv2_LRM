@@ -35,6 +35,7 @@ use App\Models\ScoreboardProjectProgressCard;
 use App\Models\GccMetric;
 use App\Models\GccRevenueGrowth;
 use App\Models\CompanyTractionAnnualPriority;
+use App\Models\CompanyTractionCompanyTraction;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -2700,7 +2701,7 @@ Route::get('/api/v1/company-traction/annual-priorities', function (Request $requ
     return response()->json($record->annualPrioritiesData ?? []);
 });
 
-// ref: 
+// ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
 
     if ($API_secure) {
@@ -2733,7 +2734,7 @@ Route::post('/api/v1/company-traction/annual-priorities/update', function (Reque
 });
 
 
-// ref:
+// ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
 
     if ($API_secure) {
@@ -2784,6 +2785,146 @@ Route::post('/api/v1/company-traction/annual-priorities/add', function (Request 
 });
 
 
+// // ref: frontend\src\components\6.company-traction\companyTraction.jsx
+// Route::get('/api/v1/company-traction/traction-data', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $mockData = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'Q1' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Build landing page',
+//                     'progress' => '5%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => '03-31-2025',
+//                     'rank' => '1',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                         [
+//                             'author' => 'John',
+//                             'message' => 'Great work on this!',
+//                             'posted' => '27 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q2' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Launch marketing campaign',
+//                     'progress' => '0%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => 'Click to set date',
+//                     'rank' => '2',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ],
+
+//         'Collins Credit Union' => [
+//             'Q1' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Build landing page',
+//                     'progress' => '5%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => '03-31-2025',
+//                     'rank' => '1',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                         [
+//                             'author' => 'John',
+//                             'message' => 'Great work on this!',
+//                             'posted' => '27 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q2' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Launch marketing campaign',
+//                     'progress' => '0%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => 'Click to set date',
+//                     'rank' => '2',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                     ],
+//                 ],
+
+//                 [
+//                     'id' => 2,
+//                     'who' => 'Chuck',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Launch marketing campaign',
+//                     'progress' => '0%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => 'Click to set date',
+//                     'rank' => '2',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ],
+//         'Test Skeleton Loading' => [
+//             'Q1' => [],
+//             'Q2' => [],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ],
+//     ];
+
+//     return response()->json($mockData[$organization] ?? [
+//         'Q1' => [],
+//         'Q2' => [],
+//         'Q3' => [],
+//         'Q4' => [],
+//     ]);
+// });
+
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::get('/api/v1/company-traction/traction-data', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -2792,137 +2933,167 @@ Route::get('/api/v1/company-traction/traction-data', function (Request $request)
         }
     }
 
+    // ✅ Validate the input
+    $validator = Validator::make($request->all(), [
+        'organization' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
     $organization = $request->query('organization');
 
-    $mockData = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'Q1' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Build landing page',
-                    'progress' => '5%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => '03-31-2025',
-                    'rank' => '1',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                        [
-                            'author' => 'John',
-                            'message' => 'Great work on this!',
-                            'posted' => '27 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q2' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Launch marketing campaign',
-                    'progress' => '0%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => 'Click to set date',
-                    'rank' => '2',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q3' => [],
-            'Q4' => [],
-        ],
+    // 🔍 Find the record in DB
+    $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
 
-        'Chuck Gulledge Advisors, LLC' => [
-            'Q1' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Build landing page',
-                    'progress' => '5%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => '03-31-2025',
-                    'rank' => '1',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                        [
-                            'author' => 'John',
-                            'message' => 'Great work on this!',
-                            'posted' => '27 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q2' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Launch marketing campaign',
-                    'progress' => '0%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => 'Click to set date',
-                    'rank' => '2',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                    ],
-                ],
-
-                [
-                    'id' => 2,
-                    'who' => 'Chuck',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Launch marketing campaign',
-                    'progress' => '0%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => 'Click to set date',
-                    'rank' => '2',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q3' => [],
-            'Q4' => [],
-        ],
-        'Test Skeleton Loading' => [
-            'Q1' => [],
-            'Q2' => [],
-            'Q3' => [],
-            'Q4' => [],
-        ],
-    ];
-
-    return response()->json($mockData[$organization] ?? [
+    // 📦 Return the data or empty structure if not found
+    return response()->json($record->companyTractionData ?? [
         'Q1' => [],
         'Q2' => [],
         'Q3' => [],
         'Q4' => [],
     ]);
 });
+
+// ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
+Route::post('/api/v1/company-traction/traction-data/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // Validate request inputs
+    $validator = Validator::make($request->all(), [
+        'organizationName' => 'required|string|max:255',
+        'companyTraction' => 'required|array', // expects JSON array/object
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $organizationName = $request->input('organizationName');
+    $companyTractionData = $request->input('companyTraction');
+
+    // Find the record by organizationName
+    $record = CompanyTractionCompanyTraction::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => "Organization '$organizationName' not found",
+        ], 404);
+    }
+
+    // Update the companyTractionData column (store as JSON)
+    $record->companyTractionData = $companyTractionData;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Company Traction data updated successfully',
+        'data' => $record,
+    ]);
+});
+
+
+
+// ref: frontend\src\components\6.company-traction\companyTraction.jsx
+Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // ✅ Validate the request
+    $validator = Validator::make($request->all(), [
+        'organization' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $organization = $request->query('organization');
+
+    // ✅ Fetch record
+    $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        // Return empty structure if not found
+        return response()->json([
+            'Q1' => [],
+            'Q2' => [],
+            'Q3' => [],
+            'Q4' => [],
+        ]);
+    }
+
+    return response()->json($record->companyTractionData ?? [
+        'Q1' => [],
+        'Q2' => [],
+        'Q3' => [],
+        'Q4' => [],
+    ]);
+});
+
+// ref: 
+Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validator = Validator::make($request->all(), [
+        'organization' => 'required|string|max:255',
+        'companyTraction' => 'required|array',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $organization = $request->input('organization');
+    $companyTractionData = $request->input('companyTraction');
+
+    $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Organization not found.',
+        ], 404);
+    }
+
+    $record->companyTractionData = $companyTractionData;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Company traction data updated successfully.',
+    ]);
+});
+
 
 // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
@@ -3035,7 +3206,7 @@ Route::get('/api/v1/department-traction/traction-data', function (Request $reque
             'Q4' => [],
         ],
 
-        'Chuck Gulledge Advisors, LLC' => [
+        'Collins Credit Union' => [
             'Q1' => [
                 [
                     'id' => 1,

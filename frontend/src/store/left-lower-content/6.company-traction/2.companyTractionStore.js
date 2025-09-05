@@ -1,78 +1,86 @@
 // frontend\src\store\left-lower-content\6.company-traction\2.companyTractionStore.js
 import { create } from 'zustand';
 
-export const initialCompanyTraction = {
-  Q1: [
-    {
-      id: 1,
-      who: 'Maricar',
-      collaborator: 'Maricar',
-      description: 'Build landing page',
-      progress: '5%',
-      annualPriority: 'Develop lead generation systems',
-      dueDate: '03-31-2025',
-      rank: '1',
-      comment: [
-        {
-          author: 'Maricar',
-          message: 'This is a test comment.',
-          posted: '26 June 2025',
-        },
-        {
-          author: 'John',
-          message: 'Great work on this!',
-          posted: '27 June 2025',
-        },
-      ],
-    },
-  ],
-  Q2: [
-    {
-      id: 1,
-      who: 'Maricar',
-      collaborator: 'Maricar',
-      description: 'Launch marketing campaign',
-      progress: '0%',
-      annualPriority: 'Develop lead generation systems',
-      dueDate: 'Click to set date',
-      rank: '2',
-      comment: [
-        {
-          author: 'Maricar',
-          message: 'This is a test comment.',
-          posted: '26 June 2025',
-        },
-        {
-          author: 'John',
-          message: 'Great work on this!',
-          posted: '27 June 2025',
-        },
-      ],
-    },
+// export const initialCompanyTraction = {
+//   Q1: [
+//     {
+//       id: 1,
+//       who: 'Maricar',
+//       collaborator: 'Maricar',
+//       description: 'Build landing page',
+//       progress: '5%',
+//       annualPriority: 'Develop lead generation systems',
+//       dueDate: '03-31-2025',
+//       rank: '1',
+//       comment: [
+//         {
+//           author: 'Maricar',
+//           message: 'This is a test comment.',
+//           posted: '26 June 2025',
+//         },
+//         {
+//           author: 'John',
+//           message: 'Great work on this!',
+//           posted: '27 June 2025',
+//         },
+//       ],
+//     },
+//   ],
+//   Q2: [
+//     {
+//       id: 1,
+//       who: 'Maricar',
+//       collaborator: 'Maricar',
+//       description: 'Launch marketing campaign',
+//       progress: '0%',
+//       annualPriority: 'Develop lead generation systems',
+//       dueDate: 'Click to set date',
+//       rank: '2',
+//       comment: [
+//         {
+//           author: 'Maricar',
+//           message: 'This is a test comment.',
+//           posted: '26 June 2025',
+//         },
+//         {
+//           author: 'John',
+//           message: 'Great work on this!',
+//           posted: '27 June 2025',
+//         },
+//       ],
+//     },
 
-    {
-      id: 2,
-      who: 'Chuck',
-      collaborator: 'Maricar',
-      description: 'Build landing page',
-      progress: '5%',
-      annualPriority: 'Develop lead generation systems',
-      dueDate: '04-19-2025',
-      rank: '2',
-      comment: [
-        {
-          author: 'Maricar',
-          message: 'This is a test comment.',
-          posted: '26 June 2025',
-        },
-        {
-          author: 'John',
-          message: 'Great work on this!',
-          posted: '27 June 2025',
-        },
-      ],
-    },
-  ],
+//     {
+//       id: 2,
+//       who: 'Chuck',
+//       collaborator: 'Maricar',
+//       description: 'Build landing page',
+//       progress: '5%',
+//       annualPriority: 'Develop lead generation systems',
+//       dueDate: '04-19-2025',
+//       rank: '2',
+//       comment: [
+//         {
+//           author: 'Maricar',
+//           message: 'This is a test comment.',
+//           posted: '26 June 2025',
+//         },
+//         {
+//           author: 'John',
+//           message: 'Great work on this!',
+//           posted: '27 June 2025',
+//         },
+//       ],
+//     },
+//   ],
+//   Q3: [],
+//   Q4: [],
+// };
+
+
+export const initialCompanyTraction = {
+  Q1: [],
+  Q2: [],
   Q3: [],
   Q4: [],
 };

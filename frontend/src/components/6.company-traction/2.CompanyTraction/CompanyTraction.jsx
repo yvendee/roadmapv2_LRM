@@ -10,11 +10,16 @@ import {
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './CompanyTraction.css';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 const CompanyTraction = () => {
+
+  const organization = useLayoutSettingsStore((state) => state.organization);
 
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
@@ -404,23 +409,87 @@ const CompanyTraction = () => {
     }, 1000);
   }
 
+  // const handleSaveChanges = () => {
+
+  //   setLoadingSave(true);
+    
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //   // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
+    
+  //   // Parse the stored JSON data back to its original object form
+  //   const savedData = JSON.parse(localStorage.getItem('companyTractionData'));
+    
+  //   console.log('Updated data from localStorage:', savedData);
+  //   localStorage.removeItem('companyTractionData');
+  //   setIsEditing(false); // Hide the buttons after saving
+  //   }, 1000);
+
+  // };
+
+
   const handleSaveChanges = () => {
-
     setLoadingSave(true);
-    
-    setTimeout(() => {
-      setLoadingSave(false);
-    // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
-    
-    // Parse the stored JSON data back to its original object form
+  
+    // Get the companyTraction data from localStorage (or your state)
     const savedData = JSON.parse(localStorage.getItem('companyTractionData'));
-    
-    console.log('Updated data from localStorage:', savedData);
-    localStorage.removeItem('companyTractionData');
-    setIsEditing(false); // Hide the buttons after saving
-    }, 1000);
-
+  
+    if (!savedData) {
+      console.error('No companyTractionData found in localStorage');
+      setLoadingSave(false);
+      return;
+    }
+  
+    (async () => {
+      try {
+        // 1. Fetch CSRF token first
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        if (!csrfRes.ok) {
+          throw new Error('Failed to fetch CSRF token');
+        }
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        // 2. Prepare payload
+        const payload = {
+          organizationName: organization, // assuming `organization` is in scope
+          companyTraction: savedData,
+        };
+  
+        // 3. Send update request with CSRF token
+        const res = await fetch(`${API_URL}/v1/company-traction/traction-data/update`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include', // for Laravel session cookies
+          body: JSON.stringify(payload),
+        });
+  
+        const json = await res.json();
+  
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Company Traction data updated:', json);
+          localStorage.removeItem('companyTractionData');
+          setIsEditing(false);
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error updating Company Traction:', json.message || json);
+        }
+      } catch (err) {
+        console.error('API error:', err);
+      } finally {
+        setLoadingSave(false);
+      }
+    })();
   };
+  
 
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
@@ -446,6 +515,36 @@ const CompanyTraction = () => {
   };
 
 
+  // function handleAddNewTraction() {
+  //   const mmddyyyy = form.dueDate
+  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
+  //     : 'Click to set date';
+  
+  //   const newItem = {
+  //     id: Date.now(),
+  //     who: form.who,
+  //     collaborator: form.collaborator,
+  //     description: form.description,
+  //     progress: form.progress,
+  //     annualPriority: form.annualPriority,
+  //     dueDate: mmddyyyy,
+  //     rank: form.rank,
+  //     comment: [],
+  //   };
+  
+  //   const updated = {
+  //     ...companyTraction,
+  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
+  //   };
+  
+  //   addCompanyTraction(form.quarter, newItem); // store
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
+    
+  //   setCompanyTraction(updated); // update table
+  //   setAddTractionModalOpen(false); // close modal
+  // }
+
+
   function handleAddNewTraction() {
     const mmddyyyy = form.dueDate
       ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
@@ -463,17 +562,22 @@ const CompanyTraction = () => {
       comment: [],
     };
   
+    console.log('New Traction Item:', newItem);
+  
     const updated = {
       ...companyTraction,
       [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
     };
   
+    console.log('Updated companyTraction object:', updated);
+  
     addCompanyTraction(form.quarter, newItem); // store
     localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
+    
     setCompanyTraction(updated); // update table
     setAddTractionModalOpen(false); // close modal
   }
-
+  
   
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
