@@ -115,10 +115,10 @@ const CompanyTraction = () => {
     if (stored) {
       setIsEditing(true); // Mark as edited
       const parsed = JSON.parse(stored);
-      setCompanyTractionLocal(parsed);
+      setCompanyTraction(parsed);
       // setEditedTraction(parsed.map((t) => ({ id: t.id })));
     } else {
-      setCompanyTractionLocal(storeTraction); // fallback to Zustand
+      setCompanyTraction(storeTraction); // fallback to Zustand
     }
   }, [storeTraction]);
     
