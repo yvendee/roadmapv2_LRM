@@ -509,9 +509,8 @@ const CompanyTraction = () => {
   
     // 3. Reset UI from store data
     const currentStoreData = useCompanyTractionStore.getState().companyTraction;
+    console.log('🌀 Resetting UI to current store value:', currentStoreData);
     setCompanyTraction({ ...currentStoreData }); // force UI refresh with store
-
-    Console.log("current data from store file: ", currentStoreData);
   
     // 4. Hide confirm modal
     setShowConfirmModal(false);
