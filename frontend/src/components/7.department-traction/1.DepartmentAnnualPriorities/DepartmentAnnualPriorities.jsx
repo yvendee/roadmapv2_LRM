@@ -85,7 +85,7 @@ const DepartmentAnnualPriorities = () => {
     // 3. Update Zustand store
     // setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
     const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
-    setDepartmentAnnualPriorities(baselineDepartmentAnnualPriorities);
+    setCurrentOrder(baselineDepartmentAnnualPriorities);
 
     // ✅ Log the baseline data for debugging
     console.log('🔁 Restoring from baselineDepartmentAnnualPriorities:', baselineDepartmentAnnualPriorities);
