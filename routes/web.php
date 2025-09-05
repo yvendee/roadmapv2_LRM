@@ -2960,7 +2960,7 @@ Route::get('/api/v1/company-traction/traction-data', function (Request $request)
     ]);
 });
 
-// ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
+// ref: 
 Route::post('/api/v1/company-traction/traction-data/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3006,10 +3006,55 @@ Route::post('/api/v1/company-traction/traction-data/update', function (Request $
     ]);
 });
 
+// ref:
+Route::post('/api/v1/company-traction/traction-data/add', function (Request $request) {
+    // Validate request
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'quarter' => 'required|string',
+        'newItem' => 'required|array',
+        // You can validate individual fields inside newItem as needed
+    ]);
+
+    $organizationName = $validated['organizationName'];
+    $quarter = $validated['quarter'];
+    $newItem = $validated['newItem'];
+
+    // Fetch existing record by organizationName
+    $record = CompanyTractionCompanyTraction::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    // Decode existing companyTractionData JSON (nullable)
+    $tractionData = $record->companyTractionData ? json_decode($record->companyTractionData, true) : [];
+
+    // Make sure the quarter exists in the tractionData
+    if (!isset($tractionData[$quarter]) || !is_array($tractionData[$quarter])) {
+        $tractionData[$quarter] = [];
+    }
+
+    // Append new item (make sure to generate a unique ID here, overriding the client id)
+    $newItem['id'] = time(); // Or use some other method to generate unique id on server
+
+    $tractionData[$quarter][] = $newItem;
+
+    // Save updated data back
+    $record->companyTractionData = json_encode($tractionData);
+    $record->save();
+
+    return response()->json([
+        'message' => 'New traction item added successfully',
+        'data' => $newItem,
+    ]);
+});
+
+
 
 
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
-Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
+ Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);

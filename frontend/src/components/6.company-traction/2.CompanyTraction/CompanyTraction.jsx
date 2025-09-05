@@ -545,12 +545,47 @@ const CompanyTraction = () => {
   // }
 
 
-  function handleAddNewTraction() {
+  // function handleAddNewTraction() {
+  //   const mmddyyyy = form.dueDate
+  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
+  //     : 'Click to set date';
+  
+  //   const newItem = {
+  //     id: Date.now(),
+  //     who: form.who,
+  //     collaborator: form.collaborator,
+  //     description: form.description,
+  //     progress: form.progress,
+  //     annualPriority: form.annualPriority,
+  //     dueDate: mmddyyyy,
+  //     rank: form.rank,
+  //     comment: [],
+  //   };
+  
+  //   console.log('New Traction Item:', newItem);
+  
+  //   const updated = {
+  //     ...companyTraction,
+  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
+  //   };
+  
+  //   console.log('Updated companyTraction object:', updated);
+  
+  //   addCompanyTraction(form.quarter, newItem); // store
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
+    
+  //   setCompanyTraction(updated); // update table
+  //   setAddTractionModalOpen(false); // close modal
+  // }
+
+
+  async function handleAddNewTraction() {
     const mmddyyyy = form.dueDate
       ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
       : 'Click to set date';
   
     const newItem = {
+      // Note: id will be replaced by server
       id: Date.now(),
       who: form.who,
       collaborator: form.collaborator,
@@ -571,11 +606,52 @@ const CompanyTraction = () => {
   
     console.log('Updated companyTraction object:', updated);
   
-    addCompanyTraction(form.quarter, newItem); // store
-    localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-    setCompanyTraction(updated); // update table
-    setAddTractionModalOpen(false); // close modal
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const payload = {
+        organizationName: organization,
+        quarter: form.quarter,
+        newItem,
+      };
+  
+      const response = await fetch(`${API_URL}/v1/company-traction/traction-data/add`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        console.log('✅ New traction item added on server:', result.data);
+  
+        // Update local state with server-generated ID
+        const serverNewItem = result.data;
+        const updatedWithServerId = {
+          ...companyTraction,
+          [form.quarter]: [...(companyTraction[form.quarter] || []), serverNewItem],
+        };
+  
+        addCompanyTraction(form.quarter, serverNewItem); // store
+        localStorage.setItem('companyTractionData', JSON.stringify(updatedWithServerId)); // localStorage
+  
+        setCompanyTraction(updatedWithServerId); // update table
+        setAddTractionModalOpen(false); // close modal
+      } else {
+        console.error('Failed to add new traction item:', result.message || result);
+      }
+    } catch (error) {
+      console.error('API error while adding new traction item:', error);
+    }
   }
   
   
