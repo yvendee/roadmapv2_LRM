@@ -18,10 +18,13 @@ const DepartmentAnnualPriorities = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
 
   const loggedUser = useLoginStore((state) => state.user);
-  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
-  const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
-  const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
+  // const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
+  // const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
+  // const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
   const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
+
+  const { departmentAnnualPriorities, setDepartmentAnnualPriorities, updateAnnualPrioritiesField  } = useDepartmentAnnualPrioritiesStore();
+
 
   const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
 
