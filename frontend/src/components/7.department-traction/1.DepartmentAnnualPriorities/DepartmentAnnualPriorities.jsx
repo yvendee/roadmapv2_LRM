@@ -58,7 +58,7 @@ const DepartmentAnnualPriorities = () => {
       const current = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
       useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(current);
     }
-  }, []);
+  }, [setDepartmentAnnualPriorities]);
 
   
   // // Load from localStorage if available
