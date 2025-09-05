@@ -56,7 +56,7 @@ const DepartmentAnnualPriorities = () => {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
 
-        Console.log("Load from localStorage: ", storedData);
+        console.log("Load from localStorage: ", storedData);
 
 
         // ✅ Treat this as unsaved state, trigger the buttons
@@ -70,9 +70,10 @@ const DepartmentAnnualPriorities = () => {
       // Store the initial state (only once)
       const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
       useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(currentData)
-      Console.log("Store the initial state (only once): ", currentData);
+      console.log("Store the initial state (only once): ", currentData);
     }
   }, [setDepartmentAnnualPriorities]);
+
 
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
