@@ -19,11 +19,12 @@ const DepartmentAnnualPriorities = () => {
 
   const loggedUser = useLoginStore((state) => state.user);
 
-  // const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
-  // const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
-  // const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
-  // const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
-  const { departmentAnnualPriorities, setDepartmentAnnualPriorities, updateAnnualPrioritiesField  } = useDepartmentAnnualPrioritiesStore();
+  const storeDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
+  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
+  const setDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.setDepartmentAnnualPriorities);
+  const updateAnnualPrioritiesField = useDepartmentAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
+  const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
+  // const { departmentAnnualPriorities, setDepartmentAnnualPriorities, updateAnnualPrioritiesField  } = useDepartmentAnnualPrioritiesStore();
 
 
 
@@ -67,12 +68,17 @@ const DepartmentAnnualPriorities = () => {
       }
     }
     else {
-      // Store the initial state (only once)
-      const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
-      useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(currentData)
-      console.log("Store the initial state (only once): ", currentData);
+      // // Store the initial state (only once)
+      // const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
+      // useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(currentData)
+      // console.log("Store the initial state (only once): ", currentData);
+
+      // ✅ fallback if nothing in localStorage
+      setDepartmentAnnualPriorities(storeDepartmentAnnualPriorities); // fallback to store if no localStorage
+      setCurrentOrder(storeDepartmentAnnualPriorities);
+
     }
-  }, [setDepartmentAnnualPriorities]);
+  }, [storeDepartmentAnnualPriorities]);
 
 
   const confirmDischargeChanges = () => {
@@ -84,11 +90,15 @@ const DepartmentAnnualPriorities = () => {
 
     // 3. Update Zustand store
     // setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
-    const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
-    setCurrentOrder(baselineDepartmentAnnualPriorities);
+    // const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
+    // setCurrentOrder(baselineDepartmentAnnualPriorities);
+
+    const currentState = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
+    setDepartmentAnnualPriorities(currentState); // rollback to store state
+    setCurrentOrder(currentState);
 
     // ✅ Log the baseline data for debugging
-    console.log('🔁 Restoring from baselineDepartmentAnnualPriorities:', baselineDepartmentAnnualPriorities);
+    // console.log('🔁 Restoring from baselineDepartmentAnnualPriorities:', baselineDepartmentAnnualPriorities);
 
 
     // 4. Hide Modal
