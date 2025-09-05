@@ -36,24 +36,50 @@ const DepartmentAnnualPriorities = () => {
   const [currentOrder, setCurrentOrder] = useState(departmentAnnualPriorities);
   const [draggedId, setDraggedId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  const [originalAnnualPriorities, setOriginalAnnualPriorities] = useState([]);
+
   
-  
-  // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
-
-        // ✅ Treat this as unsaved state, trigger the buttons
+  
+        // ✅ Mark as edited
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
-
       } catch (err) {
-        ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS &&
+          console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
+    } else {
+      // ✅ No edits yet, store original untouched data
+      const current = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
+      useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(current);
     }
-  }, [setDepartmentAnnualPriorities]);
+  }, []);
+
+  
+  // // Load from localStorage if available
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
+  //   if (storedData) {
+  //     try {
+  //       const parsedData = JSON.parse(storedData);
+  //       setDepartmentAnnualPriorities(parsedData);
+
+  //       // ✅ Treat this as unsaved state, trigger the buttons
+  //       setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
+
+  //     } catch (err) {
+  //       ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
+  //     }
+  //   }
+  // }, [setDepartmentAnnualPriorities]);
+
+
+
 
   const handleAddDriverClick = () => {
     setLoading(true);
@@ -252,20 +278,37 @@ const handleAddNewAnnualPriority = async () => {
     }, 1000);
   };
 
+  // const confirmDischargeChanges = () => {
+  //   // 1. Remove from localStorage
+  //   localStorage.removeItem('departmentAnnualPrioritiesData');
+
+  //   // 2. Clear edited state (hides buttons)
+  //   setEditedAnnualPriorities([]);
+
+  //   // 3. Update Zustand store
+  //   setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+
+  //   // 4. Hide Modal
+  //   setShowConfirmModal(false);
+  // };
+
+
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
     localStorage.removeItem('departmentAnnualPrioritiesData');
-
-    // 2. Clear edited state (hides buttons)
+  
+    // 2. Clear edited state
     setEditedAnnualPriorities([]);
-
-    // 3. Update Zustand store
-    setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
-
+  
+    // 3. Restore from baseline (original)
+    const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
+    setDepartmentAnnualPriorities(baselineDepartmentAnnualPriorities);
+  
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
 
+  
   const cancelDischargeChanges = () => {
     setShowConfirmModal(false);
   };
