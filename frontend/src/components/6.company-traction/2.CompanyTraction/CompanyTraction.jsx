@@ -534,7 +534,8 @@ const CompanyTraction = () => {
 
   const confirmDischargeChanges = () => {
     localStorage.removeItem('companyTractionData');
-    setEditedTraction([]);
+    // setEditedTraction([]);
+    setIsEditing(true); // Mark as edited
     setCompanyTractionLocal(useCompanyTractionStore.getState().companyTraction); // sync from Zustand store
     setShowConfirmModal(false);
   };
