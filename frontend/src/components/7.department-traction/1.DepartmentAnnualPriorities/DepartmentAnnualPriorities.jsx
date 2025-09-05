@@ -43,9 +43,9 @@ const DepartmentAnnualPriorities = () => {
 
 
   // Sync initial and store changes:
-  // useEffect(() => {
-  //   setCurrentOrder(departmentAnnualPriorities);
-  // }, [departmentAnnualPriorities]);
+  useEffect(() => {
+    setCurrentOrder(departmentAnnualPriorities);
+  }, [departmentAnnualPriorities]);
 
   
   // Load from localStorage if available
