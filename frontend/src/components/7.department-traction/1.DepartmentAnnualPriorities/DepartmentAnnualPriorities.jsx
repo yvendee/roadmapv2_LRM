@@ -35,6 +35,7 @@ const DepartmentAnnualPriorities = () => {
 
   const [currentOrder, setCurrentOrder] = useState(departmentAnnualPriorities);
   const [draggedId, setDraggedId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   
   
   // Load from localStorage if available
