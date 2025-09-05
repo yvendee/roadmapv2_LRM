@@ -87,9 +87,8 @@ const DepartmentAnnualPriorities = () => {
 
 
   const handleAddNewAnnualPriority = async () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
+    ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
   
-    // Send to backend first
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
@@ -112,31 +111,29 @@ const DepartmentAnnualPriorities = () => {
       });
   
       const result = await response.json();
+      ENABLE_CONSOLE_LOGS && console.log('📬 Insert API Response:', result);
   
-      if (response.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('✅ New Annual Priority Saved:', result.data);
-  
-        // 2. Hide Save / Discharge
-        setEditedAnnualPriorities([]);
-  
-        // 3. Remove localStorage temp data
-        localStorage.removeItem('departmentAnnualPrioritiesData');
-  
-        // 4. Push to Zustand store
-        pushDepartmentAnnualPriorities(result.data); // Use response with ID
-  
-        // 5. Close modal
-        setShowAddModal(false);
-  
-        // 6. Reset form input
-        setNewAnnualPriority({ description: '', status: '00.00%' });
-      } else {
-        console.error('❌ Error saving new annual priority:', result.message);
+      if (!response.ok || result.status !== 'success') {
+        console.error('❌ Failed to insert new department annual priority:', result.message);
+        return;
       }
-    } catch (error) {
-      console.error('❌ Network/Server Error:', error);
+  
+      const itemWithId = result.data;
+  
+      // ✅ Push to Zustand store
+      pushDepartmentAnnualPriorities(itemWithId);
+  
+      // 🔄 Clean up UI
+      setEditedAnnualPriorities([]);
+      localStorage.removeItem('departmentAnnualPrioritiesData');
+      setShowAddModal(false);
+      setNewAnnualPriority({ description: '', status: '00.00%' });
+  
+    } catch (err) {
+      console.error('❌ Error inserting department annual priority:', err);
     }
   };
+  
   
 
   const handleCellClick = (id, field) => {
