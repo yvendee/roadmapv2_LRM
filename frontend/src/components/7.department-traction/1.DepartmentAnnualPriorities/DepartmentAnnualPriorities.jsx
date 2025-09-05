@@ -47,19 +47,20 @@ const DepartmentAnnualPriorities = () => {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
   
-        // ✅ Mark as edited
+        // ✅ Save initial data
+        setOriginalAnnualPriorities(parsedData);
+  
+        // ✅ Treat this as unsaved state
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
       } catch (err) {
-        ENABLE_CONSOLE_LOGS &&
-          console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
+        ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
     } else {
-      // ✅ No edits yet, store original untouched data
-      const current = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
-      useDepartmentAnnualPrioritiesStore.getState().setBaselineDepartmentAnnualPriorities(current);
+      // Load from Zustand default store (which may have been updated from API)
+      setOriginalAnnualPriorities(departmentAnnualPriorities);
     }
-  }, [setDepartmentAnnualPriorities]);
-
+  }, []);
+  
   
   // // Load from localStorage if available
   // useEffect(() => {
@@ -170,7 +171,7 @@ const handleAddNewAnnualPriority = async () => {
   };
 
   const handleInputBlur = (id, field, value) => {
-    updateAnnualPrioritiesField(id, field, value);
+    // updateAnnualPrioritiesField(id, field, value);
 
     // Update local state for Save/Discharge buttons
     setEditedAnnualPriorities((prev) => {
@@ -300,13 +301,13 @@ const handleAddNewAnnualPriority = async () => {
     // 2. Clear edited state
     setEditedAnnualPriorities([]);
   
-    // 3. Restore from baseline (original)
-    const { baselineDepartmentAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
-    setDepartmentAnnualPriorities(baselineDepartmentAnnualPriorities);
+    // 3. Restore from stored original state
+    setDepartmentAnnualPriorities(originalAnnualPriorities);
   
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
+  
 
   
   const cancelDischargeChanges = () => {

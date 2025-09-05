@@ -66,14 +66,6 @@ export const initialDepartmentAnnualPriorities = [
 
 const useDepartmentAnnualPrioritiesStore = create((set) => ({
   departmentAnnualPriorities: initialDepartmentAnnualPriorities,
-
-  // ✅ New baseline state for "original" untouched data
-  baselineDepartmentAnnualPriorities: initialDepartmentAnnualPriorities,
-
-  // ✅ Function to store the original state
-  setBaselineDepartmentAnnualPriorities: (data) =>
-    set({ baselineDepartmentAnnualPriorities: data }),
-
   
   setDepartmentAnnualPriorities: (drivers) => set({ departmentAnnualPriorities: drivers }),
   addDepartmentAnnualAnnualPriorities: (driver) =>
