@@ -503,7 +503,7 @@ const CompanyTraction = () => {
         };
   
         addCompanyTraction(form.quarter, serverNewItem); // store
-        localStorage.setItem('companyTractionData', JSON.stringify(updatedWithServerId)); // localStorage
+        // localStorage.setItem('companyTractionData', JSON.stringify(updatedWithServerId)); // localStorage
   
         setCompanyTraction(updatedWithServerId); // update table
         setAddTractionModalOpen(false); // close modal
