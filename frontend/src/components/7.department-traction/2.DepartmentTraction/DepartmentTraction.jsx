@@ -119,9 +119,11 @@ const DepartmentTractionTable = () => {
         // setData(storeData);
       }
     } 
-    // else {
-    //   setData(storeData);
-    // }
+    else {
+      // Store the initial state (only once)
+      const currentData = useDepartmentTractionStore.getState().departmentTraction;
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
+    }
   }, [setDepartmentTraction]);
 
   // if (!data) return <p>Loading...</p>;
@@ -466,7 +468,9 @@ const DepartmentTractionTable = () => {
     setIsEditing(false); 
 
     // 3. Update Zustand store
-    setDepartmentTraction(initialDepartmentTraction);
+    // setDepartmentTraction(initialDepartmentTraction);
+    const { baselineDepartmentTraction } = useDepartmentTractionStore.getState();
+    setDepartmentTraction(baselineDepartmentTraction);
 
     // 4. Hide Modal
     setShowConfirmModal(false);
@@ -567,7 +571,7 @@ const DepartmentTractionTable = () => {
       console.error('❌ Error saving traction item:', err);
     }
   }
-  
+
 
 
   return (
