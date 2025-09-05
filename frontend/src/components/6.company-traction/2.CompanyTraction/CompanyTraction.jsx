@@ -119,9 +119,11 @@ const CompanyTraction = () => {
         // setData(storeData);
       }
     } 
-    // else {
-    //   setData(storeData);
-    // }
+    else {
+      // Store the initial state (only once)
+      const currentData = useCompanyTractionStore.getState().companyTraction;
+      useCompanyTractionStore.getState().setBaselineCompanyTraction(currentData)
+    }
   }, [setCompanyTraction]);
 
   // if (!data) return <p>Loading...</p>;
@@ -256,35 +258,6 @@ const CompanyTraction = () => {
   };
   
 
-  // // Function to handle dropdown changes (example with a priority dropdown)
-  // const handleDropdownChange = (e, rowId, field) => {
-  //   const value = e.target.value;
-  //   setCompanyTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, [field]: value } : row
-  //     );
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  //     return updatedData;
-  //   });
-  // };
-
-  // // Function to handle changes in progress dropdown
-  // const handleProgressChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setCompanyTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, progress: value } : row
-  //     );
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  //     return updatedData;
-  //   });
-  //   setIsEditing(true); // Mark as edited
-  // };
-
   const handleProgressChange = (e, rowId) => {
     const value = e.target.value;
   
@@ -306,34 +279,6 @@ const CompanyTraction = () => {
     if (value >= 40 && value < 95) return 'bg-yellow-500'; // Yellow for 40% to 95%
     return 'bg-green-500'; // Green for progress >= 95%
   };
-
-
-  // const handleDueDateChange = (e, rowId) => {
-  //   setIsEditing(true);
-  //   handleEditChange(e, rowId, 'dueDate');
-  // };
-
-  // const handleDescriptionChange = (e, rowId) => {
-  //   setIsEditing(true); // Mark as edited
-  //   const value = e.target.value;
-  //   setDescription(value);
-  //   handleEditChange(e, rowId, 'description');
-  // };
-
-  
-  // const handleAnnualPriorityChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setAnnualPriority(value);
-  //   handleEditChange(e, rowId, 'annualPriority');
-  //   setIsEditing(true); // Mark as edited
-  // };
-
-  // const handleRankChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setRank(value);
-  //   handleEditChange(e, rowId, 'rank');
-  //   setIsEditing(true); // Mark as edited
-  // };
 
 
   const handleDueDateChange = (e, rowId) => {
@@ -395,10 +340,6 @@ const CompanyTraction = () => {
     }
   };
 
-  // const handleSaveClick = (rowId) => {
-  //   setEditing((prev) => ({ ...prev, [rowId]: false }));
-  //   handleSaveChanges();
-  // };
 
   const handleAddCompanyTractionClick = () => {
     setLoading(true);
@@ -408,25 +349,6 @@ const CompanyTraction = () => {
       setAddTractionModalOpen(true);
     }, 1000);
   }
-
-  // const handleSaveChanges = () => {
-
-  //   setLoadingSave(true);
-    
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //   // localStorage.setItem('companyTractionData', JSON.stringify(companyTraction));
-    
-  //   // Parse the stored JSON data back to its original object form
-  //   const savedData = JSON.parse(localStorage.getItem('companyTractionData'));
-    
-  //   console.log('Updated data from localStorage:', savedData);
-  //   localStorage.removeItem('companyTractionData');
-  //   setIsEditing(false); // Hide the buttons after saving
-  //   }, 1000);
-
-  // };
-
 
   const handleSaveChanges = () => {
     setLoadingSave(true);
@@ -508,76 +430,14 @@ const CompanyTraction = () => {
     setIsEditing(false); 
 
     // 3. Update Zustand store
-    setCompanyTraction(initialCompanyTraction);
+    // setCompanyTraction(initialCompanyTraction);
+    const { baselineCompanyTraction } = useCompanyTractionStore.getState();
+    setCompanyTraction(baselineCompanyTraction);
 
 
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
-
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   const updated = {
-  //     ...companyTraction,
-  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   addCompanyTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-  //   setCompanyTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
-
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   console.log('New Traction Item:', newItem);
-  
-  //   const updated = {
-  //     ...companyTraction,
-  //     [form.quarter]: [...(companyTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   console.log('Updated companyTraction object:', updated);
-  
-  //   addCompanyTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updated)); // localStorage
-    
-  //   setCompanyTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
 
 
   async function handleAddNewTraction() {

@@ -87,6 +87,11 @@ export const initialCompanyTraction = {
 const useCompanyTractionStore = create((set) => ({
   companyTraction: initialCompanyTraction,
 
+  // Store the initial state when app loads
+  baselineCompanyTraction: initialCompanyTraction,
+
+  setBaselineCompanyTraction: (data) => set({ baselineCompanyTraction: data }),
+
   setCompanyTraction: (data) => set({ companyTraction: data }),
 
   addCompanyTraction: (quarter, item) =>
