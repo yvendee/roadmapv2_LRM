@@ -37,51 +37,28 @@ const DepartmentAnnualPriorities = () => {
   const [draggedId, setDraggedId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [originalAnnualPriorities, setOriginalAnnualPriorities] = useState([]);
 
   
+  
+  // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
     if (storedData) {
       try {
         const parsedData = JSON.parse(storedData);
         setDepartmentAnnualPriorities(parsedData);
-  
-        // ✅ Save initial data
-        setOriginalAnnualPriorities(parsedData);
-  
-        // ✅ Treat this as unsaved state
+
+        // ✅ Treat this as unsaved state, trigger the buttons
         setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
+
       } catch (err) {
         ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
-    } else {
-      // Load from Zustand default store (which may have been updated from API)
-      setOriginalAnnualPriorities(departmentAnnualPriorities);
     }
-  }, []);
+  }, [setDepartmentAnnualPriorities]);
+
+
   
-  
-  // // Load from localStorage if available
-  // useEffect(() => {
-  //   const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
-  //   if (storedData) {
-  //     try {
-  //       const parsedData = JSON.parse(storedData);
-  //       setDepartmentAnnualPriorities(parsedData);
-
-  //       // ✅ Treat this as unsaved state, trigger the buttons
-  //       setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
-
-  //     } catch (err) {
-  //       ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
-  //     }
-  //   }
-  // }, [setDepartmentAnnualPriorities]);
-
-
-
-
   const handleAddDriverClick = () => {
     setLoading(true);
     setTimeout(() => {
@@ -293,27 +270,32 @@ const handleAddNewAnnualPriority = async () => {
   //   setShowConfirmModal(false);
   // };
 
+  // const cancelDischargeChanges = () => {
+  //   setShowConfirmModal(false);
+  // };
+
 
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
     localStorage.removeItem('departmentAnnualPrioritiesData');
   
-    // 2. Clear edited state
+    // 2. Clear edited state (hides buttons)
     setEditedAnnualPriorities([]);
   
-    // 3. Restore from stored original state
-    setDepartmentAnnualPriorities(originalAnnualPriorities);
+    // 3. Get current data from Zustand store (rollback to latest saved state)
+    const currentState = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
   
-    // 4. Hide Modal
+    // 4. Update local state with the current store data
+    setDepartmentAnnualPriorities(currentState);
+  
+    // 5. Hide Modal
     setShowConfirmModal(false);
   };
-  
-
   
   const cancelDischargeChanges = () => {
     setShowConfirmModal(false);
   };
-
+  
 
   // Sync initial and store changes:
   useEffect(() => {
