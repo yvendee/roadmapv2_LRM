@@ -37,6 +37,7 @@ use App\Models\GccRevenueGrowth;
 use App\Models\CompanyTractionAnnualPriority;
 use App\Models\CompanyTractionCompanyTraction;
 use App\Models\DepartmentTractionAnnualPriority;
+use App\Models\DepartmentTractionCompanyTraction;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -3050,49 +3051,177 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 });
 
 
+// // ref: frontend\src\components\6.company-traction\companyTraction.jsx
+//  Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     // ✅ Validate the request
+//     $validator = Validator::make($request->all(), [
+//         'organization' => 'required|string|max:255',
+//     ]);
+
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'Validation failed',
+//             'errors' => $validator->errors(),
+//         ], 422);
+//     }
+
+//     $organization = $request->query('organization');
+
+//     // ✅ Fetch record
+//     $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         // Return empty structure if not found
+//         return response()->json([
+//             'Q1' => [],
+//             'Q2' => [],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ]);
+//     }
+
+//     return response()->json($record->companyTractionData ?? [
+//         'Q1' => [],
+//         'Q2' => [],
+//         'Q3' => [],
+//         'Q4' => [],
+//     ]);
+// });
+
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
- Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
+Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
-    // ✅ Validate the request
-    $validator = Validator::make($request->all(), [
-        'organization' => 'required|string|max:255',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
     $organization = $request->query('organization');
 
-    // ✅ Fetch record
-    $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+    if (!$organization) {
+        return response()->json(['message' => 'Organization name is required'], 400);
+    }
+
+    $record = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
 
     if (!$record) {
-        // Return empty structure if not found
         return response()->json([
+            'message' => "No traction data found for organization: $organization",
+            'data' => [
+                'Q1' => [],
+                'Q2' => [],
+                'Q3' => [],
+                'Q4' => [],
+            ]
+        ], 404);
+    }
+
+    return response()->json([
+        'message' => 'Company traction data retrieved successfully',
+        'data' => $record->companyTractionData ?? [
             'Q1' => [],
             'Q2' => [],
             'Q3' => [],
             'Q4' => [],
-        ]);
-    }
-
-    return response()->json($record->companyTractionData ?? [
-        'Q1' => [],
-        'Q2' => [],
-        'Q3' => [],
-        'Q4' => [],
+        ],
     ]);
 });
+
+// ref: 
+Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organizationName' => 'required|string|max:255',
+        'companyTractionData' => 'required|array',
+    ]);
+
+    $orgName = $validated['organizationName'];
+    $tractionData = $validated['companyTractionData'];
+
+    $record = DepartmentTractionCompanyTraction::where('organizationName', $orgName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => "Organization '$orgName' not found",
+        ], 404);
+    }
+
+    $record->companyTractionData = $tractionData;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Company traction data updated successfully',
+        'data' => $record,
+    ]);
+});
+
+// ref:
+Route::post('/api/v1/department-traction/traction-data/add', function (Request $request) {
+    // Validate request
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'quarter' => 'required|string|in:Q1,Q2,Q3,Q4',
+        'newItem' => 'required|array',
+    ]);
+
+    $organizationName = $validated['organizationName'];
+    $quarter = $validated['quarter'];
+    $newItem = $validated['newItem'];
+
+    // Fetch record by organizationName
+    $record = DepartmentTractionCompanyTraction::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'message' => 'Organization not found',
+        ], 404);
+    }
+
+    // Get existing companyTractionData (cast to array via model or decode manually)
+    $tractionData = $record->companyTractionData ?? [];
+
+    // Ensure it's an array
+    if (!is_array($tractionData)) {
+        $tractionData = ['Q1' => [], 'Q2' => [], 'Q3' => [], 'Q4' => []];
+    }
+
+    // Make sure the quarter key exists and is an array
+    if (!isset($tractionData[$quarter]) || !is_array($tractionData[$quarter])) {
+        $tractionData[$quarter] = [];
+    }
+
+    // Assign a new ID (using time or max ID + 1)
+    $allItems = collect($tractionData)->flatten(1);
+    $maxId = $allItems->max('id') ?? 0;
+    $newItem['id'] = $maxId + 1;
+
+    // Append the new item
+    $tractionData[$quarter][] = $newItem;
+
+    // Save back to DB
+    $record->companyTractionData = $tractionData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New traction item added successfully',
+        'data' => $newItem,
+    ]);
+});
+
 
 // // ref: 
 // Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {

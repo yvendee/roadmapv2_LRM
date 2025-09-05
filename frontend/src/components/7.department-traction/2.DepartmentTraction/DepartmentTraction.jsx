@@ -11,7 +11,10 @@ import {
 import useDepartmentTractionStore, { initialDepartmentTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+// import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './DepartmentTraction.css';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
@@ -36,7 +39,7 @@ const DepartmentTractionTable = () => {
 
   const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
 
-  
+  const organization = useLayoutSettingsStore.getState().organization;
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -373,21 +376,67 @@ const DepartmentTractionTable = () => {
   //   handleSaveChanges();
   // };
 
-  const handleSaveChanges = () => {
-    setLoadingSave(true);
+  // const handleSaveChanges = () => {
+  //   setLoadingSave(true);
     
-    setTimeout(() => {
-      setLoadingSave(false);
-      // localStorage.setItem('departmentTractionData', JSON.stringify(departmentTraction));
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  //     // localStorage.setItem('departmentTractionData', JSON.stringify(departmentTraction));
       
-      // Parse the stored JSON data back to its original object form
-      const savedData = JSON.parse(localStorage.getItem('departmentTractionData'));
+  //     // Parse the stored JSON data back to its original object form
+  //     const savedData = JSON.parse(localStorage.getItem('departmentTractionData'));
       
-      ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
-      localStorage.removeItem('departmentTractionData');
-      setIsEditing(false); // Hide the buttons after saving
-    }, 1000);
+  //     ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
+  //     localStorage.removeItem('departmentTractionData');
+  //     setIsEditing(false); // Hide the buttons after saving
+  //   }, 1000);
 
+  // };
+
+  const handleSaveChanges = async () => {
+    setLoadingSave(true);
+  
+    setTimeout(async () => {
+      setLoadingSave(false);
+  
+      const savedData = JSON.parse(localStorage.getItem('departmentTractionData'));
+  
+      ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
+  
+      localStorage.removeItem('departmentTractionData');
+      setIsEditing(false); // Hide save/discard buttons
+  
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        const response = await fetch(`${API_URL}/v1/department-traction/traction-data/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organizationName: organization,
+            companyTractionData: savedData,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Company Traction Data Updated:', result);
+        } else {
+          console.error('❌ Failed to update company traction data:', result.message);
+        }
+      } catch (error) {
+        console.error('❌ Network error while updating company traction data:', error);
+      }
+    }, 1000);
   };
 
   const handleDischargeChanges = () => {
@@ -424,13 +473,42 @@ const DepartmentTractionTable = () => {
   };
 
 
-  function handleAddNewTraction() {
+  // function handleAddNewTraction() {
+  //   const mmddyyyy = form.dueDate
+  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
+  //     : 'Click to set date';
+  
+  //   const newItem = {
+  //     id: Date.now(),
+  //     who: form.who,
+  //     collaborator: form.collaborator,
+  //     description: form.description,
+  //     progress: form.progress,
+  //     annualPriority: form.annualPriority,
+  //     dueDate: mmddyyyy,
+  //     rank: form.rank,
+  //     comment: [],
+  //   };
+  
+  //   const updated = {
+  //     ...departmentTraction,
+  //     [form.quarter]: [...(departmentTraction[form.quarter] || []), newItem],
+  //   };
+  
+  //   addDepartmentTraction(form.quarter, newItem); // store
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updated)); // localStorage
+  //   setDepartmentTraction(updated); // update table
+  //   setAddTractionModalOpen(false); // close modal
+  // }
+  
+
+  async function handleAddNewTraction() {
     const mmddyyyy = form.dueDate
       ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
       : 'Click to set date';
   
     const newItem = {
-      id: Date.now(),
+      id: Date.now(), // Placeholder; real ID from server
       who: form.who,
       collaborator: form.collaborator,
       description: form.description,
@@ -441,18 +519,55 @@ const DepartmentTractionTable = () => {
       comment: [],
     };
   
-    const updated = {
-      ...departmentTraction,
-      [form.quarter]: [...(departmentTraction[form.quarter] || []), newItem],
-    };
+    ENABLE_CONSOLE_LOGS && console.log('📤 New Traction Item:', newItem);
   
-    addDepartmentTraction(form.quarter, newItem); // store
-    localStorage.setItem('departmentTractionData', JSON.stringify(updated)); // localStorage
-    setDepartmentTraction(updated); // update table
-    setAddTractionModalOpen(false); // close modal
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const payload = {
+        organizationName: organization,
+        quarter: form.quarter,
+        newItem,
+      };
+  
+      const response = await fetch(`${API_URL}/v1/department-traction/traction-data/add`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Traction item saved to backend:', result.data);
+  
+        const serverNewItem = result.data;
+  
+        // Append to local state
+        const updated = {
+          ...departmentTraction,
+          [form.quarter]: [...(departmentTraction[form.quarter] || []), serverNewItem],
+        };
+  
+        addDepartmentTraction(form.quarter, serverNewItem); // Store
+        setDepartmentTraction(updated); // UI update
+        setAddTractionModalOpen(false); // Close modal
+      } else {
+        console.error('❌ Failed to save traction item:', result.message || result);
+      }
+    } catch (err) {
+      console.error('❌ Error saving traction item:', err);
+    }
   }
   
-
 
 
   return (
