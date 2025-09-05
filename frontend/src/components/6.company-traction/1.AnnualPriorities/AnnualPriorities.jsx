@@ -32,7 +32,7 @@ const AnnualPriorities = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAnnualPriority, setNewAnnualPriority] = useState({
     description: '',
-    status: 'Tracking',
+    status: '0.00%',
   });
 
   const [currentOrder, setCurrentOrder] = useState(annualPriorities);
@@ -42,7 +42,7 @@ const AnnualPriorities = () => {
 
   // const [newDriver, setNewDriver] = useState({
   //   description: '',
-  //   status: 'Tracking',
+  //   status: '0.00%',
   // });
   
 
@@ -180,68 +180,6 @@ const AnnualPriorities = () => {
       setEditingCell({ id, field });
     }
   };
-
-  // const handleSaveChanges = () => {
-
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  
-  //     const storedData = localStorage.getItem('annualPrioritiesData');
-  
-  //     if (storedData) {
-  //       try {
-  //         const parsedData = JSON.parse(storedData);
-  
-  //         // 1. Log to console
-  //         ENABLE_CONSOLE_LOGS && console.log('Saved Annual Priorities after Save Changes Button:', parsedData);
-  
-  //         // 2. Update Zustand store
-  //         setAnnualPriorities(parsedData);
-
-  //         // Reindex IDs
-  //         const reordered = parsedData.map((driver, index) => ({
-  //           ...driver,
-  //           id: index + 1,
-  //         }));
-
-  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (Reindexed):', reordered);
-
-  //         setAnnualPriorities(reordered);
-  
-  //         // 3. Clear edited state (hides buttons)
-  //         // setEditedAnnualPriorities([]);
-  //         setIsEditing(false);
-
-  
-  //         // 4. Remove from localStorage
-  //         localStorage.removeItem('annualPrioritiesData');
-  //       } catch (err) {
-  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing annualPrioritiesData on save:', err);
-  //       }
-  //     } else {
-
-  //       // No localStorage changes, use current drag order
-
-  //       const reordered = currentOrder.map((driver, index) => ({
-  //         ...driver,
-  //         id: index + 1,
-  //       }));
-
-  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Annual Priorities (reordered):', reordered);
-  //       setAnnualPriorities(reordered);
-  //       // setEditedAnnualPriorities([]);
-  //       setIsEditing(false);
-
-
-  //       // Remove from localStorage
-  //       localStorage.removeItem('annualPrioritiesData');
-
-  //     }
-  //   }, 1000);
-  // };
-
 
   const handleSaveChanges = () => {
     setLoadingSave(true);
@@ -673,10 +611,11 @@ const AnnualPriorities = () => {
               value={newAnnualPriority.status}
               onChange={(e) => setNewAnnualPriority({ ...newAnnualPriority, status: e.target.value })}
             >
-              <option>100.00%</option>
-              <option>83.33%</option>
               <option>0.00%</option>
               <option>50.00%</option>
+              <option>83.33%</option>
+              <option>100.00%</option>
+            
             </select>
 
             <div className="modal-add-buttons">
