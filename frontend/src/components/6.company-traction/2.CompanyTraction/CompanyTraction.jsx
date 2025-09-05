@@ -516,14 +516,14 @@ const CompanyTraction = () => {
   //   // 4. Hide Modal
   //   setShowConfirmModal(false);
   // };
-const confirmDischargeChanges = () => {
-  const currentStoreData = useCompanyTractionStore.getState().companyTraction;
-  console.log('🌀 Resetting UI to current store value:', currentStoreData);
+  const confirmDischargeChanges = () => {
+    const currentStoreData = useCompanyTractionStore.getState().companyTraction;
+    console.log('🌀 Resetting UI to current store value:', currentStoreData);
 
-  // Deep clone to trigger re-render
-  const clonedData = JSON.parse(JSON.stringify(currentStoreData));
-  setCompanyTraction(clonedData);
-
+    // Deep clone to trigger re-render
+    const clonedData = JSON.parse(JSON.stringify(currentStoreData));
+    setCompanyTraction(clonedData);
+    setShowConfirmModal(false);
   };
 
 
