@@ -66,6 +66,13 @@ export const initialDepartmentAnnualPriorities = [
 
 const useDepartmentAnnualPrioritiesStore = create((set) => ({
   departmentAnnualPriorities: initialDepartmentAnnualPriorities,
+
+  // Store the initial state when app loads
+  baselineAnnualPriorities: initialDepartmentAnnualPriorities,
+
+  setBaselineAnnualPriorities: (data) => set({ baselineAnnualPriorities: data }),
+
+
   setDepartmentAnnualPriorities: (drivers) => set({ departmentAnnualPriorities: drivers }),
   addDepartmentAnnualAnnualPriorities: (driver) =>
     set((state) => ({

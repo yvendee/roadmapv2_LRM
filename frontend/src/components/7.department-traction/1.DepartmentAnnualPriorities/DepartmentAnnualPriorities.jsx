@@ -52,6 +52,11 @@ const DepartmentAnnualPriorities = () => {
         ENABLE_CONSOLE_LOGS && console.error('Failed to parse departmentAnnualPrioritiesData from localStorage:', err);
       }
     }
+    else {
+      // Store the initial state (only once)
+      const currentData = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
+      useDepartmentAnnualPrioritiesStore.getState().baselineAnnualPriorities(currentData)
+    }
   }, [setDepartmentAnnualPriorities]);
 
   const handleAddDriverClick = () => {
@@ -259,7 +264,9 @@ const DepartmentAnnualPriorities = () => {
     setEditedAnnualPriorities([]);
 
     // 3. Update Zustand store
-    setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+    // setDepartmentAnnualPriorities(initialDepartmentAnnualPriorities);
+    const { baselineAnnualPriorities } = useDepartmentAnnualPrioritiesStore.getState();
+    setDepartmentAnnualPriorities(baselineAnnualPriorities);
 
     // 4. Hide Modal
     setShowConfirmModal(false);
