@@ -3007,10 +3007,6 @@ Route::post('/api/v1/company-traction/traction-data/update', function (Request $
 });
 
 // ref:
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Models\CompanyTractionCompanyTractionTable;
-
 Route::post('/api/v1/company-traction/traction-data/add', function (Request $request) {
     // Validate request
     $validated = $request->validate([
@@ -3024,7 +3020,7 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
     $newItem = $validated['newItem'];
 
     // Fetch record
-    $record = CompanyTractionCompanyTractionTable::where('organizationName', $organizationName)->first();
+    $record = CompanyTractionCompanyTraction::where('organizationName', $organizationName)->first();
 
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
