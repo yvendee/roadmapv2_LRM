@@ -500,31 +500,44 @@ const CompanyTraction = () => {
     }, 1000);
   };
 
+  // const confirmDischargeChanges = () => {
+  //   // 1. Remove from localStorage
+  //   localStorage.removeItem('companyTractionData');
+
+  //   // 2. Clear edited state (hides buttons)
+  //   setIsEditing(false); 
+
+  //   // 3. Update Zustand store
+  //   setCompanyTraction(initialCompanyTraction);
+
+
+  //   // 4. Hide Modal
+  //   setShowConfirmModal(false);
+  // };
+
+
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
     localStorage.removeItem('companyTractionData');
+  
+    // 2. Clear "edited" UI state
+    setIsEditing(false);
+  
+    // 3. Get current store value
+    const currentStoreData = useCompanyTractionStore.getState().companyTraction;
 
-    // 2. Clear edited state (hides buttons)
-    setIsEditing(false); 
-
-    // 3. Update Zustand store
-    setCompanyTraction(initialCompanyTraction);
-
-
-    // 4. Hide Modal
+    console.log('Resetting UI state to current store:', currentStoreData);
+  
+    // 4. Deep clone it to force React re-render
+    const clonedData = JSON.parse(JSON.stringify(currentStoreData));
+  
+    // 5. Reset local component state (UI)
+    setCompanyTraction(clonedData);
+  
+    // 6. Hide confirmation modal
     setShowConfirmModal(false);
   };
-
-
-  // const confirmDischargeChanges = () => {
-  //   const currentStoreData = useCompanyTractionStore.getState().companyTraction;
-  //   console.log('🌀 Resetting UI to current store value:', currentStoreData);
-
-  //   // Deep clone to trigger re-render
-  //   const clonedData = JSON.parse(JSON.stringify(currentStoreData));
-  //   setCompanyTraction(clonedData);
-  //   setShowConfirmModal(false);
-  // };
+  
 
 
   async function handleAddNewTraction() {
