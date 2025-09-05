@@ -138,7 +138,7 @@ const DepartmentAnnualPriorities = () => {
     }
   };
   
-  
+
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -255,7 +255,7 @@ const DepartmentAnnualPriorities = () => {
           setEditedAnnualPriorities([]);
   
           // 🔄 Send reordered data to backend
-          fetch('/api/v1/department-traction/annual-priorities/update', {
+          fetch(`${API_URL}/v1/department-traction/annual-priorities/update`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -289,7 +289,7 @@ const DepartmentAnnualPriorities = () => {
         setEditedAnnualPriorities([]);
   
         // 🔄 Send reordered data to backend
-        fetch('/api/v1/department-traction/annual-priorities/update', {
+        fetch(`${API_URL}/v1/department-traction/annual-priorities/update`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
