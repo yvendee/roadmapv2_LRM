@@ -72,7 +72,7 @@ const useDepartmentAnnualPrioritiesStore = create((set) => ({
 
   setBaselineAnnualPriorities: (data) => set({ baselineAnnualPriorities: data }),
 
-
+  
   setDepartmentAnnualPriorities: (drivers) => set({ departmentAnnualPriorities: drivers }),
   addDepartmentAnnualAnnualPriorities: (driver) =>
     set((state) => ({
