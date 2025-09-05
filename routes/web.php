@@ -3007,41 +3007,43 @@ Route::post('/api/v1/company-traction/traction-data/update', function (Request $
 });
 
 // ref:
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Models\CompanyTractionCompanyTractionTable;
+
 Route::post('/api/v1/company-traction/traction-data/add', function (Request $request) {
     // Validate request
     $validated = $request->validate([
         'organizationName' => 'required|string',
         'quarter' => 'required|string',
         'newItem' => 'required|array',
-        // You can validate individual fields inside newItem as needed
     ]);
 
     $organizationName = $validated['organizationName'];
     $quarter = $validated['quarter'];
     $newItem = $validated['newItem'];
 
-    // Fetch existing record by organizationName
-    $record = CompanyTractionCompanyTraction::where('organizationName', $organizationName)->first();
+    // Fetch record
+    $record = CompanyTractionCompanyTractionTable::where('organizationName', $organizationName)->first();
 
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
     }
 
-    // Decode existing companyTractionData JSON (nullable)
-    $tractionData = $record->companyTractionData ? json_decode($record->companyTractionData, true) : [];
+    // Use existing array if already cast, or decode manually if not
+    $tractionData = $record->companyTractionData ?? [];
 
-    // Make sure the quarter exists in the tractionData
+    // Make sure the quarter key exists
     if (!isset($tractionData[$quarter]) || !is_array($tractionData[$quarter])) {
         $tractionData[$quarter] = [];
     }
 
-    // Append new item (make sure to generate a unique ID here, overriding the client id)
-    $newItem['id'] = time(); // Or use some other method to generate unique id on server
-
+    // Assign new unique ID
+    $newItem['id'] = time(); // Or another server-generated ID
     $tractionData[$quarter][] = $newItem;
 
-    // Save updated data back
-    $record->companyTractionData = json_encode($tractionData);
+    // Save back to DB
+    $record->companyTractionData = $tractionData;
     $record->save();
 
     return response()->json([
@@ -3049,6 +3051,7 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
         'data' => $newItem,
     ]);
 });
+
 
 
 
