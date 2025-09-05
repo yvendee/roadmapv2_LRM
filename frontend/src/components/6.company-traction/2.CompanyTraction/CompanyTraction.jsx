@@ -110,36 +110,25 @@ const CompanyTraction = () => {
     : (companyTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
-  // useEffect(() => {
-  //   const stored = localStorage.getItem('companyTractionData');
-  //   if (stored) {
-  //     setIsEditing(true); // Mark as edited
-  //     const parsed = JSON.parse(stored);
-  //     setCompanyTraction(parsed);
-  //     // setEditedTraction(parsed.map((t) => ({ id: t.id })));
-  //   } else {
-  //     setCompanyTraction(storeTraction); // fallback to Zustand
-  //   }
-  // }, [storeTraction]);
-    
+
+  // Sync initial and store changes:
+  useEffect(() => {
+    setCompanyTraction(companyTraction);
+  }, [companyTraction]);
 
   useEffect(() => {
     const stored = localStorage.getItem('companyTractionData');
-  
     if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setCompanyTraction(parsed);
-      } catch (e) {
-        console.error('Failed to parse localStorage data:', e);
-        setCompanyTraction(storeTraction);
-      }
+      setIsEditing(true); // Mark as edited
+      const parsed = JSON.parse(stored);
+      setCompanyTraction(parsed);
+      // setEditedTraction(parsed.map((t) => ({ id: t.id })));
     } else {
-      setCompanyTraction(storeTraction);
+      setCompanyTraction(storeTraction); // fallback to Zustand
     }
-  }, []); // ← only run on mount
-  
-  
+  }, [storeTraction]);
+    
+
   // useEffect(() => {
   //   const storedData = localStorage.getItem('companyTractionData');
   //   if (storedData) {
