@@ -40,7 +40,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(GccMetricsSeeder::class);
         // $this->call(GccFinancialGrowthSeeder::class);
         // $this->call(CompanyTractionAnnualPrioritiesSeeder::class);
-        $this->call(CompanyTractionCompanyTractionSeeder::class);
+        // $this->call(CompanyTractionCompanyTractionSeeder::class);
+        $this->call(DepartmentTractionAnnualPrioritiesSeeder::class);
         
         
     

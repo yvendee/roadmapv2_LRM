@@ -36,6 +36,7 @@ use App\Models\GccMetric;
 use App\Models\GccRevenueGrowth;
 use App\Models\CompanyTractionAnnualPriority;
 use App\Models\CompanyTractionCompanyTraction;
+use App\Models\DepartmentTractionAnnualPriority;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -3049,7 +3050,6 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 });
 
 
-
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
  Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -3094,17 +3094,113 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
     ]);
 });
 
+// // ref: 
+// Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validator = Validator::make($request->all(), [
+//         'organization' => 'required|string|max:255',
+//         'companyTraction' => 'required|array',
+//     ]);
+
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'Validation failed',
+//             'errors' => $validator->errors(),
+//         ], 422);
+//     }
+
+//     $organization = $request->input('organization');
+//     $companyTractionData = $request->input('companyTraction');
+
+//     $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'Organization not found.',
+//         ], 404);
+//     }
+
+//     $record->companyTractionData = $companyTractionData;
+//     $record->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'Company traction data updated successfully.',
+//     ]);
+// });
+
+
+// // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
+// Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'description' => 'Department-level initiative to enhance coaching operations.',
+//                 'status' => '90.00%',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'description' => 'Optimize department communication strategies.',
+//                 'status' => '75.00%',
+//             ],
+//         ],
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'description' => 'Improve internal training programs within departments.',
+//                 'status' => '80.00%',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'description' => 'Implement KPI dashboards for each department.',
+//                 'status' => '70.00%',
+//             ],
+//         ],
+//         'Test Skeleton Loading' => [
+//             [
+//                 'id' => 1,
+//                 'description' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'description' => '-',
+//                 'status' => '-',
+//             ],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+
 // ref: 
-Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
+Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
+    // ✅ Validate the input
     $validator = Validator::make($request->all(), [
         'organization' => 'required|string|max:255',
-        'companyTraction' => 'required|array',
     ]);
 
     if ($validator->fails()) {
@@ -3115,79 +3211,105 @@ Route::post('/api/v1/department-traction/traction-data/update', function (Reques
         ], 422);
     }
 
-    $organization = $request->input('organization');
-    $companyTractionData = $request->input('companyTraction');
+    $organization = $request->query('organization');
 
-    $record = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+    // 🔍 Find the record in DB
+    $record = DepartmentTractionAnnualPriority::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Organization not found.',
-        ], 404);
-    }
-
-    $record->companyTractionData = $companyTractionData;
-    $record->save();
-
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Company traction data updated successfully.',
-    ]);
+    // 📦 Return the data or default empty array if not found or null
+    return response()->json($record->annualPrioritiesData ?? []);
 });
 
 
-// ref: frontend\src\components\7.department-traction\departmentTraction.jsx
-Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
+// ref: 
+Route::post('/api/v1/department-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
-    $organization = $request->query('organization');
+    // Validate request inputs
+    $validator = Validator::make($request->all(), [
+        'organizationName' => 'required|string|max:255',
+        'annualPrioritiesData' => 'required|array', // expects JSON array
+    ]);
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'description' => 'Department-level initiative to enhance coaching operations.',
-                'status' => '90.00%',
-            ],
-            [
-                'id' => 2,
-                'description' => 'Optimize department communication strategies.',
-                'status' => '75.00%',
-            ],
-        ],
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'description' => 'Improve internal training programs within departments.',
-                'status' => '80.00%',
-            ],
-            [
-                'id' => 2,
-                'description' => 'Implement KPI dashboards for each department.',
-                'status' => '70.00%',
-            ],
-        ],
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'description' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 2,
-                'description' => '-',
-                'status' => '-',
-            ],
-        ],
-    ];
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    $organizationName = $request->input('organizationName');
+    $annualPrioritiesData = $request->input('annualPrioritiesData');
+
+    // Find the record by organizationName
+    $record = DepartmentTractionAnnualPriority::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => "Organization '$organizationName' not found",
+        ], 404);
+    }
+
+    // Update the annualPrioritiesData column (store as JSON)
+    $record->annualPrioritiesData = $annualPrioritiesData;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Annual Priorities data updated successfully',
+        'data' => $record,
+    ]);
 });
+
+// ref: 
+Route::post('/api/v1/department-traction/annual-priorities/add', function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'organizationName' => 'required|string',
+        'newAnnualPriority' => 'required|array',
+        'newAnnualPriority.description' => 'required|string',
+        'newAnnualPriority.status' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+    }
+
+    $organization = $request->input('organizationName');
+    $newItem = $request->input('newAnnualPriority');
+
+    $record = DepartmentTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    // Decode current data
+    $existingData = json_decode($record->annualPrioritiesData ?? '[]', true);
+
+    // Assign new ID (max ID + 1 or 1)
+    $newId = collect($existingData)->max('id') + 1 ?? 1;
+    $newItem['id'] = $newId;
+
+    // Append new item
+    $existingData[] = $newItem;
+
+    // Update DB
+    $record->annualPrioritiesData = json_encode($existingData);
+    $record->save();
+
+    return response()->json([
+        'message' => 'New annual priority added successfully',
+        'data' => $newItem,
+    ]);
+});
+
+
 
 // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {

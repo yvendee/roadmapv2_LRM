@@ -4,7 +4,10 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useDepartmentAnnualPrioritiesStore, { initialDepartmentAnnualPriorities } from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+
 import './DepartmentAnnualPriorities.css';
 
 const DepartmentAnnualPriorities = () => {
@@ -12,6 +15,7 @@ const DepartmentAnnualPriorities = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
+  const organization = useLayoutSettingsStore((state) => state.organization);
 
   const loggedUser = useLoginStore((state) => state.user);
   const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
@@ -26,7 +30,7 @@ const DepartmentAnnualPriorities = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAnnualPriority, setNewAnnualPriority] = useState({
     description: '',
-    status: 'Tracking',
+    status: '00.00%',
   });
 
   const [currentOrder, setCurrentOrder] = useState(departmentAnnualPriorities);
@@ -59,28 +63,82 @@ const DepartmentAnnualPriorities = () => {
     }, 1000);
   };
 
-  const handleAddNewAnnualPriority = () => {
+  // const handleAddNewAnnualPriority = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
+
+  //   // 2. Hide Save / Discharge
+  //   setEditedAnnualPriorities([]);
+  
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('departmentAnnualPrioritiesData');
+  
+  //   // 4. Push to Zustand store
+  //   pushDepartmentAnnualPriorities(newAnnualPriority);
+  
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
+  
+  //   // Close modal
+  //   setShowAddModal(false);
+  
+  //   // Reset form input
+  //   setNewAnnualPriority({ description: '', status: 'Tracking' });
+  // };
+
+
+  const handleAddNewAnnualPriority = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
-
-    // 2. Hide Save / Discharge
-    setEditedAnnualPriorities([]);
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('departmentAnnualPrioritiesData');
+    // Send to backend first
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
   
-    // 4. Push to Zustand store
-    pushDepartmentAnnualPriorities(newAnnualPriority);
+      const org = useLayoutSettingsStore.getState().organization;
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+      const response = await fetch(`${API_URL}/v1/department-traction/annual-priorities/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: org,
+          newAnnualPriority,
+        }),
+      });
   
-    // Close modal
-    setShowAddModal(false);
+      const result = await response.json();
   
-    // Reset form input
-    setNewAnnualPriority({ description: '', status: 'Tracking' });
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ New Annual Priority Saved:', result.data);
+  
+        // 2. Hide Save / Discharge
+        setEditedAnnualPriorities([]);
+  
+        // 3. Remove localStorage temp data
+        localStorage.removeItem('departmentAnnualPrioritiesData');
+  
+        // 4. Push to Zustand store
+        pushDepartmentAnnualPriorities(result.data); // Use response with ID
+  
+        // 5. Close modal
+        setShowAddModal(false);
+  
+        // 6. Reset form input
+        setNewAnnualPriority({ description: '', status: '00.00%' });
+      } else {
+        console.error('❌ Error saving new annual priority:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ Network/Server Error:', error);
+    }
   };
-
+  
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -112,8 +170,64 @@ const DepartmentAnnualPriorities = () => {
 
 
   
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setDepartmentAnnualPriorities(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (Reindexed):', reordered);
+
+  //         setDepartmentAnnualPriorities(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         setEditedAnnualPriorities([]);
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('departmentAnnualPrioritiesData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing departmentAnnualPrioritiesData on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (reordered):', reordered);
+  //       setDepartmentAnnualPriorities(reordered);
+  //       setEditedAnnualPriorities([]);
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('departmentAnnualPrioritiesData');
+
+  //     }
+  //   }, 1000);
+  // };
+  
+  const handleSaveChanges = () => {
     setLoadingSave(true);
   
     setTimeout(() => {
@@ -125,50 +239,79 @@ const DepartmentAnnualPriorities = () => {
         try {
           const parsedData = JSON.parse(storedData);
   
-          // 1. Log to console
           ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities after Save Changes Button:', parsedData);
   
-          // 2. Update Zustand store
           setDepartmentAnnualPriorities(parsedData);
-
+  
           // Reindex IDs
           const reordered = parsedData.map((driver, index) => ({
             ...driver,
             id: index + 1,
           }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (Reindexed):', reordered);
-
-          setDepartmentAnnualPriorities(reordered);
   
-          // 3. Clear edited state (hides buttons)
+          ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities (Reindexed):', reordered);
+  
+          setDepartmentAnnualPriorities(reordered);
           setEditedAnnualPriorities([]);
   
-          // 4. Remove from localStorage
+          // 🔄 Send reordered data to backend
+          fetch('/api/v1/department-traction/annual-priorities/update', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              organizationName: organization, 
+              annualPrioritiesData: reordered,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              ENABLE_CONSOLE_LOGS && console.log('Backend update response:', data);
+            })
+            .catch((error) => {
+              ENABLE_CONSOLE_LOGS && console.error('Error updating annual priorities:', error);
+            });
+  
           localStorage.removeItem('departmentAnnualPrioritiesData');
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing departmentAnnualPrioritiesData on save:', err);
         }
       } else {
-
-        // No localStorage changes, use current drag order
-
         const reordered = currentOrder.map((driver, index) => ({
           ...driver,
           id: index + 1,
         }));
-
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Department Annual Priorities (reordered):', reordered);
+  
+        ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities (reordered):', reordered);
+  
         setDepartmentAnnualPriorities(reordered);
         setEditedAnnualPriorities([]);
-
-        // Remove from localStorage
+  
+        // 🔄 Send reordered data to backend
+        fetch('/api/v1/department-traction/annual-priorities/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            organizationName: organization, 
+            annualPrioritiesData: reordered,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            ENABLE_CONSOLE_LOGS && console.log('Backend update response:', data);
+          })
+          .catch((error) => {
+            ENABLE_CONSOLE_LOGS && console.error('Error updating annual priorities:', error);
+          });
+  
         localStorage.removeItem('departmentAnnualPrioritiesData');
-
       }
     }, 1000);
   };
-  
+
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
