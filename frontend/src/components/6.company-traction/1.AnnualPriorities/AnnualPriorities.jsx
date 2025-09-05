@@ -17,17 +17,16 @@ const AnnualPriorities = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
 
   const storeAnnualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
+  const [annualPriorities, setAnnualPriorities] = useState([]);
 
   const loggedUser = useLoginStore((state) => state.user);
   // const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
-  const [annualPriorities, setAnnualPriorities] = useState([]);
   // const setAnnualPriorities = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
   const updateAnnualPrioritiesField = useAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
   const pushAnnualPriorities = useAnnualPrioritiesStore((state) => state.pushAnnualPriorities);
 
   // const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
   
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -63,7 +62,6 @@ const AnnualPriorities = () => {
 
         ENABLE_CONSOLE_LOGS && console.log('annualPrioritiesData found! and  loaded!');
 
-
         // ✅ Treat this as unsaved state, trigger the buttons
         // setEditedAnnualPriorities(parsedData.map((d) => ({ id: d.id })));
         setIsEditing(true);
@@ -74,12 +72,27 @@ const AnnualPriorities = () => {
       }
     }
     else {
+      // ✅ fallback if nothing in localStorage
       setAnnualPriorities(storeAnnualPriorities); // fallback to store if no localStorage
-          // ✅ fallback if nothing in localStorage
-
       setCurrentOrder(storeAnnualPriorities);
     }
-  }, [setAnnualPriorities]);
+  }, [storeAnnualPriorities]);
+
+
+  const handleInputBlur = (id, field, value) => {
+    // Update localStorage
+    const updatedDrivers = annualPriorities.map((driver) =>
+      driver.id === id ? { ...driver, [field]: value } : driver
+    );
+
+    setAnnualPriorities(updatedDrivers);
+    localStorage.setItem('annualPrioritiesData', JSON.stringify(updatedDrivers));
+
+    // Update local state for Save/Discharge buttons
+    setIsEditing(true);
+
+    setEditingCell({ id: null, field: null });
+  };
 
   const handleAddDriverClick = () => {
     setLoading(true);
@@ -119,8 +132,6 @@ const AnnualPriorities = () => {
   const handleAddNewAnnualPriority = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
   
-    const org = useLayoutSettingsStore.getState().organization;
-  
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
@@ -135,7 +146,7 @@ const AnnualPriorities = () => {
         },
         credentials: 'include',
         body: JSON.stringify({
-          organizationName: org,
+          organizationName: organization,
           newPriority: newAnnualPriority,
         }),
       });
@@ -170,26 +181,6 @@ const AnnualPriorities = () => {
     }
   };
 
-  const handleInputBlur = (id, field, value) => {
-    // updateAnnualPrioritiesField(id, field, value);
-
-    // Update local state for Save/Discharge buttons
-    setIsEditing(true);
-
-    // Update localStorage
-    const updatedDrivers = annualPriorities.map((driver) =>
-      driver.id === id ? { ...driver, [field]: value } : driver
-    );
-
-    setAnnualPriorities(updatedDrivers);
-
-    localStorage.setItem('annualPrioritiesData', JSON.stringify(updatedDrivers));
-
-    setEditingCell({ id: null, field: null });
-  };
-
-
-  
   // const handleSaveChanges = () => {
 
   //   setLoadingSave(true);
@@ -339,8 +330,7 @@ const AnnualPriorities = () => {
     }, 1000);
   };
   
-  
-  
+
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);

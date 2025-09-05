@@ -77,9 +77,8 @@ const StrategicDriversTable = () => {
       }
     }
     else {
+      // ✅ fallback if nothing in localStorage
       setStrategicDrivers(storeDrivers); // fallback to store if no localStorage
-          // ✅ fallback if nothing in localStorage
-
       setCurrentOrder(storeDrivers);
     }
   }, [storeDrivers]);
