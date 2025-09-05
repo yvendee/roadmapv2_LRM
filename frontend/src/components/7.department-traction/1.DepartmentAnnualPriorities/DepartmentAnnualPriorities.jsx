@@ -230,87 +230,80 @@ const DepartmentAnnualPriorities = () => {
   const handleSaveChanges = () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
-      setLoadingSave(false);
+    setTimeout(async () => {
+      try {
+        const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
   
-      const storedData = localStorage.getItem('departmentAnnualPrioritiesData');
+        let reordered = [];
   
-      if (storedData) {
-        try {
+        if (storedData) {
           const parsedData = JSON.parse(storedData);
   
-          ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities after Save Changes Button:', parsedData);
+          ENABLE_CONSOLE_LOGS && console.log('📥 Saved Department Annual Priorities from localStorage:', parsedData);
   
-          setDepartmentAnnualPriorities(parsedData);
-  
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
+          reordered = parsedData.map((item, index) => ({
+            ...item,
             id: index + 1,
           }));
   
-          ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities (Reindexed):', reordered);
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Department Annual Priorities:', reordered);
+  
+          // Update Zustand store
+          setDepartmentAnnualPriorities(reordered);
+        } else {
+          // No localStorage data — use currentOrder
+          reordered = currentOrder.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Department Annual Priorities (from currentOrder):', reordered);
   
           setDepartmentAnnualPriorities(reordered);
-          setEditedAnnualPriorities([]);
-  
-          // 🔄 Send reordered data to backend
-          fetch(`${API_URL}/v1/department-traction/annual-priorities/update`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              organizationName: organization, 
-              annualPrioritiesData: reordered,
-            }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              ENABLE_CONSOLE_LOGS && console.log('Backend update response:', data);
-            })
-            .catch((error) => {
-              ENABLE_CONSOLE_LOGS && console.error('Error updating annual priorities:', error);
-            });
-  
-          localStorage.removeItem('departmentAnnualPrioritiesData');
-        } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing departmentAnnualPrioritiesData on save:', err);
         }
-      } else {
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
-          id: index + 1,
-        }));
   
-        ENABLE_CONSOLE_LOGS && console.log('Saved Department Annual Priorities (reordered):', reordered);
-  
-        setDepartmentAnnualPriorities(reordered);
         setEditedAnnualPriorities([]);
+        localStorage.removeItem('departmentAnnualPrioritiesData');
   
-        // 🔄 Send reordered data to backend
-        fetch(`${API_URL}/v1/department-traction/annual-priorities/update`, {
+        // 🛰️ Push to backend
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        const org = useLayoutSettingsStore.getState().organization;
+  
+        const response = await fetch(`${API_URL}/v1/department-traction/annual-priorities/update`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
           },
+          credentials: 'include',
           body: JSON.stringify({
-            organizationName: organization, 
+            organizationName: org,
             annualPrioritiesData: reordered,
           }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            ENABLE_CONSOLE_LOGS && console.log('Backend update response:', data);
-          })
-          .catch((error) => {
-            ENABLE_CONSOLE_LOGS && console.error('Error updating annual priorities:', error);
-          });
+        });
   
-        localStorage.removeItem('departmentAnnualPrioritiesData');
+        const result = await response.json();
+  
+        if (!response.ok) {
+          console.error('❌ Failed to update department annual priorities:', result.message || 'Unknown error');
+        } else {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Department Annual Priorities Update Response:', result);
+        }
+  
+        setIsEditing(false);
+      } catch (err) {
+        console.error('❌ Error during save process:', err);
+      } finally {
+        setLoadingSave(false);
       }
     }, 1000);
   };
+  
 
   
   const handleDischargeChanges = () => {
