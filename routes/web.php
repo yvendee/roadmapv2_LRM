@@ -3050,8 +3050,6 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 
 
 
-
-
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
  Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
     if ($API_secure) {

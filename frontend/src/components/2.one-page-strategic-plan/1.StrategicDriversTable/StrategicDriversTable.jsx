@@ -16,12 +16,13 @@ const StrategicDriversTable = () => {
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const organization = useLayoutSettingsStore((state) => state.organization);
 
-  const storeDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
-  const [strategicDrivers, setStrategicDrivers] = useState([]);
+
 
   const loggedUser = useLoginStore((state) => state.user);
   // const strategicDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
   // const setStrategicDrivers = useStrategicDriversStore((state) => state.setStrategicDrivers);
+  const storeDrivers = useStrategicDriversStore((state) => state.strategicDrivers);
+  const [strategicDrivers, setStrategicDrivers] = useState([]);
   const updateDriverField = useStrategicDriversStore((state) => state.updateDriverField);
   const pushStrategicDriver = useStrategicDriversStore((state) => state.pushStrategicDriver);
 

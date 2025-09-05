@@ -84,7 +84,6 @@ export const initialCompanyTraction = {
   Q3: [],
   Q4: [],
 };
-
 const useCompanyTractionStore = create((set) => ({
   companyTraction: initialCompanyTraction,
 
