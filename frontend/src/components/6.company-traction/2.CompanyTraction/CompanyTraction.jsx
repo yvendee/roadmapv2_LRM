@@ -43,7 +43,7 @@ const CompanyTraction = () => {
   // const [companyTraction, setCompanyTraction] = useState(initialCompanyTraction);
 
   const storeTraction = useCompanyTractionStore((state) => state.companyTraction);
-  const [companyTraction, setCompanyTractionLocal] = useState([]);
+  const [companyTraction, setCompanyTraction] = useState([]);
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -102,7 +102,6 @@ const CompanyTraction = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
-  const [editedTraction, setEditedTraction] = useState([]);
 
 
 
@@ -117,7 +116,7 @@ const CompanyTraction = () => {
       setIsEditing(true); // Mark as edited
       const parsed = JSON.parse(stored);
       setCompanyTractionLocal(parsed);
-      setEditedTraction(parsed.map((t) => ({ id: t.id })));
+      // setEditedTraction(parsed.map((t) => ({ id: t.id })));
     } else {
       setCompanyTractionLocal(storeTraction); // fallback to Zustand
     }
@@ -535,9 +534,9 @@ const CompanyTraction = () => {
 
   const confirmDischargeChanges = () => {
     localStorage.removeItem('companyTractionData');
-    setEditedTraction([]);
+    // setEditedTraction([]);
     setIsEditing(false); // Mark as edited
-    setCompanyTractionLocal(useCompanyTractionStore.getState().companyTraction); // sync from Zustand store
+    setCompanyTraction(useCompanyTractionStore.getState().companyTraction); // sync from Zustand store
     setShowConfirmModal(false);
   };
 
