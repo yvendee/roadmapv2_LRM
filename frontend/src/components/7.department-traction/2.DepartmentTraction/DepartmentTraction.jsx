@@ -119,6 +119,15 @@ const DepartmentTractionTable = () => {
       useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
     }
   }, [setDepartmentTraction]);
+
+
+  // Runs when departmentTraction changes, but avoid setting it here to prevent loop
+  useEffect(() => {
+    if (departmentTraction) {
+      console.log('departmentTraction changed:', departmentTraction);
+      // Do something here that doesn't change departmentTraction state
+    }
+  }, [departmentTraction]);
   
 
 
