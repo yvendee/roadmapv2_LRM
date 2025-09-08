@@ -112,12 +112,6 @@ const DepartmentTractionTable = () => {
         // setData(storeData);
       }
     } 
-    else {
-      console.log('No storedData found, setting baselineDepartmentTraction from store');
-      // Store the initial state (only once)
-      const currentData = useDepartmentTractionStore.getState().departmentTraction;
-      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
-    }
   }, [setDepartmentTraction]);
 
 
@@ -126,6 +120,8 @@ const DepartmentTractionTable = () => {
     if (departmentTraction) {
       console.log('departmentTraction changed:', departmentTraction);
       // Do something here that doesn't change departmentTraction state
+      const currentData = useDepartmentTractionStore.getState().departmentTraction;
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
     }
   }, [departmentTraction]);
   
