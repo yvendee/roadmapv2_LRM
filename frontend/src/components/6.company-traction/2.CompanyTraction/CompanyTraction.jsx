@@ -428,6 +428,11 @@ const CompanyTraction = () => {
     // 3. Update Zustand store
     // setCompanyTraction(initialCompanyTraction);
     const { baselineCompanyTraction } = useCompanyTractionStore.getState();
+
+    // ✅ Console log to inspect baselineCompanyTraction before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineCompanyTraction:', baselineCompanyTraction);
+
+
     setCompanyTraction(baselineCompanyTraction);
 
 

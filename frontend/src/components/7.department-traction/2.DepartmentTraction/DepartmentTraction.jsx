@@ -97,40 +97,28 @@ const DepartmentTractionTable = () => {
     : (departmentTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
-  // useEffect(() => {
-  //   const storedData = localStorage.getItem('departmentTractionData');
-  //   if (storedData) {
-  //     setIsEditing(true); // Mark as edited
-  //     try {
-  //       // setData(JSON.parse(storedData));
-  //       setDepartmentTraction(JSON.parse(storedData));
-  //     } catch (e) {
-  //       console.error('Failed to parse departmentTractionData from localStorage', e);
-  //       // setData(storeData);
-  //     }
-  //   } 
-  //   else {
-  //     // Store the initial state (only once)
-  //     const currentData = useDepartmentTractionStore.getState().departmentTraction;
-  //     useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
-  //   }
-  // }, [setDepartmentTraction]);
-
   useEffect(() => {
     const storedData = localStorage.getItem('departmentTractionData');
     if (storedData) {
       setIsEditing(true); // Mark as edited
       try {
+        // setData(JSON.parse(storedData));
         setDepartmentTraction(JSON.parse(storedData));
       } catch (e) {
         console.error('Failed to parse departmentTractionData from localStorage', e);
+        // setData(storeData);
       }
-    } else {
+    } 
+    else {
+      // Store the initial state (only once)
       const currentData = useDepartmentTractionStore.getState().departmentTraction;
-      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
     }
-  }, []);
-  
+  }, [setDepartmentTraction]);
+
+  // if (!data) return <p>Loading...</p>;
+
+
 
   const getTimeAgo = (timestamp) => {
     const now = new Date();
@@ -395,7 +383,13 @@ const DepartmentTractionTable = () => {
     // 3. Update Zustand store
     // setDepartmentTraction(initialDepartmentTraction);
     const { baselineDepartmentTraction } = useDepartmentTractionStore.getState();
+
+    // ✅ Console log to inspect baselineDepartmentTraction before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineDepartmentTraction:', baselineDepartmentTraction);
+
     setDepartmentTraction(baselineDepartmentTraction);
+
+    
 
     // 4. Hide Modal
     setShowConfirmModal(false);
