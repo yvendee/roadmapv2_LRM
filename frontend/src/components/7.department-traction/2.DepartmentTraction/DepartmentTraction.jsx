@@ -10,8 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import useDepartmentTractionStore, { initialDepartmentTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
-import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
-// import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import useDepartmentAnnualPrioritiesStore from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -20,6 +19,8 @@ import './DepartmentTraction.css';
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 const DepartmentTractionTable = () => {
+
+  const organization = useLayoutSettingsStore.getState().organization;
 
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -33,13 +34,12 @@ const DepartmentTractionTable = () => {
     rank: '',
   });
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const addDepartmentTraction = useDepartmentTractionStore((state) => state.addDepartmentTraction);
 
-  const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
+  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
 
-  const organization = useLayoutSettingsStore.getState().organization;
+  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -51,15 +51,10 @@ const DepartmentTractionTable = () => {
     (state) => state.updateDepartmentTractionField
   );
 
-  
-
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
-
-  // const [data, setData] = useState(null);
-
-  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -72,12 +67,7 @@ const DepartmentTractionTable = () => {
 
   
   const [showCompleted, setShowCompleted] = useState(true);
-  // const [companyTraction] = useState(initialDepartmentTraction);
-  // const [departmentTraction, setDepartmentTraction, updateComment] = useState(() => {
-  //   // Load company traction from localStorage if available, otherwise use initial data
-  //   const storedData = localStorage.getItem('departmentTractionData');
-  //   return storedData ? JSON.parse(storedData) : initialDepartmentTraction;
-  // });
+
 
   // Generate progress options from 0% to 100% with increments of 5%
   const progressOptions = [];
@@ -101,6 +91,7 @@ const DepartmentTractionTable = () => {
   const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
   const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
 
+  const [currentDeptTraction, setCurrentDeptTraction] = useState(null);
 
   const filteredRows = showCompleted
     ? departmentTraction[activeQuarter] || []
@@ -108,8 +99,10 @@ const DepartmentTractionTable = () => {
 
 
   useEffect(() => {
+    console.log('useEffect mounted: checking localStorage for departmentTractionData');
     const storedData = localStorage.getItem('departmentTractionData');
     if (storedData) {
+      console.log('Found storedData:', storedData);
       setIsEditing(true); // Mark as edited
       try {
         // setData(JSON.parse(storedData));
@@ -119,10 +112,21 @@ const DepartmentTractionTable = () => {
         // setData(storeData);
       }
     } 
-    // else {
-    //   setData(storeData);
-    // }
-  }, [setDepartmentTraction]);
+    else {
+      console.log('No storedData found, setting baselineDepartmentTraction from store');
+      // Store the initial state (only once)
+      const currentData = useDepartmentTractionStore.getState().departmentTraction;
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
+    }
+  }, []);
+  
+
+
+  useEffect(() => {
+    if (currentDeptTraction) {
+      console.log('Current department traction state on mount:', currentDeptTraction);
+    }
+  }, [currentDeptTraction]);
 
   // if (!data) return <p>Loading...</p>;
 
@@ -222,21 +226,6 @@ const DepartmentTractionTable = () => {
     setCommentModalOpen(true);
   };
 
-  // const handleEditChange = (e, rowId, field) => {
-  //   const value = e.target.value;
-  //   setDepartmentTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, [field]: value } : row
-  //     );
-
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-
-  //     return updatedData;
-  //   });
-  // };
-
 
   const handleEditChange = (e, rowId, field) => {
     const value = e.target.value;
@@ -250,20 +239,6 @@ const DepartmentTractionTable = () => {
   };
 
 
-  // Function to handle changes in progress dropdown
-  // const handleProgressChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setDepartmentTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, progress: value } : row
-  //     );
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-  //     return updatedData;
-  //   });
-  //   setIsEditing(true); // Mark as edited
-  // };
 
   const handleProgressChange = (e, rowId) => {
     const value = e.target.value;
@@ -285,33 +260,6 @@ const DepartmentTractionTable = () => {
     if (value >= 40 && value < 95) return 'bg-yellow-500'; // Yellow for 40% to 95%
     return 'bg-green-500'; // Green for progress >= 95%
   };
-
-
-  // const handleDueDateChange = (e, rowId) => {
-  //   setIsEditing(true);
-  //   handleEditChange(e, rowId, 'dueDate');
-  // };
-
-  // const handleDescriptionChange = (e, rowId) => {
-  //   setIsEditing(true); // Mark as edited
-  //   const value = e.target.value;
-  //   setDescription(value);
-  //   handleEditChange(e, rowId, 'description');
-  // };
-
-  // const handleAnnualPriorityChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setAnnualPriority(value);
-  //   handleEditChange(e, rowId, 'annualPriority');
-  //   setIsEditing(true); // Mark as edited
-  // };
-
-  // const handleRankChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setRank(value);
-  //   handleEditChange(e, rowId, 'rank');
-  //   setIsEditing(true); // Mark as edited
-  // };
 
 
   const handleDueDateChange = (e, rowId) => {
@@ -371,27 +319,6 @@ const DepartmentTractionTable = () => {
     }
   };
 
-  // const handleSaveClick = (rowId) => {
-  //   setEditing((prev) => ({ ...prev, [rowId]: false }));
-  //   handleSaveChanges();
-  // };
-
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-    
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //     // localStorage.setItem('departmentTractionData', JSON.stringify(departmentTraction));
-      
-  //     // Parse the stored JSON data back to its original object form
-  //     const savedData = JSON.parse(localStorage.getItem('departmentTractionData'));
-      
-  //     ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
-  //     localStorage.removeItem('departmentTractionData');
-  //     setIsEditing(false); // Hide the buttons after saving
-  //   }, 1000);
-
-  // };
 
   const handleSaveChanges = async () => {
     setLoadingSave(true);
@@ -466,107 +393,88 @@ const DepartmentTractionTable = () => {
     setIsEditing(false); 
 
     // 3. Update Zustand store
-    setDepartmentTraction(initialDepartmentTraction);
+    // setDepartmentTraction(initialDepartmentTraction);
+    const { baselineDepartmentTraction } = useDepartmentTractionStore.getState();
+
+    // ✅ Console log to inspect baselineDepartmentTraction before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineDepartmentTraction:', baselineDepartmentTraction);
+
+    setDepartmentTraction(baselineDepartmentTraction);
+
+    
 
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
 
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   const updated = {
-  //     ...departmentTraction,
-  //     [form.quarter]: [...(departmentTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   addDepartmentTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('departmentTractionData', JSON.stringify(updated)); // localStorage
-  //   setDepartmentTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
   
 
   async function handleAddNewTraction() {
-  const mmddyyyy = form.dueDate
-    ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-    : 'Click to set date';
-
-  const newItem = {
-    id: Date.now(), // Placeholder; real ID from server
-    who: form.who,
-    collaborator: form.collaborator,
-    description: form.description,
-    progress: form.progress,
-    annualPriority: form.annualPriority,
-    dueDate: mmddyyyy,
-    rank: form.rank,
-    comment: [],
-  };
-
-  ENABLE_CONSOLE_LOGS && console.log('📤 New Traction Item:', newItem);
-
-  try {
-    const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-      credentials: 'include',
-    });
-    const { csrf_token } = await csrfRes.json();
-
-    const payload = {
-      organizationName: organization,
-      quarter: form.quarter,
-      newItem,
+    const mmddyyyy = form.dueDate
+      ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
+      : 'Click to set date';
+  
+    const newItem = {
+      id: Date.now(), // Placeholder; real ID from server
+      who: form.who,
+      collaborator: form.collaborator,
+      description: form.description,
+      progress: form.progress,
+      annualPriority: form.annualPriority,
+      dueDate: mmddyyyy,
+      rank: form.rank,
+      comment: [],
     };
-
-    const response = await fetch(`${API_URL}/v1/department-traction/traction-data/add`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrf_token,
-      },
-      credentials: 'include',
-      body: JSON.stringify(payload),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      ENABLE_CONSOLE_LOGS && console.log('✅ Traction item saved to backend:', result.data);
-
-      const serverNewItem = result.data;
-
-      // Append to local state
-      const updated = {
-        ...departmentTraction,
-        [form.quarter]: [...(departmentTraction[form.quarter] || []), serverNewItem],
+  
+    ENABLE_CONSOLE_LOGS && console.log('📤 New Traction Item:', newItem);
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const payload = {
+        organizationName: organization,
+        quarter: form.quarter,
+        newItem,
       };
-
-      addDepartmentTraction(form.quarter, serverNewItem); // Store
-      setDepartmentTraction(updated); // UI update
-      setAddTractionModalOpen(false); // Close modal
-    } else {
-      console.error('❌ Failed to save traction item:', result.message || result);
+  
+      const response = await fetch(`${API_URL}/v1/department-traction/traction-data/add`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Traction item saved to backend:', result.data);
+  
+        const serverNewItem = result.data;
+  
+        // Append to local state
+        const updated = {
+          ...departmentTraction,
+          [form.quarter]: [...(departmentTraction[form.quarter] || []), serverNewItem],
+        };
+  
+        addDepartmentTraction(form.quarter, serverNewItem); // Store
+        setDepartmentTraction(updated); // UI update
+        setAddTractionModalOpen(false); // Close modal
+      } else {
+        console.error('❌ Failed to save traction item:', result.message || result);
+      }
+    } catch (err) {
+      console.error('❌ Error saving traction item:', err);
     }
-  } catch (err) {
-    console.error('❌ Error saving traction item:', err);
   }
-}
+
 
 
   return (
@@ -848,7 +756,7 @@ const DepartmentTractionTable = () => {
                         onChange={(e) => handleAnnualPriorityChange(e, row.id)}
                       >
                         <option value="">{row.annualPriority || 'Select Annual Priority'}</option>
-                        {annualPriorities.map((priority) => (
+                        {departmentAnnualPriorities.map((priority) => (
                           <option key={priority.id} value={priority.description}>
                             {priority.description}
                           </option>
@@ -1052,7 +960,7 @@ const DepartmentTractionTable = () => {
                     onChange={(e) => setForm({ ...form, annualPriority: e.target.value })}
                   >
                     <option value="">Select Annual Priority</option>
-                    {annualPriorities.map((priority) => (
+                    {departmentAnnualPriorities.map((priority) => (
                       <option key={priority.id} value={priority.description}>
                         {priority.description}
                       </option>
