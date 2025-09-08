@@ -39,7 +39,7 @@ const DepartmentTractionTable = () => {
 
   const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
 
-  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
+  
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -51,10 +51,17 @@ const DepartmentTractionTable = () => {
     (state) => state.updateDepartmentTractionField
   );
 
+  
+
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+
+  // const [data, setData] = useState(null);
+
+  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -67,7 +74,12 @@ const DepartmentTractionTable = () => {
 
   
   const [showCompleted, setShowCompleted] = useState(true);
-
+  // const [companyTraction] = useState(initialDepartmentTraction);
+  // const [departmentTraction, setDepartmentTraction, updateComment] = useState(() => {
+  //   // Load company traction from localStorage if available, otherwise use initial data
+  //   const storedData = localStorage.getItem('departmentTractionData');
+  //   return storedData ? JSON.parse(storedData) : initialDepartmentTraction;
+  // });
 
   // Generate progress options from 0% to 100% with increments of 5%
   const progressOptions = [];
@@ -91,16 +103,15 @@ const DepartmentTractionTable = () => {
   const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
   const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
 
+
   const filteredRows = showCompleted
     ? departmentTraction[activeQuarter] || []
     : (departmentTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
   useEffect(() => {
-    console.log('useEffect mounted: checking localStorage for departmentTractionData');
     const storedData = localStorage.getItem('departmentTractionData');
     if (storedData) {
-      console.log('Found storedData:', storedData);
       setIsEditing(true); // Mark as edited
       try {
         // setData(JSON.parse(storedData));
@@ -109,8 +120,16 @@ const DepartmentTractionTable = () => {
         console.error('Failed to parse departmentTractionData from localStorage', e);
         // setData(storeData);
       }
+    } 
+    else {
+      // Store the initial state (only once)
+      const currentData = useDepartmentTractionStore.getState().departmentTraction;
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
     }
-  }, []);
+  }, [setDepartmentTraction]);
+
+  // if (!data) return <p>Loading...</p>;
+
 
 
   const getTimeAgo = (timestamp) => {
@@ -366,7 +385,6 @@ const DepartmentTractionTable = () => {
     }, 1000);
   }
 
-
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
     localStorage.removeItem('departmentTractionData');
@@ -377,20 +395,13 @@ const DepartmentTractionTable = () => {
     // 3. Update Zustand store
     // setDepartmentTraction(initialDepartmentTraction);
     const { baselineDepartmentTraction } = useDepartmentTractionStore.getState();
-
-    // ✅ Console log to inspect baselineDepartmentTraction before setting
-    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineDepartmentTraction:', baselineDepartmentTraction);
-
     setDepartmentTraction(baselineDepartmentTraction);
-
-    
 
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
-
-
   
+
   async function handleAddNewTraction() {
     const mmddyyyy = form.dueDate
       ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`

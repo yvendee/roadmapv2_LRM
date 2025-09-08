@@ -115,7 +115,12 @@ const CompanyTraction = () => {
         // setData(storeData);
       }
     } 
-  }, []);
+    else {
+      // Store the initial state (only once)
+      const currentData = useCompanyTractionStore.getState().companyTraction;
+      useCompanyTractionStore.getState().setBaselineCompanyTraction(currentData)
+    }
+  }, [setCompanyTraction]);
 
   // if (!data) return <p>Loading...</p>;
 
