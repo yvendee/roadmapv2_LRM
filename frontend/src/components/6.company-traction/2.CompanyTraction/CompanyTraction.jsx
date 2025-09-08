@@ -1,3 +1,4 @@
+// frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
 import React, { useState, useEffect } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

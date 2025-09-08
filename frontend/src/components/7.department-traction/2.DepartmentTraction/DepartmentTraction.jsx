@@ -10,8 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import useDepartmentTractionStore, { initialDepartmentTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
-import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
-// import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import useDepartmentAnnualPrioritiesStore from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -20,6 +19,8 @@ import './DepartmentTraction.css';
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 const DepartmentTractionTable = () => {
+
+  const organization = useLayoutSettingsStore.getState().organization;
 
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -37,9 +38,9 @@ const DepartmentTractionTable = () => {
 
   const addDepartmentTraction = useDepartmentTractionStore((state) => state.addDepartmentTraction);
 
-  const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
+  const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
 
-  const organization = useLayoutSettingsStore.getState().organization;
+  
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -824,7 +825,7 @@ const DepartmentTractionTable = () => {
                         onChange={(e) => handleAnnualPriorityChange(e, row.id)}
                       >
                         <option value="">{row.annualPriority || 'Select Annual Priority'}</option>
-                        {annualPriorities.map((priority) => (
+                        {departmentAnnualPriorities.map((priority) => (
                           <option key={priority.id} value={priority.description}>
                             {priority.description}
                           </option>
@@ -1028,7 +1029,7 @@ const DepartmentTractionTable = () => {
                     onChange={(e) => setForm({ ...form, annualPriority: e.target.value })}
                   >
                     <option value="">Select Annual Priority</option>
-                    {annualPriorities.map((priority) => (
+                    {departmentAnnualPriorities.map((priority) => (
                       <option key={priority.id} value={priority.description}>
                         {priority.description}
                       </option>
