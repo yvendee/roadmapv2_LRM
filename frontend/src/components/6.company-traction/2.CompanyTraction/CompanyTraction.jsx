@@ -115,14 +115,26 @@ const CompanyTraction = () => {
         // setData(storeData);
       }
     } 
-    else {
-      // Store the initial state (only once)
-      const currentData = useCompanyTractionStore.getState().companyTraction;
-      useCompanyTractionStore.getState().setBaselineCompanyTraction(currentData)
-    }
-  }, [setCompanyTraction]);
+  }, []);
 
-  // if (!data) return <p>Loading...</p>;
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('companyTractionData');
+  //   if (storedData) {
+  //     setIsEditing(true); // Mark as edited
+  //     try {
+  //       // setData(JSON.parse(storedData));
+  //       setCompanyTraction(JSON.parse(storedData));
+  //     } catch (e) {
+  //       console.error('Failed to parse companyTractionData from localStorage', e);
+  //       // setData(storeData);
+  //     }
+  //   } 
+  //   else {
+  //     // Store the initial state (only once)
+  //     const currentData = useCompanyTractionStore.getState().companyTraction;
+  //     useCompanyTractionStore.getState().setBaselineCompanyTraction(currentData)
+  //   }
+  // }, [setCompanyTraction]);
 
 
 
