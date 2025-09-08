@@ -109,8 +109,12 @@ const DepartmentTractionTable = () => {
         console.error('Failed to parse departmentTractionData from localStorage', e);
         // setData(storeData);
       }
-    } 
-  }, []);
+    }
+    else {
+      const currentData = useDepartmentTractionStore.getState().departmentTraction;
+      setDepartmentTraction(currentData);
+    }
+  }, [setDepartmentTraction]);
 
 
   const getTimeAgo = (timestamp) => {
