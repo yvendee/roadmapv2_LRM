@@ -224,21 +224,6 @@ const DepartmentTractionTable = () => {
     setCommentModalOpen(true);
   };
 
-  // const handleEditChange = (e, rowId, field) => {
-  //   const value = e.target.value;
-  //   setDepartmentTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, [field]: value } : row
-  //     );
-
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-
-  //     return updatedData;
-  //   });
-  // };
-
 
   const handleEditChange = (e, rowId, field) => {
     const value = e.target.value;
@@ -252,20 +237,6 @@ const DepartmentTractionTable = () => {
   };
 
 
-  // Function to handle changes in progress dropdown
-  // const handleProgressChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setDepartmentTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, progress: value } : row
-  //     );
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-  //     return updatedData;
-  //   });
-  //   setIsEditing(true); // Mark as edited
-  // };
 
   const handleProgressChange = (e, rowId) => {
     const value = e.target.value;
