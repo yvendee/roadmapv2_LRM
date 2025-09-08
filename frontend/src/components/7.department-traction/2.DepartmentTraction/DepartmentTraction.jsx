@@ -91,6 +91,7 @@ const DepartmentTractionTable = () => {
   const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
   const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
 
+  const [currentDeptTraction, setCurrentDeptTraction] = useState(null);
 
   const filteredRows = showCompleted
     ? departmentTraction[activeQuarter] || []
@@ -98,8 +99,10 @@ const DepartmentTractionTable = () => {
 
 
   useEffect(() => {
+    console.log('useEffect mounted: checking localStorage for departmentTractionData');
     const storedData = localStorage.getItem('departmentTractionData');
     if (storedData) {
+      console.log('Found storedData:', storedData);
       setIsEditing(true); // Mark as edited
       try {
         // setData(JSON.parse(storedData));
@@ -110,12 +113,21 @@ const DepartmentTractionTable = () => {
       }
     } 
     else {
+      console.log('No storedData found, setting baselineDepartmentTraction from store');
       // Store the initial state (only once)
       const currentData = useDepartmentTractionStore.getState().departmentTraction;
-      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
     }
   }, []);
+  
 
+
+  useEffect(() => {
+    if (currentDeptTraction) {
+      console.log('Current department traction state on mount:', currentDeptTraction);
+    }
+  }, [currentDeptTraction]);
+  
   // if (!data) return <p>Loading...</p>;
 
 
