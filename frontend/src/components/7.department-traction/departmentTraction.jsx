@@ -19,7 +19,7 @@ const DepartmentTraction = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
   const loadDepartmentAnnualPrioritiesFromAPI = useDepartmentAnnualPrioritiesStore((state) => state.loadDepartmentAnnualPrioritiesFromAPI);
   const setDepartmentTraction = useDepartmentTractionStore((state) => state.setDepartmentTraction);
-
+  const setBaselineDepartmentTraction = useDepartmentTractionStore((state) => state.setBaselineDepartmentTraction);
   // Fetch Department-Annual-Priorities
   useEffect(() => {
     const encodedOrg = encodeURIComponent(organization);
@@ -74,6 +74,7 @@ const DepartmentTraction = () => {
           if (res.ok) {
             ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Department Traction Table:', json);
             setDepartmentTraction(json);
+            setBaselineDepartmentTraction(json);
 
           } else if (res.status === 401) {
             navigate('/', { state: { loginError: 'Session Expired' } });
