@@ -127,7 +127,7 @@ const DepartmentTractionTable = () => {
       console.log('Current department traction state on mount:', currentDeptTraction);
     }
   }, [currentDeptTraction]);
-  
+
   // if (!data) return <p>Loading...</p>;
 
 
@@ -406,73 +406,82 @@ const DepartmentTractionTable = () => {
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
+
+  function handleAddNewTraction() {
+    // Increment by 1
+    setCurrentDeptTraction(prev => {
+      const newValue = prev + 1;
+      console.log('Incremented department traction to:', newValue);
+      return newValue;
+    });
+  }
   
 
-  async function handleAddNewTraction() {
-    const mmddyyyy = form.dueDate
-      ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-      : 'Click to set date';
+  // async function handleAddNewTraction() {
+  //   const mmddyyyy = form.dueDate
+  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
+  //     : 'Click to set date';
   
-    const newItem = {
-      id: Date.now(), // Placeholder; real ID from server
-      who: form.who,
-      collaborator: form.collaborator,
-      description: form.description,
-      progress: form.progress,
-      annualPriority: form.annualPriority,
-      dueDate: mmddyyyy,
-      rank: form.rank,
-      comment: [],
-    };
+  //   const newItem = {
+  //     id: Date.now(), // Placeholder; real ID from server
+  //     who: form.who,
+  //     collaborator: form.collaborator,
+  //     description: form.description,
+  //     progress: form.progress,
+  //     annualPriority: form.annualPriority,
+  //     dueDate: mmddyyyy,
+  //     rank: form.rank,
+  //     comment: [],
+  //   };
   
-    ENABLE_CONSOLE_LOGS && console.log('📤 New Traction Item:', newItem);
+  //   ENABLE_CONSOLE_LOGS && console.log('📤 New Traction Item:', newItem);
   
-    try {
-      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-        credentials: 'include',
-      });
-      const { csrf_token } = await csrfRes.json();
+  //   try {
+  //     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //       credentials: 'include',
+  //     });
+  //     const { csrf_token } = await csrfRes.json();
   
-      const payload = {
-        organizationName: organization,
-        quarter: form.quarter,
-        newItem,
-      };
+  //     const payload = {
+  //       organizationName: organization,
+  //       quarter: form.quarter,
+  //       newItem,
+  //     };
   
-      const response = await fetch(`${API_URL}/v1/department-traction/traction-data/add`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf_token,
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      });
+  //     const response = await fetch(`${API_URL}/v1/department-traction/traction-data/add`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json',
+  //         'X-CSRF-TOKEN': csrf_token,
+  //       },
+  //       credentials: 'include',
+  //       body: JSON.stringify(payload),
+  //     });
   
-      const result = await response.json();
+  //     const result = await response.json();
   
-      if (response.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('✅ Traction item saved to backend:', result.data);
+  //     if (response.ok) {
+  //       ENABLE_CONSOLE_LOGS && console.log('✅ Traction item saved to backend:', result.data);
   
-        const serverNewItem = result.data;
+  //       const serverNewItem = result.data;
   
-        // Append to local state
-        const updated = {
-          ...departmentTraction,
-          [form.quarter]: [...(departmentTraction[form.quarter] || []), serverNewItem],
-        };
+  //       // Append to local state
+  //       const updated = {
+  //         ...departmentTraction,
+  //         [form.quarter]: [...(departmentTraction[form.quarter] || []), serverNewItem],
+  //       };
   
-        addDepartmentTraction(form.quarter, serverNewItem); // Store
-        setDepartmentTraction(updated); // UI update
-        setAddTractionModalOpen(false); // Close modal
-      } else {
-        console.error('❌ Failed to save traction item:', result.message || result);
-      }
-    } catch (err) {
-      console.error('❌ Error saving traction item:', err);
-    }
-  }
+  //       addDepartmentTraction(form.quarter, serverNewItem); // Store
+  //       setDepartmentTraction(updated); // UI update
+  //       setAddTractionModalOpen(false); // Close modal
+  //     } else {
+  //       console.error('❌ Failed to save traction item:', result.message || result);
+  //     }
+  //   } catch (err) {
+  //     console.error('❌ Error saving traction item:', err);
+  //   }
+  // }
 
 
 
