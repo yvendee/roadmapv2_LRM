@@ -38,6 +38,7 @@ use App\Models\CompanyTractionAnnualPriority;
 use App\Models\CompanyTractionCompanyTraction;
 use App\Models\DepartmentTractionAnnualPriority;
 use App\Models\DepartmentTractionCompanyTraction;
+use App\Models\WhoWhatWhen;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -3598,156 +3599,257 @@ Route::post('/api/v1/department-traction/annual-priorities/add', function (Reque
 //     ]);
 // });
 
-// ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
+// // ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
+// Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '2025-03-31',
+//                 'who' => 'Maricar',
+//                 'what' => 'Systematize Coaching Framework (now called Momentum OS).',
+//                 'deadline' => '2025-03-31',
+//                 'comments' => 'approved',
+//                 'status' => '100.00%',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '2025-04-01',
+//                 'who' => 'Chuck',
+//                 'what' => 'Systematize Client Delivery.',
+//                 'deadline' => '2025-03-31',
+//                 'comments' => 'working',
+//                 'status' => '83.33%',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '2025-04-02',
+//                 'who' => 'Kayven',
+//                 'what' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
+//                 'deadline' => '2025-03-31',
+//                 'comments' => 'pending',
+//                 'status' => '0.00%',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '2025-04-02',
+//                 'who' => 'John',
+//                 'what' => 'Develop lead generation systems.',
+//                 'deadline' => '2025-03-31',
+//                 'comments' => 'paused',
+//                 'status' => '50.00%',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'date' => '2025-04-02',
+//                 'who' => 'Grace',
+//                 'what' => '1% Genius Version 3 Development.',
+//                 'deadline' => '2025-03-31',
+//                 'comments' => 'waiting',
+//                 'status' => '50.00%',
+//             ],
+//         ],
+    
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '2025-03-31',
+//                 'who' => 'Alice',
+//                 'what' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
+//                 'deadline' => '2025-06-30',
+//                 'comments' => 'progressing',
+//                 'status' => '85.00%',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '2025-04-15',
+//                 'who' => 'Bob',
+//                 'what' => 'Streamline operations and reduce costs while maintaining quality.',
+//                 'deadline' => '2025-09-30',
+//                 'comments' => 'on schedule',
+//                 'status' => '90.00%',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '2025-05-01',
+//                 'who' => 'Charlie',
+//                 'what' => 'Implement new technologies to drive efficiency and innovation.',
+//                 'deadline' => '2025-12-31',
+//                 'comments' => 'planning phase',
+//                 'status' => '60.00%',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '2025-06-01',
+//                 'who' => 'Diana',
+//                 'what' => 'Entering new markets and increasing market share.',
+//                 'deadline' => '2025-11-30',
+//                 'comments' => 'needs review',
+//                 'status' => '50.00%',
+//             ],
+//         ],
+    
+//         'Test Skeleton Loading' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '-',
+//                 'who' => '-',
+//                 'what' => '-',
+//                 'deadline' => '-',
+//                 'comments' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '-',
+//                 'who' => '-',
+//                 'what' => '-',
+//                 'deadline' => '-',
+//                 'comments' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '-',
+//                 'who' => '-',
+//                 'what' => '-',
+//                 'deadline' => '-',
+//                 'comments' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '-',
+//                 'who' => '-',
+//                 'what' => '-',
+//                 'deadline' => '-',
+//                 'comments' => '-',
+//                 'status' => '-',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'date' => '-',
+//                 'who' => '-',
+//                 'what' => '-',
+//                 'deadline' => '-',
+//                 'comments' => '-',
+//                 'status' => '-',
+//             ],
+//         ],
+//     ];
+    
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+
+
+// ref:
 Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'date' => '2025-03-31',
-                'who' => 'Maricar',
-                'what' => 'Systematize Coaching Framework (now called Momentum OS).',
-                'deadline' => '2025-03-31',
-                'comments' => 'approved',
-                'status' => '100.00%',
-            ],
-            [
-                'id' => 2,
-                'date' => '2025-04-01',
-                'who' => 'Chuck',
-                'what' => 'Systematize Client Delivery.',
-                'deadline' => '2025-03-31',
-                'comments' => 'working',
-                'status' => '83.33%',
-            ],
-            [
-                'id' => 3,
-                'date' => '2025-04-02',
-                'who' => 'Kayven',
-                'what' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
-                'deadline' => '2025-03-31',
-                'comments' => 'pending',
-                'status' => '0.00%',
-            ],
-            [
-                'id' => 4,
-                'date' => '2025-04-02',
-                'who' => 'John',
-                'what' => 'Develop lead generation systems.',
-                'deadline' => '2025-03-31',
-                'comments' => 'paused',
-                'status' => '50.00%',
-            ],
-            [
-                'id' => 5,
-                'date' => '2025-04-02',
-                'who' => 'Grace',
-                'what' => '1% Genius Version 3 Development.',
-                'deadline' => '2025-03-31',
-                'comments' => 'waiting',
-                'status' => '50.00%',
-            ],
-        ],
-    
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'date' => '2025-03-31',
-                'who' => 'Alice',
-                'what' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
-                'deadline' => '2025-06-30',
-                'comments' => 'progressing',
-                'status' => '85.00%',
-            ],
-            [
-                'id' => 2,
-                'date' => '2025-04-15',
-                'who' => 'Bob',
-                'what' => 'Streamline operations and reduce costs while maintaining quality.',
-                'deadline' => '2025-09-30',
-                'comments' => 'on schedule',
-                'status' => '90.00%',
-            ],
-            [
-                'id' => 3,
-                'date' => '2025-05-01',
-                'who' => 'Charlie',
-                'what' => 'Implement new technologies to drive efficiency and innovation.',
-                'deadline' => '2025-12-31',
-                'comments' => 'planning phase',
-                'status' => '60.00%',
-            ],
-            [
-                'id' => 4,
-                'date' => '2025-06-01',
-                'who' => 'Diana',
-                'what' => 'Entering new markets and increasing market share.',
-                'deadline' => '2025-11-30',
-                'comments' => 'needs review',
-                'status' => '50.00%',
-            ],
-        ],
-    
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'date' => '-',
-                'who' => '-',
-                'what' => '-',
-                'deadline' => '-',
-                'comments' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 2,
-                'date' => '-',
-                'who' => '-',
-                'what' => '-',
-                'deadline' => '-',
-                'comments' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 3,
-                'date' => '-',
-                'who' => '-',
-                'what' => '-',
-                'deadline' => '-',
-                'comments' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 4,
-                'date' => '-',
-                'who' => '-',
-                'what' => '-',
-                'deadline' => '-',
-                'comments' => '-',
-                'status' => '-',
-            ],
-            [
-                'id' => 5,
-                'date' => '-',
-                'who' => '-',
-                'what' => '-',
-                'deadline' => '-',
-                'comments' => '-',
-                'status' => '-',
-            ],
-        ],
-    ];
-    
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    $record = WhoWhatWhen::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No data found for this organization'], 404);
+    }
+
+    return response()->json($record->whoWhatWhenData ?? []);
+});
+
+
+// ref:
+Route::post('/api/v1/who-what-when/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organization');
+    $newData = $request->input('whoWhatWhenData');
+
+    if (!$organization || !$newData) {
+        return response()->json(['message' => 'Organization and whoWhatWhenData are required'], 400);
+    }
+
+    $record = WhoWhatWhen::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No record found for this organization'], 404);
+    }
+
+    $record->whoWhatWhenData = $newData;
+    $record->save();
+
+    return response()->json(['message' => 'Who-What-When data updated successfully']);
+});
+
+
+// ref:
+
+Route::post('/api/v1/who-what-when/add', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organization');
+    $newItem = $request->input('newWhoWhatWhen');
+
+    if (!$organization || !$newItem) {
+        return response()->json(['message' => 'Organization and newWhoWhatWhen are required'], 400);
+    }
+
+    $record = WhoWhatWhen::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No record found for this organization'], 404);
+    }
+
+    $currentData = $record->whoWhatWhenData ?? [];
+
+    // Determine next ID (max existing id + 1)
+    $nextId = 1;
+    if (!empty($currentData)) {
+        $ids = array_column($currentData, 'id');
+        $nextId = max($ids) + 1;
+    }
+
+    // Assign new ID to the incoming item
+    $newItem['id'] = $nextId;
+
+    // Append new item
+    $currentData[] = $newItem;
+
+    // Save back to DB
+    $record->whoWhatWhenData = $currentData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New Who-What-When item added successfully',
+        'newItem' => $newItem,
+    ]);
 });
 
 

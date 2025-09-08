@@ -42,7 +42,10 @@ class DatabaseSeeder extends Seeder
         // $this->call(CompanyTractionAnnualPrioritiesSeeder::class);
         // $this->call(CompanyTractionCompanyTractionSeeder::class);
         // $this->call(DepartmentTractionAnnualPrioritiesSeeder::class);
-        $this->call(DepartmentTractionCompanyTractionSeeder::class);
+        // $this->call(DepartmentTractionCompanyTractionSeeder::class);
+        $this->call(WhoWhatWhenSeeder::class);
+        // $this->call(DepartmentTractionCompanyTractionSeeder::class);
+        
         
         
         

@@ -4,7 +4,9 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useWhoWhatWhenStore, { initialWhoWhatWhen } from '../../../store/left-lower-content/8.who-what-when/1.whoWhatWhenStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './WhoWhatWhenTable.css';
 
 const WhoWhatWhenTable = () => {
@@ -12,6 +14,7 @@ const WhoWhatWhenTable = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
+  const organization = useLayoutSettingsStore(state => state.organization);
 
   const loggedUser = useLoginStore((state) => state.user);
   const whoWhatWhen = useWhoWhatWhenStore((state) => state.whoWhatWhen);
@@ -90,28 +93,81 @@ const WhoWhatWhenTable = () => {
 //     setNewWhoWhatWhen({ date: '', who: '', what: '', deadline: '', comments: '', status: '0' });
 //   };
 
-    const handleAddNewWhoWhatWhen = () => {
-        ENABLE_CONSOLE_LOGS && console.log('New Who What When', JSON.stringify(newWhoWhatWhen, null, 2));
+  // const handleAddNewWhoWhatWhen = () => {
+  //     ENABLE_CONSOLE_LOGS && console.log('New Who What When', JSON.stringify(newWhoWhatWhen, null, 2));
+  
+  //     // 1. Push new data to Zustand store
+  //     pushWhoWhatWhen(newWhoWhatWhen);
+  
+  //     // 2. Get updated data from store
+  //     const updatedData = useWhoWhatWhenStore.getState().whoWhatWhen;
+  
+  //     // 3. Save updated data to localStorage
+  //     localStorage.setItem('whoWhatWhenData', JSON.stringify(updatedData));
+  
+  //     // 4. Show Save / Discharge buttons
+  //     setIsEditing(true);
+  
+  //     // 5. Close modal
+  //     setShowAddModal(false);
+  
+  //     // 6. Reset form input
+  //     setNewWhoWhatWhen({ date: '', who: '', what: '', deadline: '', comments: '', status: '0' });
+  // };
     
-        // 1. Push new data to Zustand store
-        pushWhoWhatWhen(newWhoWhatWhen);
-    
-        // 2. Get updated data from store
-        const updatedData = useWhoWhatWhenStore.getState().whoWhatWhen;
-    
-        // 3. Save updated data to localStorage
-        localStorage.setItem('whoWhatWhenData', JSON.stringify(updatedData));
-    
-        // 4. Show Save / Discharge buttons
-        setIsEditing(true);
-    
-        // 5. Close modal
-        setShowAddModal(false);
-    
-        // 6. Reset form input
-        setNewWhoWhatWhen({ date: '', who: '', what: '', deadline: '', comments: '', status: '0' });
-    };
-    
+
+  const handleAddNewWhoWhatWhen = async () => {
+    ENABLE_CONSOLE_LOGS && console.log('New Who What When', JSON.stringify(newWhoWhatWhen, null, 2));
+  
+    // 1. Push new data to Zustand store
+    pushWhoWhatWhen(newWhoWhatWhen);
+  
+    // 2. Get updated data from store
+    const updatedData = useWhoWhatWhenStore.getState().whoWhatWhen;
+  
+    // 3. Save updated data to localStorage
+    localStorage.setItem('whoWhatWhenData', JSON.stringify(updatedData));
+  
+    // 4. Show Save / Discharge buttons
+    setIsEditing(true);
+  
+    // 5. Close modal
+    setShowAddModal(false);
+  
+    // 6. Reset form input
+    setNewWhoWhatWhen({ date: '', who: '', what: '', deadline: '', comments: '', status: '0' });
+  
+    // 7. Send newWhoWhatWhen to backend to add with new ID
+    try {
+
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/who-what-when/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          newWhoWhatWhen,
+        }),
+      });
+  
+      const data = await response.json();
+      ENABLE_CONSOLE_LOGS && console.log('Add new Who-What-When response:', data);
+  
+      if (!response.ok) {
+        console.error('Failed to add new item:', data.message || 'Unknown error');
+      } 
+    } catch (error) {
+      console.error('Add new Who-What-When request error:', error);
+    }
+  };
 
 
 
@@ -144,64 +200,128 @@ const WhoWhatWhenTable = () => {
 
 
   
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('whoWhatWhenData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setWhoWhatWhen(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Who-What-When (Reindexed):', reordered);
+
+  //         setWhoWhatWhen(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         setIsEditing(false);
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('whoWhatWhenData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing Who-What-When Data on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Who-What-When(reordered):', reordered);
+  //       setWhoWhatWhen(reordered);
+  //       setIsEditing(false);
+
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('whoWhatWhenData');
+
+  //     }
+  //   }, 1000);
+  // };
+  
+
+
+
+  const handleSaveChanges = () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('whoWhatWhenData');
   
+      let dataToSend;
+  
       if (storedData) {
         try {
-          const parsedData = JSON.parse(storedData);
-  
-          // 1. Log to console
-          ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When after Save Changes Button:', parsedData);
-  
-          // 2. Update Zustand store
-          setWhoWhatWhen(parsedData);
-
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
-            id: index + 1,
-          }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Who-What-When (Reindexed):', reordered);
-
-          setWhoWhatWhen(reordered);
-  
-          // 3. Clear edited state (hides buttons)
-          setIsEditing(false);
-  
-          // 4. Remove from localStorage
-          localStorage.removeItem('whoWhatWhenData');
+          dataToSend = JSON.parse(storedData);
+          ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When after Save Changes Button:', dataToSend);
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing Who-What-When Data on save:', err);
+          return;
         }
       } else {
-
-        // No localStorage changes, use current drag order
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
+        // Fallback: use current state (assumed to be available)
+        dataToSend = currentOrder.map((item, index) => ({
+          ...item,
           id: index + 1,
         }));
-
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Who-What-When(reordered):', reordered);
-        setWhoWhatWhen(reordered);
-        setIsEditing(false);
-
-
-        // Remove from localStorage
-        localStorage.removeItem('whoWhatWhenData');
-
+        ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When (Reordered):', dataToSend);
+      }
+  
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        const response = await fetch(`${API_URL}/v1/who-what-when/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            whoWhatWhenData: dataToSend,
+          }),
+        });
+  
+        const result = await response.json();
+        ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
+  
+        if (!response.ok) {
+          console.error('Update failed:', result.message || 'Unknown error');
+        } else {
+          // Optionally clear localStorage after success
+          localStorage.removeItem('whoWhatWhenData');
+          setIsEditing(false);
+        }
+      } catch (error) {
+        console.error('Update request error:', error);
       }
     }, 1000);
   };
-  
-  
+
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
     setTimeout(() => {
