@@ -91,8 +91,6 @@ const DepartmentTractionTable = () => {
   const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
   const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
 
-  const [currentDeptTraction, setCurrentDeptTraction] = useState(null);
-
   const filteredRows = showCompleted
     ? departmentTraction[activeQuarter] || []
     : (departmentTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
@@ -359,23 +357,15 @@ const DepartmentTractionTable = () => {
   };
 
 
-  // const handleAddNewTractionClick = () => {
-  //   setLoading(true);
+  const handleAddNewTractionClick = () => {
+    setLoading(true);
     
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     setAddTractionModalOpen(true);
-  //   }, 1000);
-  // }
-
-  function handleAddNewTractionClick() {
-    // Increment by 1
-    setCurrentDeptTraction(prev => {
-      const newValue = prev + 1;
-      console.log('Incremented department traction to:', newValue);
-      return newValue;
-    });
+    setTimeout(() => {
+      setLoading(false);
+      setAddTractionModalOpen(true);
+    }, 1000);
   }
+
 
   const confirmDischargeChanges = () => {
     // 1. Remove from localStorage
