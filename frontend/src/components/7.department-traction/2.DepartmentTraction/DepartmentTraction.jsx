@@ -114,7 +114,7 @@ const DepartmentTractionTable = () => {
       const currentData = useDepartmentTractionStore.getState().departmentTraction;
       useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
     }
-  }, [setDepartmentTraction]);
+  }, []);
 
   // if (!data) return <p>Loading...</p>;
 
