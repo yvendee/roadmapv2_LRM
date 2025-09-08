@@ -115,28 +115,6 @@ const DepartmentTractionTable = () => {
   }, []);
 
 
-  // // Runs when departmentTraction changes, but avoid setting it here to prevent loop
-  // useEffect(() => {
-  //   if (departmentTraction) {
-  //     console.log('departmentTraction changed:', departmentTraction);
-  //     // Do something here that doesn't change departmentTraction state
-  //     const currentData = useDepartmentTractionStore.getState().departmentTraction;
-  //     useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
-  //   }
-  // }, [departmentTraction]);
-  
-
-
-  // useEffect(() => {
-  //   if (currentDeptTraction) {
-  //     console.log('Current department traction state on mount:', currentDeptTraction);
-  //   }
-  // }, [currentDeptTraction]);
-
-  // if (!data) return <p>Loading...</p>;
-
-
-
   const getTimeAgo = (timestamp) => {
     const now = new Date();
     const postedDate = new Date(timestamp);

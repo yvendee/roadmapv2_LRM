@@ -21,6 +21,7 @@ const CompanyTraction = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
   const loadAnnualPrioritiesFromAPI = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
   const setCompanyTraction = useCompanyTractionStore((state) => state.setCompanyTraction);
+  const setBaselineCompanyTraction = useCompanyTractionStore((state) => state.setBaselineCompanyTraction);
   // const { setCompanyTraction } = useCompanyTractionStore.getState();
 
 
@@ -84,6 +85,7 @@ const CompanyTraction = () => {
           if (res.ok) {
             ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Company Traction Table:', json);
             setCompanyTraction(json);
+            setBaselineCompanyTraction(json);
 
             // setCompanyTraction({
             //   Q1: [],
