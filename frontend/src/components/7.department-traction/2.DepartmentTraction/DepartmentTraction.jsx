@@ -96,11 +96,6 @@ const DepartmentTractionTable = () => {
     : (departmentTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
-  // Sync initial and store changes:
-  useEffect(() => {
-    setDepartmentTraction(departmentTraction);
-  }, [departmentTraction]);
-
   useEffect(() => {
     console.log('useEffect mounted: checking localStorage for departmentTractionData');
     const storedData = localStorage.getItem('departmentTractionData');
@@ -396,7 +391,6 @@ const DepartmentTractionTable = () => {
 
 
   
-
   async function handleAddNewTraction() {
     const mmddyyyy = form.dueDate
       ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
