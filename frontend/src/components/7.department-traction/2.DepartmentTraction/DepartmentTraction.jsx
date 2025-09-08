@@ -91,7 +91,6 @@ const DepartmentTractionTable = () => {
   const [editingCell, setEditingCell] = useState({ rowId: null, field: null });
   const [editingRank, setEditingRank] = useState(null); // For tracking which row is being edited
 
-  const [currentDeptTraction, setCurrentDeptTraction] = useState(null);
 
   const filteredRows = showCompleted
     ? departmentTraction[activeQuarter] || []
@@ -115,14 +114,6 @@ const DepartmentTractionTable = () => {
   }, []);
   
 
-
-  useEffect(() => {
-    if (currentDeptTraction) {
-      console.log('Current department traction state on mount:', currentDeptTraction);
-    }
-  }, [currentDeptTraction]);
-
-  // if (!data) return <p>Loading...</p>;
 
 
 

@@ -3461,145 +3461,145 @@ Route::post('/api/v1/department-traction/annual-priorities/add', function (Reque
 
 
 
-// ref: frontend\src\components\7.department-traction\departmentTraction.jsx
-Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
+// // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
+// Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
 
-    $organization = $request->query('organization');
+//     $organization = $request->query('organization');
 
-    $mockData = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'Q1' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Build landing page',
-                    'progress' => '5%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => '03-31-2025',
-                    'rank' => '1',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                        [
-                            'author' => 'John',
-                            'message' => 'Great work on this!',
-                            'posted' => '27 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q2' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Launch marketing campaign',
-                    'progress' => '0%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => 'Click to set date',
-                    'rank' => '2',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q3' => [],
-            'Q4' => [],
-        ],
+//     $mockData = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'Q1' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Build landing page',
+//                     'progress' => '5%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => '03-31-2025',
+//                     'rank' => '1',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                         [
+//                             'author' => 'John',
+//                             'message' => 'Great work on this!',
+//                             'posted' => '27 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q2' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Launch marketing campaign',
+//                     'progress' => '0%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => 'Click to set date',
+//                     'rank' => '2',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ],
 
-        'Collins Credit Union' => [
-            'Q1' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Build landing page',
-                    'progress' => '5%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => '03-31-2025',
-                    'rank' => '1',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                        [
-                            'author' => 'John',
-                            'message' => 'Great work on this!',
-                            'posted' => '27 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q2' => [
-                [
-                    'id' => 1,
-                    'who' => 'Maricar',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Launch marketing campaign',
-                    'progress' => '0%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => 'Click to set date',
-                    'rank' => '2',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                    ],
-                ],
+//         'Collins Credit Union' => [
+//             'Q1' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Build landing page',
+//                     'progress' => '5%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => '03-31-2025',
+//                     'rank' => '1',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                         [
+//                             'author' => 'John',
+//                             'message' => 'Great work on this!',
+//                             'posted' => '27 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q2' => [
+//                 [
+//                     'id' => 1,
+//                     'who' => 'Maricar',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Launch marketing campaign',
+//                     'progress' => '0%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => 'Click to set date',
+//                     'rank' => '2',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                     ],
+//                 ],
 
-                [
-                    'id' => 2,
-                    'who' => 'Chuck',
-                    'collaborator' => 'Maricar',
-                    'description' => 'Launch marketing campaign',
-                    'progress' => '0%',
-                    'annualPriority' => 'Develop lead generation systems',
-                    'dueDate' => 'Click to set date',
-                    'rank' => '2',
-                    'comment' => [
-                        [
-                            'author' => 'Maricar',
-                            'message' => 'This is a test comment.',
-                            'posted' => '26 June 2025',
-                        ],
-                    ],
-                ],
-            ],
-            'Q3' => [],
-            'Q4' => [],
-        ],
-        'Test Skeleton Loading' => [
-            'Q1' => [],
-            'Q2' => [],
-            'Q3' => [],
-            'Q4' => [],
-        ],
-    ];
+//                 [
+//                     'id' => 2,
+//                     'who' => 'Chuck',
+//                     'collaborator' => 'Maricar',
+//                     'description' => 'Launch marketing campaign',
+//                     'progress' => '0%',
+//                     'annualPriority' => 'Develop lead generation systems',
+//                     'dueDate' => 'Click to set date',
+//                     'rank' => '2',
+//                     'comment' => [
+//                         [
+//                             'author' => 'Maricar',
+//                             'message' => 'This is a test comment.',
+//                             'posted' => '26 June 2025',
+//                         ],
+//                     ],
+//                 ],
+//             ],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ],
+//         'Test Skeleton Loading' => [
+//             'Q1' => [],
+//             'Q2' => [],
+//             'Q3' => [],
+//             'Q4' => [],
+//         ],
+//     ];
 
-    return response()->json($mockData[$organization] ?? [
-        'Q1' => [],
-        'Q2' => [],
-        'Q3' => [],
-        'Q4' => [],
-    ]);
-});
+//     return response()->json($mockData[$organization] ?? [
+//         'Q1' => [],
+//         'Q2' => [],
+//         'Q3' => [],
+//         'Q4' => [],
+//     ]);
+// });
 
 // ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
 Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
