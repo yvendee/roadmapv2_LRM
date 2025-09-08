@@ -34,13 +34,12 @@ const DepartmentTractionTable = () => {
     rank: '',
   });
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const addDepartmentTraction = useDepartmentTractionStore((state) => state.addDepartmentTraction);
 
   const departmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.departmentAnnualPriorities);
 
-  
+  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
@@ -52,15 +51,10 @@ const DepartmentTractionTable = () => {
     (state) => state.updateDepartmentTractionField
   );
 
-  
-
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
-
-  // const [data, setData] = useState(null);
-
-  const { departmentTraction, setDepartmentTraction, updatedDepartmentTraction  } = useDepartmentTractionStore();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -73,12 +67,7 @@ const DepartmentTractionTable = () => {
 
   
   const [showCompleted, setShowCompleted] = useState(true);
-  // const [companyTraction] = useState(initialDepartmentTraction);
-  // const [departmentTraction, setDepartmentTraction, updateComment] = useState(() => {
-  //   // Load company traction from localStorage if available, otherwise use initial data
-  //   const storedData = localStorage.getItem('departmentTractionData');
-  //   return storedData ? JSON.parse(storedData) : initialDepartmentTraction;
-  // });
+
 
   // Generate progress options from 0% to 100% with increments of 5%
   const progressOptions = [];
@@ -108,28 +97,40 @@ const DepartmentTractionTable = () => {
     : (departmentTraction[activeQuarter] || []).filter((row) => row.progress !== '100%');
 
 
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem('departmentTractionData');
+  //   if (storedData) {
+  //     setIsEditing(true); // Mark as edited
+  //     try {
+  //       // setData(JSON.parse(storedData));
+  //       setDepartmentTraction(JSON.parse(storedData));
+  //     } catch (e) {
+  //       console.error('Failed to parse departmentTractionData from localStorage', e);
+  //       // setData(storeData);
+  //     }
+  //   } 
+  //   else {
+  //     // Store the initial state (only once)
+  //     const currentData = useDepartmentTractionStore.getState().departmentTraction;
+  //     useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
+  //   }
+  // }, [setDepartmentTraction]);
+
   useEffect(() => {
     const storedData = localStorage.getItem('departmentTractionData');
     if (storedData) {
       setIsEditing(true); // Mark as edited
       try {
-        // setData(JSON.parse(storedData));
         setDepartmentTraction(JSON.parse(storedData));
       } catch (e) {
         console.error('Failed to parse departmentTractionData from localStorage', e);
-        // setData(storeData);
       }
-    } 
-    else {
-      // Store the initial state (only once)
+    } else {
       const currentData = useDepartmentTractionStore.getState().departmentTraction;
-      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData)
+      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
     }
-  }, [setDepartmentTraction]);
-
-  // if (!data) return <p>Loading...</p>;
-
-
+  }, []);
+  
 
   const getTimeAgo = (timestamp) => {
     const now = new Date();
@@ -261,33 +262,6 @@ const DepartmentTractionTable = () => {
   };
 
 
-  // const handleDueDateChange = (e, rowId) => {
-  //   setIsEditing(true);
-  //   handleEditChange(e, rowId, 'dueDate');
-  // };
-
-  // const handleDescriptionChange = (e, rowId) => {
-  //   setIsEditing(true); // Mark as edited
-  //   const value = e.target.value;
-  //   setDescription(value);
-  //   handleEditChange(e, rowId, 'description');
-  // };
-
-  // const handleAnnualPriorityChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setAnnualPriority(value);
-  //   handleEditChange(e, rowId, 'annualPriority');
-  //   setIsEditing(true); // Mark as edited
-  // };
-
-  // const handleRankChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setRank(value);
-  //   handleEditChange(e, rowId, 'rank');
-  //   setIsEditing(true); // Mark as edited
-  // };
-
-
   const handleDueDateChange = (e, rowId) => {
     const value = e.target.value;
     updateDepartmentTractionField(activeQuarter, rowId, 'dueDate', value);
@@ -345,27 +319,6 @@ const DepartmentTractionTable = () => {
     }
   };
 
-  // const handleSaveClick = (rowId) => {
-  //   setEditing((prev) => ({ ...prev, [rowId]: false }));
-  //   handleSaveChanges();
-  // };
-
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-    
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //     // localStorage.setItem('departmentTractionData', JSON.stringify(departmentTraction));
-      
-  //     // Parse the stored JSON data back to its original object form
-  //     const savedData = JSON.parse(localStorage.getItem('departmentTractionData'));
-      
-  //     ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
-  //     localStorage.removeItem('departmentTractionData');
-  //     setIsEditing(false); // Hide the buttons after saving
-  //   }, 1000);
-
-  // };
 
   const handleSaveChanges = async () => {
     setLoadingSave(true);
@@ -447,35 +400,6 @@ const DepartmentTractionTable = () => {
     // 4. Hide Modal
     setShowConfirmModal(false);
   };
-
-
-  // function handleAddNewTraction() {
-  //   const mmddyyyy = form.dueDate
-  //     ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
-  //     : 'Click to set date';
-  
-  //   const newItem = {
-  //     id: Date.now(),
-  //     who: form.who,
-  //     collaborator: form.collaborator,
-  //     description: form.description,
-  //     progress: form.progress,
-  //     annualPriority: form.annualPriority,
-  //     dueDate: mmddyyyy,
-  //     rank: form.rank,
-  //     comment: [],
-  //   };
-  
-  //   const updated = {
-  //     ...departmentTraction,
-  //     [form.quarter]: [...(departmentTraction[form.quarter] || []), newItem],
-  //   };
-  
-  //   addDepartmentTraction(form.quarter, newItem); // store
-  //   localStorage.setItem('departmentTractionData', JSON.stringify(updated)); // localStorage
-  //   setDepartmentTraction(updated); // update table
-  //   setAddTractionModalOpen(false); // close modal
-  // }
   
 
   async function handleAddNewTraction() {

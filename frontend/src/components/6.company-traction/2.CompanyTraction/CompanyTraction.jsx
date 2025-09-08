@@ -41,20 +41,15 @@ const CompanyTraction = () => {
 
   const { companyTraction, setCompanyTraction, updatedCompanyTraction  } = useCompanyTractionStore();
 
-  // const [companyTraction, setCompanyTraction] = useState(initialCompanyTraction);
 
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
 
   const { users, selectedUser, setUsers, setSelectedUser } = useCompanyTractionUserStore();
 
-  // const storeData = useCompanyTractionStore((state) => state.companyTraction);
-
   const updateCompanyTractionField = useCompanyTractionStore(
     (state) => state.updateCompanyTractionField
   );
-
-  // const [data, setData] = useState(null);
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
