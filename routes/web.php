@@ -3095,7 +3095,7 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 //     ]);
 // });
 
-// ref: frontend\src\components\6.company-traction\companyTraction.jsx
+// 
 Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3103,36 +3103,33 @@ Route::get('/api/v1/department-traction/traction-data', function (Request $reque
         }
     }
 
+    // ✅ Validate the input
+    $validator = Validator::make($request->all(), [
+        'organization' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
     $organization = $request->query('organization');
 
-    if (!$organization) {
-        return response()->json(['message' => 'Organization name is required'], 400);
-    }
-
+    // 🔍 Find the record in DB
     $record = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json([
-            'message' => "No traction data found for organization: $organization",
-            'data' => [
-                'Q1' => [],
-                'Q2' => [],
-                'Q3' => [],
-                'Q4' => [],
-            ]
-        ], 404);
-    }
-
-    return response()->json([
-        'message' => 'Company traction data retrieved successfully',
-        'data' => $record->companyTractionData ?? [
-            'Q1' => [],
-            'Q2' => [],
-            'Q3' => [],
-            'Q4' => [],
-        ],
+    // 📦 Return the data or empty structure if not found
+    return response()->json($record->companyTractionData ?? [
+        'Q1' => [],
+        'Q2' => [],
+        'Q3' => [],
+        'Q4' => [],
     ]);
 });
+
 
 // ref: 
 Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
