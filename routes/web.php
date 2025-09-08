@@ -3144,11 +3144,11 @@ Route::post('/api/v1/department-traction/traction-data/update', function (Reques
 
     $validated = $request->validate([
         'organizationName' => 'required|string|max:255',
-        'companyTractionData' => 'required|array',
+        'departmentTractionData' => 'required|array',
     ]);
 
     $orgName = $validated['organizationName'];
-    $tractionData = $validated['companyTractionData'];
+    $tractionData = $validated['departmentTractionData'];
 
     $record = DepartmentTractionCompanyTraction::where('organizationName', $orgName)->first();
 

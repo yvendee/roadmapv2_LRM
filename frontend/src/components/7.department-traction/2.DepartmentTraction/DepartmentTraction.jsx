@@ -112,12 +112,6 @@ const DepartmentTractionTable = () => {
         // setData(storeData);
       }
     } 
-    else {
-      console.log('No storedData found, setting baselineDepartmentTraction from store');
-      // Store the initial state (only once)
-      const currentData = useDepartmentTractionStore.getState().departmentTraction;
-      useDepartmentTractionStore.getState().setBaselineDepartmentTraction(currentData);
-    }
   }, []);
   
 
@@ -349,19 +343,20 @@ const DepartmentTractionTable = () => {
           credentials: 'include',
           body: JSON.stringify({
             organizationName: organization,
-            companyTractionData: savedData,
+            departmentTractionData: savedData,
           }),
         });
   
         const result = await response.json();
   
         if (response.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('✅ Company Traction Data Updated:', result);
+          ENABLE_CONSOLE_LOGS && console.log('✅ Department TractionData Data Updated:', result);
+          localStorage.removeItem('departmentTractionData');
         } else {
-          console.error('❌ Failed to update company traction data:', result.message);
+          console.error('❌ Failed to update department traction data:', result.message);
         }
       } catch (error) {
-        console.error('❌ Network error while updating company traction data:', error);
+        console.error('❌ Network error while updating department traction data:', error);
       }
     }, 1000);
   };
