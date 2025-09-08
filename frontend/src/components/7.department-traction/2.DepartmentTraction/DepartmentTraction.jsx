@@ -441,8 +441,8 @@ const DepartmentTractionTable = () => {
 
     // 3. Update Zustand store
     // setDepartmentTraction(initialDepartmentTraction);
-    const { baselineDepartmentTraction } = useDepartmentTractionStore.getState();
-    setDepartmentTraction(baselineDepartmentTraction);
+    const { baselineDepartmentAnnualPriorities } = useDepartmentTractionStore.getState();
+    setDepartmentTraction(baselineDepartmentAnnualPriorities);
 
     // 4. Hide Modal
     setShowConfirmModal(false);
