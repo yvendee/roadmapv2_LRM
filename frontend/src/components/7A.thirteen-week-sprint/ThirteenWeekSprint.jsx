@@ -41,9 +41,9 @@ const ThirteenWeekSprint = () => {
           if (res.ok) {
             ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Thirteen Week Sprint Data:', json);
 
-            if (json && json.thirteenWeekSprintData) {
+            if (json) {
               // Assuming the data is an array of weeks (like your initialWeeklySprintData)
-              setWeeklySprints(json.thirteenWeekSprintData);
+              setWeeklySprints(json);
             } else {
               console.warn(`⚠️ No thirteenWeekSprintData found for organization: ${organization}`);
               setWeeklySprints([]); // or initial data if you prefer
