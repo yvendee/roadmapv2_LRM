@@ -3821,6 +3821,36 @@ Route::get('/api/v1/thirteen-week-sprint', function (Request $request) use ($API
 
 
 // ref:
+Route::post('/api/v1/thirteen-week-sprint/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organization');
+    $data = $request->input('thirteenWeekSprintData');
+
+    if (!$organization || !$data) {
+        return response()->json(['message' => 'Organization and data are required'], 400);
+    }
+
+    $record = ThirteenWeekSprint::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No record found for this organization'], 404);
+    }
+
+    // Save the updated weekly sprint data
+    $record->thirteenWeekSprintData = $data;
+    $record->save();
+
+    return response()->json(['message' => 'ThirteenWeekSprintData updated successfully']);
+});
+
+
+
+// ref:
 Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {

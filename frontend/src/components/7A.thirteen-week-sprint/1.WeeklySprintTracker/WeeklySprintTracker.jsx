@@ -9,10 +9,15 @@ import {
     faSave,
     faSignOutAlt 
 } from '@fortawesome/free-solid-svg-icons';
+
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS} from '../../../configs/config';
 import './WeeklySprintTracker.css';
 
 const WeeklySprintTracker = () => {
     const loggedUser = useLoginStore(state => state.user);
+    const organization = useLayoutSettingsStore((state) => state.organization);
     const weeklySprints = useWeeklySprintStore(state => state.weeklySprints);
     const setWeeklySprints = useWeeklySprintStore(state => state.setWeeklySprints);
     const updateKeyFocus = useWeeklySprintStore(state => state.updateKeyFocus);
@@ -64,18 +69,63 @@ const WeeklySprintTracker = () => {
         }, 1000); // 1-second delay
       };
       
-      const handleSaveChanges = () => {
-        setLoadingSave(true);
-        
-        setTimeout(() => {
-          console.log('Saved WeeklySprintTracker:', weeklySprints);
-          localStorage.removeItem(localStorageKey);
-          setIsEdited(false); // Moved after log
-          setLoadingSave(false);
-        }, 1000); // 1-second delay
-      };
+        // const handleSaveChanges = () => {
+        // setLoadingSave(true);
 
+        // setTimeout(() => {
+        //     console.log('Saved WeeklySprintTracker:', weeklySprints);
+        //     localStorage.removeItem(localStorageKey);
+        //     setIsEdited(false); // Moved after log
+        //     setLoadingSave(false);
+        // }, 1000); // 1-second delay
+        // };
 
+        const handleSaveChanges = async () => {
+            setLoadingSave(true);
+          
+            setTimeout(async () => {
+              setLoadingSave(false);
+          
+              const savedData = JSON.parse(localStorage.getItem(localStorageKey)); // same key you're using
+              ENABLE_CONSOLE_LOGS && console.log('📤 Updated WeeklySprintTracker from localStorage:', savedData);
+          
+              localStorage.removeItem(localStorageKey); // Clean up
+              setIsEdited(false); // Reset save state
+          
+              try {
+                // Get CSRF token (Laravel requirement for POST)
+                const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+                  credentials: 'include',
+                });
+          
+                const { csrf_token } = await csrfRes.json();
+          
+                const response = await fetch(`${API_URL}/v1/thirteen-week-sprint/update`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf_token,
+                  },
+                  credentials: 'include',
+                  body: JSON.stringify({
+                    organization: organization,
+                    thirteenWeekSprintData: savedData,
+                  }),
+                });
+          
+                const result = await response.json();
+          
+                if (response.ok) {
+                  ENABLE_CONSOLE_LOGS && console.log('✅ Thirteen Week Sprint Data Updated:', result);
+                } else {
+                  console.error('❌ Failed to update thirteenWeekSprintData:', result.message);
+                }
+              } catch (error) {
+                console.error('❌ Network error while updating thirteenWeekSprintData:', error);
+              }
+            }, 1000); // Optional delay for UX
+        };
+          
   
     return (
     <div className="weekly-sprint-tracker">
