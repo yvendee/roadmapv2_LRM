@@ -67,17 +67,16 @@ const WeeklySprintTracker = () => {
 
     const handleDiscardChanges = () => {
 
-        const { baselineWeeklySprints } = useWeeklySprintStore.getState();
-
-        // ✅ Console log to inspect baselineWeeklySprints before setting
-        ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineWeeklySprints:', baselineWeeklySprints);
-    
-        setWeeklySprints(baselineWeeklySprints);
-        // setWeeklySprints(initialWeeklySprintData); 
-
         setLoadingDischarge(true);
 
         setTimeout(() => {
+          const { baselineWeeklySprints } = useWeeklySprintStore.getState();
+
+           // ✅ Console log to inspect baselineWeeklySprints before setting
+          ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineWeeklySprints:', baselineWeeklySprints);
+        
+          setWeeklySprints(baselineWeeklySprints);
+          // setWeeklySprints(initialWeeklySprintData); 
           localStorage.removeItem(localStorageKey);
           setIsEdited(false); // Moved after reset for proper state sync
           setLoadingDischarge(false);
