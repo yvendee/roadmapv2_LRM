@@ -40,6 +40,9 @@ use App\Models\DepartmentTractionAnnualPriority;
 use App\Models\DepartmentTractionCompanyTraction;
 use App\Models\WhoWhatWhen;
 use App\Models\ThirteenWeekSprint;
+use App\Models\SessionDatesMonthlySessionsTracker;
+use App\Models\SessionDatesQuarterlySessions;
+use App\Models\SessionDatesMonthlySessions;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -2782,7 +2785,6 @@ Route::post('/api/v1/company-traction/annual-priorities/update', function (Reque
     ]);
 });
 
-
 // ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
 
@@ -2832,7 +2834,6 @@ Route::post('/api/v1/company-traction/annual-priorities/add', function (Request 
         'data' => $newItemWithId,
     ]);
 });
-
 
 // // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 // Route::get('/api/v1/company-traction/traction-data', function (Request $request) use ($API_secure) {
@@ -3009,7 +3010,7 @@ Route::get('/api/v1/company-traction/traction-data', function (Request $request)
     ]);
 });
 
-// ref: 
+// ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
 Route::post('/api/v1/company-traction/traction-data/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3055,7 +3056,7 @@ Route::post('/api/v1/company-traction/traction-data/update', function (Request $
     ]);
 });
 
-// ref:
+// ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
 Route::post('/api/v1/company-traction/traction-data/add', function (Request $request) {
     // Validate request
     $validated = $request->validate([
@@ -3096,7 +3097,6 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
         'data' => $newItem,
     ]);
 });
-
 
 // // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 //  Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
@@ -3142,131 +3142,6 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 //     ]);
 // });
 
-// 
-Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    // ✅ Validate the input
-    $validator = Validator::make($request->all(), [
-        'organization' => 'required|string|max:255',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
-    $organization = $request->query('organization');
-
-    // 🔍 Find the record in DB
-    $record = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
-
-    // 📦 Return the data or empty structure if not found
-    return response()->json($record->companyTractionData ?? [
-        'Q1' => [],
-        'Q2' => [],
-        'Q3' => [],
-        'Q4' => [],
-    ]);
-});
-
-
-// ref: 
-Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    $validated = $request->validate([
-        'organizationName' => 'required|string|max:255',
-        'departmentTractionData' => 'required|array',
-    ]);
-
-    $orgName = $validated['organizationName'];
-    $tractionData = $validated['departmentTractionData'];
-
-    $record = DepartmentTractionCompanyTraction::where('organizationName', $orgName)->first();
-
-    if (!$record) {
-        return response()->json([
-            'status' => 'error',
-            'message' => "Organization '$orgName' not found",
-        ], 404);
-    }
-
-    $record->companyTractionData = $tractionData;
-    $record->save();
-
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Company traction data updated successfully',
-        'data' => $record,
-    ]);
-});
-
-// ref:
-Route::post('/api/v1/department-traction/traction-data/add', function (Request $request) {
-    // Validate request
-    $validated = $request->validate([
-        'organizationName' => 'required|string',
-        'quarter' => 'required|string|in:Q1,Q2,Q3,Q4',
-        'newItem' => 'required|array',
-    ]);
-
-    $organizationName = $validated['organizationName'];
-    $quarter = $validated['quarter'];
-    $newItem = $validated['newItem'];
-
-    // Fetch record by organizationName
-    $record = DepartmentTractionCompanyTraction::where('organizationName', $organizationName)->first();
-
-    if (!$record) {
-        return response()->json([
-            'message' => 'Organization not found',
-        ], 404);
-    }
-
-    // Get existing companyTractionData (cast to array via model or decode manually)
-    $tractionData = $record->companyTractionData ?? [];
-
-    // Ensure it's an array
-    if (!is_array($tractionData)) {
-        $tractionData = ['Q1' => [], 'Q2' => [], 'Q3' => [], 'Q4' => []];
-    }
-
-    // Make sure the quarter key exists and is an array
-    if (!isset($tractionData[$quarter]) || !is_array($tractionData[$quarter])) {
-        $tractionData[$quarter] = [];
-    }
-
-    // Assign a new ID (using time or max ID + 1)
-    $allItems = collect($tractionData)->flatten(1);
-    $maxId = $allItems->max('id') ?? 0;
-    $newItem['id'] = $maxId + 1;
-
-    // Append the new item
-    $tractionData[$quarter][] = $newItem;
-
-    // Save back to DB
-    $record->companyTractionData = $tractionData;
-    $record->save();
-
-    return response()->json([
-        'message' => 'New traction item added successfully',
-        'data' => $newItem,
-    ]);
-});
-
-
 // // ref: 
 // Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
@@ -3308,7 +3183,6 @@ Route::post('/api/v1/department-traction/traction-data/add', function (Request $
 //         'message' => 'Company traction data updated successfully.',
 //     ]);
 // });
-
 
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 // Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
@@ -3362,8 +3236,7 @@ Route::post('/api/v1/department-traction/traction-data/add', function (Request $
 //     return response()->json($data[$organization] ?? []);
 // });
 
-
-// ref: 
+ // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3393,8 +3266,7 @@ Route::get('/api/v1/department-traction/annual-priorities', function (Request $r
     return response()->json($record->annualPrioritiesData ?? []);
 });
 
-
-// ref: 
+// ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/department-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3440,7 +3312,7 @@ Route::post('/api/v1/department-traction/annual-priorities/update', function (Re
     ]);
 });
 
-// ref: 
+// ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/department-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
 
     if ($API_secure) {
@@ -3502,6 +3374,128 @@ Route::post('/api/v1/department-traction/annual-priorities/add', function (Reque
     ]);
 });
 
+// ref: frontend\src\components\7.department-traction\departmentTraction.jsx
+Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // ✅ Validate the input
+    $validator = Validator::make($request->all(), [
+        'organization' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $organization = $request->query('organization');
+
+    // 🔍 Find the record in DB
+    $record = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
+
+    // 📦 Return the data or empty structure if not found
+    return response()->json($record->companyTractionData ?? [
+        'Q1' => [],
+        'Q2' => [],
+        'Q3' => [],
+        'Q4' => [],
+    ]);
+});
+
+// ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
+Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'organizationName' => 'required|string|max:255',
+        'departmentTractionData' => 'required|array',
+    ]);
+
+    $orgName = $validated['organizationName'];
+    $tractionData = $validated['departmentTractionData'];
+
+    $record = DepartmentTractionCompanyTraction::where('organizationName', $orgName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'status' => 'error',
+            'message' => "Organization '$orgName' not found",
+        ], 404);
+    }
+
+    $record->companyTractionData = $tractionData;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Company traction data updated successfully',
+        'data' => $record,
+    ]);
+});
+
+// ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
+Route::post('/api/v1/department-traction/traction-data/add', function (Request $request) {
+    // Validate request
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'quarter' => 'required|string|in:Q1,Q2,Q3,Q4',
+        'newItem' => 'required|array',
+    ]);
+
+    $organizationName = $validated['organizationName'];
+    $quarter = $validated['quarter'];
+    $newItem = $validated['newItem'];
+
+    // Fetch record by organizationName
+    $record = DepartmentTractionCompanyTraction::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json([
+            'message' => 'Organization not found',
+        ], 404);
+    }
+
+    // Get existing companyTractionData (cast to array via model or decode manually)
+    $tractionData = $record->companyTractionData ?? [];
+
+    // Ensure it's an array
+    if (!is_array($tractionData)) {
+        $tractionData = ['Q1' => [], 'Q2' => [], 'Q3' => [], 'Q4' => []];
+    }
+
+    // Make sure the quarter key exists and is an array
+    if (!isset($tractionData[$quarter]) || !is_array($tractionData[$quarter])) {
+        $tractionData[$quarter] = [];
+    }
+
+    // Assign a new ID (using time or max ID + 1)
+    $allItems = collect($tractionData)->flatten(1);
+    $maxId = $allItems->max('id') ?? 0;
+    $newItem['id'] = $maxId + 1;
+
+    // Append the new item
+    $tractionData[$quarter][] = $newItem;
+
+    // Save back to DB
+    $record->companyTractionData = $tractionData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New traction item added successfully',
+        'data' => $newItem,
+    ]);
+});
 
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 // Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
@@ -3643,159 +3637,158 @@ Route::post('/api/v1/department-traction/annual-priorities/add', function (Reque
 //     ]);
 // });
 
-// // ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
-// Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//         $user = $request->session()->get('user');
-//     }
-
-//     $organization = $request->query('organization');
-
-//     $data = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             [
-//                 'id' => 1,
-//                 'date' => '2025-03-31',
-//                 'who' => 'Maricar',
-//                 'what' => 'Systematize Coaching Framework (now called Momentum OS).',
-//                 'deadline' => '2025-03-31',
-//                 'comments' => 'approved',
-//                 'status' => '100.00%',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'date' => '2025-04-01',
-//                 'who' => 'Chuck',
-//                 'what' => 'Systematize Client Delivery.',
-//                 'deadline' => '2025-03-31',
-//                 'comments' => 'working',
-//                 'status' => '83.33%',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'date' => '2025-04-02',
-//                 'who' => 'Kayven',
-//                 'what' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
-//                 'deadline' => '2025-03-31',
-//                 'comments' => 'pending',
-//                 'status' => '0.00%',
-//             ],
-//             [
-//                 'id' => 4,
-//                 'date' => '2025-04-02',
-//                 'who' => 'John',
-//                 'what' => 'Develop lead generation systems.',
-//                 'deadline' => '2025-03-31',
-//                 'comments' => 'paused',
-//                 'status' => '50.00%',
-//             ],
-//             [
-//                 'id' => 5,
-//                 'date' => '2025-04-02',
-//                 'who' => 'Grace',
-//                 'what' => '1% Genius Version 3 Development.',
-//                 'deadline' => '2025-03-31',
-//                 'comments' => 'waiting',
-//                 'status' => '50.00%',
-//             ],
-//         ],
-    
-//         'Collins Credit Union' => [
-//             [
-//                 'id' => 1,
-//                 'date' => '2025-03-31',
-//                 'who' => 'Alice',
-//                 'what' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
-//                 'deadline' => '2025-06-30',
-//                 'comments' => 'progressing',
-//                 'status' => '85.00%',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'date' => '2025-04-15',
-//                 'who' => 'Bob',
-//                 'what' => 'Streamline operations and reduce costs while maintaining quality.',
-//                 'deadline' => '2025-09-30',
-//                 'comments' => 'on schedule',
-//                 'status' => '90.00%',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'date' => '2025-05-01',
-//                 'who' => 'Charlie',
-//                 'what' => 'Implement new technologies to drive efficiency and innovation.',
-//                 'deadline' => '2025-12-31',
-//                 'comments' => 'planning phase',
-//                 'status' => '60.00%',
-//             ],
-//             [
-//                 'id' => 4,
-//                 'date' => '2025-06-01',
-//                 'who' => 'Diana',
-//                 'what' => 'Entering new markets and increasing market share.',
-//                 'deadline' => '2025-11-30',
-//                 'comments' => 'needs review',
-//                 'status' => '50.00%',
-//             ],
-//         ],
-    
-//         'Test Skeleton Loading' => [
-//             [
-//                 'id' => 1,
-//                 'date' => '-',
-//                 'who' => '-',
-//                 'what' => '-',
-//                 'deadline' => '-',
-//                 'comments' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'date' => '-',
-//                 'who' => '-',
-//                 'what' => '-',
-//                 'deadline' => '-',
-//                 'comments' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'date' => '-',
-//                 'who' => '-',
-//                 'what' => '-',
-//                 'deadline' => '-',
-//                 'comments' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 4,
-//                 'date' => '-',
-//                 'who' => '-',
-//                 'what' => '-',
-//                 'deadline' => '-',
-//                 'comments' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 5,
-//                 'date' => '-',
-//                 'who' => '-',
-//                 'what' => '-',
-//                 'deadline' => '-',
-//                 'comments' => '-',
-//                 'status' => '-',
-//             ],
-//         ],
-//     ];
+//
+    // // ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
+    // Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
+    //     if ($API_secure) {
+    //         if (!$request->session()->get('logged_in')) {
+    //             return response()->json(['message' => 'Unauthorized'], 401);
+    //         }
+    //         $user = $request->session()->get('user');
+    //     }
+    //     $organization = $request->query('organization');
+    //     $data = [
+    //         'Chuck Gulledge Advisors, LLC' => [
+    //             [
+    //                 'id' => 1,
+    //                 'date' => '2025-03-31',
+    //                 'who' => 'Maricar',
+    //                 'what' => 'Systematize Coaching Framework (now called Momentum OS).',
+    //                 'deadline' => '2025-03-31',
+    //                 'comments' => 'approved',
+    //                 'status' => '100.00%',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'date' => '2025-04-01',
+    //                 'who' => 'Chuck',
+    //                 'what' => 'Systematize Client Delivery.',
+    //                 'deadline' => '2025-03-31',
+    //                 'comments' => 'working',
+    //                 'status' => '83.33%',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'date' => '2025-04-02',
+    //                 'who' => 'Kayven',
+    //                 'what' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
+    //                 'deadline' => '2025-03-31',
+    //                 'comments' => 'pending',
+    //                 'status' => '0.00%',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'date' => '2025-04-02',
+    //                 'who' => 'John',
+    //                 'what' => 'Develop lead generation systems.',
+    //                 'deadline' => '2025-03-31',
+    //                 'comments' => 'paused',
+    //                 'status' => '50.00%',
+    //             ],
+    //             [
+    //                 'id' => 5,
+    //                 'date' => '2025-04-02',
+    //                 'who' => 'Grace',
+    //                 'what' => '1% Genius Version 3 Development.',
+    //                 'deadline' => '2025-03-31',
+    //                 'comments' => 'waiting',
+    //                 'status' => '50.00%',
+    //             ],
+    //         ],
+        
+    //         'Collins Credit Union' => [
+    //             [
+    //                 'id' => 1,
+    //                 'date' => '2025-03-31',
+    //                 'who' => 'Alice',
+    //                 'what' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
+    //                 'deadline' => '2025-06-30',
+    //                 'comments' => 'progressing',
+    //                 'status' => '85.00%',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'date' => '2025-04-15',
+    //                 'who' => 'Bob',
+    //                 'what' => 'Streamline operations and reduce costs while maintaining quality.',
+    //                 'deadline' => '2025-09-30',
+    //                 'comments' => 'on schedule',
+    //                 'status' => '90.00%',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'date' => '2025-05-01',
+    //                 'who' => 'Charlie',
+    //                 'what' => 'Implement new technologies to drive efficiency and innovation.',
+    //                 'deadline' => '2025-12-31',
+    //                 'comments' => 'planning phase',
+    //                 'status' => '60.00%',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'date' => '2025-06-01',
+    //                 'who' => 'Diana',
+    //                 'what' => 'Entering new markets and increasing market share.',
+    //                 'deadline' => '2025-11-30',
+    //                 'comments' => 'needs review',
+    //                 'status' => '50.00%',
+    //             ],
+    //         ],
+        
+    //         'Test Skeleton Loading' => [
+    //             [
+    //                 'id' => 1,
+    //                 'date' => '-',
+    //                 'who' => '-',
+    //                 'what' => '-',
+    //                 'deadline' => '-',
+    //                 'comments' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 2,
+    //                 'date' => '-',
+    //                 'who' => '-',
+    //                 'what' => '-',
+    //                 'deadline' => '-',
+    //                 'comments' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 3,
+    //                 'date' => '-',
+    //                 'who' => '-',
+    //                 'what' => '-',
+    //                 'deadline' => '-',
+    //                 'comments' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 4,
+    //                 'date' => '-',
+    //                 'who' => '-',
+    //                 'what' => '-',
+    //                 'deadline' => '-',
+    //                 'comments' => '-',
+    //                 'status' => '-',
+    //             ],
+    //             [
+    //                 'id' => 5,
+    //                 'date' => '-',
+    //                 'who' => '-',
+    //                 'what' => '-',
+    //                 'deadline' => '-',
+    //                 'comments' => '-',
+    //                 'status' => '-',
+    //             ],
+    //         ],
+    //     ];
     
 
 //     return response()->json($data[$organization] ?? []);
 // });
 
-// ref:
+// ref: frontend\src\components\7A.thirteen-week-sprint\ThirteenWeekSprint.jsx
 Route::get('/api/v1/thirteen-week-sprint', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3819,8 +3812,7 @@ Route::get('/api/v1/thirteen-week-sprint', function (Request $request) use ($API
     return response()->json($record->thirteenWeekSprintData ?? []);
 });
 
-
-// ref:
+// ref: frontend\src\components\7A.thirteen-week-sprint\1.WeeklySprintTracker\WeeklySprintTracker.jsx
 Route::post('/api/v1/thirteen-week-sprint/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3848,9 +3840,7 @@ Route::post('/api/v1/thirteen-week-sprint/update', function (Request $request) u
     return response()->json(['message' => 'ThirteenWeekSprintData updated successfully']);
 });
 
-
-
-// ref:
+// ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
 Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3873,8 +3863,7 @@ Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure
     return response()->json($record->whoWhatWhenData ?? []);
 });
 
-
-// ref:
+// ref: frontend\src\components\8.who-what-when\1.WhoWhatWhenTable\WhoWhatWhenTable.jsx
 Route::post('/api/v1/who-what-when/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3901,9 +3890,7 @@ Route::post('/api/v1/who-what-when/update', function (Request $request) use ($AP
     return response()->json(['message' => 'Who-What-When data updated successfully']);
 });
 
-
-// ref:
-
+// ref: frontend\src\components\8.who-what-when\1.WhoWhatWhenTable\WhoWhatWhenTable.jsx
 Route::post('/api/v1/who-what-when/add', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3949,45 +3936,178 @@ Route::post('/api/v1/who-what-when/add', function (Request $request) use ($API_s
     ]);
 });
 
+// // ref: frontend\src\components\9.session-dates\sessionDates.jsx
+// Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
 
-// ref: frontend\src\components\9.session-dates\sessionDates.jsx
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             ['date' => '2025-07-01', 'status' => 'done', 'details' => 'Strategy alignment'],
+//             ['date' => '2025-07-15', 'status' => 'pending', 'details' => 'KPI review'],
+//             ['date' => '2025-07-25', 'status' => 'new', 'details' => 'Planning'],
+//             ['date' => '2025-08-05', 'status' => 'pending', 'details' => 'Forecasting'],
+//         ],
+//         'Collins Credit Union' => [
+//             ['date' => '2025-07-03', 'status' => 'done', 'details' => 'Budget review'],
+//             ['date' => '2025-07-18', 'status' => 'pending', 'details' => 'Risk assessment'],
+//             ['date' => '2025-07-28', 'status' => 'new', 'details' => 'Team training'],
+//             ['date' => '2025-08-07', 'status' => 'pending', 'details' => 'Customer feedback'],
+//         ],
+//         'Test Skeleton Loading' => [
+//             ['date' => '-', 'status' => '-', 'details' => '-'],
+//             ['date' => '-', 'status' => '-', 'details' => '-'],
+//             ['date' => '-', 'status' => '-', 'details' => '-'],
+//             ['date' => '-', 'status' => '-', 'details' => '-'],
+//         ],
+//     ];
+
+//     return response()->json([
+//         $organization => $data[$organization] ?? [],
+//     ]);
+// });
+
+// ref: 
 Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            ['date' => '2025-07-01', 'status' => 'done', 'details' => 'Strategy alignment'],
-            ['date' => '2025-07-15', 'status' => 'pending', 'details' => 'KPI review'],
-            ['date' => '2025-07-25', 'status' => 'new', 'details' => 'Planning'],
-            ['date' => '2025-08-05', 'status' => 'pending', 'details' => 'Forecasting'],
-        ],
-        'Collins Credit Union' => [
-            ['date' => '2025-07-03', 'status' => 'done', 'details' => 'Budget review'],
-            ['date' => '2025-07-18', 'status' => 'pending', 'details' => 'Risk assessment'],
-            ['date' => '2025-07-28', 'status' => 'new', 'details' => 'Team training'],
-            ['date' => '2025-08-07', 'status' => 'pending', 'details' => 'Customer feedback'],
-        ],
-        'Test Skeleton Loading' => [
-            ['date' => '-', 'status' => '-', 'details' => '-'],
-            ['date' => '-', 'status' => '-', 'details' => '-'],
-            ['date' => '-', 'status' => '-', 'details' => '-'],
-            ['date' => '-', 'status' => '-', 'details' => '-'],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-    return response()->json([
-        $organization => $data[$organization] ?? [],
-    ]);
+    $record = SessionDatesMonthlySessionsTracker::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No data found for this organization'], 404);
+    }
+
+    return response()->json($record->sessionDatesMonthlySessionsTrackerData ?? []);
 });
 
-// ref: frontend\src\components\9.session-dates\sessionDates.jsx
+
+// // ref: frontend\src\components\9.session-dates\sessionDates.jsx
+// Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'status' => 'Completed',
+//                 'quarter' => 'Q1 2025',
+//                 'meetingDate' => 'January 20, 2025',
+//                 'agenda' => 'Strategic Planning & KPIs',
+//                 'recap' => 'Shared Q1 goals and budget updates',
+//             ],
+//             [
+//                 'status' => 'Scheduled',
+//                 'quarter' => 'Q2 2025',
+//                 'meetingDate' => 'April 22, 2025',
+//                 'agenda' => 'Customer Retention Plans',
+//                 'recap' => 'To be added after session',
+//             ],
+//             [
+//                 'status' => 'Pending',
+//                 'quarter' => 'Q3 2025',
+//                 'meetingDate' => 'July 15, 2025',
+//                 'agenda' => 'New Product Launch Discussion',
+//                 'recap' => 'To be added',
+//             ],
+//             [
+//                 'status' => 'Upcoming',
+//                 'quarter' => 'Q4 2025',
+//                 'meetingDate' => 'October 17, 2025',
+//                 'agenda' => 'Annual Review & Strategy 2026',
+//                 'recap' => 'To be added',
+//             ],
+//         ],
+//         'Collins Credit Union' => [
+//             [
+//                 'status' => 'Completed',
+//                 'quarter' => 'Q1 2024',
+//                 'meetingDate' => 'January 15, 2024',
+//                 'agenda' => 'Budget Review',
+//                 'recap' => 'Reviewed last year’s budget and set targets',
+//             ],
+//             [
+//                 'status' => 'Scheduled',
+//                 'quarter' => 'Q2 2024',
+//                 'meetingDate' => 'April 20, 2024',
+//                 'agenda' => 'Marketing Strategy',
+//                 'recap' => 'Plan for Q2 marketing initiatives',
+//             ],
+//             [
+//                 'status' => 'Pending',
+//                 'quarter' => 'Q3 2024',
+//                 'meetingDate' => 'July 18, 2024',
+//                 'agenda' => 'Product Development Update',
+//                 'recap' => 'To be added',
+//             ],
+//             [
+//                 'status' => 'Upcoming',
+//                 'quarter' => 'Q4 2024',
+//                 'meetingDate' => 'October 22, 2024',
+//                 'agenda' => 'Year-End Review',
+//                 'recap' => 'To be added',
+//             ],
+//         ],
+//         'Test Skeleton Loading' => [
+//             [
+//                 'status' => '-',
+//                 'quarter' => '-',
+//                 'meetingDate' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//             [
+//                 'status' => '-',
+//                 'quarter' => '-',
+//                 'meetingDate' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//             [
+//                 'status' => '-',
+//                 'quarter' => '-',
+//                 'meetingDate' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//             [
+//                 'status' => '-',
+//                 'quarter' => '-',
+//                 'meetingDate' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//         ],
+//     ];
+
+//     return response()->json([
+//         $organization => $data[$organization] ?? [],
+//     ]);
+// });
+
+// ref: 
 Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -3999,190 +4119,128 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'status' => 'Completed',
-                'quarter' => 'Q1 2025',
-                'meetingDate' => 'January 20, 2025',
-                'agenda' => 'Strategic Planning & KPIs',
-                'recap' => 'Shared Q1 goals and budget updates',
-            ],
-            [
-                'status' => 'Scheduled',
-                'quarter' => 'Q2 2025',
-                'meetingDate' => 'April 22, 2025',
-                'agenda' => 'Customer Retention Plans',
-                'recap' => 'To be added after session',
-            ],
-            [
-                'status' => 'Pending',
-                'quarter' => 'Q3 2025',
-                'meetingDate' => 'July 15, 2025',
-                'agenda' => 'New Product Launch Discussion',
-                'recap' => 'To be added',
-            ],
-            [
-                'status' => 'Upcoming',
-                'quarter' => 'Q4 2025',
-                'meetingDate' => 'October 17, 2025',
-                'agenda' => 'Annual Review & Strategy 2026',
-                'recap' => 'To be added',
-            ],
-        ],
-        'Collins Credit Union' => [
-            [
-                'status' => 'Completed',
-                'quarter' => 'Q1 2024',
-                'meetingDate' => 'January 15, 2024',
-                'agenda' => 'Budget Review',
-                'recap' => 'Reviewed last year’s budget and set targets',
-            ],
-            [
-                'status' => 'Scheduled',
-                'quarter' => 'Q2 2024',
-                'meetingDate' => 'April 20, 2024',
-                'agenda' => 'Marketing Strategy',
-                'recap' => 'Plan for Q2 marketing initiatives',
-            ],
-            [
-                'status' => 'Pending',
-                'quarter' => 'Q3 2024',
-                'meetingDate' => 'July 18, 2024',
-                'agenda' => 'Product Development Update',
-                'recap' => 'To be added',
-            ],
-            [
-                'status' => 'Upcoming',
-                'quarter' => 'Q4 2024',
-                'meetingDate' => 'October 22, 2024',
-                'agenda' => 'Year-End Review',
-                'recap' => 'To be added',
-            ],
-        ],
-        'Test Skeleton Loading' => [
-            [
-                'status' => '-',
-                'quarter' => '-',
-                'meetingDate' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-            [
-                'status' => '-',
-                'quarter' => '-',
-                'meetingDate' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-            [
-                'status' => '-',
-                'quarter' => '-',
-                'meetingDate' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-            [
-                'status' => '-',
-                'quarter' => '-',
-                'meetingDate' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-    return response()->json([
-        $organization => $data[$organization] ?? [],
-    ]);
+    $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No data found for this organization'], 404);
+    }
+
+    return response()->json($record->sessionDatesQuarterlySessionsData ?? []);
 });
 
-// ref: frontend\src\components\9.session-dates\sessionDates.jsx
+// // ref: frontend\src\components\9.session-dates\sessionDates.jsx
+// Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'status' => 'Done',
+//                 'month' => 'January',
+//                 'date' => '2025-01-10',
+//                 'agenda' => 'Review January goals and targets',
+//                 'recap' => 'All targets met. Positive team performance.',
+//             ],
+//             [
+//                 'status' => 'Pending',
+//                 'month' => 'February',
+//                 'date' => '2025-02-14',
+//                 'agenda' => 'Mid-Q1 Alignment & Budget Discussion',
+//                 'recap' => 'To be conducted.',
+//             ],
+//             [
+//                 'status' => 'New',
+//                 'month' => 'March',
+//                 'date' => '2025-03-20',
+//                 'agenda' => 'Client Feedback Analysis',
+//                 'recap' => 'Preparation ongoing.',
+//             ],
+//         ],
+//         'Collins Credit Union' => [
+//             [
+//                 'status' => 'Done',
+//                 'month' => 'April',
+//                 'date' => '2024-04-05',
+//                 'agenda' => 'Q1 Financial Review',
+//                 'recap' => 'Reviewed finances and approved budget.',
+//             ],
+//             [
+//                 'status' => 'Pending',
+//                 'month' => 'May',
+//                 'date' => '2024-05-12',
+//                 'agenda' => 'Marketing Campaign Planning',
+//                 'recap' => 'Plan draft under review.',
+//             ],
+//             [
+//                 'status' => 'New',
+//                 'month' => 'June',
+//                 'date' => '2024-06-18',
+//                 'agenda' => 'Team Building Activities',
+//                 'recap' => 'To be scheduled.',
+//             ],
+//         ],
+//         'Test Skeleton Loading' => [
+//             [
+//                 'status' => '-',
+//                 'month' => '-',
+//                 'date' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//             [
+//                 'status' => '-',
+//                 'month' => '-',
+//                 'date' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//             [
+//                 'status' => '-',
+//                 'month' => '-',
+//                 'date' => '-',
+//                 'agenda' => '-',
+//                 'recap' => '-',
+//             ],
+//         ],
+//     ];
+
+//     return response()->json([
+//         $organization => $data[$organization] ?? [],
+//     ]);
+// });
+
+// ref:
 Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'status' => 'Done',
-                'month' => 'January',
-                'date' => '2025-01-10',
-                'agenda' => 'Review January goals and targets',
-                'recap' => 'All targets met. Positive team performance.',
-            ],
-            [
-                'status' => 'Pending',
-                'month' => 'February',
-                'date' => '2025-02-14',
-                'agenda' => 'Mid-Q1 Alignment & Budget Discussion',
-                'recap' => 'To be conducted.',
-            ],
-            [
-                'status' => 'New',
-                'month' => 'March',
-                'date' => '2025-03-20',
-                'agenda' => 'Client Feedback Analysis',
-                'recap' => 'Preparation ongoing.',
-            ],
-        ],
-        'Collins Credit Union' => [
-            [
-                'status' => 'Done',
-                'month' => 'April',
-                'date' => '2024-04-05',
-                'agenda' => 'Q1 Financial Review',
-                'recap' => 'Reviewed finances and approved budget.',
-            ],
-            [
-                'status' => 'Pending',
-                'month' => 'May',
-                'date' => '2024-05-12',
-                'agenda' => 'Marketing Campaign Planning',
-                'recap' => 'Plan draft under review.',
-            ],
-            [
-                'status' => 'New',
-                'month' => 'June',
-                'date' => '2024-06-18',
-                'agenda' => 'Team Building Activities',
-                'recap' => 'To be scheduled.',
-            ],
-        ],
-        'Test Skeleton Loading' => [
-            [
-                'status' => '-',
-                'month' => '-',
-                'date' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-            [
-                'status' => '-',
-                'month' => '-',
-                'date' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-            [
-                'status' => '-',
-                'month' => '-',
-                'date' => '-',
-                'agenda' => '-',
-                'recap' => '-',
-            ],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-    return response()->json([
-        $organization => $data[$organization] ?? [],
-    ]);
+    $record = SessionDatesMonthlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No data found for this organization'], 404);
+    }
+
+    return response()->json($record->sessionDatesMonthlySessionsData ?? []);
 });
 
 // ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
