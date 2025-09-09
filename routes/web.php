@@ -3989,16 +3989,10 @@ Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $
 
     $record = SessionDatesMonthlySessionsTracker::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json(['message' => 'No data found for this organization'], 404);
-    }
-
-    // Return the data wrapped with organizationName as key
     return response()->json([
         $organization => $record->sessionDatesMonthlySessionsTrackerData ?? [],
     ]);
 });
-
 
 
 // // ref: frontend\src\components\9.session-dates\sessionDates.jsx
@@ -4127,11 +4121,6 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
 
     $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json(['message' => 'No data found for this organization'], 404);
-    }
-
-    // Wrap the data with organization name as the key
     return response()->json([
         $organization => $record->sessionDatesQuarterlySessionsData ?? [],
     ]);
@@ -4241,14 +4230,11 @@ Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request)
 
     $record = SessionDatesMonthlySessions::where('organizationName', $organization)->first();
 
-    if (!$record) {
-        return response()->json(['message' => 'No data found for this organization'], 404);
-    }
-
     return response()->json([
         $organization => $record->sessionDatesMonthlySessionsData ?? [],
     ]);
 });
+
 // ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
 Route::get('/api/v1/coaching-checklist/project-progress', function (Request $request) use ($API_secure) {
     if ($API_secure) {
