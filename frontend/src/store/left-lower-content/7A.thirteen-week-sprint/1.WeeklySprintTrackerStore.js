@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const initialWeeklySprintData = Array.from({ length: 13 }, (_, weekIndex) => ({
+export const initialWeeklySprintData = Array.from({ length: 13 }, (_, weekIndex) => ({
   week: weekIndex + 1,
   keyFocus: Array(5).fill(' '),
   topTasks: ['-', '-', '-'],

@@ -1,39 +1,144 @@
 // frontend\src\components\7A.thirteen-week-sprint\1.WeeklySprintTracker\WeeklySprintTracker.jsx
 
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import useWeeklySprintStore from '../../../store/left-lower-content/7A.thirteen-week-sprint/1.WeeklySprintTrackerStore';
+import useWeeklySprintStore, { initialWeeklySprintData } from '../../../store/left-lower-content/7A.thirteen-week-sprint/1.WeeklySprintTrackerStore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faSave,
+    faSignOutAlt 
+} from '@fortawesome/free-solid-svg-icons';
 import './WeeklySprintTracker.css';
 
 const WeeklySprintTracker = () => {
-  const loggedUser = useLoginStore(state => state.user);
-  const weeklySprints = useWeeklySprintStore(state => state.weeklySprints);
-  const setWeeklySprints = useWeeklySprintStore(state => state.setWeeklySprints);
-  const updateKeyFocus = useWeeklySprintStore(state => state.updateKeyFocus);
-  const updateProgress = useWeeklySprintStore(state => state.updateProgress);
-  const updateBlockers = useWeeklySprintStore(state => state.updateBlockers);
-  const updateCoachNotes = useWeeklySprintStore(state => state.updateCoachNotes);
-  const addKeyFocusEntry = useWeeklySprintStore(state => state.addKeyFocusEntry);
+    const loggedUser = useLoginStore(state => state.user);
+    const weeklySprints = useWeeklySprintStore(state => state.weeklySprints);
+    const setWeeklySprints = useWeeklySprintStore(state => state.setWeeklySprints);
+    const updateKeyFocus = useWeeklySprintStore(state => state.updateKeyFocus);
+    const updateProgress = useWeeklySprintStore(state => state.updateProgress);
+    const updateBlockers = useWeeklySprintStore(state => state.updateBlockers);
+    const updateCoachNotes = useWeeklySprintStore(state => state.updateCoachNotes);
+    const addKeyFocusEntry = useWeeklySprintStore(state => state.addKeyFocusEntry);
 
-  const [editingCell, setEditingCell] = useState({ week: null, field: null, index: null });
+    const [isEdited, setIsEdited] = useState(false);
+    const localStorageKey = 'weeklySprintTrackerData';
+    const initialRender = useRef(true);
+    const [editingCell, setEditingCell] = useState({ week: null, field: null, index: null });
+    const [loadingSave, setLoadingSave] = useState(false);
+    const [loadingDischarge, setLoadingDischarge] = useState(false);
 
-  return (
+    // Load from localStorage on mount
+    useEffect(() => {
+        const savedData = localStorage.getItem(localStorageKey);
+        if (savedData) {
+        try {
+            const parsed = JSON.parse(savedData);
+            setWeeklySprints(parsed);
+        } catch (err) {
+            console.error('Invalid localStorage data for WeeklySprintTracker');
+        }
+        }
+    }, []);
+
+
+    // Save to localStorage on changes (after first render)
+    useEffect(() => {
+        if (!initialRender.current) {
+        localStorage.setItem(localStorageKey, JSON.stringify(weeklySprints));
+        setIsEdited(true);
+        } else {
+        initialRender.current = false;
+        }
+    }, [weeklySprints]);
+
+
+    const handleDiscardChanges = () => {
+        setWeeklySprints(initialWeeklySprintData); // Reset to initial store
+        setLoadingDischarge(true);
+
+        setTimeout(() => {
+          localStorage.removeItem(localStorageKey);
+          setIsEdited(false); // Moved after reset for proper state sync
+          setLoadingDischarge(false);
+        }, 1000); // 1-second delay
+      };
+      
+      const handleSaveChanges = () => {
+        setLoadingSave(true);
+        
+        setTimeout(() => {
+          console.log('Saved WeeklySprintTracker:', weeklySprints);
+          localStorage.removeItem(localStorageKey);
+          setIsEdited(false); // Moved after log
+          setLoadingSave(false);
+        }, 1000); // 1-second delay
+      };
+
+
+  
+    return (
     <div className="weekly-sprint-tracker">
-      <table>
+
+    {isEdited && (
+        <div className="action-buttons">
+            <button
+            className="pure-green-btn"
+            onClick={handleSaveChanges}
+            >
+            {/* Save Changes */}
+
+            {loadingSave ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faSave} className="mr-1" />
+                      Save Changes
+                    </>
+            )}
+
+            </button>
+            <button
+            className="pure-red-btn"
+            onClick={handleDiscardChanges}
+            >
+            {/* Discard Changes */}
+            {loadingDischarge ? (
+                  <div className="loader-bars">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                      Discard Changes
+                    </>
+            )}
+            </button>
+        </div>
+    )}
+
+
+        <table>
         <thead>
-          <tr>
+            <tr>
             <th>Week</th>
             <th>Key Focus / Milestone</th>
             <th>Top 1–3 Tasks</th>
             <th>Progress (%)</th>
             <th>Blockers / Issues</th>
             <th>Coach Notes</th>
-          </tr>
+            </tr>
         </thead>
         <tbody>
-          {weeklySprints.map(ws => (
+            {weeklySprints.map(ws => (
             <tr key={ws.week}>
-              <td>{ws.week}</td>
+                <td>{ws.week}</td>
 
                 {/* Key Focus / Milestone */}
                 <td>
@@ -108,28 +213,6 @@ const WeeklySprintTracker = () => {
                         </select>
                     ))}
                 </td>
-
-                {/* <td>
-                {ws.topTasks.map((task, idx) => (
-                    <select
-                    key={idx}
-                    disabled={loggedUser?.role !== 'superadmin'}
-                    value={task}
-                    onChange={e => {
-                        const newTasks = [...ws.topTasks];
-                        newTasks[idx] = e.target.value;
-                        setWeeklySprints(weeklySprints.map(w =>
-                        w.week === ws.week ? { ...w, topTasks: newTasks } : w
-                        ));
-                    }}
-                    >
-                    <option value="-">-</option>
-                    <option value="Task1">Task1</option>
-                    <option value="Task2">Task2</option>
-                    <option value="Task3">Task3</option>
-                    </select>
-                ))}
-                </td> */}
 
                 {/* Progress (%) */}
                 <td>
@@ -224,11 +307,11 @@ const WeeklySprintTracker = () => {
                 )}
                 </td>
             </tr>
-          ))}
+            ))}
         </tbody>
-      </table>
+        </table>
     </div>
-  );
+    );
 };
 
 export default WeeklySprintTracker;

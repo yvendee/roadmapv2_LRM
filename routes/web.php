@@ -39,6 +39,7 @@ use App\Models\CompanyTractionCompanyTraction;
 use App\Models\DepartmentTractionAnnualPriority;
 use App\Models\DepartmentTractionCompanyTraction;
 use App\Models\WhoWhatWhen;
+use App\Models\ThirteenWeekSprint;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -203,6 +204,51 @@ Route::get('/api/sessions/live', function () {
 //         'message' => 'Invalid credentials',
 //     ], 401);
 // });
+
+// // ref: frontend\src\pages\login\Login.jsx
+// Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
+    
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     // return response()->json([
+//     //     'Chuck Gulledge Advisors, LLC', 
+//     //     'Collins Credit Union', 
+//     //     'IH MVCU', 
+//     //     'Ironclad',
+//     //     'Seneca', 
+//     //     'Texans Credit Union', 
+//     //     'Kolb Grading'
+//     // ]);
+
+//     return response()->json([
+//         'Chuck Gulledge Advisors, LLC', 
+//         'Collins Credit Union', 
+//         'Test Skeleton Loading'
+//     ]);
+// });
+
+// ref: frontend\src\pages\login\Login.jsx
+Route::get('/api/v1/company-options', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // Fetch all organization names from the database
+    $organizationNames = Organization::pluck('organizationName');
+
+    if ($organizationNames->isEmpty()) {
+        return response()->json(['message' => 'No organizations found'], 404);
+    }
+
+    return response()->json($organizationNames);
+});
 
 
 Route::post('/api/login', function (Request $request) {
@@ -3457,8 +3503,6 @@ Route::post('/api/v1/department-traction/annual-priorities/add', function (Reque
 });
 
 
-
-
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 // Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
@@ -3751,6 +3795,34 @@ Route::post('/api/v1/department-traction/annual-priorities/add', function (Reque
 //     return response()->json($data[$organization] ?? []);
 // });
 
+// ref:
+Route::get('/api/v1/thirteen-week-sprint', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    if (!$organization) {
+        return response()->json(['message' => 'Organization query parameter is required'], 400);
+    }
+
+    $record = ThirteenWeekSprint::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([]);
+    }
+
+    // Return only the thirteenWeekSprintData, decoded if stored as JSON
+    return response()->json([
+        'organizationName' => $record->organizationName,
+        'thirteenWeekSprintData' => json_decode($record->thirteenWeekSprintData, true),
+        'statusFlag' => $record->statusFlag,
+    ]);
+});
 
 
 // ref:
@@ -5550,51 +5622,6 @@ Route::get('/api/v1/notifications', function (Request $request) use ($API_secure
     return response()->json($data[$fullname] ?? []);
 });
 
-//
-    // // ref: frontend\src\pages\login\Login.jsx
-    // Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
-        
-    //     if ($API_secure) {
-    //         if (!$request->session()->get('logged_in')) {
-    //             return response()->json(['message' => 'Unauthorized'], 401);
-    //         }
-    //         $user = $request->session()->get('user');
-    //     }
-
-    //     // return response()->json([
-    //     //     'Chuck Gulledge Advisors, LLC', 
-    //     //     'Collins Credit Union', 
-    //     //     'IH MVCU', 
-    //     //     'Ironclad',
-    //     //     'Seneca', 
-    //     //     'Texans Credit Union', 
-    //     //     'Kolb Grading'
-    //     // ]);
-
-    //     return response()->json([
-    //         'Chuck Gulledge Advisors, LLC', 
-    //         'Collins Credit Union', 
-    //         'Test Skeleton Loading'
-    //     ]);
-    // });
-
- // ref: frontend\src\pages\login\Login.jsx
-Route::get('/api/v1/company-options', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    // Fetch all organization names from the database
-    $organizationNames = Organization::pluck('organizationName');
-
-    if ($organizationNames->isEmpty()) {
-        return response()->json(['message' => 'No organizations found'], 404);
-    }
-
-    return response()->json($organizationNames);
-});
 
 //
     //ref: frontend\src\components\document-vault\documentVault.jsx

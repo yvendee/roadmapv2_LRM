@@ -24,32 +24,36 @@ const DepartmentTraction = () => {
   useEffect(() => {
     const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/department-traction/annual-priorities?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Department Annual Priorities:', json);
-          if (Array.isArray(json)) {
-            loadDepartmentAnnualPrioritiesFromAPI(json);
-          } else {
-            console.warn(`⚠️ No data found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Fetch error:', json.message);
-        }
+    const localData = localStorage.getItem('departmentAnnualPrioritiesData');
+    if (!localData) {
+
+      fetch(`${API_URL}/v1/department-traction/annual-priorities?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API Error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Department Annual Priorities:', json);
+            if (Array.isArray(json)) {
+              loadDepartmentAnnualPrioritiesFromAPI(json);
+            } else {
+              console.warn(`⚠️ No data found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Fetch error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API Error:', err);
+        });
+    }
   }, [organization]);
 
 
