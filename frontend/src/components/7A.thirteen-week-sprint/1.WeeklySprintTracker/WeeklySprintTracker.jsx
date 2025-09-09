@@ -40,6 +40,7 @@ const WeeklySprintTracker = () => {
         try {
             const parsed = JSON.parse(savedData);
             setWeeklySprints(parsed);
+            setIsEdited(true);
         } catch (err) {
             console.error('Invalid localStorage data for WeeklySprintTracker');
         }
