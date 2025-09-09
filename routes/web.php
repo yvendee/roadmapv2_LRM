@@ -3801,27 +3801,22 @@ Route::get('/api/v1/thirteen-week-sprint', function (Request $request) use ($API
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
     if (!$organization) {
-        return response()->json(['message' => 'Organization query parameter is required'], 400);
+        return response()->json(['message' => 'Organization is required'], 400);
     }
 
     $record = ThirteenWeekSprint::where('organizationName', $organization)->first();
 
     if (!$record) {
-        return response()->json([]);
+        return response()->json(['message' => 'No data found for this organization'], 404);
     }
 
-    // Return only the thirteenWeekSprintData, decoded if stored as JSON
-    return response()->json([
-        'organizationName' => $record->organizationName,
-        'thirteenWeekSprintData' => json_decode($record->thirteenWeekSprintData, true),
-        'statusFlag' => $record->statusFlag,
-    ]);
+    // Assuming your model casts thirteenWeekSprintData to array already
+    return response()->json($record->thirteenWeekSprintData ?? []);
 });
 
 
