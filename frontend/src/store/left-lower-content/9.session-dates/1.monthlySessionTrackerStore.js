@@ -2,12 +2,20 @@
 import { create } from 'zustand';
 import { isSameMonth } from 'date-fns';
 
+// export const initialMonthlySessionTrackerData = [
+//   { date: '2025-07-01', status: 'done', details: 'Strategy alignment' },
+//   { date: '2025-07-15', status: 'pending', details: 'KPI review' },
+//   { date: '2025-07-25', status: 'new', details: 'Planning' },
+//   { date: '2025-08-05', status: 'pending', details: 'Forecasting' },
+// ];
+
 export const initialMonthlySessionTrackerData = [
-  { date: '2025-07-01', status: 'done', details: 'Strategy alignment' },
-  { date: '2025-07-15', status: 'pending', details: 'KPI review' },
-  { date: '2025-07-25', status: 'new', details: 'Planning' },
-  { date: '2025-08-05', status: 'pending', details: 'Forecasting' },
+  { date: '-', status: '-', details: '-' },
+  { date: '-', status: '-', details: '-' },
+  { date: '-', status: '-', details: '-' },
+  { date: '-', status: '-', details: '-' },
 ];
+
 
 const useMonthlySessionTrackerStore = create((set) => ({
   allSessions: initialMonthlySessionTrackerData,
