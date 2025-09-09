@@ -4117,8 +4117,6 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
@@ -4133,7 +4131,10 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
         return response()->json(['message' => 'No data found for this organization'], 404);
     }
 
-    return response()->json($record->sessionDatesQuarterlySessionsData ?? []);
+    // Wrap the data with organization name as the key
+    return response()->json([
+        $organization => $record->sessionDatesQuarterlySessionsData ?? [],
+    ]);
 });
 
 // // ref: frontend\src\components\9.session-dates\sessionDates.jsx
@@ -4244,9 +4245,10 @@ Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request)
         return response()->json(['message' => 'No data found for this organization'], 404);
     }
 
-    return response()->json($record->sessionDatesMonthlySessionsData ?? []);
+    return response()->json([
+        $organization => $record->sessionDatesMonthlySessionsData ?? [],
+    ]);
 });
-
 // ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
 Route::get('/api/v1/coaching-checklist/project-progress', function (Request $request) use ($API_secure) {
     if ($API_secure) {
