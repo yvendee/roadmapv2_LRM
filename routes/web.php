@@ -3936,65 +3936,65 @@ Route::post('/api/v1/who-what-when/add', function (Request $request) use ($API_s
     ]);
 });
 
-// // ref: frontend\src\components\9.session-dates\sessionDates.jsx
-// Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//         $user = $request->session()->get('user');
-//     }
-
-//     $organization = $request->query('organization');
-
-//     $data = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             ['date' => '2025-07-01', 'status' => 'done', 'details' => 'Strategy alignment'],
-//             ['date' => '2025-07-15', 'status' => 'pending', 'details' => 'KPI review'],
-//             ['date' => '2025-07-25', 'status' => 'new', 'details' => 'Planning'],
-//             ['date' => '2025-08-05', 'status' => 'pending', 'details' => 'Forecasting'],
-//         ],
-//         'Collins Credit Union' => [
-//             ['date' => '2025-07-03', 'status' => 'done', 'details' => 'Budget review'],
-//             ['date' => '2025-07-18', 'status' => 'pending', 'details' => 'Risk assessment'],
-//             ['date' => '2025-07-28', 'status' => 'new', 'details' => 'Team training'],
-//             ['date' => '2025-08-07', 'status' => 'pending', 'details' => 'Customer feedback'],
-//         ],
-//         'Test Skeleton Loading' => [
-//             ['date' => '-', 'status' => '-', 'details' => '-'],
-//             ['date' => '-', 'status' => '-', 'details' => '-'],
-//             ['date' => '-', 'status' => '-', 'details' => '-'],
-//             ['date' => '-', 'status' => '-', 'details' => '-'],
-//         ],
-//     ];
-
-//     return response()->json([
-//         $organization => $data[$organization] ?? [],
-//     ]);
-// });
-
-// ref: 
+// ref: frontend\src\components\9.session-dates\sessionDates.jsx
 Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    if (!$organization) {
-        return response()->json(['message' => 'Organization is required'], 400);
-    }
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            ['date' => '2025-07-01', 'status' => 'done', 'details' => 'Strategy alignment'],
+            ['date' => '2025-07-15', 'status' => 'pending', 'details' => 'KPI review'],
+            ['date' => '2025-07-25', 'status' => 'new', 'details' => 'Planning'],
+            ['date' => '2025-08-05', 'status' => 'pending', 'details' => 'Forecasting'],
+        ],
+        'Collins Credit Union' => [
+            ['date' => '2025-07-03', 'status' => 'done', 'details' => 'Budget review'],
+            ['date' => '2025-07-18', 'status' => 'pending', 'details' => 'Risk assessment'],
+            ['date' => '2025-07-28', 'status' => 'new', 'details' => 'Team training'],
+            ['date' => '2025-08-07', 'status' => 'pending', 'details' => 'Customer feedback'],
+        ],
+        'Test Skeleton Loading' => [
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+            ['date' => '-', 'status' => '-', 'details' => '-'],
+        ],
+    ];
 
-    $record = SessionDatesMonthlySessionsTracker::where('organizationName', $organization)->first();
-
-    if (!$record) {
-        return response()->json(['message' => 'No data found for this organization'], 404);
-    }
-
-    return response()->json($record->sessionDatesMonthlySessionsTrackerData ?? []);
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
 });
+
+// ref: 
+// Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     if (!$organization) {
+//         return response()->json(['message' => 'Organization is required'], 400);
+//     }
+
+//     $record = SessionDatesMonthlySessionsTracker::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'No data found for this organization'], 404);
+//     }
+
+//     return response()->json($record->sessionDatesMonthlySessionsTrackerData ?? []);
+// });
 
 
 // // ref: frontend\src\components\9.session-dates\sessionDates.jsx
