@@ -48,14 +48,14 @@ const WeeklySprintTracker = () => {
 
 
     // Save to localStorage on changes (after first render)
-    useEffect(() => {
-        if (!initialRender.current) {
-        localStorage.setItem(localStorageKey, JSON.stringify(weeklySprints));
-        setIsEdited(true);
-        } else {
-        initialRender.current = false;
-        }
-    }, [weeklySprints]);
+    // useEffect(() => {
+    //     if (!initialRender.current) {
+    //     localStorage.setItem(localStorageKey, JSON.stringify(weeklySprints));
+    //     setIsEdited(true);
+    //     } else {
+    //     initialRender.current = false;
+    //     }
+    // }, [weeklySprints]);
 
 
     const handleDiscardChanges = () => {
