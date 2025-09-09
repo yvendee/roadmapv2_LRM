@@ -17,7 +17,7 @@ const WhoWhatWhen = () => {
 
   const organization = useLayoutSettingsStore((state) => state.organization);
   const loadWhoWhatWhenFromAPI = useWhoWhatWhenStore((state) => state.loadWhoWhatWhenFromAPI);
-
+  const setBaselineWhoWhatWhen = useWhoWhatWhenStore((state) => state.setBaselineWhoWhatWhen)
   // Fetch Who-What-When Table Data
   useEffect(() => {
     const localData = localStorage.getItem('whoWhatWhenData');
@@ -39,6 +39,7 @@ const WhoWhatWhen = () => {
             ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Who-What-When data:', whoWhatWhenArr);
             if (Array.isArray(whoWhatWhenArr)) {
               loadWhoWhatWhenFromAPI(whoWhatWhenArr);
+              setBaselineWhoWhatWhen(whoWhatWhenArr);
             } else {
               console.error(`⚠️ No Who-What-When data found for organization: ${organization}`);
             }

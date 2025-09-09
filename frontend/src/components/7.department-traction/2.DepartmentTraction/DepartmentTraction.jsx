@@ -387,8 +387,7 @@ const DepartmentTractionTable = () => {
 
     setDepartmentTraction(baselineDepartmentTraction);
 
-    
-
+  
     // 4. Hide Modal
     setShowConfirmModal(false);
   };

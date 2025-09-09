@@ -42,6 +42,12 @@ const WhoWhatWhenTable = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   
+    // Sync initial and store changes:
+    useEffect(() => {
+      setCurrentOrder(whoWhatWhen);
+    }, [whoWhatWhen]);
+  
+
   
   // Load from localStorage if available
   useEffect(() => {
@@ -340,7 +346,17 @@ const WhoWhatWhenTable = () => {
 
 
     // 3. Update Zustand store
-    setWhoWhatWhen(initialWhoWhatWhen);
+    // setWhoWhatWhen(initialWhoWhatWhen);
+
+    // 3. Update Zustand store
+    // setDepartmentTraction(initialDepartmentTraction);
+    const { baselineWhoWhatWhen } = useWhoWhatWhenStore.getState();
+
+    // ✅ Console log to inspect baselineWhoWhatWhen before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineWhoWhatWhen:', baselineWhoWhatWhen);
+
+    setWhoWhatWhen(baselineWhoWhatWhen);
+
 
     // 4. Hide Modal
     setShowConfirmModal(false);
@@ -350,11 +366,6 @@ const WhoWhatWhenTable = () => {
     setShowConfirmModal(false);
   };
 
-
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(whoWhatWhen);
-  }, [whoWhatWhen]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {
