@@ -57,6 +57,12 @@ const WeeklySprintTracker = () => {
     //     }
     // }, [weeklySprints]);
 
+    const handleEdit = (newData) => {
+        setWeeklySprints(newData);
+        localStorage.setItem(localStorageKey, JSON.stringify(newData));
+        setIsEdited(true);
+    };
+
 
     const handleDiscardChanges = () => {
         setWeeklySprints(initialWeeklySprintData); // Reset to initial store
@@ -216,10 +222,18 @@ const WeeklySprintTracker = () => {
                                 <textarea
                                 autoFocus
                                 defaultValue={val}
-                                onBlur={e => {
-                                    updateKeyFocus(ws.week, idx, e.target.value);
+                                onBlur={(e) => {
+                                    const updated = weeklySprints.map((w) =>
+                                      w.week === ws.week
+                                        ? {
+                                            ...w,
+                                            keyFocus: w.keyFocus.map((kf, i) => (i === idx ? e.target.value : kf)),
+                                          }
+                                        : w
+                                    );
+                                    handleEdit(updated);
                                     setEditingCell({ week: null, field: null, index: null });
-                                }}
+                                  }}
                                 />
                             ) : (
                                 val
@@ -242,15 +256,17 @@ const WeeklySprintTracker = () => {
                         key={idx}
                         disabled={loggedUser?.role !== 'superadmin'}
                         value={task}
-                        onChange={e => {
-                            const newTasks = [...ws.topTasks];
-                            newTasks[idx] = e.target.value;
-                            setWeeklySprints(
-                            weeklySprints.map(w =>
-                                w.week === ws.week ? { ...w, topTasks: newTasks } : w
-                            )
+                        onChange={(e) => {
+                            const updated = weeklySprints.map((w) =>
+                              w.week === ws.week
+                                ? {
+                                    ...w,
+                                    topTasks: w.topTasks.map((tt, i) => (i === idx ? e.target.value : tt)),
+                                  }
+                                : w
                             );
-                        }}
+                            handleEdit(updated);
+                          }}
                         >
                         <option value="-">-</option>
                         {ws.keyFocus
@@ -285,10 +301,20 @@ const WeeklySprintTracker = () => {
                         <input
                             type="text"
                             defaultValue={val.replace('%', '')}
-                            onBlur={e => {
-                            const valNum = parseFloat(e.target.value) || 0;
-                            updateProgress(ws.week, idx, `${valNum.toFixed(2)}%`);
-                            setEditingCell({ week: null, field: null, index: null });
+                            onBlur={(e) => {
+                                const valNum = parseFloat(e.target.value) || 0;
+                                const updated = weeklySprints.map((w) =>
+                                  w.week === ws.week
+                                    ? {
+                                        ...w,
+                                        progress: w.progress.map((p, i) =>
+                                          i === idx ? `${valNum.toFixed(2)}%` : p
+                                        ),
+                                      }
+                                    : w
+                                );
+                                handleEdit(updated);
+                                setEditingCell({ week: null, field: null, index: null });
                             }}
                         />
                         ) : (
@@ -320,9 +346,17 @@ const WeeklySprintTracker = () => {
                         <textarea
                             autoFocus
                             defaultValue={val}
-                            onBlur={e => {
-                            updateBlockers(ws.week, idx, e.target.value);
-                            setEditingCell({ week: null, field: null, index: null });
+                            onBlur={(e) => {
+                                const updated = weeklySprints.map((w) =>
+                                  w.week === ws.week
+                                    ? {
+                                        ...w,
+                                        blockers: w.blockers.map((b, i) => (i === idx ? e.target.value : b)),
+                                      }
+                                    : w
+                                );
+                                handleEdit(updated);
+                                setEditingCell({ week: null, field: null, index: null });
                             }}
                         />
                         ) : (
@@ -347,8 +381,11 @@ const WeeklySprintTracker = () => {
                     <textarea
                     autoFocus
                     defaultValue={ws.coachNotes}
-                    onBlur={e => {
-                        updateCoachNotes(ws.week, e.target.value);
+                    onBlur={(e) => {
+                        const updated = weeklySprints.map((w) =>
+                          w.week === ws.week ? { ...w, coachNotes: e.target.value } : w
+                        );
+                        handleEdit(updated);
                         setEditingCell({ week: null, field: null, index: null });
                     }}
                     />
