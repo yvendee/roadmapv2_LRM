@@ -13,7 +13,7 @@ const useWeeklySprintTrackerStore = create((set) => ({
   weeklySprints: initialWeeklySprintData,
 
   // Store the initial state when app loads
-  baselineWeeklySprints: initialWeeklySprints,
+  baselineWeeklySprints: initialWeeklySprintData,
 
   setBaselineWeeklySprints: (data) => set({ baselineWeeklySprints: data }),
 
