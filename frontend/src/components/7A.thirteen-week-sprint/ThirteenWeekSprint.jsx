@@ -16,6 +16,7 @@ const ThirteenWeekSprint = () => {
   const navigate = useNavigate();
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setWeeklySprints = useWeeklySprintTrackerStore((state) => state.setWeeklySprints);
+  const setBaselineWeeklySprints = useWeeklySprintTrackerStore((state) => state.setBaselineWeeklySprints);
 
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const ThirteenWeekSprint = () => {
             if (json) {
               // Assuming the data is an array of weeks (like your initialWeeklySprintData)
               setWeeklySprints(json);
+              setBaselineWeeklySprints(json);
             } else {
               console.warn(`⚠️ No thirteenWeekSprintData found for organization: ${organization}`);
               setWeeklySprints([]); // or initial data if you prefer

@@ -12,6 +12,11 @@ export const initialWeeklySprintData = Array.from({ length: 13 }, (_, weekIndex)
 const useWeeklySprintTrackerStore = create((set) => ({
   weeklySprints: initialWeeklySprintData,
 
+  // Store the initial state when app loads
+  baselineWeeklySprints: initialWeeklySprints,
+
+  setBaselineWeeklySprints: (data) => set({ baselineWeeklySprints: data }),
+
   updateKeyFocus: (week, index, value) =>
     set((state) => ({
       weeklySprints: (state.weeklySprints ?? []).map((w) =>
