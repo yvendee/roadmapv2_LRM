@@ -254,7 +254,7 @@ const WeeklySprintTracker = () => {
                         >
                         <option value="-">-</option>
                         {ws.keyFocus
-                            .filter(val => val !== '-' && val.trim() !== '') // filter out "-" or empty
+                            .filter(val => val !== '-' && (val ?? '').trim() !== '') // filter out "-" or empty
                             .map((keyFocusVal, optionIdx) => (
                             <option key={optionIdx} value={keyFocusVal}>
                                 {keyFocusVal}
