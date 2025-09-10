@@ -91,40 +91,6 @@ const DocumentVaultTable = () => {
     }, 1000);
   };
 
-  // const handleAddNewDocumentVaultTable = () => {
-  //   ENABLE_CONSOLE_LOGS && console.log('New Document Vault Table', JSON.stringify(newDocumentVaultTable, null, 2));
-
-  //   // 2. Hide Save / Discharge
-  //   setIsEditing(false);
-
-  
-  //   // 3. Remove localStorage temp data
-  //   localStorage.removeItem('DocumentVaultTableData');
-  
-  //   // 4. Push to Zustand store
-  //   pushDocumentVaultTableField(newDocumentVaultTable);
-  
-  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
-  //   // Not required unless you deep reset from localStorage elsewhere
-  
-  //   // Close modal
-  //   setShowAddModal(false);
-  
-  //   // Reset form input
-  //   setNewDocumentVaultTable({     
-  //     productName: '',
-  //     description: '',
-  //     pricingPower: '',
-  //     acceleratingGrowth: '',
-  //     profitMargin: '',
-  //     marketShare: '',
-  //     customerSatisfaction: '',
-  //     innovationPotential: '',
-  //     operationEfficiency: '',
-  //     lifeCycleStage: '',
-  //   });
-
-  // };
 
   const handleAddNewDocumentVaultTable = async () => {
     const file = newDocumentVaultTable?.file;
@@ -213,8 +179,6 @@ const DocumentVaultTable = () => {
     }
   };
   
-  
-
   
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {

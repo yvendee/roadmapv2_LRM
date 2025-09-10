@@ -1,88 +1,131 @@
 /* frontend\src\components\11.coaching-checklist\2.CollapsiblePanels\CollapsiblePanels.css */
 
 .always-black {
-    color: black !important;
+  color: black !important;
 }
 
 
 .accordion-container {
-    width: 100%;
-    margin-top: 1rem;
-  }
+  width: 100%;
+  margin-top: 1rem;
+}
   
-  .accordion-panel {
-    border: 1px solid #ddd;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    overflow: hidden;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
+.accordion-panel {
+  border: 1px solid #ddd;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
   
-  .accordion-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    cursor: pointer;
-    font-weight: 600;
-    background-color: #f8f9fa;
-  }
+.accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
   
-  .accordion-icon {
-    margin-right: 10px;
-    color: #007bff;
-  }
+.accordion-icon {
+  margin-right: 10px;
+  color: #007bff;
+}
   
-  .accordion-chevron {
-    color: #666;
-  }
+.accordion-chevron {
+  color: #666;
+}
   
-  .accordion-content {
-    padding: 12px 16px;
-    background-color: #fafafa;
-  }
+.accordion-content {
+  padding: 12px 16px;
+  background-color: #fafafa;
+}
   
-  .accordion-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 4px 0;
-  }
+.accordion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
   
-  .item-checkbox {
-    cursor: pointer;
-    color: #007bff;
-  }
+.item-checkbox {
+  cursor: pointer;
+  color: #007bff;
+}
   
-  .completed {
-    text-decoration: line-through;
-    color: gray;
-  }
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+  
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+  
+.accordion-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+  
+.accordion-icon {
+  color: #007bff;
+}
+  
+.accordion-chevron {
+  color: #666;
+}
   
 
 
-  .accordion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    cursor: pointer;
-    font-weight: 600;
-    background-color: #f8f9fa;
-  }
+.item-row {
+  display: grid;
+  grid-template-columns: 150px 300px auto auto; /* width for date, link, upload, view */
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
   
-  .accordion-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.date-input {
+  width: 140px;
+  padding: 4px 8px;
+}
   
-  .accordion-icon {
-    color: #007bff;
-  }
+.link-input {
+  width: 290px;
+  padding: 4px 8px;
+}
   
-  .accordion-chevron {
-    color: #666;
-  }
-  
+.upload-button,
+.view-button {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+
+.pure-blue-btn {
+  background-color: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.pure-red-btn {
+  background-color: #dc2626;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}

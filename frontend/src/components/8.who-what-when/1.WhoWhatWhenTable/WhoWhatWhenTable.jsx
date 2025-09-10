@@ -76,51 +76,6 @@ const WhoWhatWhenTable = () => {
     }, 1000);
   };
 
-//   const handleAddNewWhoWhatWhen = () => {
-//     ENABLE_CONSOLE_LOGS && console.log('New Who What When', JSON.stringify(newWhoWhatWhen, null, 2));
-
-//     // 2. Hide Save / Discharge
-//     setIsEditing(false);
-
-  
-//     // 3. Remove localStorage temp data
-//     localStorage.removeItem('whoWhatWhenData');
-  
-//     // 4. Push to Zustand store
-//     pushWhoWhatWhen(newWhoWhatWhen);
-  
-//     // 5. Optionally: force-refresh the UI by resetting store (if needed)
-//     // Not required unless you deep reset from localStorage elsewhere
-  
-//     // Close modal
-//     setShowAddModal(false);
-  
-//     // Reset form input
-//     setNewWhoWhatWhen({ date: '', who: '', what: '', deadline: '', comments: '', status: '0' });
-//   };
-
-  // const handleAddNewWhoWhatWhen = () => {
-  //     ENABLE_CONSOLE_LOGS && console.log('New Who What When', JSON.stringify(newWhoWhatWhen, null, 2));
-  
-  //     // 1. Push new data to Zustand store
-  //     pushWhoWhatWhen(newWhoWhatWhen);
-  
-  //     // 2. Get updated data from store
-  //     const updatedData = useWhoWhatWhenStore.getState().whoWhatWhen;
-  
-  //     // 3. Save updated data to localStorage
-  //     localStorage.setItem('whoWhatWhenData', JSON.stringify(updatedData));
-  
-  //     // 4. Show Save / Discharge buttons
-  //     setIsEditing(true);
-  
-  //     // 5. Close modal
-  //     setShowAddModal(false);
-  
-  //     // 6. Reset form input
-  //     setNewWhoWhatWhen({ date: '', who: '', what: '', deadline: '', comments: '', status: '0' });
-  // };
-    
 
   const handleAddNewWhoWhatWhen = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Who What When', JSON.stringify(newWhoWhatWhen, null, 2));
