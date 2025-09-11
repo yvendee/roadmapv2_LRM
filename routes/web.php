@@ -4617,6 +4617,60 @@ Route::post('/api/v1/coaching-checklist/panels/update', function (Request $reque
 });
 
 
+// ref: 
+Route::post('/api/v1/coaching-checklist/update-pdflink', function (Request $request) use ($API_secure) {
+    // ✅ Secure session check like WeeklySprintTracker
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // ✅ Validate request
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'panelId' => 'required|integer',
+        'itemId' => 'required|string',
+        'pdflink' => 'required|url',
+    ]);
+
+    // ✅ Fetch record by organization using Eloquent
+    $panelRecord = CoachingChecklistPanel::where('organization', $validated['organization'])->first();
+
+    if (!$panelRecord) {
+        return response()->json(['message' => 'Checklist not found for this organization'], 404);
+    }
+
+    $data = $panelRecord->data;
+    $found = false;
+
+    // ✅ Update the specific item by panel ID and item ID
+    foreach ($data as &$panel) {
+        if ((int) $panel['id'] === (int) $validated['panelId']) {
+            foreach ($panel['items'] as &$item) {
+                if ($item['id'] === $validated['itemId']) {
+                    $item['pdflink'] = $validated['pdflink'];
+                    $found = true;
+                    break 2;
+                }
+            }
+        }
+    }
+
+    if (!$found) {
+        return response()->json(['message' => 'Panel or item not found'], 404);
+    }
+
+    // ✅ Save updated data
+    $panelRecord->data = $data;
+    $panelRecord->save();
+
+    return response()->json(['message' => 'PDF link updated successfully']);
+});
+
+
+
+
 
 
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx

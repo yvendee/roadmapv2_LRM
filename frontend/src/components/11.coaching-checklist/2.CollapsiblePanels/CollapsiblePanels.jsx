@@ -177,10 +177,44 @@ const CollapsiblePanels = () => {
       // setHasChanges(true);
 
       // ✅ Log panel.id, item.id, and item.pdflink
-      console.log('📄 Upload Complete:');
-      console.log('Panel ID:', panel.id);
-      console.log('Item ID:', item.id);
-      console.log('PDF Link:', newPdfLink);
+      ENABLE_CONSOLE_LOGS && console.log('📄 Upload Complete:');
+      ENABLE_CONSOLE_LOGS && console.log('Panel ID:', panel.id);
+      ENABLE_CONSOLE_LOGS && console.log('Item ID:', item.id);
+      ENABLE_CONSOLE_LOGS && console.log('PDF Link:', newPdfLink);
+
+
+      // 🔁 Update backend coaching_checklist_panels record
+      try {
+        const csrfRes2 = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token: csrfToken2 } = await csrfRes2.json();
+
+        const updateRes = await fetch(`${API_URL}/v1/coaching-checklist/update-pdflink`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken2,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            panelId: panel.id,
+            itemId: item.id,
+            pdflink: newPdfLink,
+          }),
+        });
+
+        if (!updateRes.ok) throw new Error('Failed to update PDF link in DB');
+
+        const updateJson = await updateRes.json();
+        ENABLE_CONSOLE_LOGS && console.log('✅ PDF link updated in DB:', updateJson.message);
+
+      } catch (err) {
+        console.error('❌ Error saving PDF link to DB:', err);
+      }
+
 
     } catch (err) {
       console.error(err);
