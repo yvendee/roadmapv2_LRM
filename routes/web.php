@@ -49,6 +49,7 @@ use App\Models\CoachingChecklistPanel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 
 // Configurable flag to enable/disable authentication
@@ -901,7 +902,8 @@ Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', functio
     }
 
     $fileName = $file->getClientOriginalName();
-    $file->move($storagePath, $fileName);
+    // $file->move($storagePath, $fileName);
+    Storage::disk('public')->putFileAs($relativeDirectory, $file, $fileName);
 
     return response()->json([
         'message' => 'File uploaded successfully',
