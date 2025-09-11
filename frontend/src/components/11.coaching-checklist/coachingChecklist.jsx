@@ -62,34 +62,39 @@ const CoachingChecklist = () => {
 
   // Fetch Accordion Checklist Data
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    fetch(`${API_URL}/v1/coaching-checklist/panels?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Accordion Panels:', json);
-          if (Array.isArray(json)) {
-            setPanels(json);
-          } else {
-            console.error('⚠️ Unexpected panels format received.');
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Fetch error:', json.message);
-        }
+
+    const localData = localStorage.getItem('CoachingChecklistData');
+    if (!localData) {
+
+      const encodedOrg = encodeURIComponent(organization);
+    
+      fetch(`${API_URL}/v1/coaching-checklist/panels?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Accordion Panels:', json);
+            if (Array.isArray(json)) {
+              setPanels(json);
+            } else {
+              console.error('⚠️ Unexpected panels format received.');
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Fetch error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization]);
   
 
