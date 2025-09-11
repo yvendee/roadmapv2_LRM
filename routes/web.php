@@ -4589,6 +4589,36 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
     );
 });
 
+
+
+// ref:
+Route::post('/api/v1/coaching-checklist/panels/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $panels = $request->input('panels');
+
+    if (!$organization || !is_array($panels)) {
+        return response()->json(['message' => 'Invalid input'], 400);
+    }
+
+    // Find or create the record
+    $record = CoachingChecklistPanel::firstOrCreate(
+        ['organizationName' => $organization]
+    );
+
+    // Save JSON panels data
+    $record->coachingChecklistPanelsData = $panels;
+    $record->save();
+
+    return response()->json(['message' => 'Panels updated successfully']);
+});
+
+
+
+
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/current-focus', function (Request $request) use ($API_secure) {
     if ($API_secure) {

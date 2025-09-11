@@ -15,8 +15,10 @@ import {
   faChartLine,
 } from '@fortawesome/free-solid-svg-icons';
 import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';
-import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+
 
 import useAccordionChecklistStore, { initialAccordionChecklist } from '../../../store/left-lower-content/11.coaching-checklist/2.collapsiblePanelsStore';
 import useProjectToolsStore from '../../../store/left-lower-content/11.coaching-checklist/1.projectProgressAndToolsStore';
@@ -205,13 +207,55 @@ const CollapsiblePanels = () => {
     updateProgressCounts(); // ✅ Called on checkbox toggle
   };
 
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
+  //   const currentPanels = useAccordionChecklistStore.getState().panels;
+  //   console.log('✅ Saving checklist:', currentPanels);
+  //   localStorage.removeItem('CoachingChecklistData');
+  //   setHasChanges(false);
+  // };
+  
+
+  const handleSaveChanges = async () => {
     const currentPanels = useAccordionChecklistStore.getState().panels;
-    console.log('✅ Saving checklist:', currentPanels);
-    localStorage.removeItem('CoachingChecklistData');
-    setHasChanges(false);
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      // 1. Get CSRF Token
+      await fetch(`${API_URL}/csrf-token`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+  
+      // 2. Send update request
+      const res = await fetch(`${API_URL}/v1/coaching-checklist/panels/update`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // important for session-based auth
+        body: JSON.stringify({
+          organization: organization,
+          panels: currentPanels,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Panels updated successfully:', json);
+        localStorage.removeItem('CoachingChecklistData');
+        setHasChanges(false);
+      } else {
+        console.error('❌ Failed to update panels:', json.message);
+      }
+  
+    } catch (err) {
+      console.error('❌ Error during CSRF fetch or save:', err);
+    }
   };
   
+
   const handleDischarge = () => {
     console.log('🗑️ Discarding changes. Reset to initial:', initialAccordionChecklist);
     localStorage.removeItem('CoachingChecklistData');
