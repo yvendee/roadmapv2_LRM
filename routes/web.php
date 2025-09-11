@@ -4583,9 +4583,10 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
     $record = CoachingChecklistPanel::where('organizationName', $organization)->first();
 
     // Return the data wrapped with organizationName as key, or empty array if not found
-    return response()->json([
-        $organization => $record->coachingChecklistPanelsData ?? [],
-    ]);
+    // ✅ Return raw array (or empty array if not found)
+    return response()->json(
+        $record->coachingChecklistPanelsData ?? []
+    );
 });
 
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
