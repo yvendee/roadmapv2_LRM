@@ -3,8 +3,8 @@ import { create } from 'zustand';
 
 // 🟦 Initial Mockup Data
 export const initialProjectProgressData = {
-  completedItems: 3,
-  totalItems: 5,
+  completedItems: 0,
+  totalItems: 0,
   nextRecommendedTools: [
     { id: 1, name: 'SWOT Analysis Tool' },
     { id: 2, name: 'Customer Journey Mapper' },

@@ -4,8 +4,7 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useDocumentVaultStore, { initialDocumentVault } from '../../../store/left-lower-content/14.document-vault/1.documentVaultStore';
-import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';; 
-
+import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';
 
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';

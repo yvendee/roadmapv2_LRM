@@ -43,6 +43,7 @@ use App\Models\ThirteenWeekSprint;
 use App\Models\SessionDatesMonthlySessionsTracker;
 use App\Models\SessionDatesQuarterlySessions;
 use App\Models\SessionDatesMonthlySessions;
+use App\Models\CoachingChecklistPanel;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -136,125 +137,6 @@ Route::get('/api/sessions/live', function () {
 
 
 
-Route::post('/api/login', function (Request $request) {
-    $email = $request->input('email');
-    $password = $request->input('password');
-
-    // 🔐 Hardcoded users
-    $users = [
-        [
-            'email' => 'kay@gmail.com',
-            'password' => 'password123',
-            'id' => 1,
-            'name' => 'Kay Dee',
-            'role' => 'admin',
-            'group' => 'executive',
-            'organization' => 'kay organizations',
-            'position' => 'admin',
-
-        ],
-        [
-            'email' => 'uat@gmail.com',
-            'password' => 'q',
-            'id' => 2,
-            'name' => 'User Test',
-            'role' => 'testuser',
-            'group' => 'operations',
-            'organization' => 'test organization',
-            'position' => 'testuser',
-        ],
-        [
-            'email' => 'maricar@chuckgulledge.com',
-            'password' => 'Password123',
-            'id' => 2,
-            'name' => 'Maricar Aquino',
-            'role' => 'superadmin',
-            'group' => 'operations',
-            'organization' => 'maricar organization',
-            'position' => 'superadmin',
-        ],
-    ];
-
-    // 🔍 Find matching user
-    $matchedUser = collect($users)->first(function ($user) use ($email, $password) {
-        return $user['email'] === $email && $user['password'] === $password;
-    });
-
-    if ($matchedUser) {
-        // Save in session
-        $request->session()->put('logged_in', true);
-        $request->session()->put('user', $matchedUser);
-
-        // Regenerate session ID for security
-        $request->session()->regenerate();
-
-        return response()->json([
-            'status' => 'success',
-            'session_id' => $request->session()->getId(),
-            'user' => [
-                'fullname' => $matchedUser['name'],
-                'email' => $matchedUser['email'],
-                'role' => $matchedUser['role'],
-                'group' => $matchedUser['group'],
-                'organization' => $matchedUser['organization'],
-                'position' => $matchedUser['position'],
-            ],
-        ]);
-    }
-
-    return response()->json([
-        'status' => 'error',
-        'message' => 'Invalid credentials',
-    ], 401);
-});
-
-// ref: frontend\src\pages\login\Login.jsx
-Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
-    
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-        $user = $request->session()->get('user');
-    }
-
-    // return response()->json([
-    //     'Chuck Gulledge Advisors, LLC', 
-    //     'Collins Credit Union', 
-    //     'IH MVCU', 
-    //     'Ironclad',
-    //     'Seneca', 
-    //     'Texans Credit Union', 
-    //     'Kolb Grading'
-    // ]);
-
-    return response()->json([
-        'Chuck Gulledge Advisors, LLC', 
-        'Collins Credit Union', 
-        'Test Skeleton Loading'
-    ]);
-});
-
-
-
-// // ref: frontend\src\pages\login\Login.jsx
-// Route::get('/api/v1/company-options', function (Request $request) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//     }
-
-//     // Fetch all organization names from the database
-//     $organizationNames = Organization::pluck('organizationName');
-
-//     if ($organizationNames->isEmpty()) {
-//         return response()->json(['message' => 'No organizations found'], 404);
-//     }
-
-//     return response()->json($organizationNames);
-// });
-
 // Route::post('/api/login', function (Request $request) {
 //     $email = $request->input('email');
 //     $password = $request->input('password');
@@ -270,55 +152,41 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
 //             'group' => 'executive',
 //             'organization' => 'kay organizations',
 //             'position' => 'admin',
+
 //         ],
-//         // [
-//         //     'email' => 'uat@gmail.com',
-//         //     'password' => 'q',
-//         //     'id' => 2,
-//         //     'name' => 'User Test',
-//         //     'role' => 'testuser',
-//         //     'group' => 'operations',
-//         //     'organization' => 'test organization',
-//         //     'position' => 'testuser',
-//         // ],
-//         // [
-//         //     'email' => 'maricar@chuckgulledge.com',
-//         //     'password' => 'Password123',
-//         //     'id' => 3,
-//         //     'name' => 'Maricar Aquino',
-//         //     'role' => 'superadmin',
-//         //     'group' => 'operations',
-//         //     'organization' => 'maricar organization',
-//         //     'position' => 'superadmin',
-//         // ],
+//         [
+//             'email' => 'uat@gmail.com',
+//             'password' => 'q',
+//             'id' => 2,
+//             'name' => 'User Test',
+//             'role' => 'testuser',
+//             'group' => 'operations',
+//             'organization' => 'test organization',
+//             'position' => 'testuser',
+//         ],
+//         [
+//             'email' => 'maricar@chuckgulledge.com',
+//             'password' => 'Password123',
+//             'id' => 2,
+//             'name' => 'Maricar Aquino',
+//             'role' => 'superadmin',
+//             'group' => 'operations',
+//             'organization' => 'maricar organization',
+//             'position' => 'superadmin',
+//         ],
 //     ];
 
-//     // 🔍 Check hardcoded users first
+//     // 🔍 Find matching user
 //     $matchedUser = collect($users)->first(function ($user) use ($email, $password) {
 //         return $user['email'] === $email && $user['password'] === $password;
 //     });
 
-//     // 🔍 If not found in hardcoded list, check database
-//     if (!$matchedUser) {
-//         $dbUser = AuthUser::where('email', $email)->first();
-
-//         if ($dbUser && Hash::check($password, $dbUser->passwordHash)) {
-//             $matchedUser = [
-//                 'id' => $dbUser->id,
-//                 'name' => $dbUser->firstName . ' ' . $dbUser->lastName,
-//                 'email' => $dbUser->email,
-//                 'role' => $dbUser->role,
-//                 'group' => $dbUser->group,
-//                 'organization' => $dbUser->organization,
-//                 'position' => $dbUser->position,
-//             ];
-//         }
-//     }
-
-//     // ✅ If user found (either hardcoded or DB)
 //     if ($matchedUser) {
+//         // Save in session
 //         $request->session()->put('logged_in', true);
 //         $request->session()->put('user', $matchedUser);
+
+//         // Regenerate session ID for security
 //         $request->session()->regenerate();
 
 //         return response()->json([
@@ -335,13 +203,209 @@ Route::get('/api/v1/company-options', function (Request $request) use ($API_secu
 //         ]);
 //     }
 
-//     // ❌ If not found
 //     return response()->json([
 //         'status' => 'error',
 //         'message' => 'Invalid credentials',
 //     ], 401);
 // });
 
+// // ref: frontend\src\pages\login\Login.jsx
+// Route::get('/api/v1/company-options', function (Request $request) use ($API_secure)  {
+    
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     // return response()->json([
+//     //     'Chuck Gulledge Advisors, LLC', 
+//     //     'Collins Credit Union', 
+//     //     'IH MVCU', 
+//     //     'Ironclad',
+//     //     'Seneca', 
+//     //     'Texans Credit Union', 
+//     //     'Kolb Grading'
+//     // ]);
+
+//     return response()->json([
+//         'Chuck Gulledge Advisors, LLC', 
+//         'Collins Credit Union', 
+//         'Test Skeleton Loading'
+//     ]);
+// });
+
+
+// //ref: frontend\src\components\document-vault\documentVault.jsx
+// Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->input('organization');
+
+//     $map = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//         ],
+//         'Collins Credit Union' => [
+//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
+//         ],
+//         'Test Skeleton Loading' => [
+//             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
+//         ],
+//     ];
+
+//     if (!array_key_exists($organization, $map)) {
+//         return response()->json([
+//             'message' => 'Organization not found',
+//         ], 404);
+//     }
+
+//     return response()->json([
+//         $organization => $map[$organization],
+//     ]);
+// });
+
+
+
+
+Route::post('/api/login', function (Request $request) {
+    $email = $request->input('email');
+    $password = $request->input('password');
+
+    // 🔐 Hardcoded users
+    $users = [
+        [
+            'email' => 'kay@gmail.com',
+            'password' => 'password123',
+            'id' => 1,
+            'name' => 'Kay Dee',
+            'role' => 'admin',
+            'group' => 'executive',
+            'organization' => 'kay organizations',
+            'position' => 'admin',
+        ],
+        // [
+        //     'email' => 'uat@gmail.com',
+        //     'password' => 'q',
+        //     'id' => 2,
+        //     'name' => 'User Test',
+        //     'role' => 'testuser',
+        //     'group' => 'operations',
+        //     'organization' => 'test organization',
+        //     'position' => 'testuser',
+        // ],
+        // [
+        //     'email' => 'maricar@chuckgulledge.com',
+        //     'password' => 'Password123',
+        //     'id' => 3,
+        //     'name' => 'Maricar Aquino',
+        //     'role' => 'superadmin',
+        //     'group' => 'operations',
+        //     'organization' => 'maricar organization',
+        //     'position' => 'superadmin',
+        // ],
+    ];
+
+    // 🔍 Check hardcoded users first
+    $matchedUser = collect($users)->first(function ($user) use ($email, $password) {
+        return $user['email'] === $email && $user['password'] === $password;
+    });
+
+    // 🔍 If not found in hardcoded list, check database
+    if (!$matchedUser) {
+        $dbUser = AuthUser::where('email', $email)->first();
+
+        if ($dbUser && Hash::check($password, $dbUser->passwordHash)) {
+            $matchedUser = [
+                'id' => $dbUser->id,
+                'name' => $dbUser->firstName . ' ' . $dbUser->lastName,
+                'email' => $dbUser->email,
+                'role' => $dbUser->role,
+                'group' => $dbUser->group,
+                'organization' => $dbUser->organization,
+                'position' => $dbUser->position,
+            ];
+        }
+    }
+
+    // ✅ If user found (either hardcoded or DB)
+    if ($matchedUser) {
+        $request->session()->put('logged_in', true);
+        $request->session()->put('user', $matchedUser);
+        $request->session()->regenerate();
+
+        return response()->json([
+            'status' => 'success',
+            'session_id' => $request->session()->getId(),
+            'user' => [
+                'fullname' => $matchedUser['name'],
+                'email' => $matchedUser['email'],
+                'role' => $matchedUser['role'],
+                'group' => $matchedUser['group'],
+                'organization' => $matchedUser['organization'],
+                'position' => $matchedUser['position'],
+            ],
+        ]);
+    }
+
+    // ❌ If not found
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Invalid credentials',
+    ], 401);
+});
+
+// ref: frontend\src\pages\login\Login.jsx
+Route::get('/api/v1/company-options', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // Fetch all organization names from the database
+    $organizationNames = Organization::pluck('organizationName');
+
+    if ($organizationNames->isEmpty()) {
+        return response()->json(['message' => 'No organizations found'], 404);
+    }
+
+    return response()->json($organizationNames);
+});
+
+
+// ref: frontend\src\components\document-vault\documentVault.jsx
+Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organizationName = $request->input('organization');
+
+    if (!$organizationName) {
+        return response()->json(['message' => 'Organization name is required'], 422);
+    }
+
+    $organization = Organization::where('organizationName', $organizationName)->first();
+
+    if (!$organization) {
+        return response()->json([
+            'message' => 'No organization uid found',
+        ], 404);
+    }
+
+    return response()->json([
+        'organization' => $organization->organizationName,
+        'uid' => $organization->u_id,
+    ]);
+});
 
 
 
@@ -815,6 +879,37 @@ Route::post('/api/file-upload/{path}', function (Request $request, $path) {
         'path' => "storage/app/public/{$path}/{$fileName}",
     ]);
 })->where('path', '.*');
+
+
+Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', function (Request $request, $uid, $formattedText) {
+    if (!$request->hasFile('file')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    $file = $request->file('file');
+
+    // ✅ Sanitize both parts
+    $safeUid = Str::slug($uid, '');
+    $safeFormattedText = Str::slug($formattedText, '-');
+
+    // ✅ Build directory path
+    $relativeDirectory = "coaching-checklist/{$safeUid}/{$safeFormattedText}";
+    $storagePath = storage_path("app/public/{$relativeDirectory}");
+
+    if (!File::exists($storagePath)) {
+        File::makeDirectory($storagePath, 0755, true);
+    }
+
+    $fileName = $file->getClientOriginalName();
+    $file->move($storagePath, $fileName);
+
+    return response()->json([
+        'message' => 'File uploaded successfully',
+        'path' => "storage/{$relativeDirectory}/{$fileName}",
+    ]);
+});
+
+
 
 // Your API route(s)
 Route::get('/api/mock-response1', function () {
@@ -4287,7 +4382,190 @@ Route::get('/api/v1/coaching-checklist/project-progress', function (Request $req
     ]);
 });
 
-// ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
+// ref:
+// Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $commonLink = 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing';
+//     $uploadLink = '/file-upload/coaching-checklist/McW3IcYsbmy1J17iDSnp9';
+
+//     $mockPanels = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'title' => 'Client Onboarding',
+//                 'icon' => 'faHandshake',
+//                 'expanded' => false,
+//                 'items' => [
+//                     [
+//                         'id' => '1a',
+//                         'text' => 'Welcome call completed',
+//                         'completed' => true,
+//                         'date' => '2025-03-28',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                     [
+//                         'id' => '1b',
+//                         'text' => 'Onboarding documents submitted',
+//                         'completed' => false,
+//                         'date' => '',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                 ],
+//             ],
+//             [
+//                 'id' => 2,
+//                 'title' => 'Personal & Leadership Readiness',
+//                 'icon' => 'faUserTie',
+//                 'expanded' => false,
+//                 'items' => [
+//                     [
+//                         'id' => '2a',
+//                         'text' => 'Personal goals aligned',
+//                         'completed' => true,
+//                         'date' => '2025-03-29',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                     [
+//                         'id' => '2b',
+//                         'text' => 'Leadership team commitment',
+//                         'completed' => false,
+//                         'date' => '',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                 ],
+//             ],
+//             [
+//                 'id' => 3,
+//                 'title' => 'Strategic Clarity',
+//                 'icon' => 'faBullseye',
+//                 'expanded' => false,
+//                 'items' => [
+//                     [
+//                         'id' => '3a',
+//                         'text' => 'Vision and mission reviewed',
+//                         'completed' => true,
+//                         'date' => '2025-03-30',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                     [
+//                         'id' => '3b',
+//                         'text' => 'Key strategic drivers defined',
+//                         'completed' => false,
+//                         'date' => '',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                 ],
+//             ],
+//             [
+//                 'id' => 4,
+//                 'title' => 'Execution Discipline',
+//                 'icon' => 'faCheckSquare',
+//                 'expanded' => false,
+//                 'items' => [
+//                     [
+//                         'id' => '4a',
+//                         'text' => 'Quarterly goals set',
+//                         'completed' => false,
+//                         'date' => '',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                     [
+//                         'id' => '4b',
+//                         'text' => 'Weekly check-ins scheduled',
+//                         'completed' => true,
+//                         'date' => '2025-03-31',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                 ],
+//             ],
+//             [
+//                 'id' => 5,
+//                 'title' => 'Cash & Financial Discipline',
+//                 'icon' => 'faMoneyBillWave',
+//                 'expanded' => false,
+//                 'items' => [
+//                     [
+//                         'id' => '5a',
+//                         'text' => 'Cash flow projection ready',
+//                         'completed' => false,
+//                         'date' => '',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                     [
+//                         'id' => '5b',
+//                         'text' => 'Budget aligned to goals',
+//                         'completed' => true,
+//                         'date' => '2025-04-01',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                 ],
+//             ],
+//             [
+//                 'id' => 6,
+//                 'title' => 'MomentumOS Performance System',
+//                 'icon' => 'faChartLine',
+//                 'expanded' => false,
+//                 'items' => [
+//                     [
+//                         'id' => '6a',
+//                         'text' => 'MomentumOS dashboard set up',
+//                         'completed' => true,
+//                         'date' => '2025-04-02',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                     [
+//                         'id' => '6b',
+//                         'text' => 'Team trained to use system',
+//                         'completed' => false,
+//                         'date' => '',
+//                         'link' => $commonLink,
+//                         'uploadLink' => $uploadLink,
+//                         'pdflink' => '',
+//                     ],
+//                 ],
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [],
+
+//         'Test Skeleton Loading' => [],
+//     ];
+
+//     return response()->json($mockPanels[$organization] ?? []);
+// });
+
+
+// ref:
 Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4298,137 +4576,16 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
 
     $organization = $request->query('organization');
 
-    $mockPanels = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'title' => 'Client Onboarding',
-                'icon' => 'faHandshake',
-                'expanded' => false,
-                'items' => [
-                    ['id' => '1a', 'text' => 'Welcome call completed', 'completed' => true],
-                    ['id' => '1b', 'text' => 'Onboarding documents submitted', 'completed' => false],
-                ],
-            ],
-            [
-                'id' => 2,
-                'title' => 'Personal & Leadership Readiness',
-                'icon' => 'faUserTie',
-                'expanded' => false,
-                'items' => [
-                    ['id' => '2a', 'text' => 'Personal goals aligned', 'completed' => true],
-                    ['id' => '2b', 'text' => 'Leadership team commitment', 'completed' => false],
-                ],
-            ],
-            [
-                'id' => 3,
-                'title' => 'Strategic Clarity',
-                'icon' => 'faBullseye',
-                'expanded' => false,
-                'items' => [
-                    ['id' => '3a', 'text' => 'Vision and mission reviewed', 'completed' => true],
-                    ['id' => '3b', 'text' => 'Key strategic drivers defined', 'completed' => false],
-                ],
-            ],
-            [
-                'id' => 4,
-                'title' => 'Execution Discipline',
-                'icon' => 'faCheckSquare',
-                'expanded' => false,
-                'items' => [
-                    ['id' => '4a', 'text' => 'Quarterly goals set', 'completed' => false],
-                    ['id' => '4b', 'text' => 'Weekly check-ins scheduled', 'completed' => true],
-                ],
-            ],
-            [
-                'id' => 5,
-                'title' => 'Cash & Financial Discipline',
-                'icon' => 'faMoneyBillWave',
-                'expanded' => false,
-                'items' => [
-                    ['id' => '5a', 'text' => 'Cash flow projection ready', 'completed' => false],
-                    ['id' => '5b', 'text' => 'Budget aligned to goals', 'completed' => true],
-                ],
-            ],
-            [
-                'id' => 6,
-                'title' => 'MomentumOS Performance System',
-                'icon' => 'faChartLine',
-                'expanded' => false,
-                'items' => [
-                    ['id' => '6a', 'text' => 'MomentumOS dashboard set up', 'completed' => true],
-                    ['id' => '6b', 'text' => 'Team trained to use system', 'completed' => false],
-                ],
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-        'Collins Credit Union' => [
-        [
-            'id' => 1,
-            'title' => 'Client Onboarding',
-            'icon' => 'faHandshake',
-            'expanded' => false,
-            'items' => [
-                ['id' => '1a', 'text' => 'Initial consultation completed', 'completed' => true],
-                ['id' => '1b', 'text' => 'Client portal access granted', 'completed' => true],
-            ],
-        ],
-        [
-            'id' => 2,
-            'title' => 'Personal & Leadership Readiness',
-            'icon' => 'faUserTie',
-            'expanded' => false,
-            'items' => [
-                ['id' => '2a', 'text' => 'Executive coaching scheduled', 'completed' => false],
-                ['id' => '2b', 'text' => 'Team alignment session held', 'completed' => true],
-            ],
-        ],
-        [
-            'id' => 3,
-            'title' => 'Strategic Clarity',
-            'icon' => 'faBullseye',
-            'expanded' => false,
-            'items' => [
-                ['id' => '3a', 'text' => 'Strategic plan reviewed', 'completed' => true],
-                ['id' => '3b', 'text' => 'Core values defined', 'completed' => false],
-            ],
-        ],
-        [
-            'id' => 4,
-            'title' => 'Execution Discipline',
-            'icon' => 'faCheckSquare',
-            'expanded' => false,
-            'items' => [
-                ['id' => '4a', 'text' => 'Milestone tracking system implemented', 'completed' => true],
-                ['id' => '4b', 'text' => 'Weekly accountability meetings started', 'completed' => true],
-            ],
-        ],
-        [
-            'id' => 5,
-            'title' => 'Cash & Financial Discipline',
-            'icon' => 'faMoneyBillWave',
-            'expanded' => false,
-            'items' => [
-                ['id' => '5a', 'text' => 'Monthly financial reviews in place', 'completed' => true],
-                ['id' => '5b', 'text' => 'Cost savings initiatives identified', 'completed' => false],
-            ],
-        ],
-        [
-            'id' => 6,
-            'title' => 'MomentumOS Performance System',
-            'icon' => 'faChartLine',
-            'expanded' => false,
-            'items' => [
-                ['id' => '6a', 'text' => 'Dashboard KPIs configured', 'completed' => false],
-                ['id' => '6b', 'text' => 'Performance reports automated', 'completed' => true],
-            ],
-        ],
-        ],
+    $record = CoachingChecklistPanel::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [],
-    ];
-
-    return response()->json($mockPanels[$organization] ?? []);
+    // Return the data wrapped with organizationName as key, or empty array if not found
+    return response()->json([
+        $organization => $record->coachingChecklistPanelsData ?? [],
+    ]);
 });
 
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
@@ -5704,69 +5861,6 @@ Route::get('/api/v1/notifications', function (Request $request) use ($API_secure
     return response()->json($data[$fullname] ?? []);
 });
 
-
-//
-    //ref: frontend\src\components\document-vault\documentVault.jsx
-    // Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
-    //     if ($API_secure) {
-    //         if (!$request->session()->get('logged_in')) {
-    //             return response()->json(['message' => 'Unauthorized'], 401);
-    //         }
-    //     }
-
-    //     $organization = $request->input('organization');
-
-    //     $map = [
-    //         'Chuck Gulledge Advisors, LLC' => [
-    //             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-    //         ],
-    //         'Collins Credit Union' => [
-    //             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5x',
-    //         ],
-    //         'Test Skeleton Loading' => [
-    //             'uid' => '4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5z',
-    //         ],
-    //     ];
-
-    //     if (!array_key_exists($organization, $map)) {
-    //         return response()->json([
-    //             'message' => 'Organization not found',
-    //         ], 404);
-    //     }
-
-    //     return response()->json([
-    //         $organization => $map[$organization],
-    //     ]);
-    // });
-
-
-// ref: frontend\src\components\document-vault\documentVault.jsx
-Route::post('/api/v1/organization-uid', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    $organizationName = $request->input('organization');
-
-    if (!$organizationName) {
-        return response()->json(['message' => 'Organization name is required'], 422);
-    }
-
-    $organization = Organization::where('organizationName', $organizationName)->first();
-
-    if (!$organization) {
-        return response()->json([
-            'message' => 'No organization uid found',
-        ], 404);
-    }
-
-    return response()->json([
-        'organization' => $organization->organizationName,
-        'uid' => $organization->u_id,
-    ]);
-});
 
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {

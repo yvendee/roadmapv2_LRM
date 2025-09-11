@@ -1,5 +1,5 @@
 // frontend\src\components\11.coaching-checklist\2.CollapsiblePanels\CollapsiblePanels.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CollapsiblePanels.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -14,20 +14,21 @@ import {
   faMoneyBillWave,
   faChartLine,
 } from '@fortawesome/free-solid-svg-icons';
+import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import API_URL from '../../../configs/config';
 
-import useAccordionChecklistStore from '../../../store/left-lower-content/11.coaching-checklist/2.collapsiblePanelsStore';
+import useAccordionChecklistStore, { initialAccordionChecklist } from '../../../store/left-lower-content/11.coaching-checklist/2.collapsiblePanelsStore';
+import useProjectToolsStore from '../../../store/left-lower-content/11.coaching-checklist/1.projectProgressAndToolsStore';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 const CollapsiblePanels = () => {
   // const { togglePanel, updateItemField, updateItemStatus } = useAccordionChecklistStore();
 
-  const { togglePanel } = useAccordionChecklistStore();
   const panels = useAccordionChecklistStore(state => state.panels);
   const updateItemField = useAccordionChecklistStore(state => state.updateItemField);
   const updateItemStatus = useAccordionChecklistStore(state => state.updateItemStatus);
-
-
+  const togglePanel = useAccordionChecklistStore(state => state.togglePanel);
 
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -36,6 +37,8 @@ const CollapsiblePanels = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [selectedUploadContext, setSelectedUploadContext] = useState(null); // { panelId, itemId }
+
+  const [hasChanges, setHasChanges] = useState(false);
 
 
   const iconMap = {
@@ -47,34 +50,110 @@ const CollapsiblePanels = () => {
     faChartLine,
   };
 
+  const updateProgressCounts = () => {
+    const panels = useAccordionChecklistStore.getState().panels;
+  
+    const allItems = panels.flatMap(panel => panel.items);
+    const total = allItems.length;
+    const completed = allItems.filter(item => item.completed).length;
+  
+    useProjectToolsStore.getState().setTotalItems(total);
+    useProjectToolsStore.getState().setCompletedItems(completed);
+  };
+  
+
+
   const handleUploadClick = (panelId, itemId) => {
     setSelectedUploadContext({ panelId, itemId });
     setUploadError('');
     setUploadModalOpen(true);
   };
 
-  const handleFileUpload = async () => {
-    if (!uploadFile || !selectedUploadContext) return;
 
+  // const handleFileUpload = async () => {
+  //   const uid = useOrganizationUIDStore.getState().uid;
+  
+  //   if (!uploadFile || !selectedUploadContext) return;
+  
+  //   const { panelId, itemId } = selectedUploadContext;
+  //   const panel = panels.find(p => p.id === panelId);
+  //   const item = panel.items.find(i => i.id === itemId);
+  //   const uploadLink = item.uploadLink;
+  
+  //   setUploading(true);
+  
+  //   try {
+  //     // 1. Get CSRF Token
+  //     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //       credentials: 'include',
+  //     });
+  //     const { csrf_token } = await csrfRes.json();
+  
+  //     // 2. Upload file
+  //     const formData = new FormData();
+  //     formData.append('file', uploadFile);
+  
+  //     const response = await fetch(`${API_URL}${uploadLink}`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'X-CSRF-TOKEN': csrf_token,
+  //       },
+  //       credentials: 'include',
+  //       body: formData,
+  //     });
+  
+  //     if (!response.ok) throw new Error('Upload failed');
+  
+  //     // Format item.text by replacing spaces with underscores
+  //     const formattedText = item.text.replace(/\s+/g, '_');
+  
+  //     // 3. Generate and store new pdflink
+  //     const uploadedFileName = uploadFile.name;
+  //     const newPdfLink = `${API_URL}/storage/coaching_checklist/${uid}/${formattedText}${uploadedFileName}`;
+  
+  //     updateItemField(panelId, itemId, 'pdflink', newPdfLink);
+  //     setUploadSuccess(true);
+  //     setHasChanges(true);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setUploadError('Upload failed. Try again.');
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
+  
+
+
+  const handleFileUpload = async () => {
+  
+    if (!uploadFile || !selectedUploadContext) return;
+  
     const { panelId, itemId } = selectedUploadContext;
     const panel = panels.find(p => p.id === panelId);
     const item = panel.items.find(i => i.id === itemId);
     const uploadLink = item.uploadLink;
-
+  
+    // Format text: lowercase, spaces to dashes
+    const formattedText = item.text.toLowerCase().replace(/\s+/g, '-');
+  
+    // Build upload URL
+    const uploadPath = `${uploadLink}/${formattedText}`;
+    const uploadUrl = `${API_URL}${uploadPath}`;
+  
     setUploading(true);
-
+  
     try {
       // 1. Get CSRF Token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
-
+  
       // 2. Upload file
       const formData = new FormData();
       formData.append('file', uploadFile);
-
-      const response = await fetch(`${API_URL}${uploadLink}`, {
+  
+      const response = await fetch(uploadUrl, {
         method: 'POST',
         headers: {
           'X-CSRF-TOKEN': csrf_token,
@@ -82,45 +161,98 @@ const CollapsiblePanels = () => {
         credentials: 'include',
         body: formData,
       });
-
+  
       if (!response.ok) throw new Error('Upload failed');
-
-      // 3. Generate and store new pdflink
+  
+      // 3. Generate file URL
       const uploadedFileName = uploadFile.name;
-      const uploadPath = uploadLink.replace('/file-upload/', '');
-      const newPdfLink = `${API_URL}/storage/${uploadPath}/${uploadedFileName}`;
-
+      const uid = uploadLink.split('/').pop(); // Gets the last segment
+      // console.log(uid); // "McW3IcYsbmy1J17iDSnp9"
+      const newPdfLink = `${API_URL}/storage/coaching-checklist/${uid}/${formattedText}/${uploadedFileName}`;
+  
       updateItemField(panelId, itemId, 'pdflink', newPdfLink);
       setUploadSuccess(true);
+      // setHasChanges(true);
+
+      // ✅ Log panel.id, item.id, and item.pdflink
+      console.log('📄 Upload Complete:');
+      console.log('Panel ID:', panel.id);
+      console.log('Item ID:', item.id);
+      console.log('PDF Link:', newPdfLink);
+
     } catch (err) {
       console.error(err);
       setUploadError('Upload failed. Try again.');
-    } finally {
+    } 
+    finally {
       setUploading(false);
     }
   };
 
+  const handleUpdateItemField = (panelId, itemId, field, value) => {
+    updateItemField(panelId, itemId, field, value);
+    setHasChanges(true);
+  };
+  
+  // const handleUpdateItemStatus = (panelId, itemId, completed) => {
+  //   updateItemStatus(panelId, itemId, completed);
+  //   setHasChanges(true);
+  // };
+
+  const handleUpdateItemStatus = (panelId, itemId, completed) => {
+    updateItemStatus(panelId, itemId, completed);
+    setHasChanges(true);
+    updateProgressCounts(); // ✅ Called on checkbox toggle
+  };
+
   const handleSaveChanges = () => {
-    // logic to save panels or send to API
+    const currentPanels = useAccordionChecklistStore.getState().panels;
+    console.log('✅ Saving checklist:', currentPanels);
+    localStorage.removeItem('CoachingChecklistData');
+    setHasChanges(false);
   };
   
   const handleDischarge = () => {
-    // logic to reset/discharge items
+    console.log('🗑️ Discarding changes. Reset to initial:', initialAccordionChecklist);
+    localStorage.removeItem('CoachingChecklistData');
+    useAccordionChecklistStore.getState().setPanels(initialAccordionChecklist);
+    setHasChanges(false);
   };
+  
+  
+  useEffect(() => {
+    if (hasChanges) {
+      localStorage.setItem('CoachingChecklistData', JSON.stringify(panels));
+    }
+  }, [hasChanges, panels]);
+  
+
+  useEffect(() => {
+    const savedData = localStorage.getItem('CoachingChecklistData');
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      useAccordionChecklistStore.getState().setPanels(parsed);
+      setHasChanges(true); // Show action buttons if restored
+    }
+    updateProgressCounts(); // ✅ Called on checkbox toggle
+  }, []);
+  
 
   return (
     <div className="accordion-container">
 
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Coaching Checklist</h2>
-        <div className="flex gap-3">
-          <button className="pure-blue-btn">
-            Saving changes
-          </button>
-          <button className="pure-red-btn">
-            Discharge
-          </button>
-        </div>
+        {hasChanges && (
+          <div className="flex gap-3">
+            <button className="pure-blue-btn" onClick={handleSaveChanges}>
+              Saving changes
+            </button>
+            <button className="pure-red-btn" onClick={handleDischarge}>
+              Discard
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="accordion-container">
@@ -153,7 +285,8 @@ const CollapsiblePanels = () => {
                             <FontAwesomeIcon
                               icon={item.completed ? faCheckSquare : faSquare}
                               className="item-checkbox cursor-pointer"
-                              onClick={() => updateItemStatus(panel.id, item.id, !item.completed)}
+                              // onClick={() => updateItemStatus(panel.id, item.id, !item.completed)}
+                              onClick={() => handleUpdateItemStatus(panel.id, item.id, !item.completed)}
                             />
                             <span className={`font-semibold ${item.completed ? 'line-through text-gray-500' : ''}`}>
                               {item.text}
@@ -161,12 +294,14 @@ const CollapsiblePanels = () => {
                           </div>
 
                           {/* Right section: Date, Link, Buttons */}
-                          <div className="grid grid-cols-[150px_300px_auto_auto] gap-4 items-center w-full">
+                          {/* <div className="grid grid-cols-[150px_300px_auto_auto] gap-4 items-center w-full"> */}
+                          <div className="grid grid-cols-[150px_300px_1fr] gap-4 items-center w-full">
+
                             {/* Date field */}
                             <input
                               type="date"
-                              value={item.date ? new Date(item.date).toISOString().slice(0, 10) : ''}
-                              onChange={(e) => updateItemField(panel.id, item.id, 'date', e.target.value)}
+                              value={item.date ? item.date : ''}
+                              onChange={(e) => handleUpdateItemField(panel.id, item.id, 'date', e.target.value)}
                               className="px-2 py-1 border rounded w-full"
                             />
 
@@ -174,36 +309,54 @@ const CollapsiblePanels = () => {
                             <input
                               type="text"
                               value={item.link || ''}
-                              onChange={(e) =>
-                                updateItemField(panel.id, item.id, 'link', e.target.value)
-                              }
+                              onChange={(e) => handleUpdateItemField(panel.id, item.id, 'link', e.target.value)}
                               className="px-2 py-1 border rounded w-full"
                               placeholder="Insert link"
                             />
 
-                            {/* Upload button */}
-                            <button
-                              className="pure-blue-btn w-full"
-                              onClick={() => handleUploadClick(panel.id, item.id)}
-                            >
-                              Upload
-                            </button>
+                            {/* Buttons: Upload | View | View Document */}
+                            <div className="flex gap-2">
 
-                            {/* View button */}
-                            <button
-                              className={`pure-green-btn w-full ${
-                                !item.pdflink || item.pdflink === '-' ? 'opacity-50 cursor-not-allowed' : ''
-                              }`}
-                              onClick={() => {
-                                if (item.pdflink && item.pdflink !== '-') {
-                                  window.open(item.pdflink, '_blank');
-                                }
-                              }}
-                              disabled={!item.pdflink || item.pdflink === '-'}
-                            >
-                              View
-                            </button>
+                              {/* View button */}
+                              <button
+                                className={`${
+                                  !item.link || item.link === '-' ? 'pure-gray-btn cursor-not-allowed' : 'pure-green-btn'
+                                }`}
+                                onClick={() => {
+                                  if (item.link && item.link !== '-') {
+                                    window.open(item.link, '_blank');
+                                  }
+                                }}
+                                disabled={!item.link || item.link === '-'}
+                              >
+                                View
+                              </button>
+
+                              {/* Upload button */}
+                              <button
+                                className="pure-blue-btn"
+                                onClick={() => handleUploadClick(panel.id, item.id)}
+                              >
+                                Upload
+                              </button>
+
+                              {/* View Document button */}
+                              <button
+                                className={`${
+                                  !item.pdflink || item.pdflink === '-' ? 'pure-gray-btn cursor-not-allowed' : 'pure-lime-btn'
+                                }`}
+                                onClick={() => {
+                                  if (item.pdflink && item.pdflink !== '-') {
+                                    window.open(item.pdflink, '_blank');
+                                  }
+                                }}
+                                disabled={!item.pdflink || item.pdflink === '-'}
+                              >
+                                View Document
+                              </button>
+                            </div>
                           </div>
+
                         </div>
                       </li>
 

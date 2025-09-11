@@ -129,3 +129,24 @@
   font-weight: 500;
   font-size: 0.875rem;
 }
+
+
+.pure-gray-btn {
+  background-color: #ccc; /* light gray background */
+  color: white;          /* darker gray text */
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.pure-lime-btn {
+  background-color: limegreen;
+  color: white;             /* darker gray text */
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+

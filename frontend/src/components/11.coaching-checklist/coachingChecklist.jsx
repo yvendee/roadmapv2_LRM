@@ -26,39 +26,39 @@ const CoachingChecklist = () => {
 
 
   // Fetch Project Progress & Recommended Tools Data
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/coaching-checklist/project-progress?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Project Progress & Tools:', json);
-          if (json && typeof json === 'object') {
-            const { completedItems, totalItems, nextRecommendedTools } = json;
-            setCompletedItems(completedItems);
-            setTotalItems(totalItems);
-            setNextRecommendedTools(nextRecommendedTools);
-          } else {
-            console.error('⚠️ Unexpected format in project progress response');
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Fetch error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-  }, [organization]);
+  //   fetch(`${API_URL}/v1/coaching-checklist/project-progress?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Project Progress & Tools:', json);
+  //         if (json && typeof json === 'object') {
+  //           const { completedItems, totalItems, nextRecommendedTools } = json;
+  //           setCompletedItems(completedItems);
+  //           setTotalItems(totalItems);
+  //           setNextRecommendedTools(nextRecommendedTools);
+  //         } else {
+  //           console.error('⚠️ Unexpected format in project progress response');
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Fetch error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization]);
 
   // Fetch Accordion Checklist Data
   useEffect(() => {
