@@ -221,39 +221,41 @@ const CollapsiblePanels = () => {
   
     try {
       // 1. Get CSRF Token
-      await fetch(`${API_URL}/csrf-token`, {
-        method: 'GET',
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
   
-      // 2. Send update request
-      const res = await fetch(`${API_URL}/v1/coaching-checklist/panels/update`, {
+      const { csrf_token } = await csrfRes.json();
+  
+      // 2. Submit updated panels
+      const response = await fetch(`${API_URL}/v1/coaching-checklist/panels/update`, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
         },
-        credentials: 'include', // important for session-based auth
+        credentials: 'include',
         body: JSON.stringify({
-          organization: organization,
+          organization,
           panels: currentPanels,
         }),
       });
   
-      const json = await res.json();
+      if (!response.ok) throw new Error('❌ Failed to save checklist');
   
-      if (res.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('✅ Panels updated successfully:', json);
-        localStorage.removeItem('CoachingChecklistData');
-        setHasChanges(false);
-      } else {
-        console.error('❌ Failed to update panels:', json.message);
-      }
+      const result = await response.json();
   
+      // 3. Success
+      ENABLE_CONSOLE_LOGS && console.log('✅ Coaching checklist saved:', result);
+      localStorage.removeItem('CoachingChecklistData');
+      setHasChanges(false);
+      
     } catch (err) {
-      console.error('❌ Error during CSRF fetch or save:', err);
+      console.error('❌ Error saving checklist:', err);
     }
   };
+  
   
 
   const handleDischarge = () => {
