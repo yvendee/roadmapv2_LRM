@@ -31,6 +31,7 @@ const CollapsiblePanels = () => {
   const updateItemField = useAccordionChecklistStore(state => state.updateItemField);
   const updateItemStatus = useAccordionChecklistStore(state => state.updateItemStatus);
   const togglePanel = useAccordionChecklistStore(state => state.togglePanel);
+  const organization = useLayoutSettingsStore((state) => state.organization);
 
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -251,7 +252,6 @@ const CollapsiblePanels = () => {
 
   const handleSaveChanges = async () => {
     const currentPanels = useAccordionChecklistStore.getState().panels;
-    const organization = useLayoutSettingsStore.getState().organization;
   
     try {
       // 1. Get CSRF Token
