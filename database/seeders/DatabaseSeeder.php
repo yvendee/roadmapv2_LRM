@@ -45,10 +45,11 @@ class DatabaseSeeder extends Seeder
         // $this->call(DepartmentTractionCompanyTractionSeeder::class);
         // $this->call(WhoWhatWhenSeeder::class);
         // $this->call(ThirteenWeekSprintSeeder::class);
-        $this->call(SessionDatesMonthlySessionsTrackerSeeder::class);
-        $this->call(SessionDatesQuarterlySessionsSeeder::class);
-        $this->call(SessionDatesMonthlySessionsSeeder::class);
-        // $this->call(ThirteenWeekSprintSeeder::class);
+        // $this->call(SessionDatesMonthlySessionsTrackerSeeder::class);
+        // $this->call(SessionDatesQuarterlySessionsSeeder::class);
+        // $this->call(SessionDatesMonthlySessionsSeeder::class);
+        $this->call(CoachingChecklistPanelSeeder::class);
+        // $this->call(CoachingChecklistPanelSeeder::class);
         
         
         
