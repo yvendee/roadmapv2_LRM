@@ -4751,6 +4751,44 @@ Route::post('/api/v1/coaching-alignment/current-focus/update', function (Request
 });
 
 
+// ref: 
+Route::post('/api/v1/coaching-alignment/current-focus/delete-item', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'item' => 'required|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $itemToDelete = $validated['item'];
+
+    $record = CoachingAlignmentCurrentFocus::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $data = $record->coachingAlignmentCurrentFocusData;
+
+    if (!isset($data['focusItems']) || !is_array($data['focusItems'])) {
+        return response()->json(['message' => 'Invalid data format'], 400);
+    }
+
+    $data['focusItems'] = array_filter($data['focusItems'], function ($focusItem) use ($itemToDelete) {
+        return $focusItem !== $itemToDelete;
+    });
+
+    $record->coachingAlignmentCurrentFocusData = $data;
+    $record->save();
+
+    return response()->json(['message' => 'Item deleted successfully']);
+});
+
+
+
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Request $request) use ($API_secure) {
     if ($API_secure) {
