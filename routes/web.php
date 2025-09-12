@@ -46,6 +46,9 @@ use App\Models\SessionDatesMonthlySessions;
 use App\Models\CoachingChecklistPanel;
 use App\Models\CoachingAlignmentCurrentFocus;
 use App\Models\CoachingAlignmentCurrentBusinessPulse;
+use App\Models\CoachingAlignmentWhatsNext;
+use App\Models\CoachingAlignmentCoachingGoal;
+
 
 
 
@@ -4940,56 +4943,238 @@ Route::post('/api/v1/coaching-alignment/current-business-pulse/delete-item', fun
 });
 
 
-// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// Route::get('/api/v1/coaching-alignment/whats-next', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'whatsNextItems' => ['Schedule leadership retreat', 'Finalize Q4 goals'],
+//         ],
+//         'Collins Credit Union' => [
+//             'whatsNextItems' => ['Review coaching reports', 'Assign accountability partners'],
+//         ],
+//         'Test Skeleton Loading' => [
+//             'whatsNextItems' => ['-', '-'],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? ['whatsNextItems' => []]);
+// });
+
+// ref:
 Route::get('/api/v1/coaching-alignment/whats-next', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'whatsNextItems' => ['Schedule leadership retreat', 'Finalize Q4 goals'],
-        ],
-        'Collins Credit Union' => [
-            'whatsNextItems' => ['Review coaching reports', 'Assign accountability partners'],
-        ],
-        'Test Skeleton Loading' => [
-            'whatsNextItems' => ['-', '-'],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization name'], 400);
+    }
 
-    return response()->json($data[$organization] ?? ['whatsNextItems' => []]);
+    $record = CoachingAlignmentWhatsNext::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['whatsNextItems' => []]); // Return empty structure if not found
+    }
+
+    return response()->json($record->coachingAlignmentWhatsNextData ?? ['whatsNextItems' => []]);
 });
 
 
-// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// ref:
+
+Route::post('/api/v1/coaching-alignment/whats-next/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'whatsNextItems' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $items = $validated['whatsNextItems'];
+
+    // Find or create the record
+    $record = CoachingAlignmentWhatsNext::firstOrCreate(
+        ['organizationName' => $organization]
+    );
+
+    // Save updated data
+    $record->coachingAlignmentWhatsNextData = [
+        'whatsNextItems' => $items,
+    ];
+    $record->save();
+
+    return response()->json(['message' => 'WhatsNext items updated successfully']);
+});
+
+
+// ref:
+Route::post('/api/v1/coaching-alignment/whats-next/delete-item', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'itemToDelete' => 'required|string',
+    ]);
+
+    $record = CoachingAlignmentWhatsNext::where('organizationName', $validated['organization'])->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization record not found'], 404);
+    }
+
+    $data = $record->coachingAlignmentWhatsNextData;
+
+    // Check if the key exists
+    if (!isset($data['whatsNextItems']) || !is_array($data['whatsNextItems'])) {
+        return response()->json(['message' => 'Invalid or missing whatsNextItems'], 400);
+    }
+
+    // Remove item
+    $filtered = array_values(array_filter($data['whatsNextItems'], function ($item) use ($validated) {
+        return $item !== $validated['itemToDelete'];
+    }));
+
+    $data['whatsNextItems'] = $filtered;
+    $record->coachingAlignmentWhatsNextData = $data;
+    $record->save();
+
+    return response()->json(['message' => 'Item deleted successfully', 'whatsNextItems' => $filtered]);
+});
+
+// // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'coachingGoalsItems' => ['Build high-impact team', 'Increase client engagement', 'Develop Momentum Hub'],
+//         ],
+//         'Collins Credit Union' => [
+//             'coachingGoalsItems' => ['Improve leadership accountability', 'Launch new performance dashboard'],
+//         ],
+//         'Test Skeleton Loading' => [
+//             'coachingGoalsItems' => ['-', '-', '-', '-'],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? ['coachingGoalsItems' => []]);
+// });
+
+
+// ref:
 Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'coachingGoalsItems' => ['Build high-impact team', 'Increase client engagement', 'Develop Momentum Hub'],
-        ],
-        'Collins Credit Union' => [
-            'coachingGoalsItems' => ['Improve leadership accountability', 'Launch new performance dashboard'],
-        ],
-        'Test Skeleton Loading' => [
-            'coachingGoalsItems' => ['-', '-', '-', '-'],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
+
+    $record = CoachingAlignmentCoachingGoal::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['coachingGoalsItems' => []]);  // Return empty structure if not found
+    }
+
+    return response()->json($record->coachingAlignmentCoachingGoalsData ?? ['coachingGoalsItems' => []]);
+});
+
+
+// ref:
+Route::post('/api/v1/coaching-alignment/coaching-goals/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // ✅ Validate input
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'coachingGoalsItems' => 'required|array',
+    ]);
+
+    // ✅ Find or create record by organizationName
+    $record = CoachingAlignmentCoachingGoal::firstOrCreate(
+        ['organizationName' => $validated['organization']]
+    );
+
+    // ✅ Update data
+    $record->coachingAlignmentCoachingGoalsData = [
+        'coachingGoalsItems' => $validated['coachingGoalsItems'],
     ];
 
-    return response()->json($data[$organization] ?? ['coachingGoalsItems' => []]);
+    $record->save();
+
+    return response()->json(['message' => 'Coaching goals updated successfully']);
 });
+
+
+// ref:
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Models\CoachingAlignmentCoachingGoal;
+
+Route::post('/api/v1/coaching-alignment/coaching-goals/delete-item', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // ✅ Validate input
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'itemToDelete' => 'required|string',
+    ]);
+
+    $record = CoachingAlignmentCoachingGoal::where('organizationName', $validated['organization'])->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $data = $record->coachingAlignmentCoachingGoalsData;
+
+    if (!isset($data['coachingGoalsItems']) || !is_array($data['coachingGoalsItems'])) {
+        return response()->json(['message' => 'Invalid data format'], 400);
+    }
+
+    // ✅ Filter out the item to delete
+    $filteredItems = array_filter($data['coachingGoalsItems'], function ($item) use ($validated) {
+        return $item !== $validated['itemToDelete'];
+    });
+
+    // ✅ Reindex array
+    $data['coachingGoalsItems'] = array_values($filteredItems);
+
+    // ✅ Save updated data
+    $record->coachingAlignmentCoachingGoalsData = $data;
+    $record->save();
+
+    return response()->json(['message' => 'Item deleted successfully']);
+});
+
 
 // ref: // frontend\src\components\13a.issues\Issues.jsx
 Route::get('/api/v1/tools/issues', function (Request $request) {

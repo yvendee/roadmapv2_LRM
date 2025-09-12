@@ -4,7 +4,9 @@ import useCoachingGoalsStore from '../../../store/left-lower-content/12.coaching
 import { useHandleEditStore } from '../../../store/left-lower-content/12.coaching-alignment/0.handleEditStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'; // Import the trash icon
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './CoachingGoals.css';
 
 const CoachingGoals = () => {
@@ -12,12 +14,82 @@ const CoachingGoals = () => {
   const { isEditing } = useHandleEditStore();
   const [editableItems, setEditableItems] = useState(coachingGoalsItems);
   const coachingGoalsContentRef = useRef(null);
+  const organization = useLayoutSettingsStore.getState().organization;
 
   useEffect(() => {
     // Sync the editable items with the coachingGoalsItems from the store whenever they change
     setEditableItems(coachingGoalsItems);
   }, [coachingGoalsItems]);
 
+
+  const updateCoachingGoalsItems = async (editableItems) => {
+    // const encodedOrg = encodeURIComponent(organization);
+  
+    try {
+      // ✅ Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/coaching-alignment/coaching-goals/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          coachingGoalsItems: editableItems,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Coaching Goals Updated:', json);
+      } else {
+        console.error('❌ Failed to update coaching goals:', json.message);
+      }
+    } catch (error) {
+      console.error('❌ API Error:', error);
+    }
+  };
+
+  const deleteCoachingGoalItem = async (itemToDelete) => {
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/coaching-alignment/coaching-goals/delete-item`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          itemToDelete,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Item deleted successfully:', json.message);
+      } else {
+        console.error('❌ Delete failed:', json.message);
+      }
+    } catch (err) {
+      console.error('❌ API error:', err.message);
+    }
+  };
+  
+  
   const handleInputChange = (index, event) => {
     const updatedItems = [...editableItems];
     updatedItems[index] = event.target.value;
@@ -28,6 +100,7 @@ const CoachingGoals = () => {
     // Save changes to the store when the user clicks outside
     setCoachingGoalsItems(editableItems);  // Update the store
     ENABLE_CONSOLE_LOGS && console.log('Updated Coaching Goals Items:', editableItems);  // Log the updated data
+    updateCoachingGoalsItems(editableItems);
   };
 
   const handleAddNewItem = () => {
@@ -45,6 +118,9 @@ const CoachingGoals = () => {
     setEditableItems(updatedItems);
     // Update the store with the new list after deletion
     setCoachingGoalsItems(updatedItems);
+
+    // 🔁 Call the API to sync deletion
+    deleteCoachingGoalItem(itemToDelete);
   };
 
   return (
