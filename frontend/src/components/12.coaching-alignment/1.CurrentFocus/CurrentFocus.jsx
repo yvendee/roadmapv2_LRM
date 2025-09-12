@@ -3,7 +3,9 @@ import useCurrentFocusStore from '../../../store/left-lower-content/12.coaching-
 import { useHandleEditStore } from '../../../store/left-lower-content/12.coaching-alignment/0.handleEditStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'; // Import delete icon
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './CurrentFocus.css';
 
 const CurrentFocus = () => {
@@ -12,11 +14,48 @@ const CurrentFocus = () => {
   const { isEditing } = useHandleEditStore();
   const [editableItems, setEditableItems] = useState(focusItems);
   const focusContentRef = useRef(null);
+  const organization = useLayoutSettingsStore.getState().organization;
+
+  const updateCoachingFocusItems = async (editableItems) => {
+    const encodedOrg = encodeURIComponent(organization);
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/coaching-alignment/current-focus/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization: organization,
+          focusItems: editableItems,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Focus Items Updated:', json);
+      } else {
+        console.error('❌ Failed to update focus items:', json.message);
+      }
+    } catch (error) {
+      console.error('❌ API Error:', error);
+    }
+  };
+
 
   const handleBlur = () => {
     // Log the content when the user clicks outside the textarea
     ENABLE_CONSOLE_LOGS && console.log('Updated Focus Items:', editableItems);
     setFocusItems(editableItems);  // Update the store with the new data
+    updateCoachingFocusItems(editableItems);
   };
 
   const handleInputChange = (index, event) => {

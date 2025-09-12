@@ -4722,6 +4722,35 @@ Route::get('/api/v1/coaching-alignment/current-focus', function (Request $reques
     return response()->json($record->coachingAlignmentCurrentFocusData ?? ['focusItems' => []]);
 });
 
+
+// ref:
+Route::post('/api/v1/coaching-alignment/current-focus/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'focusItems' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $focusItems = $validated['focusItems'];
+
+    $record = CoachingAlignmentCurrentFocus::firstOrCreate(
+        ['organizationName' => $organization]
+    );
+
+    $record->coachingAlignmentCurrentFocusData = [
+        'focusItems' => $focusItems
+    ];
+
+    $record->save();
+
+    return response()->json(['message' => 'Focus items updated successfully']);
+});
+
+
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Request $request) use ($API_secure) {
     if ($API_secure) {
