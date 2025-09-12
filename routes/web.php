@@ -45,6 +45,8 @@ use App\Models\SessionDatesQuarterlySessions;
 use App\Models\SessionDatesMonthlySessions;
 use App\Models\CoachingChecklistPanel;
 use App\Models\CoachingAlignmentCurrentFocus;
+use App\Models\CoachingAlignmentCurrentBusinessPulse;
+
 
 
 use Illuminate\Support\Facades\Validator;
@@ -4789,7 +4791,74 @@ Route::post('/api/v1/coaching-alignment/current-focus/delete-item', function (Re
 
 
 
-// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'category' => 'Strategic Clarity',
+//                 'rating' => 2,
+//                 'notes' => ['Need clearer vision shared', 'Stakeholder alignment required'],
+//             ],
+//             [
+//                 'category' => 'Execution Discipline',
+//                 'rating' => 3,
+//                 'notes' => ['Better task tracking', 'Set clear milestones'],
+//             ],
+//             [
+//                 'category' => 'Leadership & Team Health',
+//                 'rating' => 4,
+//                 'notes' => ['Strong collaboration', 'Trust increasing'],
+//             ],
+//         ],
+//         'Collins Credit Union' => [
+//             [
+//                 'category' => 'Strategic Clarity',
+//                 'rating' => 1,
+//                 'notes' => ['Too many initiatives'],
+//             ],
+//             [
+//                 'category' => 'Execution Discipline',
+//                 'rating' => 2,
+//                 'notes' => ['Accountability needs work'],
+//             ],
+//             [
+//                 'category' => 'Leadership & Team Health',
+//                 'rating' => 'N/A',
+//                 'notes' => [],
+//             ],
+//         ],
+//         'Test Skeleton Loading' => [
+//             [
+//                 'category' => 'Strategic Clarity',
+//                 'rating' => 'N/A',
+//                 'notes' => [],
+//             ],
+//             [
+//                 'category' => 'Execution Discipline',
+//                 'rating' => 'N/A',
+//                 'notes' => [],
+//             ],
+//             [
+//                 'category' => 'Leadership & Team Health',
+//                 'rating' => 'N/A',
+//                 'notes' => [],
+//             ],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+// ref:
 Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4799,61 +4868,75 @@ Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Reques
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'category' => 'Strategic Clarity',
-                'rating' => 2,
-                'notes' => ['Need clearer vision shared', 'Stakeholder alignment required'],
-            ],
-            [
-                'category' => 'Execution Discipline',
-                'rating' => 3,
-                'notes' => ['Better task tracking', 'Set clear milestones'],
-            ],
-            [
-                'category' => 'Leadership & Team Health',
-                'rating' => 4,
-                'notes' => ['Strong collaboration', 'Trust increasing'],
-            ],
-        ],
-        'Collins Credit Union' => [
-            [
-                'category' => 'Strategic Clarity',
-                'rating' => 1,
-                'notes' => ['Too many initiatives'],
-            ],
-            [
-                'category' => 'Execution Discipline',
-                'rating' => 2,
-                'notes' => ['Accountability needs work'],
-            ],
-            [
-                'category' => 'Leadership & Team Health',
-                'rating' => 'N/A',
-                'notes' => [],
-            ],
-        ],
-        'Test Skeleton Loading' => [
-            [
-                'category' => 'Strategic Clarity',
-                'rating' => 'N/A',
-                'notes' => [],
-            ],
-            [
-                'category' => 'Execution Discipline',
-                'rating' => 'N/A',
-                'notes' => [],
-            ],
-            [
-                'category' => 'Leadership & Team Health',
-                'rating' => 'N/A',
-                'notes' => [],
-            ],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization name is required'], 400);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    $record = CoachingAlignmentCurrentBusinessPulse::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No record found'], 404);
+    }
+
+    return response()->json($record->coachingAlignmentCurrentBusinessPulseData ?? []);
+});
+
+
+
+// ref:
+Route::post('/api/v1/coaching-alignment/current-business-pulse/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'pulseData' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $pulseData = $validated['pulseData'];
+
+    $record = CoachingAlignmentCurrentBusinessPulse::firstOrCreate(
+        ['organizationName' => $organization]
+    );
+
+    $record->coachingAlignmentCurrentBusinessPulseData = $pulseData;
+    $record->save();
+
+    return response()->json(['message' => 'Business pulse updated successfully']);
+});
+
+
+// ref:
+Route::post('/api/v1/coaching-alignment/current-business-pulse/delete-item', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'category' => 'required|string',
+    ]);
+
+    $record = CoachingAlignmentCurrentBusinessPulse::where('organizationName', $validated['organization'])->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $data = $record->coachingAlignmentCurrentBusinessPulseData ?? [];
+
+    // Filter out the item to be deleted by category
+    $updatedData = array_filter($data, function ($item) use ($validated) {
+        return $item['category'] !== $validated['category'];
+    });
+
+    // Reindex the array
+    $record->coachingAlignmentCurrentBusinessPulseData = array_values($updatedData);
+    $record->save();
+
+    return response()->json(['message' => 'Item deleted successfully']);
 });
 
 
