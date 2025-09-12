@@ -23,6 +23,8 @@ const CoachingChecklist = () => {
   const setTotalItems = useProjectToolsStore((state) => state.setTotalItems);
   const setNextRecommendedTools = useProjectToolsStore((state) => state.setNextRecommendedTools);
   const { panels, setPanels } = useAccordionChecklistStore();
+  const setBaselineAccordionChecklist = useAccordionChecklistStore((state) => state.setBaselineAccordionChecklist)
+
 
 
   // Fetch Project Progress & Recommended Tools Data
@@ -82,6 +84,7 @@ const CoachingChecklist = () => {
             ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Accordion Panels:', json);
             if (Array.isArray(json)) {
               setPanels(json);
+              setBaselineAccordionChecklist(json);
             } else {
               console.error('⚠️ Unexpected panels format received.');
             }

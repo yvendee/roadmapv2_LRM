@@ -334,6 +334,11 @@ export const initialAccordionChecklist = [
 const useAccordionChecklistStore = create((set) => ({
   panels: initialAccordionChecklist,
 
+  // Store the initial state when app loads
+  baselineAccordionChecklist: initialAccordionChecklist,
+
+  setBaselineAccordionChecklist: (data) => set({ baselineAccordionChecklist: data }),
+
   setPanels: (panels) => set({ panels }),
 
   togglePanel: (id) =>

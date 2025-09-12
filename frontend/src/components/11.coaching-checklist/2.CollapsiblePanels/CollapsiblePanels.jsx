@@ -41,6 +41,9 @@ const CollapsiblePanels = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [selectedUploadContext, setSelectedUploadContext] = useState(null); // { panelId, itemId }
 
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDischarge, setLoadingDischarge] = useState(false);
+
   const [hasChanges, setHasChanges] = useState(false);
 
 
@@ -251,44 +254,57 @@ const CollapsiblePanels = () => {
   
 
   const handleSaveChanges = async () => {
-    const currentPanels = useAccordionChecklistStore.getState().panels;
+
+    setLoadingSave(true);
+
+    setTimeout(async () => {
+
+      const currentPanels = useAccordionChecklistStore.getState().panels;
   
-    try {
-      // 1. Get CSRF Token
-      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-        credentials: 'include',
-      });
+      try {
+        // 1. Get CSRF Token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+    
+        const { csrf_token } = await csrfRes.json();
+    
+        // 2. Submit updated panels
+        const response = await fetch(`${API_URL}/v1/coaching-checklist/panels/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            panels: currentPanels,
+          }),
+        });
+    
+        if (!response.ok) throw new Error('❌ Failed to save checklist');
+    
+        const result = await response.json();
+    
+        // 3. Success
+        ENABLE_CONSOLE_LOGS && console.log('✅ Coaching checklist saved:', result);
+        localStorage.removeItem('CoachingChecklistData');
+        setHasChanges(false);
+
+      } catch (err) {
+        console.error('❌ Error saving checklist:', err);
+      }
+
+      setLoadingSave(false);
+
   
-      const { csrf_token } = await csrfRes.json();
-  
-      // 2. Submit updated panels
-      const response = await fetch(`${API_URL}/v1/coaching-checklist/panels/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': csrf_token,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          organization,
-          panels: currentPanels,
-        }),
-      });
-  
-      if (!response.ok) throw new Error('❌ Failed to save checklist');
-  
-      const result = await response.json();
-  
-      // 3. Success
-      ENABLE_CONSOLE_LOGS && console.log('✅ Coaching checklist saved:', result);
-      localStorage.removeItem('CoachingChecklistData');
-      setHasChanges(false);
-      
-    } catch (err) {
-      console.error('❌ Error saving checklist:', err);
-    }
+    }, 1000);
+
   };
+
+
   
   
 
@@ -301,33 +317,49 @@ const CollapsiblePanels = () => {
   
 
   const handleDischarge = () => {
-    console.log('🗑️ Discarding changes. Reset to initial but keeping uploadLink and pdflink values.');
+
+    setLoadingDischarge(true);
+
+    setTimeout(async () => {
+
+      console.log('🗑️ Discarding changes. Reset to initial but keeping uploadLink and pdflink values.');
   
-    const currentPanels = useAccordionChecklistStore.getState().panels;
+      const { baselineAccordionChecklist } = useAccordionChecklistStore.getState();
+      // ✅ Console log to inspect baselineAccordionChecklist before setting
+      ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineAccordionChecklist:', baselineAccordionChecklist);
   
-    // Create a deep clone of the initial checklist to avoid mutation
-    const resetPanels = initialAccordionChecklist.map(initialPanel => {
-      const matchingCurrentPanel = currentPanels.find(p => p.id === initialPanel.id);
   
-      const updatedItems = initialPanel.items.map(initialItem => {
-        const matchingCurrentItem = matchingCurrentPanel?.items.find(i => i.id === initialItem.id);
+      const currentPanels = useAccordionChecklistStore.getState().panels;
   
+      // Create a deep clone of the initial checklist to avoid mutation
+      // const resetPanels = initialAccordionChecklist.map(initialPanel => {
+      const resetPanels = baselineAccordionChecklist.map(initialPanel => {
+        const matchingCurrentPanel = currentPanels.find(p => p.id === initialPanel.id);
+    
+        const updatedItems = initialPanel.items.map(initialItem => {
+          const matchingCurrentItem = matchingCurrentPanel?.items.find(i => i.id === initialItem.id);
+    
+          return {
+            ...initialItem,
+            uploadLink: matchingCurrentItem?.uploadLink || '',
+            pdflink: matchingCurrentItem?.pdflink || '',
+          };
+        });
+    
         return {
-          ...initialItem,
-          uploadLink: matchingCurrentItem?.uploadLink || '',
-          pdflink: matchingCurrentItem?.pdflink || '',
+          ...initialPanel,
+          items: updatedItems,
         };
       });
+    
+      localStorage.removeItem('CoachingChecklistData');
+      useAccordionChecklistStore.getState().setPanels(resetPanels);
+      setHasChanges(false);
+
   
-      return {
-        ...initialPanel,
-        items: updatedItems,
-      };
-    });
-  
-    localStorage.removeItem('CoachingChecklistData');
-    useAccordionChecklistStore.getState().setPanels(resetPanels);
-    setHasChanges(false);
+      setLoadingDischarge(false);
+    }, 1000);
+    
   };
 
   
@@ -357,10 +389,28 @@ const CollapsiblePanels = () => {
         {hasChanges && (
           <div className="flex gap-3">
             <button className="pure-blue-btn" onClick={handleSaveChanges}>
-              Saving changes
+              {/* Saving changes */}
+              {loadingSave ? (
+                  <div className="loader-bars-collapsible">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  ) : (
+                    'Save Changes'
+              )}
             </button>
             <button className="pure-red-btn" onClick={handleDischarge}>
-              Discard
+              {/* Discard */}
+              {loadingDischarge ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    ) : (
+                      'Discard'
+              )}
             </button>
           </div>
         )}
