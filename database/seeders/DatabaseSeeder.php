@@ -48,8 +48,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(SessionDatesMonthlySessionsTrackerSeeder::class);
         // $this->call(SessionDatesQuarterlySessionsSeeder::class);
         // $this->call(SessionDatesMonthlySessionsSeeder::class);
-        $this->call(CoachingChecklistPanelSeeder::class);
         // $this->call(CoachingChecklistPanelSeeder::class);
+        $this->call(CoachingAlignmentCurrentFocusSeeder::class);
+        // $this->call(CoachingAlignmentCurrentFocusSeeder::class);
         
         
         

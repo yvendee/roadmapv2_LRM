@@ -44,6 +44,7 @@ use App\Models\SessionDatesMonthlySessionsTracker;
 use App\Models\SessionDatesQuarterlySessions;
 use App\Models\SessionDatesMonthlySessions;
 use App\Models\CoachingChecklistPanel;
+use App\Models\CoachingAlignmentCurrentFocus;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -4670,34 +4671,55 @@ Route::post('/api/v1/coaching-checklist/update-pdflink', function (Request $requ
 });
 
 
+// // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// Route::get('/api/v1/coaching-alignment/current-focus', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             'focusItems' => ['Enhance leadership training', 'Streamline team communication'],
+//         ],
+//         'Collins Credit Union' => [
+//             'focusItems' => ['Improve coaching feedback loops', 'Align department KPIs'],
+//         ],
+//         'Test Skeleton Loading' => [
+//             'focusItems' => ['-', '-'],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? ['focusItems' => []]);
+// });
 
 
-
-
-
-// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
+// ref: 
 Route::get('/api/v1/coaching-alignment/current-focus', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    // ✅ Secure session check
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    // ✅ Get organization name from query
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            'focusItems' => ['Enhance leadership training', 'Streamline team communication'],
-        ],
-        'Collins Credit Union' => [
-            'focusItems' => ['Improve coaching feedback loops', 'Align department KPIs'],
-        ],
-        'Test Skeleton Loading' => [
-            'focusItems' => ['-', '-'],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-    return response()->json($data[$organization] ?? ['focusItems' => []]);
+    // ✅ Fetch from database
+    $record = CoachingAlignmentCurrentFocus::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['focusItems' => []]);
+    }
+
+    // ✅ Return the nested structure
+    return response()->json($record->coachingAlignmentCurrentFocusData ?? ['focusItems' => []]);
 });
 
 // ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
