@@ -68,6 +68,41 @@ const CurrentFocus = () => {
     setEditableItems([...editableItems, '']);
   };
 
+  const deleteFocusItem = async (itemToDelete) => {
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/coaching-alignment/current-focus/delete-item`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization: organization,
+          item: itemToDelete,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Deleted from DB:', json.message);
+      } else {
+        console.error('❌ Failed to delete from DB:', json.message);
+      }
+    } catch (error) {
+      console.error('❌ API Error:', error);
+    }
+  };
+
+
   const handleDeleteItem = (index) => {
     const updatedItems = editableItems.filter((_, i) => i !== index);
     setEditableItems(updatedItems);
@@ -76,8 +111,9 @@ const CurrentFocus = () => {
     ENABLE_CONSOLE_LOGS && console.log(`Deleted Item at index ${index}`);
     const itemToDelete = editableItems[index]; // Get the item data
     ENABLE_CONSOLE_LOGS && console.log('Deleting item:', itemToDelete); // Log the deleted item data
+    deleteFocusItem(itemToDelete); // 🔥 Call the backend delete API
   };
-
+  
   useEffect(() => {
     // Sync the editable items when the store content changes
     setEditableItems(focusItems);
