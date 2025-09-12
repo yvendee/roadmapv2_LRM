@@ -5133,10 +5133,6 @@ Route::post('/api/v1/coaching-alignment/coaching-goals/update', function (Reques
 
 
 // ref:
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Models\CoachingAlignmentCoachingGoal;
-
 Route::post('/api/v1/coaching-alignment/coaching-goals/delete-item', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
