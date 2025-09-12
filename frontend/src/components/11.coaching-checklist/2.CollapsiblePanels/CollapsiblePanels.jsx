@@ -292,13 +292,44 @@ const CollapsiblePanels = () => {
   
   
 
+  // const handleDischarge = () => {
+  //   console.log('🗑️ Discarding changes. Reset to initial:', initialAccordionChecklist);
+  //   localStorage.removeItem('CoachingChecklistData');
+  //   useAccordionChecklistStore.getState().setPanels(initialAccordionChecklist);
+  //   setHasChanges(false);
+  // };
+  
+
   const handleDischarge = () => {
-    console.log('🗑️ Discarding changes. Reset to initial:', initialAccordionChecklist);
+    console.log('🗑️ Discarding changes. Reset to initial but keeping uploadLink and pdflink values.');
+  
+    const currentPanels = useAccordionChecklistStore.getState().panels;
+  
+    // Create a deep clone of the initial checklist to avoid mutation
+    const resetPanels = initialAccordionChecklist.map(initialPanel => {
+      const matchingCurrentPanel = currentPanels.find(p => p.id === initialPanel.id);
+  
+      const updatedItems = initialPanel.items.map(initialItem => {
+        const matchingCurrentItem = matchingCurrentPanel?.items.find(i => i.id === initialItem.id);
+  
+        return {
+          ...initialItem,
+          uploadLink: matchingCurrentItem?.uploadLink || '',
+          pdflink: matchingCurrentItem?.pdflink || '',
+        };
+      });
+  
+      return {
+        ...initialPanel,
+        items: updatedItems,
+      };
+    });
+  
     localStorage.removeItem('CoachingChecklistData');
-    useAccordionChecklistStore.getState().setPanels(initialAccordionChecklist);
+    useAccordionChecklistStore.getState().setPanels(resetPanels);
     setHasChanges(false);
   };
-  
+
   
   useEffect(() => {
     if (hasChanges) {
