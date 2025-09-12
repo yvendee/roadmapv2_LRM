@@ -13,7 +13,10 @@ import {
   faCheckSquare as faCheckSquareIcon,
   faMoneyBillWave,
   faChartLine,
+  faSave,
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
+
 import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -397,7 +400,10 @@ const CollapsiblePanels = () => {
                     <div></div>
                   </div>
                   ) : (
-                    'Save Changes'
+                    <>
+                    <FontAwesomeIcon icon={faSave} className="mr-1" />
+                    Save Changes
+                    </>
               )}
             </button>
             <button className="pure-red-btn" onClick={handleDischarge}>
@@ -409,7 +415,10 @@ const CollapsiblePanels = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discard'
+                      <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard Changes
+                      </>
               )}
             </button>
           </div>
