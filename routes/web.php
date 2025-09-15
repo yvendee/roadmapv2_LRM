@@ -50,6 +50,7 @@ use App\Models\CoachingAlignmentWhatsNext;
 use App\Models\CoachingAlignmentCoachingGoal;
 use App\Models\ToolsIssue;
 use App\Models\ToolsVictory;
+use App\Models\ToolsBigIdea;
 
 
 
@@ -5609,128 +5610,177 @@ Route::post('/api/v1/tools/victories/add', function (Request $request) use ($API
 });
 
 
+// // ref: frontend\src\components\13c.big-ideas\BigIdeas.jsx
+// Route::get('/api/v1/tools/big-ideas', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '2025-04-02',
+//                 'who' => 'Kayven',
+//                 'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+//                 'impact' => 'High',
+//                 'when' => '2025-04-02',
+//                 'evaluator' => 'Team A',
+//                 'comments' => 'Notes',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '2025-04-03',
+//                 'who' => 'Kayven',
+//                 'description' => 'Systematize Client Delivery.',
+//                 'impact' => 'Medium',
+//                 'when' => '2025-04-02',
+//                 'evaluator' => 'Team A',
+//                 'comments' => 'Notes 1',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '2025-04-03',
+//                 'who' => 'Kayven',
+//                 'description' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
+//                 'impact' => 'High',
+//                 'when' => '2025-04-02',
+//                 'evaluator' => 'Team B',
+//                 'comments' => 'Notes 2',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '2025-04-04',
+//                 'who' => 'Kayven',
+//                 'description' => 'Develop lead generation systems.',
+//                 'impact' => 'Medium',
+//                 'when' => '2025-04-02',
+//                 'evaluator' => 'Team B',
+//                 'comments' => 'Notes 3',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'date' => '2025-04-05',
+//                 'who' => 'Kayven',
+//                 'description' => '1% Genius Version 3 Development.',
+//                 'impact' => 'High',
+//                 'when' => '2025-04-02',
+//                 'evaluator' => 'Team C',
+//                 'comments' => 'Notes 4',
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '2025-04-10',
+//                 'who' => 'John Smith',
+//                 'description' => 'Implement AI-powered fraud detection system.',
+//                 'impact' => 'High',
+//                 'when' => '2025-04-12',
+//                 'evaluator' => 'Compliance Team',
+//                 'comments' => 'Could significantly reduce manual work.',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '2025-04-11',
+//                 'who' => 'Jane Doe',
+//                 'description' => 'Develop mobile-first loan application flow.',
+//                 'impact' => 'Medium',
+//                 'when' => '2025-04-15',
+//                 'evaluator' => 'Product Team',
+//                 'comments' => 'Requires UX review and integration.',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '2025-04-12',
+//                 'who' => 'Emily Davis',
+//                 'description' => 'Launch customer rewards pilot program.',
+//                 'impact' => 'High',
+//                 'when' => '2025-04-20',
+//                 'evaluator' => 'Marketing Team',
+//                 'comments' => 'Align with Q2 marketing calendar.',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '2025-04-13',
+//                 'who' => 'Mark Thompson',
+//                 'description' => 'Introduce automated document verification.',
+//                 'impact' => 'Medium',
+//                 'when' => '2025-04-18',
+//                 'evaluator' => 'Operations Team',
+//                 'comments' => 'Needs vendor evaluation.',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'date' => '2025-04-14',
+//                 'who' => 'Sarah Lee',
+//                 'description' => 'Enhance chatbot with multi-language support.',
+//                 'impact' => 'High',
+//                 'when' => '2025-04-25',
+//                 'evaluator' => 'Tech Team',
+//                 'comments' => 'Customer demand in bilingual regions.',
+//             ],
+//         ],
+
+//         'Test Skeleton Loading' => [],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
 // ref: frontend\src\components\13c.big-ideas\BigIdeas.jsx
 Route::get('/api/v1/tools/big-ideas', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'date' => '2025-04-02',
-                'who' => 'Kayven',
-                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
-                'impact' => 'High',
-                'when' => '2025-04-02',
-                'evaluator' => 'Team A',
-                'comments' => 'Notes',
-            ],
-            [
-                'id' => 2,
-                'date' => '2025-04-03',
-                'who' => 'Kayven',
-                'description' => 'Systematize Client Delivery.',
-                'impact' => 'Medium',
-                'when' => '2025-04-02',
-                'evaluator' => 'Team A',
-                'comments' => 'Notes 1',
-            ],
-            [
-                'id' => 3,
-                'date' => '2025-04-03',
-                'who' => 'Kayven',
-                'description' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
-                'impact' => 'High',
-                'when' => '2025-04-02',
-                'evaluator' => 'Team B',
-                'comments' => 'Notes 2',
-            ],
-            [
-                'id' => 4,
-                'date' => '2025-04-04',
-                'who' => 'Kayven',
-                'description' => 'Develop lead generation systems.',
-                'impact' => 'Medium',
-                'when' => '2025-04-02',
-                'evaluator' => 'Team B',
-                'comments' => 'Notes 3',
-            ],
-            [
-                'id' => 5,
-                'date' => '2025-04-05',
-                'who' => 'Kayven',
-                'description' => '1% Genius Version 3 Development.',
-                'impact' => 'High',
-                'when' => '2025-04-02',
-                'evaluator' => 'Team C',
-                'comments' => 'Notes 4',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization name'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'date' => '2025-04-10',
-                'who' => 'John Smith',
-                'description' => 'Implement AI-powered fraud detection system.',
-                'impact' => 'High',
-                'when' => '2025-04-12',
-                'evaluator' => 'Compliance Team',
-                'comments' => 'Could significantly reduce manual work.',
-            ],
-            [
-                'id' => 2,
-                'date' => '2025-04-11',
-                'who' => 'Jane Doe',
-                'description' => 'Develop mobile-first loan application flow.',
-                'impact' => 'Medium',
-                'when' => '2025-04-15',
-                'evaluator' => 'Product Team',
-                'comments' => 'Requires UX review and integration.',
-            ],
-            [
-                'id' => 3,
-                'date' => '2025-04-12',
-                'who' => 'Emily Davis',
-                'description' => 'Launch customer rewards pilot program.',
-                'impact' => 'High',
-                'when' => '2025-04-20',
-                'evaluator' => 'Marketing Team',
-                'comments' => 'Align with Q2 marketing calendar.',
-            ],
-            [
-                'id' => 4,
-                'date' => '2025-04-13',
-                'who' => 'Mark Thompson',
-                'description' => 'Introduce automated document verification.',
-                'impact' => 'Medium',
-                'when' => '2025-04-18',
-                'evaluator' => 'Operations Team',
-                'comments' => 'Needs vendor evaluation.',
-            ],
-            [
-                'id' => 5,
-                'date' => '2025-04-14',
-                'who' => 'Sarah Lee',
-                'description' => 'Enhance chatbot with multi-language support.',
-                'impact' => 'High',
-                'when' => '2025-04-25',
-                'evaluator' => 'Tech Team',
-                'comments' => 'Customer demand in bilingual regions.',
-            ],
-        ],
+    $record = ToolsBigIdea::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [],
-    ];
+    if (!$record) {
+        return response()->json(['message' => 'No record found'], 404);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($record->toolsBigIdeasData ?? []);
 });
+
+
+// ref: frontend\src\components\13c.big-ideas\1.BigIdeasTable\BigIdeasTable.jsx
+Route::post('/api/v1/tools/big-ideas/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'toolsBigIdeasData' => 'required|array',
+    ]);
+
+    $record = ToolsBigIdea::where('organizationName', $validated['organization'])->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No record found for this organization'], 404);
+    }
+
+    $record->toolsBigIdeasData = $validated['toolsBigIdeasData'];
+    $record->save();
+
+    return response()->json([
+        'message' => 'Tools Big Ideas data updated successfully.',
+        'data' => $record->toolsBigIdeasData,
+    ]);
+});
+
 
 
 // ref: frontend\src\components\13d.product-evaluation-grid\ProductEvaluationGrid.jsx

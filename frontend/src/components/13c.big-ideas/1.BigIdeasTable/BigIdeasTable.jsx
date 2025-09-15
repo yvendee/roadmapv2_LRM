@@ -4,10 +4,13 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useBigIdeasStore, { initialBigIdeas } from '../../../store/left-lower-content/13.tools/3.bigIdeasStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './BigIdeasTable.css';
 
 const BigIdeasTable = () => {
+  const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
@@ -121,6 +124,46 @@ const BigIdeasTable = () => {
   };
 
   
+  const saveToBackend = async (reordered) => {
+    try {
+      const encodedOrg = encodeURIComponent(organization);
+
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+
+      const { csrf_token } = await csrfRes.json();
+
+      // Step 2: Send POST request
+      const res = await fetch(`${API_URL}/v1/tools/big-ideas/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          toolsBigIdeasData: reordered,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Updated toolsBigIdeasData:', result);
+      } else if (res.status === 401) {
+        console.error('❌ Unauthorized: Session expired.');
+      } else {
+        console.error('❌ Failed to update Big Ideas:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ Error updating Big Ideas:', error);
+    }
+  };
+
+
   const handleSaveChanges = () => {
 
     setLoadingSave(true);
@@ -149,6 +192,7 @@ const BigIdeasTable = () => {
           ENABLE_CONSOLE_LOGS &&  console.log('Saved BigIdeas Table (Reindexed):', reordered);
 
           setBigIdeasTable(reordered);
+          saveToBackend(reordered);
   
           // 3. Clear edited state (hides buttons)
           setIsEditing(false);
@@ -169,6 +213,8 @@ const BigIdeasTable = () => {
         }));
 
         ENABLE_CONSOLE_LOGS &&  console.log('Saved BigIdeas Table (reordered):', reordered);
+
+        saveToBackend(reordered);
         setBigIdeasTable(reordered);
         setIsEditing(false);
 
@@ -197,10 +243,17 @@ const BigIdeasTable = () => {
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setBigIdeasTable(initialBigIdeas);
+    // setBigIdeasTable(initialBigIdeas);
+
+    const { baselineBigIdeasTable } = useBigIdeasStore.getState();
+
+    // ✅ Console log to inspect baselineBigIdeasTable before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineBigIdeasTable:', baselineBigIdeasTable);
+
+    setBigIdeasTable(baselineBigIdeasTable);
 
     // 4. refresh the table
-    setCurrentOrder(bigIdeasTable);
+    setCurrentOrder(baselineBigIdeasTable);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
