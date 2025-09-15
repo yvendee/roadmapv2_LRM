@@ -117,7 +117,7 @@ const BigIdeasTable = () => {
       const { csrf_token } = await csrfRes.json();
   
       // Step 2: Send new big idea
-      const response = await fetch(`${API_URL}/api/v1/tools/big-ideas/add`, {
+      const response = await fetch(`${API_URL}/v1/tools/big-ideas/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
