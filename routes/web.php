@@ -5346,19 +5346,30 @@ Route::get('/api/v1/tools/issues', function (Request $request) {
 
 
 // ref:
-Route::post('/api/v1/tools/issues/update', function (Request $request) {
+Route::post('/api/v1/tools/issues/update', function (Request $request) use ($API_secure) {
+    // 🔒 Check for session-based auth if $API_secure is true
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // ✅ Validate request
     $validated = $request->validate([
         'organizationName' => 'required|string',
         'toolsIssuesData' => 'required|array',
     ]);
 
-    $record = ToolsIssue::where('organizationName', $validated['organizationName'])->first();
+    $organization = $validated['organizationName'];
+    $toolsIssuesData = $validated['toolsIssuesData'];
+
+    // 🔍 Find record
+    $record = ToolsIssue::where('organizationName', $organization)->first();
 
     if (!$record) {
         return response()->json(['message' => 'Record not found'], 404);
     }
 
-    $record->toolsIssuesData = $validated['toolsIssuesData'];
+    // 💾 Save data
+    $record->toolsIssuesData = $toolsIssuesData;
     $record->save();
 
     return response()->json([
@@ -5366,6 +5377,7 @@ Route::post('/api/v1/tools/issues/update', function (Request $request) {
         'data' => $record->toolsIssuesData,
     ]);
 });
+
 
 
 // ref:
