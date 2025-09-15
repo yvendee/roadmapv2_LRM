@@ -53,8 +53,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(CoachingAlignmentCurrentBusinessPulseSeeder::class);
         // $this->call(CoachingAlignmentWhatsNextSeeder::class);
         // $this->call(CoachingAlignmentCoachingGoalsSeeder::class);
-        $this->call(ToolsIssuesTableSeeder::class);
-        // $this->call(CoachingAlignmentCoachingGoalsSeeder::class);
+        // $this->call(ToolsIssuesTableSeeder::class);
+        $this->call(ToolsVictoriesSeeder::class);
+        // $this->call(ToolsIssuesTableSeeder::class);
         
         
         

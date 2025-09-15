@@ -4,10 +4,13 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useVictoriesStore, { initialVictories } from '../../../store/left-lower-content/13.tools/2.victoriesStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './VictoriesTable.css';
 
 const VictoriesTable = () => {
+  const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
@@ -64,35 +67,89 @@ const VictoriesTable = () => {
     }, 1000);
   };
 
-  const handleAddNewVictoriesTable = () => {
+  // const handleAddNewVictoriesTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Victories Table', JSON.stringify(newVictoriesTable, null, 2));
+
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
+
+  
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('VictoriesTableData');
+  
+  //   // 4. Push to Zustand store
+  //   pushVictoriesTable(newVictoriesTable);
+  
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
+  
+  //   // Close modal
+  //   setShowAddModal(false);
+  
+  //   // Reset form input
+  //   setNewVictoriesTable({     
+  //     date: '',
+  //     who: '',
+  //     milestones: '',
+  //     notes: '',
+  //   });
+
+  // };
+
+
+  const handleAddNewVictoriesTable = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Victories Table', JSON.stringify(newVictoriesTable, null, 2));
-
-    // 2. Hide Save / Discharge
-    setIsEditing(false);
-
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('VictoriesTableData');
+    const organization = useLayoutSettingsStore.getState().organization;
   
-    // 4. Push to Zustand store
-    pushVictoriesTable(newVictoriesTable);
+    try {
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+      const { csrf_token } = await csrfRes.json();
   
-    // Close modal
-    setShowAddModal(false);
+      // Step 2: Send new victory
+      const response = await fetch(`${API_URL}/v1/tools/victories/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          victory: newVictoriesTable,
+        }),
+      });
   
-    // Reset form input
-    setNewVictoriesTable({     
-      date: '',
-      who: '',
-      milestones: '',
-      notes: '',
-    });
-
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('Failed to add victory:', result.message || 'Unknown error');
+        return;
+      }
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ Added Victory:', result.newItem);
+  
+      // Step 3: Update UI
+      pushVictoriesTable(result.newItem);
+      setIsEditing(false);
+      setShowAddModal(false);
+      setNewVictoriesTable({
+        date: '',
+        who: '',
+        milestones: '',
+        notes: '',
+      });
+      localStorage.removeItem('VictoriesTableData');
+  
+    } catch (error) {
+      console.error('❌ Add Victory API error:', error);
+    }
   };
-
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -115,61 +172,139 @@ const VictoriesTable = () => {
   };
 
   
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('VictoriesTableData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Victories Table after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setVictoriesTable(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Victories Table (Reindexed):', reordered);
+
+  //         setVictoriesTable(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         setIsEditing(false);
+
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('VictoriesTableData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing VictoriesTableData on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Victories Table (reordered):', reordered);
+  //       setVictoriesTable(reordered);
+  //       setIsEditing(false);
+
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('VictoriesTableData');
+
+  //     }
+  //   }, 1000);
+  // };
+  
+
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('VictoriesTableData');
+
+      let reordered;
   
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
-  
-          // 1. Log to console
           ENABLE_CONSOLE_LOGS && console.log('Saved Victories Table after Save Changes Button:', parsedData);
   
-          // 2. Update Zustand store
-          setVictoriesTable(parsedData);
-
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
+          reordered = parsedData.map((item, index) => ({
+            ...item,
             id: index + 1,
           }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Victories Table (Reindexed):', reordered);
-
+  
+          ENABLE_CONSOLE_LOGS && console.log('Saved Victories Table (Reindexed):', reordered);
+  
           setVictoriesTable(reordered);
-  
-          // 3. Clear edited state (hides buttons)
           setIsEditing(false);
-
-  
-          // 4. Remove from localStorage
           localStorage.removeItem('VictoriesTableData');
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing VictoriesTableData on save:', err);
+          return;
         }
       } else {
-
-        // No localStorage changes, use current drag order
-
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
+        reordered = currentOrder.map((item, index) => ({
+          ...item,
           id: index + 1,
         }));
-
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Victories Table (reordered):', reordered);
+  
+        ENABLE_CONSOLE_LOGS && console.log('Saved Victories Table (Reordered):', reordered);
+  
         setVictoriesTable(reordered);
         setIsEditing(false);
-
-
-        // Remove from localStorage
         localStorage.removeItem('VictoriesTableData');
-
+      }
+  
+      try {
+        // 1. Get CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        // 2. Update data
+        const response = await fetch(`${API_URL}/v1/tools/victories/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            toolsVictoriesData: reordered,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        ENABLE_CONSOLE_LOGS && console.log('📝 Tools Victories Update Response:', result);
+  
+        if (!response.ok) {
+          console.error('Update failed:', result.message || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('❌ Tools Victories update request error:', error);
       }
     }, 1000);
   };

@@ -20,34 +20,39 @@ const Victories = () => {
 
   // Fetch Victories Table Data
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/tools/victories?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Victories fetched:', json);
-          if (Array.isArray(json)) {
-            setVictoriesTable(json);
-          } else {
-            console.warn(`⚠️ Unexpected response for org: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('❌ Server Error:', json.message);
-        }
+    const localData = localStorage.getItem('VictoriesTableData');
+    if (!localData) {
+
+      const encodedOrg = encodeURIComponent(organization);
+
+      fetch(`${API_URL}/v1/tools/victories?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('❌ Fetch Error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📥 Victories fetched:', json);
+            if (Array.isArray(json)) {
+              setVictoriesTable(json);
+            } else {
+              console.warn(`⚠️ Unexpected response for org: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('❌ Server Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('❌ Fetch Error:', err);
+        });
+    }
   }, [organization]);
 
   // useEffect(() => {

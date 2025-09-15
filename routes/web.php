@@ -49,6 +49,7 @@ use App\Models\CoachingAlignmentCurrentBusinessPulse;
 use App\Models\CoachingAlignmentWhatsNext;
 use App\Models\CoachingAlignmentCoachingGoal;
 use App\Models\ToolsIssue;
+use App\Models\ToolsVictory;
 
 
 
@@ -5420,97 +5421,191 @@ Route::post('/api/v1/tools/issues/add', function (Request $request) use ($API_se
 
 
 
+// // ref: frontend\src\components\13b.victories\Victories.jsx
+// Route::get('/api/v1/tools/victories', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '2025-04-02',
+//                 'who' => 'Kayven',
+//                 'milestones' => 'Systematize Coaching Framework (now called Momentum OS).',
+//                 'notes' => 'Notes ',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '2025-04-03',
+//                 'who' => 'Kayven',
+//                 'milestones' => 'Systematize Client Delivery.',
+//                 'notes' => 'Notes 1',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '2025-04-03',
+//                 'who' => 'Kayven',
+//                 'milestones' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
+//                 'notes' => 'Notes 2',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '2025-04-04',
+//                 'who' => 'Kayven',
+//                 'milestones' => 'Develop lead generation systems.',
+//                 'notes' => 'Notes 3',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'date' => '2025-04-05',
+//                 'who' => 'Kayven',
+//                 'milestones' => '1% Genius Version 3 Development.',
+//                 'notes' => 'Notes 4',
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'date' => '2025-04-06',
+//                 'who' => 'John Smith',
+//                 'milestones' => 'Launched AI-driven customer service chatbot.',
+//                 'notes' => 'Initial rollout shows 30% reduction in support tickets.',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'date' => '2025-04-07',
+//                 'who' => 'Jane Doe',
+//                 'milestones' => 'Completed mobile app redesign.',
+//                 'notes' => 'User engagement up by 12% in first week.',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'date' => '2025-04-08',
+//                 'who' => 'Emily Davis',
+//                 'milestones' => 'Automated loan processing system deployed.',
+//                 'notes' => 'Cut processing time from 3 days to 6 hours.',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'date' => '2025-04-09',
+//                 'who' => 'Michael Lee',
+//                 'milestones' => 'Introduced real-time fraud alerts.',
+//                 'notes' => 'Detected 4 threats in pilot phase.',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'date' => '2025-04-10',
+//                 'who' => 'Olivia Brown',
+//                 'milestones' => 'Launched new client onboarding workflow.',
+//                 'notes' => 'Feedback indicates smoother experience for 95% of users.',
+//             ],
+//         ],
+
+//         'Test Skeleton Loading' => [],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
 // ref: frontend\src\components\13b.victories\Victories.jsx
 Route::get('/api/v1/tools/victories', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'date' => '2025-04-02',
-                'who' => 'Kayven',
-                'milestones' => 'Systematize Coaching Framework (now called Momentum OS).',
-                'notes' => 'Notes ',
-            ],
-            [
-                'id' => 2,
-                'date' => '2025-04-03',
-                'who' => 'Kayven',
-                'milestones' => 'Systematize Client Delivery.',
-                'notes' => 'Notes 1',
-            ],
-            [
-                'id' => 3,
-                'date' => '2025-04-03',
-                'who' => 'Kayven',
-                'milestones' => 'Develop online Portal for Clients with Beta completed with eDoc by March 31 (now called Momentum Hub).',
-                'notes' => 'Notes 2',
-            ],
-            [
-                'id' => 4,
-                'date' => '2025-04-04',
-                'who' => 'Kayven',
-                'milestones' => 'Develop lead generation systems.',
-                'notes' => 'Notes 3',
-            ],
-            [
-                'id' => 5,
-                'date' => '2025-04-05',
-                'who' => 'Kayven',
-                'milestones' => '1% Genius Version 3 Development.',
-                'notes' => 'Notes 4',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization name is required'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'date' => '2025-04-06',
-                'who' => 'John Smith',
-                'milestones' => 'Launched AI-driven customer service chatbot.',
-                'notes' => 'Initial rollout shows 30% reduction in support tickets.',
-            ],
-            [
-                'id' => 2,
-                'date' => '2025-04-07',
-                'who' => 'Jane Doe',
-                'milestones' => 'Completed mobile app redesign.',
-                'notes' => 'User engagement up by 12% in first week.',
-            ],
-            [
-                'id' => 3,
-                'date' => '2025-04-08',
-                'who' => 'Emily Davis',
-                'milestones' => 'Automated loan processing system deployed.',
-                'notes' => 'Cut processing time from 3 days to 6 hours.',
-            ],
-            [
-                'id' => 4,
-                'date' => '2025-04-09',
-                'who' => 'Michael Lee',
-                'milestones' => 'Introduced real-time fraud alerts.',
-                'notes' => 'Detected 4 threats in pilot phase.',
-            ],
-            [
-                'id' => 5,
-                'date' => '2025-04-10',
-                'who' => 'Olivia Brown',
-                'milestones' => 'Launched new client onboarding workflow.',
-                'notes' => 'Feedback indicates smoother experience for 95% of users.',
-            ],
-        ],
+    $record = ToolsVictory::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [],
-    ];
+    if (!$record) {
+        return response()->json(['message' => 'No record found for this organization'], 404);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($record->toolsVictoriesData ?? []);
+});
+
+
+// ref: frontend\src\components\13b.victories\1.VictoriesTable\VictoriesTable.jsx
+Route::post('/api/v1/tools/victories/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'toolsVictoriesData' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $victoriesData = $validated['toolsVictoriesData'];
+
+    $record = ToolsVictory::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'No record found for this organization'], 404);
+    }
+
+    $record->toolsVictoriesData = $victoriesData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Tools Victories data updated successfully.',
+        'data' => $record->toolsVictoriesData,
+    ]);
+});
+
+
+// ref: frontend\src\components\13b.victories\1.VictoriesTable\VictoriesTable.jsx
+Route::post('/api/v1/tools/victories/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'victory' => 'required|array',
+        'victory.date' => 'required|date',
+        'victory.who' => 'required|string',
+        'victory.milestones' => 'required|string',
+        'victory.notes' => 'nullable|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $newVictory = $validated['victory'];
+
+    // Find or create the record
+    $record = ToolsVictory::firstOrCreate(['organizationName' => $organization]);
+
+    // Get current data
+    $currentData = $record->toolsVictoriesData ?? [];
+
+    // Assign a new ID
+    $maxId = collect($currentData)->pluck('id')->max() ?? 0;
+    $newVictory['id'] = $maxId + 1;
+
+    // Append new item
+    $currentData[] = $newVictory;
+
+    // Save
+    $record->toolsVictoriesData = $currentData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Victory added successfully.',
+        'newItem' => $newVictory,
+        'fullData' => $currentData,
+    ]);
 });
 
 
