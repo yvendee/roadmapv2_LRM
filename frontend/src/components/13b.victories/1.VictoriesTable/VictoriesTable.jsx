@@ -326,10 +326,17 @@ const VictoriesTable = () => {
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setVictoriesTable(initialVictories);
+    // setVictoriesTable(initialVictories);
+
+    const { baselineVictoriesTable } = useVictoriesStore.getState();
+
+    // ✅ Console log to inspect baselineVictoriesTable before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineVictoriesTable:', baselineVictoriesTable);
+
+    setVictoriesTable(baselineVictoriesTable);
 
     // 4. refresh the table
-    setCurrentOrder(victoriesTable);
+    setCurrentOrder(baselineVictoriesTable);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
