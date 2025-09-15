@@ -4617,20 +4617,21 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
         return response()->json([]);
     }
 
-    $decodedPanels = json_decode($record->coachingChecklistPanelsData, true);
+    $panelsData = $record->coachingChecklistPanelsData;
     $u_id = $record->u_id;
 
     $uploadLink = "/file-upload/coaching-checklist/{$u_id}";
 
-    // 🔄 Only inject uploadLink dynamically (no override of existing commonLink)
-    foreach ($decodedPanels as &$panel) {
+    // 🔄 Inject dynamic uploadLink only
+    foreach ($panelsData as &$panel) {
         foreach ($panel['items'] as &$item) {
             $item['uploadLink'] = $uploadLink;
         }
     }
 
-    return response()->json($decodedPanels);
+    return response()->json($panelsData);
 });
+
 
 
 
