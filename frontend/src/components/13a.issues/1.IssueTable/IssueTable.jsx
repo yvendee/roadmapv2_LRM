@@ -75,36 +75,93 @@ const IssueTable = () => {
     }, 1000);
   };
 
-  const handleAddNewIssuesTable = () => {
+  // const handleAddNewIssuesTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Issues Table', JSON.stringify(newIssuesTable, null, 2));
+
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
+
+  
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('IssueTableData');
+  
+  //   // 4. Push to Zustand store
+  //   pushIssuesTable(newIssuesTable);
+  
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
+  
+  //   // Close modal
+  //   setShowAddModal(false);
+  
+  //   // Reset form input
+  //   setNewIssuesTable({     
+  //     issueName: '',
+  //     description: '',
+  //     dateLogged: '',
+  //     who: '',
+  //     resolution: '',
+  //     dateResolved: '', 
+  //   });
+  // };
+
+
+  const handleAddNewIssuesTable = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Issues Table', JSON.stringify(newIssuesTable, null, 2));
-
-    // 2. Hide Save / Discharge
-    setIsEditing(false);
-
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('IssueTableData');
+    try {
+      // Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
   
-    // 4. Push to Zustand store
-    pushIssuesTable(newIssuesTable);
+      // Send POST request to Laravel to add the new issue
+      const response = await fetch(`${API_URL}/v1/tools/issues/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include', // Required for Laravel session
+        body: JSON.stringify({
+          organization, // From Zustand store
+          issue: newIssuesTable,
+        }),
+      });
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+      const result = await response.json();
   
-    // Close modal
-    setShowAddModal(false);
+      if (!response.ok) {
+        console.error('❌ Failed to insert new issue:', result.message || 'Unknown error');
+        return;
+      }
   
-    // Reset form input
-    setNewIssuesTable({     
-      issueName: '',
-      description: '',
-      dateLogged: '',
-      who: '',
-      resolution: '',
-      dateResolved: '', 
-    });
+      ENABLE_CONSOLE_LOGS && console.log('✅ New issue added successfully:', result);
+  
+      // Push returned item to Zustand store (with new ID)
+      pushIssuesTable(result.newItem);
+  
+      // Cleanup UI state
+      setIsEditing(false);
+      localStorage.removeItem('IssueTableData');
+      setShowAddModal(false);
+  
+      // Reset form inputs
+      setNewIssuesTable({
+        issueName: '',
+        description: '',
+        dateLogged: '',
+        who: '',
+        resolution: '',
+        dateResolved: '',
+      });
+  
+    } catch (error) {
+      console.error('❌ Error inserting new issue:', error);
+    }
   };
-
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -157,52 +214,81 @@ const IssueTable = () => {
     }
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('IssueTableData');
+  
+      let dataToSend;
   
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
           ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
   
-          const reordered = parsedData.map((item, index) => ({
+          // Reindex
+          dataToSend = parsedData.map((item, index) => ({
             ...item,
             id: index + 1,
           }));
   
-          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (Reindexed):', reordered);
-  
-          setIssuesTable(reordered);
-          setIsEditing(false);
+          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (Reindexed):', dataToSend);
+          setIssuesTable(dataToSend);
           localStorage.removeItem('IssueTableData');
-  
-          // 🔄 Save to backend
-          saveToolsIssues(reordered);
-  
+          setIsEditing(false);
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
+          return;
         }
       } else {
-        const reordered = currentOrder.map((item, index) => ({
+        // No localStorage changes, use current drag order
+        dataToSend = currentOrder.map((item, index) => ({
           ...item,
           id: index + 1,
         }));
   
-        ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (reordered):', reordered);
-        setIssuesTable(reordered);
-        setIsEditing(false);
+        ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (reordered):', dataToSend);
+        setIssuesTable(dataToSend);
         localStorage.removeItem('IssueTableData');
+        setIsEditing(false);
+      }
   
-        // 🔄 Save to backend
-        saveToolsIssues(reordered);
+      try {
+        // Step 1: Get CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+  
+        // Step 2: Send updated data to backend
+        const response = await fetch(`${API_URL}/v1/tools/issues/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organization,
+            toolsIssuesData: dataToSend,
+          }),
+        });
+  
+        const result = await response.json();
+        ENABLE_CONSOLE_LOGS && console.log('📝 Tools Issues Update response:', result);
+  
+        if (!response.ok) {
+          console.error('Tools Issues update failed:', result.message || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('❌ Tools Issues update request failed:', error);
       }
     }, 1000);
   };
+  
   
   // const handleSaveChanges = () => {
 
