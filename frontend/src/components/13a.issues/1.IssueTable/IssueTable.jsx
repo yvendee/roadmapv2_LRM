@@ -336,7 +336,7 @@ const IssueTable = () => {
 
     // 3. Update Zustand store
     // setIssuesTable(initialIssues);
-    const { baselineIssuesTable } = useIssueTableStore.getState();
+    const { baselineIssuesTable } = useIssuesStore.getState();
 
     // ✅ Console log to inspect baselineIssuesTable before setting
     ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineIssueTable:', baselineIssuesTable);
