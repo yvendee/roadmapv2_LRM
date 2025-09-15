@@ -183,36 +183,6 @@ const IssueTable = () => {
     setEditingCell({ id: null, field: null });
   };
 
-  const saveToolsIssues = async (reordered) => {
-    const encodedOrg = encodeURIComponent(organization);
-  
-    try {
-      const res = await fetch(`${API_URL}/v1/tools/issues/update`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          organizationName: organization,
-          toolsIssuesData: reordered,
-        }),
-      });
-  
-      const json = await res.json();
-  
-      if (res.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('✅ Tools Issues updated:', json);
-      } else if (res.status === 401) {
-        console.error('Unauthorized. Please log in.');
-      } else {
-        console.error('❌ Error updating tools issues:', json.message);
-      }
-    } catch (err) {
-      console.error('🌐 API error:', err);
-    }
-  };
 
   const handleSaveChanges = async () => {
     setLoadingSave(true);
