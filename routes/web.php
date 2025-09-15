@@ -5781,6 +5781,51 @@ Route::post('/api/v1/tools/big-ideas/update', function (Request $request) use ($
     ]);
 });
 
+// ref: frontend\src\components\13c.big-ideas\1.BigIdeasTable\BigIdeasTable.jsx
+Route::post('/api/v1/tools/big-ideas/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'bigIdea' => 'required|array',
+        'bigIdea.date' => 'required|date',
+        'bigIdea.who' => 'required|string',
+        'bigIdea.description' => 'required|string',
+        'bigIdea.impact' => 'required|string',
+        'bigIdea.when' => 'required|date',
+        'bigIdea.evaluator' => 'required|string',
+        'bigIdea.comments' => 'nullable|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $newIdea = $validated['bigIdea'];
+
+    // Find or create record
+    $record = ToolsBigIdea::firstOrCreate(['organizationName' => $organization]);
+
+    // Current data
+    $currentData = $record->toolsBigIdeasData ?? [];
+
+    // Assign new ID
+    $maxId = collect($currentData)->pluck('id')->max() ?? 0;
+    $newIdea['id'] = $maxId + 1;
+
+    // Append
+    $currentData[] = $newIdea;
+
+    // Save
+    $record->toolsBigIdeasData = $currentData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Big Idea added successfully.',
+        'newItem' => $newIdea,
+        'fullData' => $currentData,
+    ]);
+});
+
 
 
 // ref: frontend\src\components\13d.product-evaluation-grid\ProductEvaluationGrid.jsx

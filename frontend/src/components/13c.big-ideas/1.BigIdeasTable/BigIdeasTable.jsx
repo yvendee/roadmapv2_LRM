@@ -70,38 +70,96 @@ const BigIdeasTable = () => {
     }, 1000);
   };
 
-  const handleAddNewBigIdeasTable = () => {
+  // const handleAddNewBigIdeasTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New BigIdeas Table', JSON.stringify(newBigIdeasTable, null, 2));
+
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
+
+  
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('BigIdeasTableData');
+  
+  //   // 4. Push to Zustand store
+  //   pushBigIdeasTable(newBigIdeasTable);
+  
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
+  
+  //   // Close modal
+  //   setShowAddModal(false);
+  
+  //   // Reset form input
+  //   setNewBigIdeasTable({     
+  //     date: '',
+  //     who: '',
+  //     description: '',
+  //     impact: '',
+  //     when: '',
+  //     evaluator: '',
+  //     comments: '',
+  //   });
+
+  // };
+
+
+  const handleAddNewBigIdeasTable = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New BigIdeas Table', JSON.stringify(newBigIdeasTable, null, 2));
-
-    // 2. Hide Save / Discharge
-    setIsEditing(false);
-
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('BigIdeasTableData');
+    const organization = useLayoutSettingsStore.getState().organization;
   
-    // 4. Push to Zustand store
-    pushBigIdeasTable(newBigIdeasTable);
+    try {
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+      const { csrf_token } = await csrfRes.json();
   
-    // Close modal
-    setShowAddModal(false);
+      // Step 2: Send new big idea
+      const response = await fetch(`${API_URL}/api/v1/tools/big-ideas/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          bigIdea: newBigIdeasTable,
+        }),
+      });
   
-    // Reset form input
-    setNewBigIdeasTable({     
-      date: '',
-      who: '',
-      description: '',
-      impact: '',
-      when: '',
-      evaluator: '',
-      comments: '',
-    });
-
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('Failed to add big idea:', result.message || 'Unknown error');
+        return;
+      }
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ Added Big Idea:', result.newItem);
+  
+      // Step 3: Update UI
+      pushBigIdeasTable(result.newItem);
+      setIsEditing(false);
+      setShowAddModal(false);
+      setNewBigIdeasTable({
+        date: '',
+        who: '',
+        description: '',
+        impact: '',
+        when: '',
+        evaluator: '',
+        comments: '',
+      });
+  
+      localStorage.removeItem('BigIdeasTableData');
+  
+    } catch (error) {
+      console.error('❌ Add Big Idea API error:', error);
+    }
   };
-
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
