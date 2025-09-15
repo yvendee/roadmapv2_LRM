@@ -4573,13 +4573,36 @@ Route::get('/api/v1/coaching-checklist/project-progress', function (Request $req
 // });
 
 
+// // ref:
+// Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     if (!$organization) {
+//         return response()->json(['message' => 'Organization is required'], 400);
+//     }
+
+//     $record = CoachingChecklistPanel::where('organizationName', $organization)->first();
+
+//     // Return the data wrapped with organizationName as key, or empty array if not found
+//     // ✅ Return raw array (or empty array if not found)
+//     return response()->json(
+//         $record->coachingChecklistPanelsData ?? []
+//     );
+// });
+
 // ref:
 Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
@@ -4590,11 +4613,23 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
 
     $record = CoachingChecklistPanel::where('organizationName', $organization)->first();
 
-    // Return the data wrapped with organizationName as key, or empty array if not found
-    // ✅ Return raw array (or empty array if not found)
-    return response()->json(
-        $record->coachingChecklistPanelsData ?? []
-    );
+    if (!$record || !$record->coachingChecklistPanelsData) {
+        return response()->json([]);
+    }
+
+    $decodedPanels = json_decode($record->coachingChecklistPanelsData, true);
+    $u_id = $record->u_id;
+
+    $uploadLink = "/file-upload/coaching-checklist/{$u_id}";
+
+    // 🔄 Only inject uploadLink dynamically (no override of existing commonLink)
+    foreach ($decodedPanels as &$panel) {
+        foreach ($panel['items'] as &$item) {
+            $item['uploadLink'] = $uploadLink;
+        }
+    }
+
+    return response()->json($decodedPanels);
 });
 
 
@@ -4991,7 +5026,6 @@ Route::get('/api/v1/coaching-alignment/whats-next', function (Request $request) 
 
 
 // ref:
-
 Route::post('/api/v1/coaching-alignment/whats-next/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
