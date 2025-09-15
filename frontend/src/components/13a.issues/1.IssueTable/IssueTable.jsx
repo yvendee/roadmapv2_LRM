@@ -184,140 +184,140 @@ const IssueTable = () => {
   };
 
 
-  const handleSaveChanges = async () => {
-    setLoadingSave(true);
-  
-    setTimeout(async () => {
-      setLoadingSave(false);
-  
-      const storedData = localStorage.getItem('IssueTableData');
-  
-      let dataToSend;
-  
-      if (storedData) {
-        try {
-          const parsedData = JSON.parse(storedData);
-          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
-  
-          // Reindex
-          dataToSend = parsedData.map((item, index) => ({
-            ...item,
-            id: index + 1,
-          }));
-  
-          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (Reindexed):', dataToSend);
-          setIssuesTable(dataToSend);
-          localStorage.removeItem('IssueTableData');
-          setIsEditing(false);
-        } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
-          return;
-        }
-      } else {
-        // No localStorage changes, use current drag order
-        dataToSend = currentOrder.map((item, index) => ({
-          ...item,
-          id: index + 1,
-        }));
-  
-        ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (reordered):', dataToSend);
-        setIssuesTable(dataToSend);
-        localStorage.removeItem('IssueTableData');
-        setIsEditing(false);
-      }
-  
-      try {
-        // Step 1: Get CSRF token
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-          credentials: 'include',
-        });
-        const { csrf_token } = await csrfRes.json();
-  
-        // Step 2: Send updated data to backend
-        const response = await fetch(`${API_URL}/v1/tools/issues/update`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            organization,
-            toolsIssuesData: dataToSend,
-          }),
-        });
-  
-        const result = await response.json();
-        ENABLE_CONSOLE_LOGS && console.log('📝 Tools Issues Update response:', result);
-  
-        if (!response.ok) {
-          console.error('Tools Issues update failed:', result.message || 'Unknown error');
-        }
-      } catch (error) {
-        console.error('❌ Tools Issues update request failed:', error);
-      }
-    }, 1000);
-  };
-  
-  
-  // const handleSaveChanges = () => {
-
+  // const handleSaveChanges = async () => {
   //   setLoadingSave(true);
   
-  //   setTimeout(() => {
+  //   setTimeout(async () => {
   //     setLoadingSave(false);
   
   //     const storedData = localStorage.getItem('IssueTableData');
   
+  //     let dataToSend;
+  
   //     if (storedData) {
   //       try {
   //         const parsedData = JSON.parse(storedData);
-  
-  //         // 1. Log to console
   //         ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
   
-  //         // 2. Update Zustand store
-  //         setIssuesTable(parsedData);
-
-  //         // Reindex IDs
-  //         const reordered = parsedData.map((driver, index) => ({
-  //           ...driver,
+  //         // Reindex
+  //         dataToSend = parsedData.map((item, index) => ({
+  //           ...item,
   //           id: index + 1,
   //         }));
-
-  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (Reindexed):', reordered);
-
-  //         setIssuesTable(reordered);
   
-  //         // 3. Clear edited state (hides buttons)
-  //         setIsEditing(false);
-
-  
-  //         // 4. Remove from localStorage
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (Reindexed):', dataToSend);
+  //         setIssuesTable(dataToSend);
   //         localStorage.removeItem('IssueTableData');
+  //         setIsEditing(false);
   //       } catch (err) {
   //         ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
+  //         return;
   //       }
   //     } else {
-
   //       // No localStorage changes, use current drag order
-
-  //       const reordered = currentOrder.map((driver, index) => ({
-  //         ...driver,
+  //       dataToSend = currentOrder.map((item, index) => ({
+  //         ...item,
   //         id: index + 1,
   //       }));
-
-  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (reordered):', reordered);
-  //       setIssuesTable(reordered);
-  //       setIsEditing(false);
-
-
-  //       // Remove from localStorage
+  
+  //       ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (reordered):', dataToSend);
+  //       setIssuesTable(dataToSend);
   //       localStorage.removeItem('IssueTableData');
-
+  //       setIsEditing(false);
+  //     }
+  
+  //     try {
+  //       // Step 1: Get CSRF token
+  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //         credentials: 'include',
+  //       });
+  //       const { csrf_token } = await csrfRes.json();
+  
+  //       // Step 2: Send updated data to backend
+  //       const response = await fetch(`${API_URL}/v1/tools/issues/update`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'X-CSRF-TOKEN': csrf_token,
+  //         },
+  //         credentials: 'include',
+  //         body: JSON.stringify({
+  //           organization,
+  //           toolsIssuesData: dataToSend,
+  //         }),
+  //       });
+  
+  //       const result = await response.json();
+  //       ENABLE_CONSOLE_LOGS && console.log('📝 Tools Issues Update response:', result);
+  
+  //       if (!response.ok) {
+  //         console.error('Tools Issues update failed:', result.message || 'Unknown error');
+  //       }
+  //     } catch (error) {
+  //       console.error('❌ Tools Issues update request failed:', error);
   //     }
   //   }, 1000);
   // };
+  
+  
+  const handleSaveChanges = () => {
+
+    setLoadingSave(true);
+  
+    setTimeout(() => {
+      setLoadingSave(false);
+  
+      const storedData = localStorage.getItem('IssueTableData');
+  
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData);
+  
+          // 1. Log to console
+          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
+  
+          // 2. Update Zustand store
+          setIssuesTable(parsedData);
+
+          // Reindex IDs
+          const reordered = parsedData.map((driver, index) => ({
+            ...driver,
+            id: index + 1,
+          }));
+
+          ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (Reindexed):', reordered);
+
+          setIssuesTable(reordered);
+  
+          // 3. Clear edited state (hides buttons)
+          setIsEditing(false);
+
+  
+          // 4. Remove from localStorage
+          localStorage.removeItem('IssueTableData');
+        } catch (err) {
+          ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
+        }
+      } else {
+
+        // No localStorage changes, use current drag order
+
+        const reordered = currentOrder.map((driver, index) => ({
+          ...driver,
+          id: index + 1,
+        }));
+
+        ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (reordered):', reordered);
+        setIssuesTable(reordered);
+        setIsEditing(false);
+
+
+        // Remove from localStorage
+        localStorage.removeItem('IssueTableData');
+
+      }
+    }, 1000);
+  };
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
