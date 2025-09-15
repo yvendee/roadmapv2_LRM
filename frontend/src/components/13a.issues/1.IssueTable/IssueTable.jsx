@@ -341,7 +341,7 @@ const IssueTable = () => {
     // ✅ Console log to inspect baselineIssuesTable before setting
     ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineIssueTable:', baselineIssuesTable);
 
-    setIssueTable(baselineIssuesTable);
+    setIssuesTable(baselineIssuesTable);
 
 
     // 4. refresh the table
