@@ -69,7 +69,7 @@ class ToolsBigIdeasSeeder extends Seeder
             ToolsBigIdea::create([
                 'u_id' => Str::uuid(),
                 'organizationName' => $org,
-                'toolsBigIdeasData' => $ideas,
+                'toolsBigIdeasData' => $ideas, // Assuming this is a JSON column in the database
                 'statusFlag' => null,
             ]);
         }
