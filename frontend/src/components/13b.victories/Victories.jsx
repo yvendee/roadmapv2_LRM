@@ -13,6 +13,7 @@ import './Victories.css';
 const Victories = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setVictoriesTable = useVictoriesStore((state) => state.setVictoriesTable);
+  const setBaselineVictoriesTable = useVictoriesStore((state) => state.setBaselineVictoriesTable)
   const { user, setUser } = useUserStore();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const Victories = () => {
             ENABLE_CONSOLE_LOGS && console.log('📥 Victories fetched:', json);
             if (Array.isArray(json)) {
               setVictoriesTable(json);
+              setBaselineVictoriesTable(json);
             } else {
               console.warn(`⚠️ Unexpected response for org: ${organization}`);
             }
