@@ -4,10 +4,13 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useIssuesStore, { initialIssues } from '../../../store/left-lower-content/13.tools/1.issuesStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import './IssueTable.css';
 
 const IssueTable = () => {
+  const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
@@ -57,6 +60,12 @@ const IssueTable = () => {
     }
   }, [setIssuesTable]);
 
+  // Sync initial and store changes:
+  useEffect(() => {
+    setCurrentOrder(issuesTable);
+  }, [issuesTable]);
+
+  
   const handleAddDriverClick = () => {
     setLoading(true);
     setTimeout(() => {
@@ -117,10 +126,38 @@ const IssueTable = () => {
     setEditingCell({ id: null, field: null });
   };
 
-
+  const saveToolsIssues = async (reordered) => {
+    const encodedOrg = encodeURIComponent(organization);
   
-  const handleSaveChanges = () => {
+    try {
+      const res = await fetch(`${API_URL}/v1/tools/issues/update`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          toolsIssuesData: reordered,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Tools Issues updated:', json);
+      } else if (res.status === 401) {
+        console.error('Unauthorized. Please log in.');
+      } else {
+        console.error('❌ Error updating tools issues:', json.message);
+      }
+    } catch (err) {
+      console.error('🌐 API error:', err);
+    }
+  };
 
+  const handleSaveChanges = () => {
     setLoadingSave(true);
   
     setTimeout(() => {
@@ -131,53 +168,100 @@ const IssueTable = () => {
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
-  
-          // 1. Log to console
           ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
   
-          // 2. Update Zustand store
-          setIssuesTable(parsedData);
-
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
+          const reordered = parsedData.map((item, index) => ({
+            ...item,
             id: index + 1,
           }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (Reindexed):', reordered);
-
+  
+          ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (Reindexed):', reordered);
+  
           setIssuesTable(reordered);
-  
-          // 3. Clear edited state (hides buttons)
           setIsEditing(false);
-
-  
-          // 4. Remove from localStorage
           localStorage.removeItem('IssueTableData');
+  
+          // 🔄 Save to backend
+          saveToolsIssues(reordered);
+  
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
         }
       } else {
-
-        // No localStorage changes, use current drag order
-
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
+        const reordered = currentOrder.map((item, index) => ({
+          ...item,
           id: index + 1,
         }));
-
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (reordered):', reordered);
+  
+        ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table (reordered):', reordered);
         setIssuesTable(reordered);
         setIsEditing(false);
-
-
-        // Remove from localStorage
         localStorage.removeItem('IssueTableData');
-
+  
+        // 🔄 Save to backend
+        saveToolsIssues(reordered);
       }
     }, 1000);
   };
   
+  // const handleSaveChanges = () => {
+
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('IssueTableData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Issues Table after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setIssuesTable(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (Reindexed):', reordered);
+
+  //         setIssuesTable(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         setIsEditing(false);
+
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('IssueTableData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing IssueTableData on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Issues Table (reordered):', reordered);
+  //       setIssuesTable(reordered);
+  //       setIsEditing(false);
+
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('IssueTableData');
+
+  //     }
+  //   }, 1000);
+  // };
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
@@ -195,10 +279,17 @@ const IssueTable = () => {
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setIssuesTable(initialIssues);
+    // setIssuesTable(initialIssues);
+    const { baselineIssuesTable } = useIssueTableStore.getState();
+
+    // ✅ Console log to inspect baselineIssuesTable before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineIssueTable:', baselineIssuesTable);
+
+    setIssueTable(baselineIssuesTable);
+
 
     // 4. refresh the table
-    setCurrentOrder(issuesTable);
+    setCurrentOrder(baselineIssuesTable);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
@@ -213,11 +304,6 @@ const IssueTable = () => {
     setShowConfirmModal(false);
   };
 
-
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(issuesTable);
-  }, [issuesTable]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {

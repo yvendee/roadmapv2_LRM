@@ -48,6 +48,7 @@ use App\Models\CoachingAlignmentCurrentFocus;
 use App\Models\CoachingAlignmentCurrentBusinessPulse;
 use App\Models\CoachingAlignmentWhatsNext;
 use App\Models\CoachingAlignmentCoachingGoal;
+use App\Models\ToolsIssue;
 
 
 
@@ -5207,122 +5208,211 @@ Route::post('/api/v1/coaching-alignment/coaching-goals/delete-item', function (R
 });
 
 
-// ref: // frontend\src\components\13a.issues\Issues.jsx
+// // ref: // frontend\src\components\13a.issues\Issues.jsx
+// Route::get('/api/v1/tools/issues', function (Request $request) {
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'issueName' => 'System Issue 1',
+//                 'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+//                 'status' => '100.00%',
+//                 'dateLogged' => '2025-03-31',
+//                 'who' => 'Kayven',
+//                 'resolution' => 'resolution here',
+//                 'dateResolved' => '2025-04-02',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'issueName' => 'System Issue 2',
+//                 'description' => 'Systematize Client Delivery.',
+//                 'status' => '83.33%',
+//                 'dateLogged' => '2025-03-29',
+//                 'who' => 'Kayven',
+//                 'resolution' => 'resolution here 1',
+//                 'dateResolved' => '2025-04-03',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'issueName' => 'System Issue 2',
+//                 'description' => 'Develop online Portal for Clients (Momentum Hub).',
+//                 'status' => '0.00%',
+//                 'dateLogged' => '2025-03-28',
+//                 'who' => 'Kayven',
+//                 'resolution' => 'resolution here 2',
+//                 'dateResolved' => '2025-04-03',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'issueName' => 'System Issue 3',
+//                 'description' => 'Develop lead generation systems.',
+//                 'status' => '50.00%',
+//                 'dateLogged' => '2025-03-27',
+//                 'who' => 'Kayven',
+//                 'resolution' => 'resolution here 3',
+//                 'dateResolved' => '2025-04-04',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'issueName' => 'System Issue 4',
+//                 'description' => '1% Genius Version 3 Development.',
+//                 'status' => '50.00%',
+//                 'dateLogged' => '2025-03-26',
+//                 'who' => 'Kayven',
+//                 'resolution' => 'resolution here 4',
+//                 'dateResolved' => '2025-04-05',
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'issueName' => 'Login Delay Bug',
+//                 'description' => 'Users experience delay when logging in via mobile app.',
+//                 'status' => '70.00%',
+//                 'dateLogged' => '2025-04-01',
+//                 'who' => 'John Smith',
+//                 'resolution' => 'Increased server cache and optimized query',
+//                 'dateResolved' => '2025-04-06',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'issueName' => 'Loan Processing API Timeout',
+//                 'description' => 'Timeout during peak hours on loan API.',
+//                 'status' => '100.00%',
+//                 'dateLogged' => '2025-04-02',
+//                 'who' => 'Jane Doe',
+//                 'resolution' => 'Upgraded server tier and added background job queue.',
+//                 'dateResolved' => '2025-04-07',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'issueName' => 'UI Bug on Dashboard',
+//                 'description' => 'Misaligned chart legends in the dashboard.',
+//                 'status' => '100.00%',
+//                 'dateLogged' => '2025-04-03',
+//                 'who' => 'Emily Davis',
+//                 'resolution' => 'Updated CSS and component layout.',
+//                 'dateResolved' => '2025-04-08',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'issueName' => 'PDF Export Not Working',
+//                 'description' => 'Export to PDF fails for reports over 10 pages.',
+//                 'status' => '90.00%',
+//                 'dateLogged' => '2025-04-04',
+//                 'who' => 'Michael Lee',
+//                 'resolution' => 'Pagination fix and memory limit increased.',
+//                 'dateResolved' => '2025-04-09',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'issueName' => 'Delayed Notifications',
+//                 'description' => 'Push notifications arriving late on Android.',
+//                 'status' => '60.00%',
+//                 'dateLogged' => '2025-04-05',
+//                 'who' => 'Olivia Brown',
+//                 'resolution' => 'Investigating Firebase token refresh issues.',
+//                 'dateResolved' => '',
+//             ],
+//         ],
+
+//         'Test Skeleton Loading' => [],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+
+
+// ref:
 Route::get('/api/v1/tools/issues', function (Request $request) {
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'issueName' => 'System Issue 1',
-                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
-                'status' => '100.00%',
-                'dateLogged' => '2025-03-31',
-                'who' => 'Kayven',
-                'resolution' => 'resolution here',
-                'dateResolved' => '2025-04-02',
-            ],
-            [
-                'id' => 2,
-                'issueName' => 'System Issue 2',
-                'description' => 'Systematize Client Delivery.',
-                'status' => '83.33%',
-                'dateLogged' => '2025-03-29',
-                'who' => 'Kayven',
-                'resolution' => 'resolution here 1',
-                'dateResolved' => '2025-04-03',
-            ],
-            [
-                'id' => 3,
-                'issueName' => 'System Issue 2',
-                'description' => 'Develop online Portal for Clients (Momentum Hub).',
-                'status' => '0.00%',
-                'dateLogged' => '2025-03-28',
-                'who' => 'Kayven',
-                'resolution' => 'resolution here 2',
-                'dateResolved' => '2025-04-03',
-            ],
-            [
-                'id' => 4,
-                'issueName' => 'System Issue 3',
-                'description' => 'Develop lead generation systems.',
-                'status' => '50.00%',
-                'dateLogged' => '2025-03-27',
-                'who' => 'Kayven',
-                'resolution' => 'resolution here 3',
-                'dateResolved' => '2025-04-04',
-            ],
-            [
-                'id' => 5,
-                'issueName' => 'System Issue 4',
-                'description' => '1% Genius Version 3 Development.',
-                'status' => '50.00%',
-                'dateLogged' => '2025-03-26',
-                'who' => 'Kayven',
-                'resolution' => 'resolution here 4',
-                'dateResolved' => '2025-04-05',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'issueName' => 'Login Delay Bug',
-                'description' => 'Users experience delay when logging in via mobile app.',
-                'status' => '70.00%',
-                'dateLogged' => '2025-04-01',
-                'who' => 'John Smith',
-                'resolution' => 'Increased server cache and optimized query',
-                'dateResolved' => '2025-04-06',
-            ],
-            [
-                'id' => 2,
-                'issueName' => 'Loan Processing API Timeout',
-                'description' => 'Timeout during peak hours on loan API.',
-                'status' => '100.00%',
-                'dateLogged' => '2025-04-02',
-                'who' => 'Jane Doe',
-                'resolution' => 'Upgraded server tier and added background job queue.',
-                'dateResolved' => '2025-04-07',
-            ],
-            [
-                'id' => 3,
-                'issueName' => 'UI Bug on Dashboard',
-                'description' => 'Misaligned chart legends in the dashboard.',
-                'status' => '100.00%',
-                'dateLogged' => '2025-04-03',
-                'who' => 'Emily Davis',
-                'resolution' => 'Updated CSS and component layout.',
-                'dateResolved' => '2025-04-08',
-            ],
-            [
-                'id' => 4,
-                'issueName' => 'PDF Export Not Working',
-                'description' => 'Export to PDF fails for reports over 10 pages.',
-                'status' => '90.00%',
-                'dateLogged' => '2025-04-04',
-                'who' => 'Michael Lee',
-                'resolution' => 'Pagination fix and memory limit increased.',
-                'dateResolved' => '2025-04-09',
-            ],
-            [
-                'id' => 5,
-                'issueName' => 'Delayed Notifications',
-                'description' => 'Push notifications arriving late on Android.',
-                'status' => '60.00%',
-                'dateLogged' => '2025-04-05',
-                'who' => 'Olivia Brown',
-                'resolution' => 'Investigating Firebase token refresh issues.',
-                'dateResolved' => '',
-            ],
-        ],
+    $record = ToolsIssue::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [],
-    ];
+    if (!$record || !$record->toolsIssuesData) {
+        return response()->json([]);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($record->toolsIssuesData);
 });
+
+
+// ref:
+Route::post('/api/v1/tools/issues/update', function (Request $request) {
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'toolsIssuesData' => 'required|array',
+    ]);
+
+    $record = ToolsIssue::where('organizationName', $validated['organizationName'])->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $record->toolsIssuesData = $validated['toolsIssuesData'];
+    $record->save();
+
+    return response()->json([
+        'message' => 'Tools Issues Data updated successfully.',
+        'data' => $record->toolsIssuesData,
+    ]);
+});
+
+
+// ref:
+Route::post('/api/v1/tools/issues/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'issue' => 'required|array',
+        'issue.issueName' => 'required|string',
+        'issue.description' => 'required|string',
+        'issue.dateLogged' => 'required|date',
+        'issue.who' => 'required|string',
+        'issue.resolution' => 'required|string',
+        'issue.dateResolved' => 'required|date',
+    ]);
+
+    $organization = $validated['organization'];
+    $newIssue = $validated['issue'];
+
+    // Find or create record
+    $record = ToolsIssue::firstOrCreate(['organizationName' => $organization]);
+
+    // Decode current data or initialize empty array
+    $currentData = $record->toolsIssuesData ?? [];
+
+    // Reindex to ensure IDs are unique and consistent
+    $maxId = collect($currentData)->pluck('id')->max() ?? 0;
+    $newIssue['id'] = $maxId + 1;
+
+    // Append the new issue
+    $currentData[] = $newIssue;
+
+    // Save back to DB
+    $record->toolsIssuesData = $currentData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New issue added successfully.',
+        'newItem' => $newIssue,
+        'fullData' => $currentData,
+    ]);
+});
+
+
 
 // ref: frontend\src\components\13b.victories\Victories.jsx
 Route::get('/api/v1/tools/victories', function (Request $request) use ($API_secure) {
