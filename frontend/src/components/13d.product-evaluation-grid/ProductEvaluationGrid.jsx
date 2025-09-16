@@ -13,7 +13,7 @@ import './ProductEvaluationGrid.css';
 const ProductEvaluationGrid = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setGridData = useProductEvaluationGridStore((state) => state.setProductEvaluationGrid);
-  const setBaselineProductEvaluationGrid = useProductEvaluationGridStore((state) => state.setProductEvaluationGrid)
+  const setBaselineProductEvaluationGrid = useProductEvaluationGridStore((state) => state.setBaselineProductEvaluationGrid)
   // const { user, setUser } = useUserStore();
   // const [error, setError] = useState(null);
   const navigate = useNavigate();
