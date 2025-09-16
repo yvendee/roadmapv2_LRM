@@ -1,6 +1,6 @@
 // frontend\src\components\13c.big-ideas\BigIdeas.jsx
 import React, { useEffect, useState } from 'react';
-import useUserStore from '../../store/userStore';
+// import useUserStore from '../../store/userStore';
 import BigIdeasHeader from './0.BigIdeasHeader/BigIdeasHeader';
 import BigIdeasTable from './1.BigIdeasTable/BigIdeasTable';
 import useBigIdeasStore from '../../store/left-lower-content/13.tools/3.bigIdeasStore';
@@ -11,8 +11,8 @@ import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 import './BigIdeas.css';
 
 const BigIdeas = () => {
-  const { user, setUser } = useUserStore();
-  const [error, setError] = useState(null);
+  // const { user, setUser } = useUserStore();
+  // const [error, setError] = useState(null);
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setBigIdeasTable = useBigIdeasStore((state) => state.setBigIdeasTable);
   const setBaselineBigIdeasTable = useBigIdeasStore((state) => state.setBaselineBigIdeasTable)

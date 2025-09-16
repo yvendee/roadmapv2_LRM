@@ -2,7 +2,7 @@
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useIssuesStore, { initialIssues } from '../../../store/left-lower-content/13.tools/1.issuesStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -439,7 +439,10 @@ const IssueTable = () => {
                     <div></div>
                   </div>
                   ) : (
-                    'Save Changes'
+                    <>
+                    <FontAwesomeIcon icon={faSave} className="mr-1" />
+                    Save Changes
+                    </>
                 )}
                 </button>
                 <button className="pure-red-btn" onClick={handleDischargeChanges}>
@@ -450,7 +453,10 @@ const IssueTable = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discard'
+                      <>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                      Discard Changes
+                      </>
                   )}
                 </button>
               </>

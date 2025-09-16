@@ -51,6 +51,7 @@ use App\Models\CoachingAlignmentCoachingGoal;
 use App\Models\ToolsIssue;
 use App\Models\ToolsVictory;
 use App\Models\ToolsBigIdea;
+use App\Models\ToolsProductEvaluationGrid;
 
 
 
@@ -5828,157 +5829,256 @@ Route::post('/api/v1/tools/big-ideas/add', function (Request $request) use ($API
 
 
 
+// // ref: frontend\src\components\13d.product-evaluation-grid\ProductEvaluationGrid.jsx
+// Route::get('/api/v1/tools/product-evaluation-grid', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'productName' => 'Momentum OS',
+//                 'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+//                 'pricingPower' => 'High',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '60%',
+//                 'marketShare' => '10%',
+//                 'customerSatisfaction' => 'Excellent',
+//                 'innovationPotential' => 'High',
+//                 'operationEfficiency' => 'Strong',
+//                 'lifeCycleStage' => 'Growth',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'productName' => 'Client Delivery System',
+//                 'description' => 'Systematize Client Delivery.',
+//                 'pricingPower' => 'Medium',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '55%',
+//                 'marketShare' => '8%',
+//                 'customerSatisfaction' => 'Good',
+//                 'innovationPotential' => 'Medium',
+//                 'operationEfficiency' => 'Moderate',
+//                 'lifeCycleStage' => 'Growth',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'productName' => 'Momentum Hub',
+//                 'description' => 'Online Portal for Clients (Beta completed with eDoc by March 31).',
+//                 'pricingPower' => 'High',
+//                 'acceleratingGrowth' => 'No',
+//                 'profitMargin' => '0%',
+//                 'marketShare' => '0%',
+//                 'customerSatisfaction' => 'Pending',
+//                 'innovationPotential' => 'High',
+//                 'operationEfficiency' => 'Early',
+//                 'lifeCycleStage' => 'Introduction',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'productName' => 'Lead Gen System',
+//                 'description' => 'Develop lead generation systems.',
+//                 'pricingPower' => 'Medium',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '50%',
+//                 'marketShare' => '5%',
+//                 'customerSatisfaction' => 'Average',
+//                 'innovationPotential' => 'Medium',
+//                 'operationEfficiency' => 'Developing',
+//                 'lifeCycleStage' => 'Development',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'productName' => '1% Genius v3',
+//                 'description' => '1% Genius Version 3 Development.',
+//                 'pricingPower' => 'High',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '65%',
+//                 'marketShare' => '12%',
+//                 'customerSatisfaction' => 'Excellent',
+//                 'innovationPotential' => 'Very High',
+//                 'operationEfficiency' => 'Optimized',
+//                 'lifeCycleStage' => 'Maturity',
+//             ],
+//         ],
+
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'productName' => 'Member Insights Platform',
+//                 'description' => 'Tool for analyzing member behavior and feedback.',
+//                 'pricingPower' => 'High',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '58%',
+//                 'marketShare' => '9%',
+//                 'customerSatisfaction' => 'Excellent',
+//                 'innovationPotential' => 'High',
+//                 'operationEfficiency' => 'Optimized',
+//                 'lifeCycleStage' => 'Growth',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'productName' => 'Loan Automation Suite',
+//                 'description' => 'Automated end-to-end loan processing system.',
+//                 'pricingPower' => 'Medium',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '62%',
+//                 'marketShare' => '7%',
+//                 'customerSatisfaction' => 'Good',
+//                 'innovationPotential' => 'Medium',
+//                 'operationEfficiency' => 'Efficient',
+//                 'lifeCycleStage' => 'Maturity',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'productName' => 'Digital Branch App',
+//                 'description' => 'Mobile-first banking app for members.',
+//                 'pricingPower' => 'High',
+//                 'acceleratingGrowth' => 'No',
+//                 'profitMargin' => '48%',
+//                 'marketShare' => '4%',
+//                 'customerSatisfaction' => 'Pending',
+//                 'innovationPotential' => 'High',
+//                 'operationEfficiency' => 'Developing',
+//                 'lifeCycleStage' => 'Introduction',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'productName' => 'Compliance Tracker',
+//                 'description' => 'Tracks internal compliance metrics in real-time.',
+//                 'pricingPower' => 'Medium',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '53%',
+//                 'marketShare' => '6%',
+//                 'customerSatisfaction' => 'Average',
+//                 'innovationPotential' => 'Medium',
+//                 'operationEfficiency' => 'Strong',
+//                 'lifeCycleStage' => 'Growth',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'productName' => 'Virtual Advisor Bot',
+//                 'description' => 'AI chatbot that assists members with inquiries.',
+//                 'pricingPower' => 'High',
+//                 'acceleratingGrowth' => 'Yes',
+//                 'profitMargin' => '70%',
+//                 'marketShare' => '11%',
+//                 'customerSatisfaction' => 'Excellent',
+//                 'innovationPotential' => 'Very High',
+//                 'operationEfficiency' => 'Optimized',
+//                 'lifeCycleStage' => 'Maturity',
+//             ],
+//         ],
+
+//         'Test Skeleton Loading' => [],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
 // ref: frontend\src\components\13d.product-evaluation-grid\ProductEvaluationGrid.jsx
 Route::get('/api/v1/tools/product-evaluation-grid', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'productName' => 'Momentum OS',
-                'description' => 'Systematize Coaching Framework (now called Momentum OS).',
-                'pricingPower' => 'High',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '60%',
-                'marketShare' => '10%',
-                'customerSatisfaction' => 'Excellent',
-                'innovationPotential' => 'High',
-                'operationEfficiency' => 'Strong',
-                'lifeCycleStage' => 'Growth',
-            ],
-            [
-                'id' => 2,
-                'productName' => 'Client Delivery System',
-                'description' => 'Systematize Client Delivery.',
-                'pricingPower' => 'Medium',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '55%',
-                'marketShare' => '8%',
-                'customerSatisfaction' => 'Good',
-                'innovationPotential' => 'Medium',
-                'operationEfficiency' => 'Moderate',
-                'lifeCycleStage' => 'Growth',
-            ],
-            [
-                'id' => 3,
-                'productName' => 'Momentum Hub',
-                'description' => 'Online Portal for Clients (Beta completed with eDoc by March 31).',
-                'pricingPower' => 'High',
-                'acceleratingGrowth' => 'No',
-                'profitMargin' => '0%',
-                'marketShare' => '0%',
-                'customerSatisfaction' => 'Pending',
-                'innovationPotential' => 'High',
-                'operationEfficiency' => 'Early',
-                'lifeCycleStage' => 'Introduction',
-            ],
-            [
-                'id' => 4,
-                'productName' => 'Lead Gen System',
-                'description' => 'Develop lead generation systems.',
-                'pricingPower' => 'Medium',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '50%',
-                'marketShare' => '5%',
-                'customerSatisfaction' => 'Average',
-                'innovationPotential' => 'Medium',
-                'operationEfficiency' => 'Developing',
-                'lifeCycleStage' => 'Development',
-            ],
-            [
-                'id' => 5,
-                'productName' => '1% Genius v3',
-                'description' => '1% Genius Version 3 Development.',
-                'pricingPower' => 'High',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '65%',
-                'marketShare' => '12%',
-                'customerSatisfaction' => 'Excellent',
-                'innovationPotential' => 'Very High',
-                'operationEfficiency' => 'Optimized',
-                'lifeCycleStage' => 'Maturity',
-            ],
-        ],
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'productName' => 'Member Insights Platform',
-                'description' => 'Tool for analyzing member behavior and feedback.',
-                'pricingPower' => 'High',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '58%',
-                'marketShare' => '9%',
-                'customerSatisfaction' => 'Excellent',
-                'innovationPotential' => 'High',
-                'operationEfficiency' => 'Optimized',
-                'lifeCycleStage' => 'Growth',
-            ],
-            [
-                'id' => 2,
-                'productName' => 'Loan Automation Suite',
-                'description' => 'Automated end-to-end loan processing system.',
-                'pricingPower' => 'Medium',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '62%',
-                'marketShare' => '7%',
-                'customerSatisfaction' => 'Good',
-                'innovationPotential' => 'Medium',
-                'operationEfficiency' => 'Efficient',
-                'lifeCycleStage' => 'Maturity',
-            ],
-            [
-                'id' => 3,
-                'productName' => 'Digital Branch App',
-                'description' => 'Mobile-first banking app for members.',
-                'pricingPower' => 'High',
-                'acceleratingGrowth' => 'No',
-                'profitMargin' => '48%',
-                'marketShare' => '4%',
-                'customerSatisfaction' => 'Pending',
-                'innovationPotential' => 'High',
-                'operationEfficiency' => 'Developing',
-                'lifeCycleStage' => 'Introduction',
-            ],
-            [
-                'id' => 4,
-                'productName' => 'Compliance Tracker',
-                'description' => 'Tracks internal compliance metrics in real-time.',
-                'pricingPower' => 'Medium',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '53%',
-                'marketShare' => '6%',
-                'customerSatisfaction' => 'Average',
-                'innovationPotential' => 'Medium',
-                'operationEfficiency' => 'Strong',
-                'lifeCycleStage' => 'Growth',
-            ],
-            [
-                'id' => 5,
-                'productName' => 'Virtual Advisor Bot',
-                'description' => 'AI chatbot that assists members with inquiries.',
-                'pricingPower' => 'High',
-                'acceleratingGrowth' => 'Yes',
-                'profitMargin' => '70%',
-                'marketShare' => '11%',
-                'customerSatisfaction' => 'Excellent',
-                'innovationPotential' => 'Very High',
-                'operationEfficiency' => 'Optimized',
-                'lifeCycleStage' => 'Maturity',
-            ],
-        ],
+    $record = ToolsProductEvaluationGrid::where('organizationName', $organization)->first();
 
-        'Test Skeleton Loading' => [],
-    ];
+    if (!$record) {
+        return response()->json(['message' => 'No data found for this organization'], 404);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($record->toolsProductEvaluationGridsData ?? []);
+});
+
+
+// ref: frontend\src\components\13d.product-evaluation-grid\1.ProductEvaluationGridTable\ProductEvaluationGridTable.jsx
+Route::post('/api/v1/tools/product-evaluation-grid/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'reordered' => 'required|array',
+    ]);
+
+    $organization = $validated['organization'];
+    $updatedData = $validated['reordered'];
+
+    $record = ToolsProductEvaluationGrid::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found for organization'], 404);
+    }
+
+    $record->toolsProductEvaluationGridsData = $updatedData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Product Evaluation Grid updated successfully.',
+        'updatedData' => $updatedData,
+    ]);
+});
+
+// ref: frontend\src\components\13d.product-evaluation-grid\1.ProductEvaluationGridTable\ProductEvaluationGridTable.jsx
+Route::post('/api/v1/tools/product-evaluation-grid/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'entry' => 'required|array',
+        'entry.productName' => 'required|string',
+        'entry.description' => 'required|string',
+        'entry.pricingPower' => 'required|string',
+        'entry.acceleratingGrowth' => 'required|string',
+        'entry.profitMargin' => 'required|string',
+        'entry.marketShare' => 'required|string',
+        'entry.customerSatisfaction' => 'required|string',
+        'entry.innovationPotential' => 'required|string',
+        'entry.operationEfficiency' => 'required|string',
+        'entry.lifeCycleStage' => 'required|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $newEntry = $validated['entry'];
+
+    // Find or create the record
+    $record = ToolsProductEvaluationGrid::firstOrCreate(['organizationName' => $organization]);
+
+    // Get current data
+    $currentData = $record->toolsProductEvaluationGridsData ?? [];
+
+    // Assign a new ID
+    $maxId = collect($currentData)->pluck('id')->max() ?? 0;
+    $newEntry['id'] = $maxId + 1;
+
+    // Append new item
+    $currentData[] = $newEntry;
+
+    // Save
+    $record->toolsProductEvaluationGridsData = $currentData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Entry added successfully.',
+        'newItem' => $newEntry,
+        'fullData' => $currentData,
+    ]);
 });
 
 

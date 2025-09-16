@@ -2,12 +2,15 @@
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useProductEvaluationGridStore, { initialProductEvaluationGrid } from '../../../store/left-lower-content/13.tools/4.productEvaluationGridStore';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './ProductEvaluationGridTable.css';
 
 const ProductEvaluationGridTable = () => {
+  const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
@@ -61,6 +64,46 @@ const ProductEvaluationGridTable = () => {
     }
   }, [setProductEvaluationGrid]);
 
+
+  const saveToBackend = async (reordered) => {
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 2: Send update to backend
+      const response = await fetch(`${API_URL}/v1/tools/product-evaluation-grid/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          reordered,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('❌ Failed to update Product Evaluation Grid:', result.message || 'Unknown error');
+      } else {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Product Evaluation Grid updated:', result.updatedData);
+      }
+    } catch (error) {
+      console.error('❌ Error saving Product Evaluation Grid:', error);
+    }
+  };
+
+  
+
   const handleAddDriverClick = () => {
     setLoading(true);
     setTimeout(() => {
@@ -70,41 +113,119 @@ const ProductEvaluationGridTable = () => {
     }, 1000);
   };
 
-  const handleAddNewProductEvaluationGridTable = () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Product Evaluation Grid Table', JSON.stringify(newProductEvaluationGridTable, null, 2));
+  // const handleAddNewProductEvaluationGridTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Product Evaluation Grid Table', JSON.stringify(newProductEvaluationGridTable, null, 2));
 
-    // 2. Hide Save / Discharge
-    setIsEditing(false);
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
 
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('ProductEvaluationGridTableData');
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('ProductEvaluationGridTableData');
   
-    // 4. Push to Zustand store
-    pushProductEvaluationGridTableField(newProductEvaluationGridTable);
+  //   // 4. Push to Zustand store
+  //   pushProductEvaluationGridTableField(newProductEvaluationGridTable);
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
   
-    // Close modal
-    setShowAddModal(false);
+  //   // Close modal
+  //   setShowAddModal(false);
   
-    // Reset form input
-    setNewProductEvaluationGridTable({     
-      productName: '',
-      description: '',
-      pricingPower: '',
-      acceleratingGrowth: '',
-      profitMargin: '',
-      marketShare: '',
-      customerSatisfaction: '',
-      innovationPotential: '',
-      operationEfficiency: '',
-      lifeCycleStage: '',
-    });
+  //   // Reset form input
+  //   setNewProductEvaluationGridTable({     
+  //     productName: '',
+  //     description: '',
+  //     pricingPower: '',
+  //     acceleratingGrowth: '',
+  //     profitMargin: '',
+  //     marketShare: '',
+  //     customerSatisfaction: '',
+  //     innovationPotential: '',
+  //     operationEfficiency: '',
+  //     lifeCycleStage: '',
+  //   });
 
+  // };
+
+
+  const addProductEvaluationGridToBackend = async (newItem) => {
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 2: Send data to backend
+      const response = await fetch(`${API_URL}/v1/tools/product-evaluation-grid/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          entry: newItem,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('❌ Failed to add Product Evaluation Grid item:', result.message || 'Unknown error');
+      } else {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Added Product Evaluation Grid item:', result.newItem);
+      }
+  
+      return result;
+    } catch (error) {
+      console.error('❌ API error while adding Product Evaluation Grid item:', error);
+    }
   };
 
+  const handleAddNewProductEvaluationGridTable = async () => {
+    ENABLE_CONSOLE_LOGS &&
+      console.log('New Product Evaluation Grid Table', JSON.stringify(newProductEvaluationGridTable, null, 2));
+  
+    // Call API to add item to backend
+    const result = await addProductEvaluationGridToBackend(newProductEvaluationGridTable);
+  
+    if (result && result.newItem) {
+      // 2. Hide Save / Discharge
+      setIsEditing(false);
+  
+      // 3. Remove localStorage temp data
+      localStorage.removeItem('ProductEvaluationGridTableData');
+  
+      // 4. Push to Zustand store
+      pushProductEvaluationGridTableField(result.newItem);
+  
+      // 5. Close modal
+      setShowAddModal(false);
+  
+      // 6. Reset form input
+      setNewProductEvaluationGridTable({
+        productName: '',
+        description: '',
+        pricingPower: '',
+        acceleratingGrowth: '',
+        profitMargin: '',
+        marketShare: '',
+        customerSatisfaction: '',
+        innovationPotential: '',
+        operationEfficiency: '',
+        lifeCycleStage: '',
+      });
+    } else {
+      console.error('❌ Failed to add item to Product Evaluation Grid');
+    }
+  };
+  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -127,11 +248,70 @@ const ProductEvaluationGridTable = () => {
   };
 
   
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('ProductEvaluationGridTableData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Product Evaluation Grid Table after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setProductEvaluationGrid(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Product Evaluation Grid Table (Reindexed):', reordered);
+
+  //         setProductEvaluationGrid(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         setIsEditing(false);
+
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('ProductEvaluationGridTableData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing ProductEvaluationGridTableData on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Product Evaluation Grid Table (reordered):', reordered);
+  //       setProductEvaluationGrid(reordered);
+  //       setIsEditing(false);
+
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('ProductEvaluationGridTableData');
+
+  //     }
+  //   }, 1000);
+  // };
+  
+  
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('ProductEvaluationGridTableData');
@@ -140,53 +320,50 @@ const ProductEvaluationGridTable = () => {
         try {
           const parsedData = JSON.parse(storedData);
   
-          // 1. Log to console
+          // 1. Log original parsed data
           ENABLE_CONSOLE_LOGS && console.log('Saved Product Evaluation Grid Table after Save Changes Button:', parsedData);
   
           // 2. Update Zustand store
           setProductEvaluationGrid(parsedData);
-
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
+  
+          // 3. Reindex IDs
+          const reordered = parsedData.map((item, index) => ({
+            ...item,
             id: index + 1,
           }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Product Evaluation Grid Table (Reindexed):', reordered);
-
+  
+          ENABLE_CONSOLE_LOGS && console.log('Saved Product Evaluation Grid Table (Reindexed):', reordered);
+  
+          // 4. Push to backend
+          await saveToBackend(reordered);
+  
+          // 5. Update Zustand store again (clean, reindexed)
           setProductEvaluationGrid(reordered);
   
-          // 3. Clear edited state (hides buttons)
+          // 6. Clear editing state and local storage
           setIsEditing(false);
-
-  
-          // 4. Remove from localStorage
           localStorage.removeItem('ProductEvaluationGridTableData');
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing ProductEvaluationGridTableData on save:', err);
         }
       } else {
-
-        // No localStorage changes, use current drag order
-
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
+        // No localStorage found, use current drag order
+        const reordered = currentOrder.map((item, index) => ({
+          ...item,
           id: index + 1,
         }));
-
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Product Evaluation Grid Table (reordered):', reordered);
+  
+        ENABLE_CONSOLE_LOGS && console.log('Saved Product Evaluation Grid Table (reordered):', reordered);
+  
+        await saveToBackend(reordered);
         setProductEvaluationGrid(reordered);
         setIsEditing(false);
-
-
-        // Remove from localStorage
         localStorage.removeItem('ProductEvaluationGridTableData');
-
       }
     }, 1000);
   };
   
-  
+
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
     setTimeout(() => {
@@ -203,10 +380,17 @@ const ProductEvaluationGridTable = () => {
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setProductEvaluationGrid(initialProductEvaluationGrid);
+    // setProductEvaluationGrid(initialProductEvaluationGrid);
+    const { baselineProductEvaluationGrid } = useProductEvaluationGridStore.getState();
+
+    // ✅ Console log to inspect baselineProductEvaluationGrid before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineProductEvaluationGrid:', baselineProductEvaluationGrid);
+
+    setProductEvaluationGrid(baselineProductEvaluationGrid);
+
 
     // 4. refresh the table
-    setCurrentOrder(productEvaluationGridTable);
+    setCurrentOrder(baselineProductEvaluationGrid);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
@@ -301,7 +485,10 @@ const ProductEvaluationGridTable = () => {
                     <div></div>
                   </div>
                   ) : (
-                    'Save Changes'
+                    <>
+                    <FontAwesomeIcon icon={faSave} className="mr-1" />
+                    Save Changes
+                    </>
                 )}
                 </button>
                 <button className="pure-red-btn" onClick={handleDischargeChanges}>
@@ -312,7 +499,10 @@ const ProductEvaluationGridTable = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discard'
+                      <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard Changes
+                      </>
                   )}
                 </button>
               </>
