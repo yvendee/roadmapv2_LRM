@@ -1316,7 +1316,7 @@ const DocumentVaultTable = () => {
                             credentials: 'include',
                             body: JSON.stringify({
                               organization: useLayoutSettingsStore.getState().organization,
-                              itemId: selectedUploadDriver.id,
+                              itemId: selectedUploadDriver.id?.toString(), // ensure it's string if backend expects string
                               pdflink: pdflink,
                             }),
                           });
@@ -1330,8 +1330,6 @@ const DocumentVaultTable = () => {
                           console.error('❌ Error saving PDF link to DB:', err);
                         }
                         
-
-                    
                       } catch (error) {
                         console.error(error);
                         setUploadError('Upload failed. Please try again.');
