@@ -90,6 +90,46 @@ const DocumentVaultTable = () => {
     }, 1000);
   };
 
+  const addDocumentVaultToBackend = async (cleanData) => {
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/document-vault/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          cleanData,
+        }),
+      });
+  
+      const result = await res.json();
+  
+      if (!res.ok) {
+        console.error('❌ Failed to add document to backend:', result.message);
+        return null;
+      }
+  
+      ENABLE_CONSOLE_LOGS &&
+        console.log('✅ Backend saved document:', result.newItem);
+  
+      return result.newItem;
+    } catch (error) {
+      console.error('❌ Error saving document to backend:', error);
+      return null;
+    }
+  };
+  
+
 
   const handleAddNewDocumentVaultTable = async () => {
     const file = newDocumentVaultTable?.file;
@@ -161,6 +201,8 @@ const DocumentVaultTable = () => {
   
       // Update Zustand store
       useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+
+      await addDocumentVaultToBackend(cleanData);
   
       // Reset modal and input state
       setShowAddModal(false);

@@ -6223,6 +6223,58 @@ Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_
     return response()->json($record->documentVaultData ?? []);
 });
 
+// ref: frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.jsx
+Route::post('/api/v1/document-vault/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'cleanData' => 'required|array',
+        'cleanData.projectName' => 'required|string',
+        'cleanData.date' => 'required|date',
+        'cleanData.link' => 'nullable|string',
+        'cleanData.uploadLink' => 'nullable|string',
+        'cleanData.pdflink' => 'nullable|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $cleanData = $validated['cleanData'];
+
+    $record = DocumentVault::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found.'], 404);
+    }
+
+    // Get existing data
+    $existing = $record->documentVaultData ?? [];
+
+    // Make sure it's an array
+    if (!is_array($existing)) {
+        $existing = [];
+    }
+
+    // Assign a new ID
+    $maxId = collect($existing)->pluck('id')->max() ?? 0;
+    $cleanData['id'] = $maxId + 1;
+
+    // Append new item
+    $existing[] = $cleanData;
+
+    // Save updated data
+    $record->documentVaultData = $existing;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Document added successfully.',
+        'newItem' => $cleanData,
+        'updatedData' => $existing,
+    ]);
+});
+
+
 
 // ref: frontend\src\components\15.members-departments\membersDepartments.jsx
 Route::get('/api/v1/members-departments', function (Request $request) use ($API_secure) {

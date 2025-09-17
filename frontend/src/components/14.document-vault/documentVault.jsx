@@ -15,6 +15,8 @@ const documentVault = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setUID = useOrganizationUIDStore((state) => state.setUID);
   const setDocumentVault = useDocumentVaultStore((state) => state.setDocumentVault);
+  const setBaselineDocumentVaultTable = useDocumentVaultStore((state) => state.setBaselineDocumentVaultTable)
+
 
   const { user, setUser } = useUserStore();
   const [error, setError] = useState(null);
@@ -86,6 +88,7 @@ const documentVault = () => {
           ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Document Vault:', json);
           if (Array.isArray(json)) {
             setDocumentVault(json);
+            setBaselineDocumentVaultTable(json);
           }
         } else if (res.status === 401) {
           navigate('/', { state: { loginError: 'Session Expired' } });
