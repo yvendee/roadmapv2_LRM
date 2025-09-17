@@ -202,12 +202,48 @@ const DocumentVaultTable = () => {
     setEditingCell({ id: null, field: null });
   };
 
+  const updateDocumentVaultData = async (documentVaultData) => {
+    const organization = useLayoutSettingsStore.getState().organization;
+    const encodedOrg = encodeURIComponent(organization);
   
-  const handleSaveChanges = () => {
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/document-vault/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organization,
+          documentVaultData,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      if (!res.ok) {
+        ENABLE_CONSOLE_LOGS && console.error('❌ Failed to update document vault data:', json.message);
+        return null;
+      }
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ Document vault data updated:', json.updatedData);
+      return json.updatedData;
+    } catch (error) {
+      console.error('❌ Error updating document vault data:', error);
+      return null;
+    }
+  };
+
+  
+  const handleSaveChanges = async () => {
 
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout( async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('DocumentVaultTableData');
@@ -231,6 +267,9 @@ const DocumentVaultTable = () => {
           ENABLE_CONSOLE_LOGS &&  console.log('Saved Document Vault Table (Reindexed):', reordered);
 
           setDocumentVault(reordered);
+
+          // Send to backend
+          await updateDocumentVaultData(reordered);
   
           // 3. Clear edited state (hides buttons)
           setIsEditing(false);
@@ -252,6 +291,10 @@ const DocumentVaultTable = () => {
 
         ENABLE_CONSOLE_LOGS &&  console.log('Saved Document Vault Table (reordered):', reordered);
         setDocumentVault(reordered);
+
+        // Send to backend
+        await updateDocumentVaultData(reordered);
+
         setIsEditing(false);
 
 

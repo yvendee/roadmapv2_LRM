@@ -6258,6 +6258,44 @@ Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_
     return response()->json($record->documentVaultData ?? []);
 });
 
+
+// ref: 
+Route::post('/api/v1/document-vault/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'documentVaultData' => 'required|array',
+        'documentVaultData.*.id' => 'required|integer',
+        'documentVaultData.*.projectName' => 'required|string',
+        'documentVaultData.*.date' => 'required|date',
+        'documentVaultData.*.link' => 'nullable|string',
+        'documentVaultData.*.viewLink' => 'nullable|string',
+        'documentVaultData.*.uploadLink' => 'nullable|string',
+        'documentVaultData.*.pdflink' => 'nullable|string',
+    ]);
+
+    $organization = $validated['organization'];
+    $newData = $validated['documentVaultData'];
+
+    $record = DocumentVault::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found for organization: ' . $organization], 404);
+    }
+
+    $record->documentVaultData = $newData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Document vault data updated successfully.',
+        'updatedData' => $newData,
+    ]);
+});
+
+
 // ref: frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.jsx
 Route::post('/api/v1/document-vault/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
