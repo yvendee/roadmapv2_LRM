@@ -155,10 +155,10 @@ const DocumentVaultTable = () => {
       ENABLE_CONSOLE_LOGS && console.log('✅ New Document Vault Table (no upload):', cleanData);
   
       // Update Zustand store
-      // useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
-      if (cleanData?.id) {
-        useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
-      }
+      useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+      // if (cleanData?.id) {
+      //   useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+      // }
       
   
       // Save to backend
