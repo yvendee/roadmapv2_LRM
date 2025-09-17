@@ -912,10 +912,10 @@ Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (
     $safeUid = $uid;
 
     // Sanitize projectName
-    $safeProjectName = Str::slug($projectName, '-');
-    // $safeProjectName = Str::slug($projectName, '-'); // initial slug
-    // $safeProjectName = preg_replace('/[^a-z0-9-]+/', '-', $safeProjectName); // replace anything else not a-z, 0-9, or dash with dash
-    // $safeProjectName = trim($safeProjectName, '-');
+    // $safeProjectName = Str::slug($projectName, '-');
+    $safeProjectName = Str::slug($projectName, '-'); // initial slug
+    $safeProjectName = preg_replace('/[^a-z0-9-]+/', '-', $safeProjectName); // replace anything else not a-z, 0-9, or dash with dash
+    $safeProjectName = trim($safeProjectName, '-');
 
 
     // Match the working pattern: uid first, then projectName
