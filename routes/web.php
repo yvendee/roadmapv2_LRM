@@ -923,7 +923,7 @@ Route::post('/api/file-upload/document-vault/{uid}/{projectName}', function (Req
 
     return response()->json([
         'message' => 'File uploaded successfully',
-        'path' => "storage/{$relativeDirectory}/{$fileName}",
+        'path' => "api/storage/{$relativeDirectory}/{$fileName}",
     ]);
 });
 
