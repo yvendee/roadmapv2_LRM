@@ -1263,7 +1263,7 @@ const DocumentVaultTable = () => {
                         const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
                     
                         // ✅ Step 2: Upload file to Laravel route
-                        const uploadUrl = `${API_URL}/api/v1/file-upload/document-vault/${uid}/${formattedProjectName}`;
+                        const uploadUrl = `${API_URL}/v1/file-upload/document-vault/${uid}/${formattedProjectName}`;
                     
                         const response = await fetch(uploadUrl, {
                           method: 'POST',
