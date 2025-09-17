@@ -59,7 +59,7 @@ const documentVault = () => {
 
         const data = await res.json();
 
-        const uid = data[organization]?.uid ?? null;
+        const uid = data.uid ?? null;
         setUID(uid);
 
         ENABLE_CONSOLE_LOGS && console.log('Organization UID fetched:', uid);
