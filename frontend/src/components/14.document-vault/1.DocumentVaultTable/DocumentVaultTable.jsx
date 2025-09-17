@@ -131,15 +131,13 @@ const DocumentVaultTable = () => {
   };
   
 
-
-
   const handleAddNewDocumentVaultTable = async () => {
     const file = newDocumentVaultTable?.file;
     const uid = useOrganizationUIDStore.getState().uid;
     const projectName = newDocumentVaultTable.projectName;
   
     try {
-      let pdflink = '-'; // Default if no file
+      let pdflink = '-';
       let uploadLink = '-';
   
       if (!uid) {
@@ -168,10 +166,9 @@ const DocumentVaultTable = () => {
         });
         const { csrf_token } = await csrfRes.json();
   
-        // Format projectName: lowercase + spaces to dash
         const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
-  
-        // Construct upload URL with both uid and formattedProjectName
+
+        
         const uploadUrl = `${API_URL}/file-upload/document-vault/${uid}/${formattedProjectName}`;
   
         const formData = new FormData();
@@ -186,12 +183,17 @@ const DocumentVaultTable = () => {
           credentials: 'include',
         });
   
-        if (!uploadRes.ok) throw new Error('File upload failed');
+        if (!uploadRes.ok) throw new Error('Upload failed.');
   
         const uploadData = await uploadRes.json();
   
-        // Use backend returned path for pdflink
+        // ✅ Set path returned from backend
         pdflink = uploadData.path;
+  
+        // Optional: extract filename if you need it
+        const uploadedFileName = file.name;
+  
+        // ✅ Store where it was uploaded
         uploadLink = `/file-upload/document-vault/${uid}/${formattedProjectName}`;
       }
   
@@ -224,6 +226,7 @@ const DocumentVaultTable = () => {
       alert('Failed to add document.');
     }
   };
+  
 
 
     // const handleAddNewDocumentVaultTable = async () => {
