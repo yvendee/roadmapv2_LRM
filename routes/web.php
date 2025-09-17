@@ -6316,11 +6316,12 @@ Route::post('/api/v1/document-vault/update-pdflink', function (Request $request)
     }
 
     // ✅ Validate input
-    $validated = $request->validate([
+    $request->validate([
         'organization' => 'required|string',
-        'itemId' => 'required|string',
+        'itemId' => 'required|integer',
         'pdflink' => 'required|url',
     ]);
+    
 
     // ✅ Find record by organizationName
     $vault = DocumentVault::where('organizationName', $validated['organization'])->first();

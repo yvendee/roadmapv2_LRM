@@ -155,7 +155,11 @@ const DocumentVaultTable = () => {
       ENABLE_CONSOLE_LOGS && console.log('✅ New Document Vault Table (no upload):', cleanData);
   
       // Update Zustand store
-      useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+      // useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+      if (cleanData?.id) {
+        useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
+      }
+      
   
       // Save to backend
       await addDocumentVaultToBackend(cleanData);
@@ -176,244 +180,7 @@ const DocumentVaultTable = () => {
     }
   };
 
-  
-  // const handleAddNewDocumentVaultTable = async () => {
-  //   const uid = useOrganizationUIDStore.getState().uid;
-  //   const { projectName, date, link } = newDocumentVaultTable;
-  
-  //   try {
-  //     if (!uid) {
-  //       alert('Organization UID not set.');
-  //       return;
-  //     }
-  
-  //     // No file upload: use default values
-  //     const uploadLink = '-';
-  //     const pdflink = '-';
-  
-  //     // Build clean document object
-  //     const cleanData = {
-  //       projectName,
-  //       date,
-  //       link,
-  //       uploadLink,
-  //       pdflink,
-  //     };
-  
-  //     console.log('✅ New Document Vault Table (no file):', cleanData);
-  
-  //     // Update Zustand store
-  //     useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
-  
-  //     // Save to backend
-  //     await addDocumentVaultToBackend(cleanData);
-  
-  //     // Reset modal and input state
-  //     setShowAddModal(false);
-  //     setNewDocumentVaultTable({
-  //       projectName: '',
-  //       date: '',
-  //       link: '',
-  //       uploadLink: '-',
-  //       pdflink: '',
-  //     });
-  
-  //   } catch (error) {
-  //     console.error('❌ Add without file failed:', error);
-  //     alert('Failed to add document.');
-  //   }
-  // };
-  
-  
-
-  // const handleAddNewDocumentVaultTable = async () => {
-  //   const file = newDocumentVaultTable?.file;
-  //   const uid = useOrganizationUIDStore.getState().uid;
-  //   const projectName = newDocumentVaultTable.projectName;
-  
-  //   try {
-  //     let pdflink = '-';
-  //     let uploadLink = '-';
-  
-  //     if (!uid) {
-  //       alert('Organization UID not set.');
-  //       return;
-  //     }
-  
-  //     if (file) {
-  //       const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx'];
-  //       const isAllowed = allowedExtensions.some((ext) =>
-  //         file.name.toLowerCase().endsWith(ext)
-  //       );
-  
-  //       if (!isAllowed) {
-  //         alert('Invalid file type.');
-  //         return;
-  //       }
-  
-  //       if (file.size > 10 * 1024 * 1024) {
-  //         alert('File size must be less than 10MB.');
-  //         return;
-  //       }
-  
-  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-  //         credentials: 'include',
-  //       });
-  //       const { csrf_token } = await csrfRes.json();
-  
-  //       const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
-
-        
-  //       const uploadUrl = `${API_URL}/file-upload/document-vault/${uid}/${formattedProjectName}`;
-  
-  //       const formData = new FormData();
-  //       formData.append('file', file);
-  
-  //       const uploadRes = await fetch(uploadUrl, {
-  //         method: 'POST',
-  //         headers: {
-  //           'X-CSRF-TOKEN': csrf_token,
-  //         },
-  //         body: formData,
-  //         credentials: 'include',
-  //       });
-  
-  //       if (!uploadRes.ok) throw new Error('Upload failed.');
-  
-  //       const uploadData = await uploadRes.json();
-  
-  //       // ✅ Set path returned from backend
-  //       pdflink = uploadData.path;
-  
-  //       // Optional: extract filename if you need it
-  //       const uploadedFileName = file.name;
-  
-  //       // ✅ Store where it was uploaded
-  //       uploadLink = `/file-upload/document-vault/${uid}/${formattedProjectName}`;
-  //     }
-  
-  //     const { date, link } = newDocumentVaultTable;
-  //     const cleanData = {
-  //       projectName,
-  //       date,
-  //       link,
-  //       uploadLink,
-  //       pdflink,
-  //     };
-  
-  //     console.log('✅ New Document Vault Table:', cleanData);
-  
-  //     useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
-  
-  //     await addDocumentVaultToBackend(cleanData);
-  
-  //     setShowAddModal(false);
-  //     setNewDocumentVaultTable({
-  //       projectName: '',
-  //       date: '',
-  //       link: '',
-  //       uploadLink: uploadLink,
-  //       pdflink: '',
-  //     });
-  
-  //   } catch (error) {
-  //     console.error('❌ Upload/Add failed:', error);
-  //     alert('Failed to add document.');
-  //   }
-  // };
-  
-
-
-  // const handleAddNewDocumentVaultTable = async () => {
-  //   const file = newDocumentVaultTable?.file;
-  //   const uid = useOrganizationUIDStore.getState().uid;
-  
-  //   try {
-  //     let pdflink = '-'; // Default value if no file
-  //     let uploadLink = uid ? `/file-upload/${uid}` : '-';
-  
-  //     // Only upload if file is selected
-  //     if (file) {
-  //       const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx'];
-  //       const isAllowed = allowedExtensions.some((ext) =>
-  //         file.name.toLowerCase().endsWith(ext)
-  //       );
-  
-  //       if (!isAllowed) {
-  //         alert('Invalid file type.');
-  //         return;
-  //       }
-  
-  //       if (file.size > 10 * 1024 * 1024) {
-  //         alert('File size must be less than 10MB.');
-  //         return;
-  //       }
-  
-  //       // Get CSRF token
-  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-  //         credentials: 'include',
-  //       });
-  //       const { csrf_token } = await csrfRes.json();
-  
-  //       const formData = new FormData();
-  //       formData.append('file', file);
-
-  //       if (!uid) {
-  //         alert('Organization UID not set.');
-  //         return;
-  //       }
-  
-  //       const uploadRes = await fetch(`${API_URL}/file-upload/${uid}`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'X-CSRF-TOKEN': csrf_token,
-  //         },
-  //         body: formData,
-  //         credentials: 'include',
-  //       });
-  
-  //       if (!uploadRes.ok) throw new Error('File upload failed');
-  
-  //       // Generate pdflink using uploaded file name
-  //       const filename = file.name;
-  //       uploadLink = `/file-upload/${uid}`;
-  //       pdflink = `/api/storage/${uid}/${filename}`;
-  //     }
-  
-  //     // Build clean document object
-  //     const { projectName, date, link } = newDocumentVaultTable;
-  //     const cleanData = {
-  //       projectName,
-  //       date,
-  //       link,
-  //       uploadLink,
-  //       pdflink,
-  //     };
-  
-  //     console.log('✅ New Document Vault Table:', cleanData);
-  
-  //     // Update Zustand store
-  //     useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
-
-  //     await addDocumentVaultToBackend(cleanData);
-  
-  //     // Reset modal and input state
-  //     setShowAddModal(false);
-  //     setNewDocumentVaultTable({
-  //       projectName: '',
-  //       date: '',
-  //       link: '',
-  //       uploadLink: uploadLink,
-  //       pdflink: '',
-  //     });
-  
-  //   } catch (error) {
-  //     console.error('❌ Upload/Add failed:', error);
-  //     alert('Failed to add document.');
-  //   }
-  // };
-  
-  
+    
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });
@@ -1305,6 +1072,14 @@ const DocumentVaultTable = () => {
                           });
                           const { csrf_token: csrfToken2 } = await csrfRes2.json();
                         
+                          // ✅ Grab organization and itemId
+                          const organization = useLayoutSettingsStore.getState().organization;
+                          const itemId = selectedUploadDriver.id;
+                        
+                          if (!organization || !itemId) {
+                            throw new Error('Missing organization or itemId');
+                          }
+                        
                           // ✅ Step 2: Call backend to update PDF link
                           const updateRes = await fetch(`${API_URL}/v1/document-vault/update-pdflink`, {
                             method: 'POST',
@@ -1315,8 +1090,8 @@ const DocumentVaultTable = () => {
                             },
                             credentials: 'include',
                             body: JSON.stringify({
-                              organization: useLayoutSettingsStore.getState().organization,
-                              itemId: selectedUploadDriver.id?.toString(), // ensure it's string if backend expects string
+                              organization: organization,
+                              itemId: parseInt(itemId, 10), // ensure it's an integer
                               pdflink: pdflink,
                             }),
                           });
@@ -1329,6 +1104,9 @@ const DocumentVaultTable = () => {
                         } catch (err) {
                           console.error('❌ Error saving PDF link to DB:', err);
                         }
+                        
+
+
                         
                       } catch (error) {
                         console.error(error);
