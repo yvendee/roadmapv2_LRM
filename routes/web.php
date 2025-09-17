@@ -908,8 +908,8 @@ Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (
     $safeUid = Str::slug($uid, ''); // remove all non-alphanumeric chars
     $safeProjectName = Str::slug($projectName, '-'); // lowercase, spaces to dash
 
-    // Build storage directory path
-    $relativeDirectory = "document-vault/{$safeProjectName}/{$safeUid}";
+    // Build storage directory path with correct order (uid first, then projectName)
+    $relativeDirectory = "document-vault/{$safeUid}/{$safeProjectName}";
     $storagePath = storage_path("app/public/{$relativeDirectory}");
 
     if (!File::exists($storagePath)) {
@@ -926,6 +926,7 @@ Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (
         'path' => "storage/{$relativeDirectory}/{$fileName}",
     ]);
 });
+
 
 
 Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', function (Request $request, $uid, $formattedText) {
