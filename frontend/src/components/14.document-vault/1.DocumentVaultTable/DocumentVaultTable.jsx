@@ -1069,9 +1069,12 @@ const DocumentVaultTable = () => {
                           throw new Error('Missing UID or project name');
                         }
                     
-                        // ✅ Format projectName for URL (lowercase + dash)
-                        const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
-                    
+                        // ✅ Sanitize projectName: lowercase + replace anything not a-z0-9 or dash with dash
+                        const formattedProjectName = projectName
+                          .toLowerCase()
+                          .replace(/[^a-z0-9-]+/g, '-')
+                          .replace(/^-+|-+$/g, ''); // trim leading/trailing dashes if any
+
                         // ✅ Step 2: Upload file to Laravel route
                         const uploadUrl = `${API_URL}/v1/file-upload/document-vault/${uid}/${formattedProjectName}`;
                     
