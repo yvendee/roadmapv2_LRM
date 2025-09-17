@@ -895,6 +895,39 @@ Route::post('/api/file-upload/{path}', function (Request $request, $path) {
 })->where('path', '.*');
 
 
+
+// ref: 
+Route::post('/api/file-upload/document-vault/{uid}/{projectName}', function (Request $request, $uid, $projectName) {
+    if (!$request->hasFile('file')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    $file = $request->file('file');
+
+    // Sanitize uid and projectName
+    $safeUid = Str::slug($uid, ''); // remove all non-alphanumeric chars
+    $safeProjectName = Str::slug($projectName, '-'); // lowercase, spaces to dash
+
+    // Build storage directory path
+    $relativeDirectory = "document-vault/{$safeProjectName}/{$safeUid}";
+    $storagePath = storage_path("app/public/{$relativeDirectory}");
+
+    if (!File::exists($storagePath)) {
+        File::makeDirectory($storagePath, 0755, true);
+    }
+
+    $fileName = $file->getClientOriginalName();
+
+    // Store file in the directory with original file name
+    Storage::disk('public')->putFileAs($relativeDirectory, $file, $fileName);
+
+    return response()->json([
+        'message' => 'File uploaded successfully',
+        'path' => "storage/{$relativeDirectory}/{$fileName}",
+    ]);
+});
+
+
 Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', function (Request $request, $uid, $formattedText) {
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
