@@ -98,30 +98,6 @@ const documentVault = () => {
       });
   }, [organization]);
 
-  // useEffect(() => {
-  //   fetch(`${API_URL}/mock-response4`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     }
-  //   })
-  //   .then(async (res) => {
-  //     const json = await res.json();
-  //     if (res.ok) {
-  //       setUser(json.data);
-  //     } else if (res.status === 401) {
-  //       navigate('/', { state: {loginError: 'Session Expired'} });
-  //     } else {
-  //       setError(json.message || 'Failed to fetch user data');
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error('API error:', err);
-  //     setError('Something went wrong.');
-  //   });
-  // }, [setUser, navigate]);
-
   return (
 
     <div className="main-content-view">

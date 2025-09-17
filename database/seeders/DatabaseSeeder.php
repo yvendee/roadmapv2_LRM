@@ -56,13 +56,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(ToolsIssuesTableSeeder::class);
         // $this->call(ToolsVictoriesSeeder::class);
         // $this->call(ToolsBigIdeasSeeder::class);
-        $this->call(ToolsProductEvaluationGridsSeeder::class);
         // $this->call(ToolsProductEvaluationGridsSeeder::class);
+        $this->call(DocumentVaultSeeder::class);
         
-        
-        
-        
-    
     }
 
 

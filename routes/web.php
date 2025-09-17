@@ -52,6 +52,7 @@ use App\Models\ToolsIssue;
 use App\Models\ToolsVictory;
 use App\Models\ToolsBigIdea;
 use App\Models\ToolsProductEvaluationGrid;
+use App\Models\DocumentVault;
 
 
 
@@ -6082,120 +6083,146 @@ Route::post('/api/v1/tools/product-evaluation-grid/add', function (Request $requ
 });
 
 
+// // ref: frontend\src\components\14.document-vault\documentVault.jsx
+// Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'projectName' => 'Momentum OS',
+//                 'date' => '2025-03-28',
+//                 'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//                 'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'projectName' => 'Client Delivery System',
+//                 'date' => '2025-03-29',
+//                 'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//                 'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'projectName' => 'Momentum Hub',
+//                 'date' => '2025-03-30',
+//                 'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//                 'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'projectName' => 'Lead Gen System',
+//                 'date' => '2025-03-31',
+//                 'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//                 'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'projectName' => '1% Genius v3',
+//                 'date' => '2025-04-01',
+//                 'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
+//                 'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
+//             ],
+//         ],
+    
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'projectName' => 'Onboarding System Revamp',
+//                 'date' => '2025-04-02',
+//                 'link' => 'https://drive.google.com/file/d/2aExampleIdCCU1/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/2aExampleIdCCU1/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/collins/onboarding-revamp',
+//                 'pdflink' => '/storage/collins/onboarding-revamp/project.pdf',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'projectName' => 'Internal Dashboard Launch',
+//                 'date' => '2025-04-03',
+//                 'link' => 'https://drive.google.com/file/d/2bExampleIdCCU2/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/2bExampleIdCCU2/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/collins/internal-dashboard',
+//                 'pdflink' => '/storage/collins/internal-dashboard/project.pdf',
+//             ],
+//             [
+//                 'id' => 3,
+//                 'projectName' => 'Customer Support Automation',
+//                 'date' => '2025-04-04',
+//                 'link' => 'https://drive.google.com/file/d/2cExampleIdCCU3/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/2cExampleIdCCU3/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/collins/support-automation',
+//                 'pdflink' => '/storage/collins/support-automation/project.pdf',
+//             ],
+//             [
+//                 'id' => 4,
+//                 'projectName' => 'Compliance Tracker 2.0',
+//                 'date' => '2025-04-05',
+//                 'link' => 'https://drive.google.com/file/d/2dExampleIdCCU4/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/2dExampleIdCCU4/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/collins/compliance-tracker',
+//                 'pdflink' => '/storage/collins/compliance-tracker/project.pdf',
+//             ],
+//             [
+//                 'id' => 5,
+//                 'projectName' => 'Mobile App Security Upgrade',
+//                 'date' => '2025-04-06',
+//                 'link' => 'https://drive.google.com/file/d/2eExampleIdCCU5/view?usp=sharing',
+//                 'viewLink' => 'https://drive.google.com/file/d/2eExampleIdCCU5/view?usp=sharing',
+//                 'uploadLink' => '/file-upload/collins/mobile-security',
+//                 'pdflink' => '/storage/collins/mobile-security/project.pdf',
+//             ],
+//         ],
+    
+//         'Test Skeleton Loading' => [],
+//     ];
+    
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
 // ref: frontend\src\components\14.document-vault\documentVault.jsx
 Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+
         $user = $request->session()->get('user');
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'projectName' => 'Momentum OS',
-                'date' => '2025-03-28',
-                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
-            ],
-            [
-                'id' => 2,
-                'projectName' => 'Client Delivery System',
-                'date' => '2025-03-29',
-                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
-            ],
-            [
-                'id' => 3,
-                'projectName' => 'Momentum Hub',
-                'date' => '2025-03-30',
-                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
-            ],
-            [
-                'id' => 4,
-                'projectName' => 'Lead Gen System',
-                'date' => '2025-03-31',
-                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
-            ],
-            [
-                'id' => 5,
-                'projectName' => '1% Genius v3',
-                'date' => '2025-04-01',
-                'link' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/1OsPZ8-DMcW3IcYsbmy1J17iDSnp9_w0W/view?usp=sharing',
-                'uploadLink' => '/file-upload/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p',
-                'pdflink' => '/storage/4uvvjdwVWJRBopUMhifaLxoA9jm6MCvDzkBhOm5p/test.pdf',
-            ],
-        ],
-    
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'projectName' => 'Onboarding System Revamp',
-                'date' => '2025-04-02',
-                'link' => 'https://drive.google.com/file/d/2aExampleIdCCU1/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/2aExampleIdCCU1/view?usp=sharing',
-                'uploadLink' => '/file-upload/collins/onboarding-revamp',
-                'pdflink' => '/storage/collins/onboarding-revamp/project.pdf',
-            ],
-            [
-                'id' => 2,
-                'projectName' => 'Internal Dashboard Launch',
-                'date' => '2025-04-03',
-                'link' => 'https://drive.google.com/file/d/2bExampleIdCCU2/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/2bExampleIdCCU2/view?usp=sharing',
-                'uploadLink' => '/file-upload/collins/internal-dashboard',
-                'pdflink' => '/storage/collins/internal-dashboard/project.pdf',
-            ],
-            [
-                'id' => 3,
-                'projectName' => 'Customer Support Automation',
-                'date' => '2025-04-04',
-                'link' => 'https://drive.google.com/file/d/2cExampleIdCCU3/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/2cExampleIdCCU3/view?usp=sharing',
-                'uploadLink' => '/file-upload/collins/support-automation',
-                'pdflink' => '/storage/collins/support-automation/project.pdf',
-            ],
-            [
-                'id' => 4,
-                'projectName' => 'Compliance Tracker 2.0',
-                'date' => '2025-04-05',
-                'link' => 'https://drive.google.com/file/d/2dExampleIdCCU4/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/2dExampleIdCCU4/view?usp=sharing',
-                'uploadLink' => '/file-upload/collins/compliance-tracker',
-                'pdflink' => '/storage/collins/compliance-tracker/project.pdf',
-            ],
-            [
-                'id' => 5,
-                'projectName' => 'Mobile App Security Upgrade',
-                'date' => '2025-04-06',
-                'link' => 'https://drive.google.com/file/d/2eExampleIdCCU5/view?usp=sharing',
-                'viewLink' => 'https://drive.google.com/file/d/2eExampleIdCCU5/view?usp=sharing',
-                'uploadLink' => '/file-upload/collins/mobile-security',
-                'pdflink' => '/storage/collins/mobile-security/project.pdf',
-            ],
-        ],
-    
-        'Test Skeleton Loading' => [],
-    ];
-    
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization query parameter'], 400);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    $record = DocumentVault::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([]);
+    }
+
+    return response()->json($record->documentVaultData ?? []);
 });
+
 
 // ref: frontend\src\components\15.members-departments\membersDepartments.jsx
 Route::get('/api/v1/members-departments', function (Request $request) use ($API_secure) {
