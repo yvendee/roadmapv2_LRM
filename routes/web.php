@@ -6309,6 +6309,48 @@ Route::post('/api/v1/document-vault/add', function (Request $request) use ($API_
     ]);
 });
 
+Route::post('/api/v1/document-vault/update-pdflink', function (Request $request) use ($API_secure) {
+    // ✅ Secure session check
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // ✅ Validate input
+    $validated = $request->validate([
+        'organization' => 'required|string',
+        'itemId' => 'required|string',
+        'pdflink' => 'required|url',
+    ]);
+
+    // ✅ Find record by organizationName
+    $vault = DocumentVault::where('organizationName', $validated['organization'])->first();
+
+    if (!$vault) {
+        return response()->json(['message' => 'Document Vault not found'], 404);
+    }
+
+    // ✅ Get and update the JSON data
+    $data = $vault->documentVaultData ?? [];
+    $found = false;
+
+    foreach ($data as &$item) {
+        if (isset($item['id']) && $item['id'] === $validated['itemId']) {
+            $item['pdflink'] = $validated['pdflink'];
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        return response()->json(['message' => 'Item not found'], 404);
+    }
+
+    // ✅ Save the updated data
+    $vault->documentVaultData = $data;
+    $vault->save();
+
+    return response()->json(['message' => 'PDF link updated successfully']);
+});
 
 
 // ref: frontend\src\components\15.members-departments\membersDepartments.jsx

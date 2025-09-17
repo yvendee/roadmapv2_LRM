@@ -1294,6 +1294,43 @@ const DocumentVaultTable = () => {
                     
                         // ✅ Optional: Debug log
                         ENABLE_CONSOLE_LOGS && console.log('📄 Upload complete:', pdflink);
+
+
+
+                        // ✅ After setting pdflink and updating frontend state...
+                        try {
+                          // ✅ Step 1: Get CSRF token
+                          const csrfRes2 = await fetch(`${API_URL}/csrf-token`, {
+                            credentials: 'include',
+                          });
+                          const { csrf_token: csrfToken2 } = await csrfRes2.json();
+                        
+                          // ✅ Step 2: Call backend to update PDF link
+                          const updateRes = await fetch(`${API_URL}/v1/document-vault/update-pdflink`, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json',
+                              'X-CSRF-TOKEN': csrfToken2,
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify({
+                              organization: useLayoutSettingsStore.getState().organization,
+                              itemId: selectedUploadDriver.id,
+                              pdflink: pdflink,
+                            }),
+                          });
+                        
+                          if (!updateRes.ok) throw new Error('Failed to update pdflink in DB');
+                        
+                          const updateJson = await updateRes.json();
+                          ENABLE_CONSOLE_LOGS && console.log('✅ PDF link updated in DB:', updateJson.message);
+                        
+                        } catch (err) {
+                          console.error('❌ Error saving PDF link to DB:', err);
+                        }
+                        
+
                     
                       } catch (error) {
                         console.error(error);
@@ -1301,6 +1338,8 @@ const DocumentVaultTable = () => {
                       } finally {
                         setUploading(false);
                       }
+
+                      
                     }}
                     
 
