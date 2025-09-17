@@ -1280,7 +1280,7 @@ const DocumentVaultTable = () => {
                         const uploadedFileName = uploadFile.name;
                     
                         // ✅ Build correct file path for accessing
-                        const pdflink = `${API_URL}/storage/document-vault/${formattedProjectName}/${uid}/${uploadedFileName}`;
+                        const pdflink = `${API_URL}/storage/document-vault/${uid}/${formattedProjectName}/${uploadedFileName}`;
                     
                         // ✅ Update table state
                         const updatedData = documentVaultTable.map((doc) =>
