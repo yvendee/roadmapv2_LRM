@@ -1252,7 +1252,7 @@ const DocumentVaultTable = () => {
                         const { csrf_token } = await csrfRes.json();
                     
                         // ✅ Extract info from selectedUploadDriver
-                        const uid = selectedUploadDriver?.uid;
+                        const uid = useOrganizationUIDStore.getState().uid;
                         const projectName = selectedUploadDriver?.projectName;
                     
                         if (!uid || !projectName) {
