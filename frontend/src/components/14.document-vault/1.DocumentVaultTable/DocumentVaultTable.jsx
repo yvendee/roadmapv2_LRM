@@ -131,101 +131,6 @@ const DocumentVaultTable = () => {
   };
   
 
-  // const handleAddNewDocumentVaultTable = async () => {
-  //   const file = newDocumentVaultTable?.file;
-  //   const uid = useOrganizationUIDStore.getState().uid;
-  //   const projectName = newDocumentVaultTable.projectName;
-  
-  //   try {
-  //     let pdflink = '-';
-  //     let uploadLink = '-';
-  
-  //     if (!uid) {
-  //       alert('Organization UID not set.');
-  //       return;
-  //     }
-  
-  //     if (file) {
-  //       const allowedExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx'];
-  //       const isAllowed = allowedExtensions.some((ext) =>
-  //         file.name.toLowerCase().endsWith(ext)
-  //       );
-  
-  //       if (!isAllowed) {
-  //         alert('Invalid file type.');
-  //         return;
-  //       }
-  
-  //       if (file.size > 10 * 1024 * 1024) {
-  //         alert('File size must be less than 10MB.');
-  //         return;
-  //       }
-  
-  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-  //         credentials: 'include',
-  //       });
-  //       const { csrf_token } = await csrfRes.json();
-  
-  //       const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
-  //       const uploadUrl = `${API_URL}/file-upload/document-vault/${uid}/${formattedProjectName}`;
-  
-  //       const formData = new FormData();
-  //       formData.append('file', file);
-  
-  //       const uploadRes = await fetch(uploadUrl, {
-  //         method: 'POST',
-  //         headers: {
-  //           'X-CSRF-TOKEN': csrf_token,
-  //         },
-  //         body: formData,
-  //         credentials: 'include',
-  //       });
-  
-  //       if (!uploadRes.ok) throw new Error('Upload failed.');
-  
-  //       const uploadData = await uploadRes.json();
-  
-  //       // ✅ Use original filename for building pdflink
-  //       const uploadedFileName = file.name;
-  
-  //       // ✅ Build expected API URL for the file
-  //       pdflink = `${API_URL}/api/storage/document-vault/${uid}/${formattedProjectName}/${uploadedFileName}`;
-  
-  //       // ✅ Track where it was uploaded
-  //       uploadLink = `/file-upload/document-vault/${uid}/${formattedProjectName}`;
-  //     }
-  
-  //     const { date, link } = newDocumentVaultTable;
-  //     const cleanData = {
-  //       projectName,
-  //       date,
-  //       link,
-  //       uploadLink,
-  //       pdflink,
-  //     };
-  
-  //     console.log('✅ New Document Vault Table:', cleanData);
-  
-  //     useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
-  
-  //     await addDocumentVaultToBackend(cleanData);
-  
-  //     setShowAddModal(false);
-  //     setNewDocumentVaultTable({
-  //       projectName: '',
-  //       date: '',
-  //       link: '',
-  //       uploadLink: uploadLink,
-  //       pdflink: '',
-  //     });
-  
-  //   } catch (error) {
-  //     console.error('❌ Upload/Add failed:', error);
-  //     alert('Failed to add document.');
-  //   }
-  // };
-  
-
   const handleAddNewDocumentVaultTable = async () => {
     const file = newDocumentVaultTable?.file;
     const uid = useOrganizationUIDStore.getState().uid;
@@ -263,7 +168,7 @@ const DocumentVaultTable = () => {
   
         const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
 
-
+        
         const uploadUrl = `${API_URL}/file-upload/document-vault/${uid}/${formattedProjectName}`;
   
         const formData = new FormData();
@@ -281,10 +186,6 @@ const DocumentVaultTable = () => {
         if (!uploadRes.ok) throw new Error('Upload failed.');
   
         const uploadData = await uploadRes.json();
-
-        // // ✅ Build expected API URL for the file
-        // pdflink = `${API_URL}/api/storage/document-vault/${uid}/${formattedProjectName}/${uploadedFileName}`;
-  
   
         // ✅ Set path returned from backend
         pdflink = uploadData.path;
@@ -328,7 +229,7 @@ const DocumentVaultTable = () => {
   
 
 
-  // const handleAddNewDocumentVaultTable = async () => {
+    // const handleAddNewDocumentVaultTable = async () => {
   //   const file = newDocumentVaultTable?.file;
   //   const uid = useOrganizationUIDStore.getState().uid;
   
