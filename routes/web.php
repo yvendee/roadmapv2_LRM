@@ -6309,34 +6309,40 @@ Route::post('/api/v1/document-vault/add', function (Request $request) use ($API_
     ]);
 });
 
+
 Route::post('/api/v1/document-vault/update-pdflink', function (Request $request) use ($API_secure) {
-    // ✅ Secure session check
+    // Security check
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    // ✅ Validate input
-    $request->validate([
+    $validated = $request->validate([
         'organization' => 'required|string',
         'itemId' => 'required|integer',
-        'pdflink' => 'required|url',
+        'pdflink' => 'required|string', // string instead of url for flexibility
     ]);
-    
 
-    // ✅ Find record by organizationName
-    $vault = DocumentVault::where('organizationName', $validated['organization'])->first();
+    $organization = $validated['organization'];
+    $itemId = $validated['itemId'];
+    $pdflink = $validated['pdflink'];
 
-    if (!$vault) {
-        return response()->json(['message' => 'Document Vault not found'], 404);
+    $record = DocumentVault::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found.'], 404);
     }
 
-    // ✅ Get and update the JSON data
-    $data = $vault->documentVaultData ?? [];
+    $data = $record->documentVaultData ?? [];
+
+    if (!is_array($data)) {
+        $data = [];
+    }
+
     $found = false;
 
     foreach ($data as &$item) {
-        if (isset($item['id']) && $item['id'] === $validated['itemId']) {
-            $item['pdflink'] = $validated['pdflink'];
+        if (isset($item['id']) && $item['id'] === $itemId) {
+            $item['pdflink'] = $pdflink;
             $found = true;
             break;
         }
@@ -6346,12 +6352,12 @@ Route::post('/api/v1/document-vault/update-pdflink', function (Request $request)
         return response()->json(['message' => 'Item not found'], 404);
     }
 
-    // ✅ Save the updated data
-    $vault->documentVaultData = $data;
-    $vault->save();
+    $record->documentVaultData = $data;
+    $record->save();
 
     return response()->json(['message' => 'PDF link updated successfully']);
 });
+
 
 
 // ref: frontend\src\components\15.members-departments\membersDepartments.jsx
