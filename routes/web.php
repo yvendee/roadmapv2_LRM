@@ -897,7 +897,7 @@ Route::post('/api/file-upload/{path}', function (Request $request, $path) {
 
 
 // ref: 
-Route::post('/api/file-upload/document-vault/{uid}/{projectName}', function (Request $request, $uid, $projectName) {
+Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (Request $request, $uid, $projectName) {
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
     }
@@ -923,7 +923,7 @@ Route::post('/api/file-upload/document-vault/{uid}/{projectName}', function (Req
 
     return response()->json([
         'message' => 'File uploaded successfully',
-        'path' => "api/storage/{$relativeDirectory}/{$fileName}",
+        'path' => "storage/{$relativeDirectory}/{$fileName}",
     ]);
 });
 
