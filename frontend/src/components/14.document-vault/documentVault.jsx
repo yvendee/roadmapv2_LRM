@@ -26,6 +26,9 @@ const documentVault = () => {
   useEffect(() => {
     if (!organization) return;
 
+    console.log('Fetching UID for organization:', organization);
+
+
     (async () => {
       try {
         // Get CSRF token
@@ -59,7 +62,7 @@ const documentVault = () => {
 
         const data = await res.json();
 
-        const uid = data.uid ?? null;
+        const uid = data[organization]?.uid ?? null;
         setUID(uid);
 
         ENABLE_CONSOLE_LOGS && console.log('Organization UID fetched:', uid);
