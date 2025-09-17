@@ -904,38 +904,31 @@ Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (
 
     $file = $request->file('file');
 
+    // Sanitize uid and projectName
     $safeUid = Str::slug($uid, '');
-    $safeProjectName = Str::slug($projectName, '-');
+    $safeProjectName = Str::slug($projectName, '-'); // initial slug
+    $safeProjectName = preg_replace('/[^a-z0-9-]+/', '-', $safeProjectName); // replace anything else not a-z, 0-9, or dash with dash
+    $safeProjectName = trim($safeProjectName, '-');
 
+
+    // Match the working pattern: uid first, then projectName
     $relativeDirectory = "document-vault/{$safeUid}/{$safeProjectName}";
     $storagePath = storage_path("app/public/{$relativeDirectory}");
 
-    Log::info("Storage path: " . $storagePath);
-
     if (!File::exists($storagePath)) {
-        $created = File::makeDirectory($storagePath, 0755, true);
-        Log::info("Directory created? " . ($created ? "Yes" : "No"));
-        if (!$created) {
-            return response()->json(['error' => 'Failed to create directory'], 500);
-        }
-    } else {
-        Log::info("Directory already exists.");
+        File::makeDirectory($storagePath, 0755, true);
     }
 
     $fileName = $file->getClientOriginalName();
 
-    $saved = Storage::disk('public')->putFileAs($relativeDirectory, $file, $fileName);
-    Log::info("File saved: " . ($saved ? "Yes" : "No"));
-
-    if (!$saved) {
-        return response()->json(['error' => 'Failed to save file'], 500);
-    }
+    Storage::disk('public')->putFileAs($relativeDirectory, $file, $fileName);
 
     return response()->json([
         'message' => 'File uploaded successfully',
         'path' => "storage/{$relativeDirectory}/{$fileName}",
     ]);
 });
+
 
 
 
