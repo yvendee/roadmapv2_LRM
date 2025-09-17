@@ -26,8 +26,7 @@ const documentVault = () => {
   useEffect(() => {
     if (!organization) return;
 
-    console.log('Fetching UID for organization:', organization);
-
+    ENABLE_CONSOLE_LOGS && console.log('Fetching UID for organization:', organization);
 
     (async () => {
       try {

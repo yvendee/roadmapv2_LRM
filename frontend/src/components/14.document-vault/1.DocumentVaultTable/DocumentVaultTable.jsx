@@ -120,8 +120,7 @@ const DocumentVaultTable = () => {
         return null;
       }
   
-      ENABLE_CONSOLE_LOGS &&
-        console.log('✅ Backend saved document:', result.newItem);
+      ENABLE_CONSOLE_LOGS && console.log('✅ Backend saved document:', result.newItem);
   
       return result.newItem;
     } catch (error) {
@@ -153,7 +152,7 @@ const DocumentVaultTable = () => {
         pdflink,
       };
   
-      console.log('✅ New Document Vault Table (no upload):', cleanData);
+      ENABLE_CONSOLE_LOGS && console.log('✅ New Document Vault Table (no upload):', cleanData);
   
       // Update Zustand store
       useDocumentVaultStore.getState().pushDocumentVaultTableField(cleanData);
@@ -1182,6 +1181,61 @@ const DocumentVaultTable = () => {
                     //   }
                     // }}
 
+                    // onClick={async () => {
+                    //   if (!uploadFile || !selectedUploadDriver) return;
+                    
+                    //   setUploading(true);
+                    
+                    //   const formData = new FormData();
+                    //   formData.append('file', uploadFile);
+                    
+                    //   try {
+                    //     // ✅ Step 1: Get CSRF token
+                    //     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+                    //       credentials: 'include',
+                    //     });
+                    //     const { csrf_token } = await csrfRes.json();
+                    
+                    //     // ✅ Step 2: Upload file
+                    //     const response = await fetch(`${API_URL}${selectedUploadDriver.uploadLink}`, {
+                    //       method: 'POST',
+                    //       headers: {
+                    //         'X-CSRF-TOKEN': csrf_token,
+                    //       },
+                    //       credentials: 'include',
+                    //       body: formData,
+                    //     });
+                    
+                    //     if (!response.ok) throw new Error('Upload failed.');
+                    
+                    //     // const result = await response.json();
+                    //     const uploadedFileName = uploadFile.name;
+                    //     const uploadPath = selectedUploadDriver.uploadLink.replace('/file-upload/', '');
+                    //     const newPdfLink = `${API_URL}/storage/${uploadPath}/${uploadedFileName}`;
+                    
+                    //     // ✅ Step 3: Update pdflink in the correct item
+                    //     const updatedData = documentVaultTable.map((doc) =>
+                    //       doc.id === selectedUploadDriver.id
+                    //         ? { ...doc, pdflink: newPdfLink }
+                    //         : doc
+                    //     );
+
+                    //     // ✅ Log updated store data
+                    //     const updatedStoreData = useDocumentVaultStore.getState().documentVaultTable;
+                    //     console.log('📦 Updated Document Vault Store:', updatedStoreData);
+
+                    
+                    //     setDocumentVault(updatedData);
+                    //     setUploadSuccess(true);
+                    
+                    //   } catch (error) {
+                    //     console.error(error);
+                    //     setUploadError('Upload failed. Please try again.');
+                    //   } finally {
+                    //     setUploading(false);
+                    //   }
+                    // }}
+
                     onClick={async () => {
                       if (!uploadFile || !selectedUploadDriver) return;
                     
@@ -1197,8 +1251,21 @@ const DocumentVaultTable = () => {
                         });
                         const { csrf_token } = await csrfRes.json();
                     
-                        // ✅ Step 2: Upload file
-                        const response = await fetch(`${API_URL}${selectedUploadDriver.uploadLink}`, {
+                        // ✅ Extract info from selectedUploadDriver
+                        const uid = selectedUploadDriver?.uid;
+                        const projectName = selectedUploadDriver?.projectName;
+                    
+                        if (!uid || !projectName) {
+                          throw new Error('Missing UID or project name');
+                        }
+                    
+                        // ✅ Format projectName for URL (lowercase + dash)
+                        const formattedProjectName = projectName.toLowerCase().replace(/\s+/g, '-');
+                    
+                        // ✅ Step 2: Upload file to Laravel route
+                        const uploadUrl = `${API_URL}/api/v1/file-upload/document-vault/${uid}/${formattedProjectName}`;
+                    
+                        const response = await fetch(uploadUrl, {
                           method: 'POST',
                           headers: {
                             'X-CSRF-TOKEN': csrf_token,
@@ -1209,25 +1276,24 @@ const DocumentVaultTable = () => {
                     
                         if (!response.ok) throw new Error('Upload failed.');
                     
-                        // const result = await response.json();
+                        const uploadResult = await response.json();
                         const uploadedFileName = uploadFile.name;
-                        const uploadPath = selectedUploadDriver.uploadLink.replace('/file-upload/', '');
-                        const newPdfLink = `${API_URL}/storage/${uploadPath}/${uploadedFileName}`;
                     
-                        // ✅ Step 3: Update pdflink in the correct item
+                        // ✅ Build correct file path for accessing
+                        const pdflink = `${API_URL}/api/storage/document-vault/${formattedProjectName}/${uid}/${uploadedFileName}`;
+                    
+                        // ✅ Update table state
                         const updatedData = documentVaultTable.map((doc) =>
                           doc.id === selectedUploadDriver.id
-                            ? { ...doc, pdflink: newPdfLink }
+                            ? { ...doc, pdflink }
                             : doc
                         );
-
-                        // ✅ Log updated store data
-                        const updatedStoreData = useDocumentVaultStore.getState().documentVaultTable;
-                        console.log('📦 Updated Document Vault Store:', updatedStoreData);
-
                     
                         setDocumentVault(updatedData);
                         setUploadSuccess(true);
+                    
+                        // ✅ Optional: Debug log
+                        ENABLE_CONSOLE_LOGS && console.log('📄 Upload complete:', pdflink);
                     
                       } catch (error) {
                         console.error(error);
@@ -1236,6 +1302,7 @@ const DocumentVaultTable = () => {
                         setUploading(false);
                       }
                     }}
+                    
 
                     
                   >
