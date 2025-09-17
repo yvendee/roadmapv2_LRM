@@ -904,8 +904,14 @@ Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (
 
     $file = $request->file('file');
 
-    // Sanitize uid and projectName
-    $safeUid = Str::slug($uid, '');
+    // // Sanitize uid and projectName
+    // $safeUid = Str::slug($uid, '');
+    // $safeProjectName = Str::slug($projectName, '-');
+
+    // Keep UID as-is (UUID with dashes)
+    $safeUid = $uid;
+
+    // Sanitize projectName
     $safeProjectName = Str::slug($projectName, '-');
     // $safeProjectName = Str::slug($projectName, '-'); // initial slug
     // $safeProjectName = preg_replace('/[^a-z0-9-]+/', '-', $safeProjectName); // replace anything else not a-z, 0-9, or dash with dash
