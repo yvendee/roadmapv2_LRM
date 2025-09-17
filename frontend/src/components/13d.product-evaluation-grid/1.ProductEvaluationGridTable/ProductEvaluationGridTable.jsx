@@ -10,7 +10,7 @@ import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './ProductEvaluationGridTable.css';
 
 const ProductEvaluationGridTable = () => {
-  const organization = useLayoutSettingsStore.getState().organization;
+  // const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
