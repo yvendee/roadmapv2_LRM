@@ -414,12 +414,12 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
     }
 
     return response()->json([
-        $organization->organization_name => [
-            'uid' => $organization->uid,
+        $organization->organizationName => [
+            'uid' => $organization->u_id,
         ],
     ]);
-    
 });
+
 
 
 
