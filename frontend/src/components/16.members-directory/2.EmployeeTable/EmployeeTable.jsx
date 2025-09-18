@@ -98,36 +98,36 @@ const EmployeeTable = () => {
     }, 1000);
   };
 
-    const handleAddNewMembersDepartmentsTable = () => {
-      ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
+  // const handleAddNewMembersDepartmentsTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
 
-      // 2. Hide Save / Discharge
-      setIsEditing(false);
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
 
-    
-      // 3. Remove localStorage temp data
-      localStorage.removeItem('NewMembersDirectoryTableData');
-    
-      // 4. Push to Zustand store
-      pushMembersDepartmentsTableField(newMembersDepartmentsTable);
-    
-      // 5. Optionally: force-refresh the UI by resetting store (if needed)
-      // Not required unless you deep reset from localStorage elsewhere
-    
-      // Close modal
-      setShowAddModal(false);
-    
-      // Reset form input
-      setNewMembersDepartmentsTable({     
-        fullname: '',
-        company: '',
-        email: '',
-        department: '',
-        memberAccess: '',
-        canLogin: '',
-      });
+  
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('NewMembersDirectoryTableData');
+  
+  //   // 4. Push to Zustand store
+  //   pushMembersDepartmentsTableField(newMembersDepartmentsTable);
+  
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
+  
+  //   // Close modal
+  //   setShowAddModal(false);
+  
+  //   // Reset form input
+  //   setNewMembersDepartmentsTable({     
+  //     fullname: '',
+  //     company: '',
+  //     email: '',
+  //     department: '',
+  //     memberAccess: '',
+  //     canLogin: '',
+  //   });
 
-    };
+  // };
 
 
   // const handleAddNewMembersDepartmentsTable = async () => {
@@ -185,6 +185,89 @@ const EmployeeTable = () => {
   //     alert('Error occurred while adding new member.');
   //   }
   // };
+  
+
+
+  const handleAddNewMembersDepartmentsTable = async () => {
+    ENABLE_CONSOLE_LOGS && console.log(
+      'New Members Directory Table',
+      JSON.stringify(newMembersDepartmentsTable, null, 2)
+    );
+  
+    const {
+      fullname,
+      company,
+      email,
+      department,
+      memberAccess,
+      canLogin,
+    } = newMembersDepartmentsTable;
+  
+    // Step 0: Basic validation
+    if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
+      alert('Full name, company, and email are required.');
+      return;
+    }
+  
+    try {
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 2: Send request to Laravel backend
+      const response = await fetch(`${API_URL}/v1/members-directory/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          newItem: {
+            fullname: fullname.trim(),
+            company: company.trim(),
+            email: email.trim(),
+            department: department?.trim() || '',
+            memberAccess: memberAccess?.trim() || '',
+            canLogin: canLogin?.trim() || '',
+          },
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('Add failed:', result.message);
+        alert(result.message || 'Failed to add member.');
+        return;
+      }
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ New member added:', result.newItem);
+  
+      // Step 3: Update Zustand store
+      pushMembersDepartmentsTableField(result.newItem);
+  
+      // Step 4: Reset modal/input state
+      setShowAddModal(false);
+      setNewMembersDepartmentsTable({
+        fullname: '',
+        company: '',
+        email: '',
+        department: '',
+        memberAccess: '',
+        canLogin: '',
+      });
+      setIsEditing(false);
+      localStorage.removeItem('NewMembersDirectoryTableData');
+  
+    } catch (err) {
+      console.error('❌ Add request error:', err);
+      alert('Error occurred while adding new member.');
+    }
+  };
   
 
   const handleCellClick = (id, field) => {
