@@ -14,6 +14,7 @@ const MembersDepartmentsTable = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
+  const organization = useLayoutSettingsStore.getState().organization;
 
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
@@ -375,8 +376,6 @@ const MembersDepartmentsTable = () => {
           credentials: 'include',
         });
 
-        const organization = useLayoutSettingsStore.getState().organization;
-  
         const { csrf_token } = await csrfRes.json();
   
         const response = await fetch(`${API_URL}/v1/members-departments/update`, {
