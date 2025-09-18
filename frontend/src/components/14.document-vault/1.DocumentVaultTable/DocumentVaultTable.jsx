@@ -309,13 +309,30 @@ const DocumentVaultTable = () => {
 
     // 3. Update Zustand store
     // setDocumentVault(initialDocumentVault);
-    const { baselineDocumentVaultTable } = useDocumentVaultStore.getState();
+    const { baselineDocumentVaultTable, documentVaultTable  } = useDocumentVaultStore.getState();
     // ✅ Console log to inspect baselineDocumentVaultTable before setting
     ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineDocumentVaultTable:', baselineDocumentVaultTable);
-    setDocumentVault(baselineDocumentVaultTable);
+    
+    
+    // setDocumentVault(baselineDocumentVaultTable);
 
-    // 4. refresh the table
-    setCurrentOrder(documentVaultTable);
+    // // 4. refresh the table
+    // setCurrentOrder(documentVaultTable);
+
+    // 4. Create merged version: keep only pdflink + uploadLink from current
+    const merged = baselineDocumentVaultTable.map((baselineItem) => {
+    const currentItem = documentVaultTable.find((item) => item.id === baselineItem.id);
+
+      return {
+        ...baselineItem,
+        pdflink: currentItem?.pdflink || '',
+        uploadLink: currentItem?.uploadLink || '',
+      };
+    });
+
+    // 5. Update UI and store
+    setDocumentVault(merged);
+    setCurrentOrder(merged);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
