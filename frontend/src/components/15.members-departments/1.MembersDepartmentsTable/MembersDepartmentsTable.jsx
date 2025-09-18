@@ -55,6 +55,12 @@ const MembersDepartmentsTable = () => {
     return data.csrf_token;
   }
 
+  // Sync initial and store changes:
+  useEffect(() => {
+    setCurrentOrder(MembersDepartmentsTable);
+  }, [MembersDepartmentsTable]);
+
+
 
   // Load from localStorage if available
   useEffect(() => {
@@ -86,31 +92,31 @@ const MembersDepartmentsTable = () => {
     }, 1000);
   };
 
-  const handleAddNewMembersDepartmentsTable = () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
+  // const handleAddNewMembersDepartmentsTable = () => {
+  //   ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
 
-    // 2. Hide Save / Discharge
-    setIsEditing(false);
+  //   // 2. Hide Save / Discharge
+  //   setIsEditing(false);
 
   
-    // 3. Remove localStorage temp data
-    localStorage.removeItem('NewMembersDepartmentsTableData');
+  //   // 3. Remove localStorage temp data
+  //   localStorage.removeItem('NewMembersDepartmentsTableData');
   
-    // 4. Push to Zustand store
-    pushMembersDepartmentsTableField(newMembersDepartmentsTable);
+  //   // 4. Push to Zustand store
+  //   pushMembersDepartmentsTableField(newMembersDepartmentsTable);
   
-    // 5. Optionally: force-refresh the UI by resetting store (if needed)
-    // Not required unless you deep reset from localStorage elsewhere
+  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
+  //   // Not required unless you deep reset from localStorage elsewhere
   
-    // Close modal
-    setShowAddModal(false);
+  //   // Close modal
+  //   setShowAddModal(false);
   
-    // Reset form input
-    setNewMembersDepartmentsTable({     
-      name: '',
-    });
+  //   // Reset form input
+  //   setNewMembersDepartmentsTable({     
+  //     name: '',
+  //   });
 
-  };
+  // };
 
   // const handleAddNewMembersDepartmentsTable = async () => {
   //   const file = newMembersDepartmentsTable?.file;
@@ -199,6 +205,62 @@ const MembersDepartmentsTable = () => {
   //   }
   // };
   
+  const handleAddNewMembersDepartmentsTable = async () => {
+    ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
+  
+    const name = newMembersDepartmentsTable.name?.trim();
+    if (!name) {
+      alert('Name is required.');
+      return;
+    }
+  
+    try {
+      // Step 1: CSRF
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 2: Add new item to DB
+      const response = await fetch(`${API_URL}/v1/members-departments/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          newItem: { name },
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('Add failed:', result.message);
+        alert(result.message || 'Failed to add item.');
+        return;
+      }
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ New item added:', result.newItem);
+  
+      // Step 3: Update Zustand store
+      pushMembersDepartmentsTableField(result.newItem);
+  
+      // Step 4: Reset modal/input state
+      setShowAddModal(false);
+      setNewMembersDepartmentsTable({ name: '' });
+      setIsEditing(false);
+      localStorage.removeItem('NewMembersDepartmentsTableData');
+  
+    } catch (err) {
+      console.error('❌ Add request error:', err);
+      alert('Error occurred while adding department.');
+    }
+  };
+  
+
   
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
@@ -386,10 +448,6 @@ const MembersDepartmentsTable = () => {
   };
 
 
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(MembersDepartmentsTable);
-  }, [MembersDepartmentsTable]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {

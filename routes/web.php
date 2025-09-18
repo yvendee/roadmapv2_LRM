@@ -6441,7 +6441,7 @@ Route::post('/api/v1/document-vault/update-pdflink', function (Request $request)
 //     return response()->json($data[$organization] ?? []);
 // });
 
-// ref:
+// ref: frontend\src\components\15.members-departments\membersDepartments.jsx
 Route::get('/api/v1/members-departments', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -6465,7 +6465,7 @@ Route::get('/api/v1/members-departments', function (Request $request) use ($API_
 });
 
 
-// ref:
+// ref: frontend\src\components\15.members-departments\1.MembersDepartmentsTable\MembersDepartmentsTable.jsx
 Route::post('/api/v1/members-departments/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -6487,6 +6487,49 @@ Route::post('/api/v1/members-departments/update', function (Request $request) us
 
     return response()->json(['message' => 'Members departments updated successfully.']);
 });
+
+
+// ref: frontend\src\components\15.members-departments\1.MembersDepartmentsTable\MembersDepartmentsTable.jsx
+Route::post('/api/v1/members-departments/add', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $newItem = $request->input('newItem');
+
+    if (!$organization || !is_array($newItem) || !isset($newItem['name'])) {
+        return response()->json(['message' => 'Invalid input data'], 400);
+    }
+
+    $record = MembersDepartment::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $existingData = $record->membersDepartmentsData ?? [];
+
+    $nextId = collect($existingData)->max('id') + 1;
+
+    $newItemWithId = [
+        'id' => $nextId,
+        'name' => $newItem['name']
+    ];
+
+    $updatedData = array_merge($existingData, [$newItemWithId]);
+
+    $record->membersDepartmentsData = $updatedData;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New item added successfully',
+        'newItem' => $newItemWithId
+    ]);
+});
+
 
 // ref: frontend\src\components\16.members-directory\membersDirectory.jsx
 Route::get('/api/v1/members-directory', function (Request $request) use ($API_secure) {
