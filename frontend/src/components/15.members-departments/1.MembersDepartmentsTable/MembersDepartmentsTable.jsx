@@ -367,10 +367,14 @@ const MembersDepartmentsTable = () => {
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setMembersDepartments(initialMembersDepartments);
+    // setMembersDepartments(initialMembersDepartments);
+    const { baselineMembersDepartmentsTable } = useMembersDepartmentsStore.getState();
+    // ✅ Console log to inspect baselineMembersDepartmentsTable before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineMembersDepartmentsTable:', baselineMembersDepartmentsTable);
+    setMembersDepartments(baselineMembersDepartmentsTable);
 
     // 4. refresh the table
-    setCurrentOrder(MembersDepartmentsTable);
+    setCurrentOrder(baselineMembersDepartmentsTable);
 
     // 5. Hide Modal
     setShowConfirmModal(false);
