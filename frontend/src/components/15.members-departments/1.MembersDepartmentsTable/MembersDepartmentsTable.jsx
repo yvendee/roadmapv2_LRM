@@ -199,8 +199,6 @@ const MembersDepartmentsTable = () => {
   // };
   
   
-
-  
   const handleCellClick = (id, field) => {
     if (loggedUser?.role === 'superadmin') {
       setEditingCell({ id, field });

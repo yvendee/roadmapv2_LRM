@@ -53,6 +53,8 @@ use App\Models\ToolsVictory;
 use App\Models\ToolsBigIdea;
 use App\Models\ToolsProductEvaluationGrid;
 use App\Models\DocumentVault;
+use App\Models\MembersDepartment;
+
 
 
 
@@ -896,7 +898,7 @@ Route::post('/api/file-upload/{path}', function (Request $request, $path) {
 
 
 
-// ref: 
+// ref: frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.jsx
 Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (Request $request, $uid, $projectName) {
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
@@ -937,9 +939,7 @@ Route::post('/api/v1/file-upload/document-vault/{uid}/{projectName}', function (
 });
 
 
-
-
-
+// ref: frontend\src\components\11.coaching-checklist\2.CollapsiblePanels\CollapsiblePanels.jsx
 Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', function (Request $request, $uid, $formattedText) {
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
@@ -968,8 +968,6 @@ Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', functio
         'path' => "storage/{$relativeDirectory}/{$fileName}",
     ]);
 });
-
-
 
 // Your API route(s)
 Route::get('/api/mock-response1', function () {
@@ -6359,7 +6357,7 @@ Route::post('/api/v1/document-vault/add', function (Request $request) use ($API_
     ]);
 });
 
-
+// ref:
 Route::post('/api/v1/document-vault/update-pdflink', function (Request $request) use ($API_secure) {
     // Security check
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -6409,8 +6407,41 @@ Route::post('/api/v1/document-vault/update-pdflink', function (Request $request)
 });
 
 
+// // ref: frontend\src\components\15.members-departments\membersDepartments.jsx
+// Route::get('/api/v1/members-departments', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
 
-// ref: frontend\src\components\15.members-departments\membersDepartments.jsx
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             ['id' => 1, 'name' => 'Momentum OS'],
+//             ['id' => 2, 'name' => 'Client Delivery System'],
+//             ['id' => 3, 'name' => 'Momentum Hub'],
+//             ['id' => 4, 'name' => 'Lead Gen System'],
+//             ['id' => 5, 'name' => '1% Genius v3'],
+//         ],
+//         'Collins Credit Union' => [
+//             ['id' => 1, 'name' => 'Internal Training'],
+//             ['id' => 2, 'name' => 'Customer Service'],
+//             ['id' => 3, 'name' => 'Compliance and Risk'],
+//             ['id' => 4, 'name' => 'Financial Planning'],
+//             ['id' => 5, 'name' => 'Digital Transformation'],
+//         ],
+//         'Test Skeleton Loading' => [
+//             ['id' => 1, 'name' => '-'],
+//             ['id' => 2, 'name' => '-'],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+// ref:
 Route::get('/api/v1/members-departments', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -6420,28 +6451,17 @@ Route::get('/api/v1/members-departments', function (Request $request) use ($API_
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            ['id' => 1, 'name' => 'Momentum OS'],
-            ['id' => 2, 'name' => 'Client Delivery System'],
-            ['id' => 3, 'name' => 'Momentum Hub'],
-            ['id' => 4, 'name' => 'Lead Gen System'],
-            ['id' => 5, 'name' => '1% Genius v3'],
-        ],
-        'Collins Credit Union' => [
-            ['id' => 1, 'name' => 'Internal Training'],
-            ['id' => 2, 'name' => 'Customer Service'],
-            ['id' => 3, 'name' => 'Compliance and Risk'],
-            ['id' => 4, 'name' => 'Financial Planning'],
-            ['id' => 5, 'name' => 'Digital Transformation'],
-        ],
-        'Test Skeleton Loading' => [
-            ['id' => 1, 'name' => '-'],
-            ['id' => 2, 'name' => '-'],
-        ],
-    ];
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    $record = MembersDepartment::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([]);
+    }
+
+    return response()->json($record->membersDepartmentsData ?? []);
 });
 
 // ref: frontend\src\components\16.members-directory\membersDirectory.jsx

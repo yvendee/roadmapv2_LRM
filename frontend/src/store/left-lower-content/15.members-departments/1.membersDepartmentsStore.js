@@ -1,32 +1,61 @@
 // frontend\src\store\left-lower-content\15.members-departments\1.membersDepartmentsStore.js
 import { create } from 'zustand';
 
+// export const initialMembersDepartments = [
+//   {
+//     id: 1,
+//     name: 'Momentum OS',
+//   },
+//   {
+//     id: 2,
+//     name: 'Client Delivery System',
+//   },
+//   {
+//     id: 3,
+//     name: 'Momentum Hub',
+//   },
+//   {
+//     id: 4,
+//     name: 'Lead Gen System',
+//   },
+//   {
+//     id: 5,
+//     name: '1% Genius v3',
+//   },
+// ];
+
+
 export const initialMembersDepartments = [
   {
     id: 1,
-    name: 'Momentum OS',
+    name: '-',
   },
   {
     id: 2,
-    name: 'Client Delivery System',
+    name: '-',
   },
   {
     id: 3,
-    name: 'Momentum Hub',
+    name: '-',
   },
   {
     id: 4,
-    name: 'Lead Gen System',
+    name: '-',
   },
   {
     id: 5,
-    name: '1% Genius v3',
+    name: '-',
   },
 ];
 
 
 const useMembersDepartmentsStore = create((set) => ({
   MembersDepartmentsTable: initialMembersDepartments,
+
+  // Store the initial state when app loads
+  baselineMembersDepartmentsTable: initialMembersDepartments,
+
+  setBaselineMembersDepartmentsTable: (data) => set({ baselineMembersDepartmentsTable: data }),
 
   setMembersDepartments: (MembersDirectories) => set({ MembersDepartmentsTable: MembersDirectories }),
 

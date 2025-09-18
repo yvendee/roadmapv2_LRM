@@ -48,6 +48,11 @@ const DocumentVaultTable = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
+  // Sync initial and store changes:
+  useEffect(() => {
+    setCurrentOrder(documentVaultTable);
+  }, [documentVaultTable]);
+
   // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('DocumentVaultTableData');
@@ -342,12 +347,6 @@ const DocumentVaultTable = () => {
   const cancelDischargeChanges = () => {
     setShowConfirmModal(false);
   };
-
-
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(documentVaultTable);
-  }, [documentVaultTable]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {
