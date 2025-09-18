@@ -127,8 +127,6 @@ const EmployeeTable = () => {
   const handleAddNewMembersDepartmentsTable = async () => {
     ENABLE_CONSOLE_LOGS && console.log('New Members Directory Table',JSON.stringify(newMembersDepartmentsTable, null, 2));
   
-    const organization = useLayoutSettingsStore.getState().organization;
-  
     try {
       // 1. Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
