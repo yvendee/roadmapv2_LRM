@@ -26,50 +26,53 @@ const documentVault = () => {
   useEffect(() => {
     if (!organization) return;
 
-    ENABLE_CONSOLE_LOGS && console.log('Fetching UID for organization:', organization);
+    const localData = localStorage.getItem('DocumentVaultTableData');
+    if (!localData) {
+      ENABLE_CONSOLE_LOGS && console.log('Fetching UID for organization:', organization);
 
-    (async () => {
-      try {
-        // Get CSRF token
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-          credentials: 'include',
-        });
-        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
-        const { csrf_token } = await csrfRes.json();
+      (async () => {
+        try {
+          // Get CSRF token
+          const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+            credentials: 'include',
+          });
+          if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+          const { csrf_token } = await csrfRes.json();
 
-        // POST organization to get UID
-        const res = await fetch(`${API_URL}/v1/organization-uid`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-            Accept: 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({ organization }),
-        });
+          // POST organization to get UID
+          const res = await fetch(`${API_URL}/v1/organization-uid`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrf_token,
+              Accept: 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ organization }),
+          });
 
-        if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Unauthorized' } });
-          return;
+          if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Unauthorized' } });
+            return;
+          }
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Failed to fetch UID');
+          }
+
+          const data = await res.json();
+
+          const uid = data[organization]?.uid ?? null;
+          setUID(uid);
+
+          ENABLE_CONSOLE_LOGS && console.log('Organization UID fetched:', uid);
+        } catch (error) {
+          console.error('Error fetching organization UID:', error);
+          setUID(null);
         }
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || 'Failed to fetch UID');
-        }
-
-        const data = await res.json();
-
-        const uid = data[organization]?.uid ?? null;
-        setUID(uid);
-
-        ENABLE_CONSOLE_LOGS && console.log('Organization UID fetched:', uid);
-      } catch (error) {
-        console.error('Error fetching organization UID:', error);
-        setUID(null);
-      }
-    })();
+      })();
+    }
   }, [organization, setUID, navigate]);
 
   // Fetch Document Vault Table Data

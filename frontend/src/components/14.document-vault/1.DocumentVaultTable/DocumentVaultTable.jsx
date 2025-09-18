@@ -48,19 +48,6 @@ const DocumentVaultTable = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
-
-  async function fetchCsrfToken() {
-    const response = await fetch(`${API_URL}/csrf-token`, {
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch CSRF token');
-    }
-    const data = await response.json();
-    return data.csrf_token;
-  }
-
-
   // Load from localStorage if available
   useEffect(() => {
     const storedData = localStorage.getItem('DocumentVaultTableData');
