@@ -1,30 +1,58 @@
 // frontend\src\store\left-lower-content\16.members-directory\1.membersDirectoryStore.js
 import { create } from 'zustand';
 
+// export const initialEmployeeList = [
+//   {
+//     id: 1,
+//     fullname: 'Maricar Aquino',
+//     company: 'Chuck Gulledge Advisors, LLC',
+//     email: 'maricar@chuckgulledge.com',
+//     department: 'Admin',
+//     memberAccess: 'Leadership',
+//     canLogin: 'Yes',
+//   },
+//   {
+//     id: 2,
+//     fullname: 'Chuck Gulledge',
+//     company: 'Chuck Gulledge Advisors, LLC',
+//     email: 'chuck.gulledge@gmail.com',
+//     department: 'Admin',
+//     memberAccess: 'Superadmin',
+//     canLogin: 'Yes',
+//   },
+// ];
+
+
 export const initialEmployeeList = [
   {
     id: 1,
-    fullname: 'Maricar Aquino',
-    company: 'Chuck Gulledge Advisors, LLC',
-    email: 'maricar@chuckgulledge.com',
-    department: 'Admin',
-    memberAccess: 'Leadership',
-    canLogin: 'Yes',
+    fullname: '-',
+    company: '-',
+    email: '-',
+    department: '-',
+    memberAccess: '-',
+    canLogin: '-',
   },
   {
     id: 2,
-    fullname: 'Chuck Gulledge',
-    company: 'Chuck Gulledge Advisors, LLC',
-    email: 'chuck.gulledge@gmail.com',
-    department: 'Admin',
-    memberAccess: 'Superadmin',
-    canLogin: 'Yes',
+    fullname: '-',
+    company: '-',
+    email: '-',
+    department: '-',
+    memberAccess: '-',
+    canLogin: '-',
   },
 ];
 
 
 const useMembersDepartmentsStore = create((set) => ({
   MembersDepartmentsTable: initialEmployeeList,
+
+  // Store the initial state when app loads
+  baselineMembersDirectoryTable: initialEmployeeList,
+
+  setBaselineMembersDirectoryTable: (data) => set({ baselineMembersDirectoryTable: data }),
+
 
   setMembersDepartments: (MembersDirectories) => set({ MembersDepartmentsTable: MembersDirectories }),
 

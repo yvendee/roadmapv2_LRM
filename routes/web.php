@@ -54,6 +54,7 @@ use App\Models\ToolsBigIdea;
 use App\Models\ToolsProductEvaluationGrid;
 use App\Models\DocumentVault;
 use App\Models\MembersDepartment;
+use App\Models\MembersDirectory;
 
 
 
@@ -6531,91 +6532,183 @@ Route::post('/api/v1/members-departments/add', function (Request $request) use (
 });
 
 
+// // ref: frontend\src\components\16.members-directory\membersDirectory.jsx
+// Route::get('/api/v1/members-directory', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => [
+//             [
+//                 'id' => 1,
+//                 'fullname' => 'Maricar Aquino',
+//                 'company' => 'Chuck Gulledge Advisors, LLC',
+//                 'email' => 'maricar@chuckgulledge.com',
+//                 'department' => 'Admin',
+//                 'memberAccess' => 'Leadership',
+//                 'canLogin' => 'Yes',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'fullname' => 'Chuck Gulledge',
+//                 'company' => 'Chuck Gulledge Advisors, LLC',
+//                 'email' => 'chuck.gulledge@gmail.com',
+//                 'department' => 'Admin',
+//                 'memberAccess' => 'Superadmin',
+//                 'canLogin' => 'Yes',
+//             ],
+//         ],
+//         'Collins Credit Union' => [
+//             [
+//                 'id' => 1,
+//                 'fullname' => 'Alex Parker',
+//                 'company' => 'Collins Credit Union',
+//                 'email' => 'alex.parker@collinscu.com',
+//                 'department' => 'Customer Service',
+//                 'memberAccess' => 'Admin',
+//                 'canLogin' => 'Yes',
+//             ],
+//             [
+//                 'id' => 2,
+//                 'fullname' => 'Jamie Lee',
+//                 'company' => 'Collins Credit Union',
+//                 'email' => 'jamie.lee@collinscu.com',
+//                 'department' => 'Compliance and Risk',
+//                 'memberAccess' => 'Supervisor',
+//                 'canLogin' => 'No',
+//             ],
+//         ],
+//         'Test Skeleton Loading' => [
+//             [
+//                 'id' => 1,
+//                 'fullname' => '-',
+//                 'company' => '-',
+//                 'email' => '-',
+//                 'department' => '-',
+//                 'memberAccess' => '-',
+//                 'canLogin' => '-',
+//             ],
+
+//             [
+//                 'id' => 2,
+//                 'fullname' => '-',
+//                 'company' => '-',
+//                 'email' => '-',
+//                 'department' => '-',
+//                 'memberAccess' => '-',
+//                 'canLogin' => '-',
+//             ],
+
+//             [
+//                 'id' => 3,
+//                 'fullname' => '-',
+//                 'company' => '-',
+//                 'email' => '-',
+//                 'department' => '-',
+//                 'memberAccess' => '-',
+//                 'canLogin' => '-',
+//             ],
+//         ],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+
 // ref: frontend\src\components\16.members-directory\membersDirectory.jsx
 Route::get('/api/v1/members-directory', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->query('organization');
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => [
-            [
-                'id' => 1,
-                'fullname' => 'Maricar Aquino',
-                'company' => 'Chuck Gulledge Advisors, LLC',
-                'email' => 'maricar@chuckgulledge.com',
-                'department' => 'Admin',
-                'memberAccess' => 'Leadership',
-                'canLogin' => 'Yes',
-            ],
-            [
-                'id' => 2,
-                'fullname' => 'Chuck Gulledge',
-                'company' => 'Chuck Gulledge Advisors, LLC',
-                'email' => 'chuck.gulledge@gmail.com',
-                'department' => 'Admin',
-                'memberAccess' => 'Superadmin',
-                'canLogin' => 'Yes',
-            ],
-        ],
-        'Collins Credit Union' => [
-            [
-                'id' => 1,
-                'fullname' => 'Alex Parker',
-                'company' => 'Collins Credit Union',
-                'email' => 'alex.parker@collinscu.com',
-                'department' => 'Customer Service',
-                'memberAccess' => 'Admin',
-                'canLogin' => 'Yes',
-            ],
-            [
-                'id' => 2,
-                'fullname' => 'Jamie Lee',
-                'company' => 'Collins Credit Union',
-                'email' => 'jamie.lee@collinscu.com',
-                'department' => 'Compliance and Risk',
-                'memberAccess' => 'Supervisor',
-                'canLogin' => 'No',
-            ],
-        ],
-        'Test Skeleton Loading' => [
-            [
-                'id' => 1,
-                'fullname' => '-',
-                'company' => '-',
-                'email' => '-',
-                'department' => '-',
-                'memberAccess' => '-',
-                'canLogin' => '-',
-            ],
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
-            [
-                'id' => 2,
-                'fullname' => '-',
-                'company' => '-',
-                'email' => '-',
-                'department' => '-',
-                'memberAccess' => '-',
-                'canLogin' => '-',
-            ],
+    $record = MembersDirectory::where('organizationName', $organization)->first();
 
-            [
-                'id' => 3,
-                'fullname' => '-',
-                'company' => '-',
-                'email' => '-',
-                'department' => '-',
-                'memberAccess' => '-',
-                'canLogin' => '-',
-            ],
-        ],
-    ];
+    if (!$record) {
+        return response()->json([]);
+    }
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($record->membersDirectoryData ?? []);
+});
+
+// ref: frontend\src\components\16.members-directory\2.EmployeeTable\EmployeeTable.jsx
+Route::post('/api/v1/members-directory/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organization');
+    $membersDirectoryData = $request->input('membersDirectoryData');
+
+    if (!$organization || !$membersDirectoryData) {
+        return response()->json(['message' => 'Missing organization or data'], 400);
+    }
+
+    $record = MembersDirectory::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $record->membersDirectoryData = $membersDirectoryData;
+    $record->save();
+
+    return response()->json(['message' => 'Members Directory updated successfully']);
+});
+
+
+// ref: frontend\src\components\16.members-directory\2.EmployeeTable\EmployeeTable.jsx
+Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'newItem' => 'required|array',
+        'newItem.fullname' => 'required|string',
+        'newItem.company' => 'required|string',
+        'newItem.email' => 'required|email',
+        'newItem.department' => 'required|string',
+        'newItem.memberAccess' => 'required|string',
+        'newItem.canLogin' => 'required|string',
+    ]);
+
+    $organizationName = $validated['organizationName'];
+    $newItem = $validated['newItem'];
+
+    $record = MembersDirectory::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $existing = $record->membersDirectoryData ?? [];
+
+    // Determine next ID
+    $maxId = collect($existing)->pluck('id')->max() ?? 0;
+    $newItem['id'] = $maxId + 1;
+
+    $existing[] = $newItem;
+
+    $record->membersDirectoryData = $existing;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New member added successfully',
+        'newItem' => $newItem,
+        'fullData' => $existing,
+    ]);
 });
 
 

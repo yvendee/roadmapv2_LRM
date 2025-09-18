@@ -16,38 +16,46 @@ const membersDirectory = () => {
   // const [error, setError] = useState(null);
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setMembersDepartments = useMembersDepartmentsStore((state) => state.setMembersDepartments);
+  const setBaselineMembersDirectoryTable = useMembersDepartmentsStore((state) => state.setBaselineMembersDirectoryTable)
+
   const navigate = useNavigate();
 
   // Fetch Members-Directory Table Data
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/members-directory?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          const employeeList = json;
-          if (Array.isArray(employeeList)) {
-            setMembersDepartments(employeeList);
-          } else {
-            console.error(`⚠️ No Members Directory found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+    const localData = localStorage.getItem('NewMembersDirectoryTableData');
+    if (!localData) {
+
+      const encodedOrg = encodeURIComponent(organization);
+
+      fetch(`${API_URL}/v1/members-directory?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            const employeeList = json;
+            if (Array.isArray(employeeList)) {
+              setMembersDepartments(employeeList);
+              setBaselineMembersDirectoryTable(employeeList);
+            } else {
+              console.error(`⚠️ No Members Directory found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization]);
   
 

@@ -48,7 +48,7 @@ const InformationSection = () => {
                 Once an email is added, the system automatically creates a login, and the default password is
                 <strong> Momentum2025!</strong><br />
                 <em>Note:</em> Once a user logs in, we highly recommend changing the password by going to
-                <strong>Profile</strong> (top right corner), selecting <strong>Change Password</strong>, and saving
+                <strong> Profile</strong> (top right corner), selecting <strong>Change Password</strong>, and saving
                 the changes.
               </p>
             </div>
