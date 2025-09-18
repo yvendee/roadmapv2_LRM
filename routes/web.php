@@ -6464,6 +6464,30 @@ Route::get('/api/v1/members-departments', function (Request $request) use ($API_
     return response()->json($record->membersDepartmentsData ?? []);
 });
 
+
+// ref:
+Route::post('/api/v1/members-departments/update', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'membersDepartmentsData' => 'required|array',
+    ]);
+
+    $record = MembersDepartment::where('organizationName', $validated['organizationName'])->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $record->membersDepartmentsData = $validated['membersDepartmentsData'];
+    $record->save();
+
+    return response()->json(['message' => 'Members departments updated successfully.']);
+});
+
 // ref: frontend\src\components\16.members-directory\membersDirectory.jsx
 Route::get('/api/v1/members-directory', function (Request $request) use ($API_secure) {
     if ($API_secure) {

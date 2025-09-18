@@ -6,7 +6,6 @@ import { faTrashAlt, faPlus, faSave, faSignOutAlt, } from '@fortawesome/free-sol
 import useDocumentVaultStore, { initialDocumentVault } from '../../../store/left-lower-content/14.document-vault/1.documentVaultStore';
 import { useOrganizationUIDStore } from '../../../store/layout/organizationUIDStore';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
-
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './DocumentVaultTable.css';

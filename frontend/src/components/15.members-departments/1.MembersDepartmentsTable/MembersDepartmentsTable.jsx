@@ -2,8 +2,9 @@
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useMembersDepartmentsStore, { initialMembersDepartments } from '../../../store/left-lower-content/15.members-departments/1.membersDepartmentsStore';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './MembersDepartmentsTable.css';
@@ -221,64 +222,133 @@ const MembersDepartmentsTable = () => {
   };
 
   
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(() => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('NewMembersDepartmentsTableData');
+  
+  //     if (storedData) {
+  //       try {
+  //         const parsedData = JSON.parse(storedData);
+  
+  //         // 1. Log to console
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table after Save Changes Button:', parsedData);
+  
+  //         // 2. Update Zustand store
+  //         setMembersDepartments(parsedData);
+
+  //         // Reindex IDs
+  //         const reordered = parsedData.map((driver, index) => ({
+  //           ...driver,
+  //           id: index + 1,
+  //         }));
+
+  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Members Departments Table (Reindexed):', reordered);
+
+  //         setMembersDepartments(reordered);
+  
+  //         // 3. Clear edited state (hides buttons)
+  //         setIsEditing(false);
+
+  
+  //         // 4. Remove from localStorage
+  //         localStorage.removeItem('NewMembersDepartmentsTableData');
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDepartmentsTableData on save:', err);
+  //       }
+  //     } else {
+
+  //       // No localStorage changes, use current drag order
+
+  //       const reordered = currentOrder.map((driver, index) => ({
+  //         ...driver,
+  //         id: index + 1,
+  //       }));
+
+  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Members Departments Table (reordered):', reordered);
+  //       setMembersDepartments(reordered);
+  //       setIsEditing(false);
+
+
+  //       // Remove from localStorage
+  //       localStorage.removeItem('NewMembersDepartmentsTableData');
+
+  //     }
+  //   }, 1000);
+  // };
+
+  const handleSaveChanges = () => {
     setLoadingSave(true);
   
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoadingSave(false);
   
       const storedData = localStorage.getItem('NewMembersDepartmentsTableData');
   
+      let dataToSend;
+  
       if (storedData) {
         try {
-          const parsedData = JSON.parse(storedData);
-  
-          // 1. Log to console
-          ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table after Save Changes Button:', parsedData);
-  
-          // 2. Update Zustand store
-          setMembersDepartments(parsedData);
-
-          // Reindex IDs
-          const reordered = parsedData.map((driver, index) => ({
-            ...driver,
-            id: index + 1,
-          }));
-
-          ENABLE_CONSOLE_LOGS &&  console.log('Saved Members Departments Table (Reindexed):', reordered);
-
-          setMembersDepartments(reordered);
-  
-          // 3. Clear edited state (hides buttons)
-          setIsEditing(false);
-
-  
-          // 4. Remove from localStorage
-          localStorage.removeItem('NewMembersDepartmentsTableData');
+          dataToSend = JSON.parse(storedData);
+          ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table after Save Changes Button:', dataToSend);
         } catch (err) {
           ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDepartmentsTableData on save:', err);
+          return;
         }
       } else {
-
-        // No localStorage changes, use current drag order
-
-        const reordered = currentOrder.map((driver, index) => ({
-          ...driver,
+        // Fallback: use current order
+        dataToSend = currentOrder.map((item, index) => ({
+          ...item,
           id: index + 1,
         }));
+        ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table (Reordered):', dataToSend);
+      }
+  
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
 
-        ENABLE_CONSOLE_LOGS &&  console.log('Saved Members Departments Table (reordered):', reordered);
-        setMembersDepartments(reordered);
-        setIsEditing(false);
-
-
-        // Remove from localStorage
-        localStorage.removeItem('NewMembersDepartmentsTableData');
-
+        const organization = useLayoutSettingsStore.getState().organization;
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        const response = await fetch(`${API_URL}/v1/members-departments/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organizationName: organization,
+            membersDepartmentsData: dataToSend,
+          }),
+        });
+  
+        const result = await response.json();
+        ENABLE_CONSOLE_LOGS && console.log('📤 Update response:', result);
+  
+        if (!response.ok) {
+          console.error('Update failed:', result.message || 'Unknown error');
+        } else {
+          // ✅ Update Zustand
+          setMembersDepartments(dataToSend);
+  
+          // ✅ Reset UI
+          setIsEditing(false);
+          localStorage.removeItem('NewMembersDepartmentsTableData');
+        }
+      } catch (error) {
+        console.error('Update request error:', error);
       }
     }, 1000);
   };
+  
   
   
   const handleDischargeChanges = () => {
@@ -400,7 +470,10 @@ const MembersDepartmentsTable = () => {
                     <div></div>
                   </div>
                   ) : (
-                    'Save Changes'
+                    <>
+                    <FontAwesomeIcon icon={faSave} className="mr-1" />
+                    Save Changes
+                    </>
                 )}
                 </button>
                 <button className="pure-red-btn" onClick={handleDischargeChanges}>
@@ -411,7 +484,10 @@ const MembersDepartmentsTable = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discard'
+                      <>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                      Discard Changes
+                      </>
                   )}
                 </button>
               </>
