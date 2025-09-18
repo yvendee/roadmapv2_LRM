@@ -14,41 +14,47 @@ const membersDepartments = () => {
   const navigate = useNavigate();
   const organization = useLayoutSettingsStore((state) => state.organization);
   const setMembersDepartments = useMembersDepartmentsStore((state) => state.setMembersDepartments);
+  const setBaselineMembersDepartmentsTable = useMembersDepartmentsStore((state) => state.setBaselineMembersDepartmentsTable)
+
   // const { user, setUser } = useUserStore();
   // const [error, setError] = useState(null);
 
 
   // Fetch Members-Departments Data
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+    const localData = localStorage.getItem('NewMembersDepartmentsTableData');
+    if (!localData) {
+      const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/members-departments?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          const departmentsArr = json;
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Members-Departments data:', departmentsArr);
-          if (Array.isArray(departmentsArr)) {
-            setMembersDepartments(departmentsArr);
-          } else {
-            console.error(`⚠️ No Members-Departments data found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
+      fetch(`${API_URL}/v1/members-departments?organization=${encodedOrg}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
       })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.ok) {
+            const departmentsArr = json;
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Members-Departments data:', departmentsArr);
+            if (Array.isArray(departmentsArr)) {
+              setMembersDepartments(departmentsArr);
+              setBaselineMembersDepartmentsTable(departmentsArr);
+            } else {
+              console.error(`⚠️ No Members-Departments data found for organization: ${organization}`);
+            }
+          } else if (res.status === 401) {
+            navigate('/', { state: { loginError: 'Session Expired' } });
+          } else {
+            console.error('Error:', json.message);
+          }
+        })
+        .catch((err) => {
+          console.error('API error:', err);
+        });
+    }
   }, [organization]);
 
   // useEffect(() => {

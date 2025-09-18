@@ -75,7 +75,6 @@ const documentVault = () => {
 
   // Fetch Document Vault Table Data
   useEffect(() => {
-
     const localData = localStorage.getItem('DocumentVaultTableData');
     if (!localData) {
       const encodedOrg = encodeURIComponent(organization);
