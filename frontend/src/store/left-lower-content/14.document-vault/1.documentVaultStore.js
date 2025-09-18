@@ -102,7 +102,7 @@ const useDocumentVaultStore = create((set) => ({
   documentVaultTable: initialDocumentVault,
 
   // Store the initial state when app loads
-  baselineWhoWhatWhen: initialDocumentVault,
+  baselineDocumentVaultTable: initialDocumentVault,
 
   setBaselineDocumentVaultTable: (data) => set({ baselineDocumentVaultTable: data }),
 

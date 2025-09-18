@@ -238,7 +238,6 @@ const DocumentVaultTable = () => {
     }
   };
 
-  
   const handleSaveChanges = async () => {
 
     setLoadingSave(true);
@@ -322,7 +321,11 @@ const DocumentVaultTable = () => {
     setIsEditing(false);
 
     // 3. Update Zustand store
-    setDocumentVault(initialDocumentVault);
+    // setDocumentVault(initialDocumentVault);
+    const { baselineDocumentVaultTable } = useDocumentVaultStore.getState();
+    // ✅ Console log to inspect baselineDocumentVaultTable before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineDocumentVaultTable:', baselineDocumentVaultTable);
+    setDocumentVault(baselineDocumentVaultTable);
 
     // 4. refresh the table
     setCurrentOrder(documentVaultTable);
