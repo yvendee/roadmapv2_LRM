@@ -10,6 +10,7 @@ import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './EmployeeTable.css';
 
 const EmployeeTable = () => {
+  const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
