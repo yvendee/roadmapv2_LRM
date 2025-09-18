@@ -61,6 +61,12 @@ const EmployeeTable = () => {
     return data.csrf_token;
   }
 
+  // Sync initial and store changes:
+  useEffect(() => {
+    setCurrentOrder(MembersDepartmentsTable);
+  }, [MembersDepartmentsTable]);
+
+
 
   // Load from localStorage if available
   useEffect(() => {
@@ -91,37 +97,6 @@ const EmployeeTable = () => {
       setShowAddModal(true);
     }, 1000);
   };
-
-  // const handleAddNewMembersDepartmentsTable = () => {
-  //   ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
-
-  //   // 2. Hide Save / Discharge
-  //   setIsEditing(false);
-
-  
-  //   // 3. Remove localStorage temp data
-  //   localStorage.removeItem('NewMembersDirectoryTableData');
-  
-  //   // 4. Push to Zustand store
-  //   pushMembersDepartmentsTableField(newMembersDepartmentsTable);
-  
-  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
-  //   // Not required unless you deep reset from localStorage elsewhere
-  
-  //   // Close modal
-  //   setShowAddModal(false);
-  
-  //   // Reset form input
-  //   setNewMembersDepartmentsTable({     
-  //     fullname: '',
-  //     company: '',
-  //     email: '',
-  //     department: '',
-  //     memberAccess: '',
-  //     canLogin: '',
-  //   });
-
-  // };
 
 
   const handleAddNewMembersDepartmentsTable = async () => {
@@ -359,10 +334,6 @@ const EmployeeTable = () => {
   };
 
 
-  // Sync initial and store changes:
-  useEffect(() => {
-    setCurrentOrder(MembersDepartmentsTable);
-  }, [MembersDepartmentsTable]);
 
   // Drag handlers:
   const handleDragStart = (e, id) => {
