@@ -6620,49 +6620,7 @@ Route::post('/api/v1/members-departments/add', function (Request $request) use (
 // });
 
 
-// ref: frontend\src\components\16.members-directory\2.EmployeeTable\EmployeeTable.jsx
-Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
-    if ($API_secure && !$request->session()->get('logged_in')) {
-        return response()->json(['message' => 'Unauthorized'], 401);
-    }
 
-    $validated = $request->validate([
-        'organizationName' => 'required|string',
-        'newItem' => 'required|array',
-        'newItem.fullname' => 'required|string',
-        'newItem.company' => 'required|string',
-        'newItem.email' => 'required|email',
-        'newItem.department' => 'required|string',
-        'newItem.memberAccess' => 'required|string',
-        'newItem.canLogin' => 'required|string',
-    ]);
-
-    $organizationName = $validated['organizationName'];
-    $newItem = $validated['newItem'];
-
-    $record = MembersDirectory::where('organizationName', $organizationName)->first();
-
-    if (!$record) {
-        return response()->json(['message' => 'Organization not found'], 404);
-    }
-
-    $existing = $record->membersDirectoryData ?? [];
-
-    // Determine next ID
-    $maxId = collect($existing)->pluck('id')->max() ?? 0;
-    $newItem['id'] = $maxId + 1;
-
-    $existing[] = $newItem;
-
-    $record->membersDirectoryData = $existing;
-    $record->save();
-
-    return response()->json([
-        'message' => 'New member added successfully',
-        'newItem' => $newItem,
-        'fullData' => $existing,
-    ]);
-});
 
 // ref: frontend\src\components\16.members-directory\membersDirectory.jsx
 Route::get('/api/v1/members-directory', function (Request $request) use ($API_secure) {
@@ -6710,7 +6668,49 @@ Route::post('/api/v1/members-directory/update', function (Request $request) use 
     return response()->json(['message' => 'Members Directory updated successfully']);
 });
 
+// ref: frontend\src\components\16.members-directory\2.EmployeeTable\EmployeeTable.jsx
+Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
 
+    $validated = $request->validate([
+        'organizationName' => 'required|string',
+        'newItem' => 'required|array',
+        'newItem.fullname' => 'required|string',
+        'newItem.company' => 'required|string',
+        'newItem.email' => 'required|email',
+        'newItem.department' => 'required|string',
+        'newItem.memberAccess' => 'required|string',
+        'newItem.canLogin' => 'required|string',
+    ]);
+
+    $organizationName = $validated['organizationName'];
+    $newItem = $validated['newItem'];
+
+    $record = MembersDirectory::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $existing = $record->membersDirectoryData ?? [];
+
+    // Determine next ID
+    $maxId = collect($existing)->pluck('id')->max() ?? 0;
+    $newItem['id'] = $maxId + 1;
+
+    $existing[] = $newItem;
+
+    $record->membersDirectoryData = $existing;
+    $record->save();
+
+    return response()->json([
+        'message' => 'New member added successfully',
+        'newItem' => $newItem,
+        'fullData' => $existing,
+    ]);
+});
 
 
 
