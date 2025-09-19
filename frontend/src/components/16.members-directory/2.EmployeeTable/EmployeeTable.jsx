@@ -912,7 +912,7 @@ const EmployeeTable = () => {
 
             {/* 🔻 Error Message BELOW the buttons */}
             {emailError && (
-              <div style={{ color: 'red', marginTop: '10px', textAlign: 'right' }}>
+              <div style={{ color: 'red', marginTop: '10px', textAlign: 'center' }}>
                 <span>{emailError}</span>
               </div>
             )}
