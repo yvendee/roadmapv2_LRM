@@ -351,6 +351,7 @@ const WhoWhatWhenTable = () => {
   
           localStorage.removeItem('whoWhatWhenData');
           setIsEditing(false);
+          setCurrentOrder(reordered);
         }
       } catch (error) {
         console.error('❌ Update request error:', error);
