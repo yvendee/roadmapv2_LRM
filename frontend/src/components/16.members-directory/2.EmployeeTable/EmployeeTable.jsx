@@ -416,6 +416,8 @@ const EmployeeTable = () => {
 
   const handleSaveChanges = () => {
     setLoadingSave(true);
+
+    const organization = useLayoutSettingsStore.getState().organization;
   
     setTimeout(async () => {
       try {
