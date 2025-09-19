@@ -10,7 +10,6 @@ import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
 const NotificationButton = () => {
   const user = useLoginStore((state) => state.user);
-  const fullName = useLoginStore((state) => state.user);
   const setNotifications = useNotificationStore((state) => state.setNotifications);
 
   const [open, setOpen] = useState(false);
@@ -110,7 +109,7 @@ const NotificationButton = () => {
             },
             credentials: 'include',
             body: JSON.stringify({
-              userName: fullName,
+              userName: user.fullname,
             }),
           });
   
