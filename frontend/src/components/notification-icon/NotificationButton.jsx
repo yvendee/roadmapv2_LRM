@@ -7,6 +7,7 @@ import useLoginStore from '../../store/loginStore';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
+
 const NotificationButton = () => {
   const user = useLoginStore((state) => state.user);
   const setNotifications = useNotificationStore((state) => state.setNotifications);
@@ -57,22 +58,69 @@ const NotificationButton = () => {
   //   if (!open) markAllAsRead(); // ✅ mark all as read
   // };
 
+  // const toggleDropdown = () => {
+  //   setOpen(prev => !prev);
+  //   if (!open) {
+  //     if (notifications.some(n => n.notification_status === "unread")) {
+  //       useNotificationStore.setState((state) => {
+  //         const updatedNotifications = state.notifications.map(n => ({
+  //           ...n,
+  //           notification_status: "read"
+  //         }));
+  //         console.log('Updated notifications:', updatedNotifications);
+  //         return { notifications: updatedNotifications };
+  //       });
+  //     }
+  //   }
+  // };
+  
+
+  const fullName = useLoginStore((state) => state.user);
+
   const toggleDropdown = () => {
     setOpen(prev => !prev);
+
     if (!open) {
-      if (notifications.some(n => n.notification_status === "unread")) {
+      const hasUnread = notifications.some(n => n.notification_status === "unread");
+
+      if (hasUnread) {
+        // ✅ Update frontend state immediately
         useNotificationStore.setState((state) => {
           const updatedNotifications = state.notifications.map(n => ({
             ...n,
             notification_status: "read"
           }));
-          console.log('Updated notifications:', updatedNotifications);
+          ENABLE_CONSOLE_LOGS && console.log('Updated notifications (frontend):', updatedNotifications);
           return { notifications: updatedNotifications };
         });
+
+        // ✅ Send update to backend
+        fetch(`${API_URL}/v1/notifications/mark-read`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            userName: fullName,
+          }),
+        })
+          .then(async (res) => {
+            const json = await res.json();
+            if (res.ok) {
+              ENABLE_CONSOLE_LOGS && console.log('📤 Notifications marked as read on backend:', json);
+            } else {
+              console.error('❌ Error marking notifications read:', json.message);
+            }
+          })
+          .catch(err => {
+            console.error('❌ Network error:', err);
+          });
       }
     }
   };
-  
+
   
 
   const hasUnread = notifications.some(n => n.notification_status === "unread");

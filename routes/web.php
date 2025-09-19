@@ -7154,6 +7154,43 @@ Route::get('/api/v1/notifications', function (Request $request) use ($API_secure
 });
 
 
+// ref: 
+Route::post('/api/v1/notifications/mark-read', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $request->validate([
+        'userName' => 'required|string|max:100',
+    ]);
+
+    $userName = $request->input('userName');
+
+    $notification = Notification::where('userName', $userName)->first();
+
+    if (!$notification) {
+        return response()->json(['message' => 'Notification record not found'], 404);
+    }
+
+    $data = $notification->notificationsData;
+
+    if (!is_array($data)) {
+        return response()->json(['message' => 'Invalid notifications data'], 400);
+    }
+
+    // Mark all as read
+    $updated = array_map(function ($n) {
+        $n['notification_status'] = 'read';
+        return $n;
+    }, $data);
+
+    $notification->notificationsData = $updated;
+    $notification->save();
+
+    return response()->json(['message' => 'All notifications marked as read']);
+});
+
+
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {
     
