@@ -215,37 +215,117 @@ const WhoWhatWhenTable = () => {
   //   }, 1000);
   // };
   
+  // const handleSaveChanges = () => {
+  //   setLoadingSave(true);
+  
+  //   setTimeout(async () => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('whoWhatWhenData');
+  
+  //     let dataToSend;
+  
+  //     if (storedData) {
+  //       try {
+  //         dataToSend = JSON.parse(storedData);
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When after Save Changes Button:', dataToSend);
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing Who-What-When Data on save:', err);
+  //         return;
+  //       }
+  //     } else {
+  //       // Fallback: use current state (assumed to be available)
+  //       dataToSend = currentOrder.map((item, index) => ({
+  //         ...item,
+  //         id: index + 1,
+  //       }));
+  //       ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When (Reordered):', dataToSend);
+  //     }
+  
+  //     try {
+  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //         credentials: 'include',
+  //       });
+  //       const { csrf_token } = await csrfRes.json();
+  
+  //       const response = await fetch(`${API_URL}/v1/who-what-when/update`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'X-CSRF-TOKEN': csrf_token,
+  //         },
+  //         credentials: 'include',
+  //         body: JSON.stringify({
+  //           organization,
+  //           whoWhatWhenData: dataToSend,
+  //         }),
+  //       });
+  
+  //       const result = await response.json();
+  //       ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
+  
+  //       if (!response.ok) {
+  //         console.error('Update failed:', result.message || 'Unknown error');
+  //       } else {
+  //         // Optionally clear localStorage after success
+  //         localStorage.removeItem('whoWhatWhenData');
+  //         setIsEditing(false);
+  //       }
+  //     } catch (error) {
+  //       console.error('Update request error:', error);
+  //     }
+  //   }, 1000);
+  // };
+
+
   const handleSaveChanges = () => {
     setLoadingSave(true);
   
-    setTimeout(async () => {
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    if (!organization || typeof organization !== 'string' || organization.trim() === '') {
+      alert('Organization is missing or invalid.');
       setLoadingSave(false);
+      return;
+    }
   
-      const storedData = localStorage.getItem('whoWhatWhenData');
+    setTimeout(async () => {
+      try {
+        const storedData = localStorage.getItem('whoWhatWhenData');
   
-      let dataToSend;
+        let reordered = [];
   
-      if (storedData) {
-        try {
-          dataToSend = JSON.parse(storedData);
-          ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When after Save Changes Button:', dataToSend);
-        } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing Who-What-When Data on save:', err);
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Saved Who-What-When from localStorage:', parsedData);
+  
+          reordered = parsedData.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Who-What-When (from localStorage):', reordered);
+        } else {
+          reordered = currentOrder.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Who-What-When (from currentOrder):', reordered);
+        }
+  
+        if (!reordered.length) {
+          alert('No Who-What-When data to save.');
+          setLoadingSave(false);
           return;
         }
-      } else {
-        // Fallback: use current state (assumed to be available)
-        dataToSend = currentOrder.map((item, index) => ({
-          ...item,
-          id: index + 1,
-        }));
-        ENABLE_CONSOLE_LOGS && console.log('Saved Who-What-When (Reordered):', dataToSend);
-      }
   
-      try {
+        // Push to backend
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
           credentials: 'include',
         });
+  
         const { csrf_token } = await csrfRes.json();
   
         const response = await fetch(`${API_URL}/v1/who-what-when/update`, {
@@ -257,25 +337,30 @@ const WhoWhatWhenTable = () => {
           credentials: 'include',
           body: JSON.stringify({
             organization,
-            whoWhatWhenData: dataToSend,
+            whoWhatWhenData: reordered,
           }),
         });
   
         const result = await response.json();
-        ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
   
         if (!response.ok) {
-          console.error('Update failed:', result.message || 'Unknown error');
+          console.error('❌ Failed to update Who-What-When:', result.message || 'Unknown error');
+          alert(result.message || 'Update failed');
         } else {
-          // Optionally clear localStorage after success
+          ENABLE_CONSOLE_LOGS && console.log('✅ Who-What-When Update Response:', result);
+  
           localStorage.removeItem('whoWhatWhenData');
           setIsEditing(false);
         }
       } catch (error) {
-        console.error('Update request error:', error);
+        console.error('❌ Update request error:', error);
+        alert('Something went wrong while saving changes.');
+      } finally {
+        setLoadingSave(false);
       }
     }, 1000);
   };
+  
 
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
