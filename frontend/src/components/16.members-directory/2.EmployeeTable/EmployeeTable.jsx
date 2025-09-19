@@ -203,11 +203,11 @@ const EmployeeTable = () => {
       canLogin,
     } = newMembersDepartmentsTable;
   
-    // Step 0: Basic validation
-    if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
-      alert('Full name, company, and email are required.');
-      return;
-    }
+    // // Step 0: Basic validation
+    // if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
+    //   alert('Full name, company, and email are required.');
+    //   return;
+    // }
   
     try {
       // Step 1: Get CSRF token
