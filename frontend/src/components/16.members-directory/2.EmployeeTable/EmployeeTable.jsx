@@ -436,7 +436,7 @@ const EmployeeTable = () => {
           ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Members Directory (from localStorage):', reordered);
   
           // Optionally update your Zustand or React state here if needed
-          setMembersDirectory(reordered);
+          setMembersDepartments(reordered);
         } else {
           // If nothing is in localStorage, use currentOrder
           reordered = currentOrder.map((item, index) => ({
@@ -447,7 +447,7 @@ const EmployeeTable = () => {
           ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Members Directory (from currentOrder):', reordered);
   
           // Update state/store if needed
-          setMembersDirectory(reordered);
+          setMembersDepartments(reordered);
         }
   
         // Cleanup local temp and editing state
