@@ -6669,7 +6669,7 @@ Route::post('/api/v1/members-directory/update', function (Request $request) use 
 });
 
 // ref: frontend\src\components\16.members-directory\2.EmployeeTable\EmployeeTable.jsx
-Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
+Route::post('/api/v1/members-directory/add-item', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }

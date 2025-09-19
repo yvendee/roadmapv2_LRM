@@ -216,7 +216,7 @@ const EmployeeTable = () => {
       const { csrf_token } = await csrfRes.json();
   
       // Step 2: API Call
-      const response = await fetch(`${API_URL}/v1/members-directory/add`, {
+      const response = await fetch(`${API_URL}/v1/members-directory/add-item`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
