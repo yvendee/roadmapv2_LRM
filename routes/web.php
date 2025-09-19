@@ -6674,8 +6674,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    // Directly get inputs without validation
-    $organization = $request->input('organization');
+    $organization = $request->input('organizationName');  // Use organizationName here
     $newItem = $request->input('newItem');
 
     if (!$organization || !$newItem) {
@@ -6690,7 +6689,6 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
 
     $existing = $record->membersDirectoryData ?? [];
 
-    // Determine next ID
     $maxId = collect($existing)->pluck('id')->max() ?? 0;
     $newItem['id'] = $maxId + 1;
 
@@ -6705,6 +6703,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
         'fullData' => $existing,
     ]);
 });
+
 
 
 
