@@ -471,7 +471,7 @@ const EmployeeTable = () => {
           },
           credentials: 'include',
           body: JSON.stringify({
-            organizationName: organization, // make sure this is defined correctly
+            organization: organization, // make sure this is defined correctly
             membersDirectoryData: reordered,
           }),
         });
