@@ -55,6 +55,7 @@ use App\Models\ToolsProductEvaluationGrid;
 use App\Models\DocumentVault;
 use App\Models\MembersDepartment;
 use App\Models\MembersDirectory;
+use App\Models\Notification;
 
 
 
@@ -6720,8 +6721,6 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
 
 
 
-
-
 // ref: frontend\src\components\0.messaging\Messaging.jsx
 Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -7035,94 +7034,123 @@ Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_s
 });
 
 
-//
-    // // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
-    // // ref: frontend\src\pages\login\Login.jsx
-    // Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
+// //
+//     // // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
+//     // // ref: frontend\src\pages\login\Login.jsx
+//     // Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
 
-    //     if ($API_secure) {
-    //         if (!$request->session()->get('logged_in')) {
-    //             return response()->json(['message' => 'Unauthorized'], 401);
-    //         }
-    //         $user = $request->session()->get('user');
-    //     }
+//     //     if ($API_secure) {
+//     //         if (!$request->session()->get('logged_in')) {
+//     //             return response()->json(['message' => 'Unauthorized'], 401);
+//     //         }
+//     //         $user = $request->session()->get('user');
+//     //     }
 
-    //     $organization = $request->query('organization');
+//     //     $organization = $request->query('organization');
 
-    //     // Dummy toggle data based on organization (you can replace with DB query)
-    //     $toggles = [
-    //         'Chuck Gulledge Advisors, LLC' => [
-    //             'Strategic Drivers' => true,
-    //             'Foundations' => true,
-    //             '3 Year Outlook' => true,
-    //             'Playing to Win Strategy' => true,
-    //             'Core Capabilities' => true,
-    //             '4 Decisions' => true,
-    //             'Constraints Tracker' => true,
-    //         ],
-    //         'Collins Credit Union' => [
-    //             'Strategic Drivers' => true,
-    //             'Foundations' => true,
-    //             '3 Year Outlook' => true,
-    //             'Playing to Win Strategy' => true,
-    //             'Core Capabilities' => true,
-    //             '4 Decisions' => false,
-    //             'Constraints Tracker' => false,
-    //         ],
-    //         'Test Skeleton Loading' => [
-    //             'Strategic Drivers' => true,
-    //             'Foundations' => true,
-    //             '3 Year Outlook' => true,
-    //             'Playing to Win Strategy' => true,
-    //             'Core Capabilities' => true,
-    //             '4 Decisions' => true,
-    //             'Constraints Tracker' => true,
-    //         ],
-    //     ];
+//     //     // Dummy toggle data based on organization (you can replace with DB query)
+//     //     $toggles = [
+//     //         'Chuck Gulledge Advisors, LLC' => [
+//     //             'Strategic Drivers' => true,
+//     //             'Foundations' => true,
+//     //             '3 Year Outlook' => true,
+//     //             'Playing to Win Strategy' => true,
+//     //             'Core Capabilities' => true,
+//     //             '4 Decisions' => true,
+//     //             'Constraints Tracker' => true,
+//     //         ],
+//     //         'Collins Credit Union' => [
+//     //             'Strategic Drivers' => true,
+//     //             'Foundations' => true,
+//     //             '3 Year Outlook' => true,
+//     //             'Playing to Win Strategy' => true,
+//     //             'Core Capabilities' => true,
+//     //             '4 Decisions' => false,
+//     //             'Constraints Tracker' => false,
+//     //         ],
+//     //         'Test Skeleton Loading' => [
+//     //             'Strategic Drivers' => true,
+//     //             'Foundations' => true,
+//     //             '3 Year Outlook' => true,
+//     //             'Playing to Win Strategy' => true,
+//     //             'Core Capabilities' => true,
+//     //             '4 Decisions' => true,
+//     //             'Constraints Tracker' => true,
+//     //         ],
+//     //     ];
 
-    //     return response()->json([
-    //         'status' => 'success',
-    //         'toggles' => $toggles[$organization] ?? [],
-    //         'organization' => $organization,
-    //         'unique_id' => uniqid(), // just example
-    //     ]);
-    // });
+//     //     return response()->json([
+//     //         'status' => 'success',
+//     //         'toggles' => $toggles[$organization] ?? [],
+//     //         'organization' => $organization,
+//     //         'unique_id' => uniqid(), // just example
+//     //     ]);
+//     // });
 
+
+// // ref: frontend\src\components\notification-icon\NotificationButton.jsx
+// Route::get('/api/v1/notifications', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $fullname = $request->query('fullname');
+
+//     $data = [
+//         'Maricar Aquino' => [
+//             ['message' => "Welcome back, Maricar!", 'notification_status' => 'unread'],
+//             ['message' => "Strategy session scheduled at 3 PM.", 'notification_status' => 'unread'],
+//         ],
+//         'Chuck Gulledge' => [
+//             ['message' => "You have a new coaching request.", 'notification_status' => 'unread'],
+//             ['message' => "Reminder: Leadership webinar at 2 PM.", 'notification_status' => 'unread'],
+//         ],
+//         'Kayven Delatado' => [
+//             ['message' => "Your password will expire soon.", 'notification_status' => 'unread'],
+//             ['message' => "Team update: Weekly review posted.", 'notification_status' => 'unread'],
+//         ],
+//         'UAT Test' => [
+//             ['message' => "Report submitted successfully.", 'notification_status' => 'unread'],
+//             ['message' => "Don’t forget the meeting notes.", 'notification_status' => 'unread'],
+//         ],
+//         'Jamie Lee' => [
+//             ['message' => "Performance review scheduled.", 'notification_status' => 'unread'],
+//             ['message' => "New announcement: Office hours updated.", 'notification_status' => 'unread'],
+//         ],
+//     ];
+
+//     return response()->json($data[$fullname] ?? []);
+// });
 
 // ref: frontend\src\components\notification-icon\NotificationButton.jsx
 Route::get('/api/v1/notifications', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Validate 'fullname'
+    $validator = Validator::make($request->all(), [
+        'fullname' => ['required', 'string', 'max:100', 'regex:/^[\pL\s\.\'-]+$/u'], // allows names with letters, spaces, dots, hyphens, apostrophes
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Invalid fullname parameter',
+            'errors' => $validator->errors()
+        ], 400);
     }
 
     $fullname = $request->query('fullname');
 
-    $data = [
-        'Maricar Aquino' => [
-            ['message' => "Welcome back, Maricar!", 'notification_status' => 'unread'],
-            ['message' => "Strategy session scheduled at 3 PM.", 'notification_status' => 'unread'],
-        ],
-        'Chuck Gulledge' => [
-            ['message' => "You have a new coaching request.", 'notification_status' => 'unread'],
-            ['message' => "Reminder: Leadership webinar at 2 PM.", 'notification_status' => 'unread'],
-        ],
-        'Kayven Delatado' => [
-            ['message' => "Your password will expire soon.", 'notification_status' => 'unread'],
-            ['message' => "Team update: Weekly review posted.", 'notification_status' => 'unread'],
-        ],
-        'UAT Test' => [
-            ['message' => "Report submitted successfully.", 'notification_status' => 'unread'],
-            ['message' => "Don’t forget the meeting notes.", 'notification_status' => 'unread'],
-        ],
-        'Jamie Lee' => [
-            ['message' => "Performance review scheduled.", 'notification_status' => 'unread'],
-            ['message' => "New announcement: Office hours updated.", 'notification_status' => 'unread'],
-        ],
-    ];
+    $notification = Notification::where('userName', $fullname)->first();
 
-    return response()->json($data[$fullname] ?? []);
+    if (!$notification) {
+        return response()->json([]);
+    }
+
+    return response()->json($notification->notificationsData ?? []);
 });
 
 
