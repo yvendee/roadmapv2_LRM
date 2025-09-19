@@ -187,20 +187,11 @@ const EmployeeTable = () => {
   // };
   
 
-
-  const handleAddNewMembersDepartmentsTable = async (e) => {
-    if (e) {
-      if (typeof e.preventDefault === 'function') {
-        e.preventDefault();
-      }
-      console.log('Event type triggered on Add:', e.type);
-    }
-  
-    ENABLE_CONSOLE_LOGS &&
-      console.log(
-        'New Members Directory Table',
-        JSON.stringify(newMembersDepartmentsTable, null, 2)
-      );
+  const handleAddNewMembersDepartmentsTable = async () => {
+    ENABLE_CONSOLE_LOGS && console.log(
+      'New Members Directory Table',
+      JSON.stringify(newMembersDepartmentsTable, null, 2)
+    );
   
     const {
       fullname,
@@ -211,20 +202,20 @@ const EmployeeTable = () => {
       canLogin,
     } = newMembersDepartmentsTable;
   
-    // Basic Validation (Optional)
-    // if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
-    //   alert('Full name, company, and email are required.');
-    //   return;
-    // }
+    // Basic validation
+    if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
+      alert('Full name, company, and email are required.');
+      return;
+    }
   
     try {
-      // Step 1: Get CSRF token
+      // Step 1: CSRF Token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
   
-      // Step 2: POST new member
+      // Step 2: API Call
       const response = await fetch(`${API_URL}/v1/members-directory/add`, {
         method: 'POST',
         headers: {
@@ -253,13 +244,12 @@ const EmployeeTable = () => {
         return;
       }
   
-      ENABLE_CONSOLE_LOGS &&
-        console.log('✅ New member added:', result.newItem);
+      ENABLE_CONSOLE_LOGS && console.log('✅ New member added:', result.newItem);
   
-      // Step 3: Update Zustand store
+      // Step 3: Update store
       pushMembersDepartmentsTableField(result.newItem);
   
-      // Step 4: Reset modal/input state
+      // Step 4: Reset state
       setShowAddModal(false);
       setNewMembersDepartmentsTable({
         fullname: '',
@@ -271,11 +261,13 @@ const EmployeeTable = () => {
       });
       setIsEditing(false);
       localStorage.removeItem('NewMembersDirectoryTableData');
+  
     } catch (err) {
       console.error('❌ Add request error:', err);
       alert('Error occurred while adding new member.');
     }
   };
+  
   
   
 
