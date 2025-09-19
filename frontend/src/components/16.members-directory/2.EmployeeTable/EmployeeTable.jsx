@@ -15,6 +15,7 @@ const EmployeeTable = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
+  const [emailError, setEmailError] = useState('');
 
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
@@ -842,13 +843,34 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, company: e.target.value })}
             />
 
-            <label className="modal-add-label">Email</label>
+            {/* <label className="modal-add-label">Email</label>
             <textarea
               className="modal-add-input"
               rows="1"
               value={newMembersDepartmentsTable.email}
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, email: e.target.value })}
+            /> */}
+
+
+            <label className="modal-add-label">Email</label>
+            <textarea
+              className="modal-add-input"
+              rows="1"
+              value={newMembersDepartmentsTable.email}
+              onChange={(e) => {
+                const email = e.target.value;
+                setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, email });
+
+                // Simple email regex validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                  setEmailError('Please enter a valid email address.');
+                } else {
+                  setEmailError('');
+                }
+              }}
             />
+
 
             <label className="modal-add-label">Department</label>
             <textarea
@@ -883,34 +905,11 @@ const EmployeeTable = () => {
 
             <div className="modal-add-buttons">
 
-            {/* <button className="btn-add" onClick={handleAddNewMembersDepartmentsTable}>Add</button>
-            <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button> */}
-
-            <div
-              className="btn-add"
-              role="button"
-              tabIndex={0}
-              onClick={(e) => handleAddNewMembersDepartmentsTable(e)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleAddNewMembersDepartmentsTable(e);
-                }
-              }}
-            >
-              Add
-            </div>
-
-
-              <div
-                className="btn-close"
-                role="button"
-                tabIndex={0}
-                onClick={() => setShowAddModal(false)}
-                onKeyDown={(e) => e.key === 'Enter' && setShowAddModal(false)}
-              >
-                Close
+              <button className="btn-add" disabled={!!emailError} onClick={handleAddNewMembersDepartmentsTable}>Add</button>
+              <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
+              <div style={{ color: 'red', marginTop: '8px' }}>
+                {emailError && <span>{emailError}</span>}
               </div>
-
 
             </div>
           </div>

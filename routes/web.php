@@ -6669,42 +6669,6 @@ Route::post('/api/v1/members-directory/update', function (Request $request) use 
 });
 
 
-// Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
-//     if ($API_secure && !$request->session()->get('logged_in')) {
-//         return response()->json(['message' => 'Unauthorized'], 401);
-//     }
-
-//     $organization = $request->input('organizationName');  // Use organizationName here
-//     $newItem = $request->input('newItem');
-
-//     if (!$organization || !$newItem) {
-//         return response()->json(['message' => 'Missing required data'], 400);
-//     }
-
-//     $record = MembersDirectory::where('organizationName', $organization)->first();
-
-//     if (!$record) {
-//         return response()->json(['message' => 'Organization not found'], 404);
-//     }
-
-//     $existing = $record->membersDirectoryData ?? [];
-
-//     $maxId = collect($existing)->pluck('id')->max() ?? 0;
-//     $newItem['id'] = $maxId + 1;
-
-//     $existing[] = $newItem;
-
-//     $record->membersDirectoryData = $existing;
-//     $record->save();
-
-//     return response()->json([
-//         'message' => 'New member added successfully',
-//         'newItem' => $newItem,
-//         'fullData' => $existing,
-//     ]);
-// });
-
-
 Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
