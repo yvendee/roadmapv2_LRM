@@ -352,105 +352,31 @@ const EmployeeTable = () => {
   // };
   
 
-  const handleSaveChanges = () => {
-    setLoadingSave(true);
-  
-    setTimeout(async () => {
-      setLoadingSave(false);
-  
-      const storedData = localStorage.getItem('NewMembersDirectoryTableData');
-  
-      let dataToSend;
-  
-      if (storedData) {
-        try {
-          dataToSend = JSON.parse(storedData);
-          ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table after Save Changes Button:', dataToSend);
-        } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDirectoryTableData on save:', err);
-          return;
-        }
-      } else {
-        dataToSend = currentOrder.map((item, index) => ({
-          ...item,
-          id: index + 1,
-        }));
-        ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table (Reordered):', dataToSend);
-      }
-  
-      try {
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-          credentials: 'include',
-        });
-        const { csrf_token } = await csrfRes.json();
-  
-        const response = await fetch(`${API_URL}/v1/members-directory/update`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            organization,
-            membersDirectoryData: dataToSend,
-          }),
-        });
-  
-        const result = await response.json();
-        ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
-  
-        if (!response.ok) {
-          console.error('Update failed:', result.message || 'Unknown error');
-        } else {
-          localStorage.removeItem('NewMembersDirectoryTableData');
-          setCurrentOrder(dataToSend);
-          setIsEditing(false);
-        }
-      } catch (error) {
-        console.error('Update request error:', error);
-      }
-    }, 1000);
-  };
-  
-
-  // const handleSaveChanges = async () => {
+  // const handleSaveChanges = () => {
   //   setLoadingSave(true);
   
   //   setTimeout(async () => {
   //     setLoadingSave(false);
   
+  //     const storedData = localStorage.getItem('NewMembersDirectoryTableData');
+  
   //     let dataToSend;
-
-  //     const organization = useLayoutSettingsStore.getState().organization;
   
-  //     const localData = localStorage.getItem('NewMembersDirectoryTableData');
-  //     if (localData) {
+  //     if (storedData) {
   //       try {
-  //         const parsed = JSON.parse(localData);
-  //         // Re-assign sequential IDs (in case rows were reordered)
-  //         dataToSend = parsed.map((item, index) => ({
-  //           ...item,
-  //           id: index + 1,
-  //         }));
-  
-  //         ENABLE_CONSOLE_LOGS && console.log('✅ Reordered from localStorage:', dataToSend);
+  //         dataToSend = JSON.parse(storedData);
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table after Save Changes Button:', dataToSend);
   //       } catch (err) {
-  //         console.error('❌ Error parsing localStorage reorder data:', err);
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDirectoryTableData on save:', err);
   //         return;
   //       }
   //     } else {
-  //       // Fallback to currentOrder if no localStorage reorder data
   //       dataToSend = currentOrder.map((item, index) => ({
   //         ...item,
   //         id: index + 1,
   //       }));
-  //       ENABLE_CONSOLE_LOGS && console.log('📦 Fallback currentOrder:', dataToSend);
+  //       ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table (Reordered):', dataToSend);
   //     }
-  
-  //     // Clear localStorage and hide editing buttons
-  //     localStorage.removeItem('NewMembersDirectoryTableData');
-  //     setIsEditing(false);
   
   //     try {
   //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -466,24 +392,107 @@ const EmployeeTable = () => {
   //         },
   //         credentials: 'include',
   //         body: JSON.stringify({
-  //           organizationName: organization,
+  //           organization,
   //           membersDirectoryData: dataToSend,
   //         }),
   //       });
   
   //       const result = await response.json();
+  //       ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
   
-  //       if (response.ok) {
-  //         ENABLE_CONSOLE_LOGS && console.log('✅ Members Directory Updated:', result);
+  //       if (!response.ok) {
+  //         console.error('Update failed:', result.message || 'Unknown error');
   //       } else {
-  //         console.error('❌ Update failed:', result.message || 'Unknown error');
+  //         localStorage.removeItem('NewMembersDirectoryTableData');
+  //         setCurrentOrder(dataToSend);
+  //         setIsEditing(false);
   //       }
   //     } catch (error) {
-  //       console.error('❌ Network error during update:', error);
+  //       console.error('Update request error:', error);
   //     }
   //   }, 1000);
   // };
   
+
+  const handleSaveChanges = () => {
+    setLoadingSave(true);
+  
+    setTimeout(async () => {
+      try {
+        const storedData = localStorage.getItem('NewMembersDirectoryTableData');
+  
+        let reordered = [];
+  
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Saved Members Directory from localStorage:', parsedData);
+  
+          reordered = parsedData.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Members Directory (from localStorage):', reordered);
+  
+          // Optionally update your Zustand or React state here if needed
+          setMembersDirectory(reordered);
+        } else {
+          // If nothing is in localStorage, use currentOrder
+          reordered = currentOrder.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Members Directory (from currentOrder):', reordered);
+  
+          // Update state/store if needed
+          setMembersDirectory(reordered);
+        }
+  
+        // Cleanup local temp and editing state
+        localStorage.removeItem('NewMembersDirectoryTableData');
+        setIsEditing(false);
+  
+        // 🛰️ Push to backend
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        const response = await fetch(`${API_URL}/v1/members-directory/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organizationName: organization, // make sure this is defined correctly
+            membersDirectoryData: reordered,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        if (!response.ok) {
+          console.error('❌ Failed to update Members Directory:', result.message || 'Unknown error');
+          alert(result.message || 'Update failed');
+        } else {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Members Directory Update Response:', result);
+        }
+  
+      } catch (err) {
+        console.error('❌ Error during save process:', err);
+        alert('Something went wrong while saving changes.');
+      } finally {
+        setLoadingSave(false);
+      }
+    }, 1000);
+  };
+  
+
   
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
