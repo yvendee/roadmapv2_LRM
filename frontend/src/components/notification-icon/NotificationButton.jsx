@@ -10,6 +10,7 @@ import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
 const NotificationButton = () => {
   const user = useLoginStore((state) => state.user);
+  const fullName = useLoginStore((state) => state.user);
   const setNotifications = useNotificationStore((state) => state.setNotifications);
 
   const [open, setOpen] = useState(false);
@@ -75,14 +76,12 @@ const NotificationButton = () => {
   // };
   
 
-  const fullName = useLoginStore((state) => state.user);
-
-  const toggleDropdown = () => {
+  const toggleDropdown = async () => {
     setOpen(prev => !prev);
-
+  
     if (!open) {
       const hasUnread = notifications.some(n => n.notification_status === "unread");
-
+  
       if (hasUnread) {
         // ✅ Update frontend state immediately
         useNotificationStore.setState((state) => {
@@ -93,33 +92,42 @@ const NotificationButton = () => {
           ENABLE_CONSOLE_LOGS && console.log('Updated notifications (frontend):', updatedNotifications);
           return { notifications: updatedNotifications };
         });
-
-        // ✅ Send update to backend
-        fetch(`${API_URL}/v1/notifications/mark-read`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            userName: fullName,
-          }),
-        })
-          .then(async (res) => {
-            const json = await res.json();
-            if (res.ok) {
-              ENABLE_CONSOLE_LOGS && console.log('📤 Notifications marked as read on backend:', json);
-            } else {
-              console.error('❌ Error marking notifications read:', json.message);
-            }
-          })
-          .catch(err => {
-            console.error('❌ Network error:', err);
+  
+        try {
+          // ✅ 1. Get CSRF token
+          const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+            credentials: 'include',
           });
+  
+          const { csrf_token } = await csrfRes.json();
+  
+          // ✅ 2. Send mark-read request with CSRF token
+          const res = await fetch(`${API_URL}/v1/notifications/mark-read`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrf_token,
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              userName: fullName,
+            }),
+          });
+  
+          const json = await res.json();
+  
+          if (res.ok) {
+            ENABLE_CONSOLE_LOGS && console.log('📤 Notifications marked as read on backend:', json);
+          } else {
+            console.error('❌ Error marking notifications read:', json.message);
+          }
+        } catch (err) {
+          console.error('❌ Network or CSRF error:', err);
+        }
       }
     }
   };
+  
 
   
 
