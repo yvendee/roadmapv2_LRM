@@ -6710,20 +6710,26 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    // Validate inputs
+    // Validate top-level keys first
     $validated = $request->validate([
         'organizationName' => 'required|string',
         'newItem' => 'required|array',
-        'newItem.fullname' => 'required|string',
-        'newItem.company' => 'required|string',
-        'newItem.email' => 'required|email',
-        'newItem.department' => 'required|string',
-        'newItem.memberAccess' => 'required|string',
-        'newItem.canLogin' => 'required|string',
     ]);
 
+    // Now validate contents of newItem
+    $memberRules = [
+        'fullname' => 'required|string',
+        'company' => 'required|string',
+        'email' => 'required|email',
+        'department' => 'required|string',
+        'memberAccess' => 'required|string',
+        'canLogin' => 'required|string',
+    ];
+
+    Validator::make($request->input('newItem'), $memberRules)->validate();
+
     $organizationName = $validated['organizationName'];
-    $newItem = $validated['newItem'];
+    $newItem = $request->input('newItem');
 
     $record = MembersDirectory::where('organizationName', $organizationName)->first();
 
@@ -6733,7 +6739,6 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
 
     $existing = $record->membersDirectoryData ?? [];
 
-    // Determine next ID
     $maxId = collect($existing)->pluck('id')->max() ?? 0;
     $newItem['id'] = $maxId + 1;
 
@@ -6745,7 +6750,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
     return response()->json([
         'message' => 'New member added successfully',
         'newItem' => $newItem,
-        // 'fullData' => $existing,
+        'fullData' => $existing,
     ]);
 });
 
