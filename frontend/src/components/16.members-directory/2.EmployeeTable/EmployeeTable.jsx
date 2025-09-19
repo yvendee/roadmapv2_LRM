@@ -907,11 +907,15 @@ const EmployeeTable = () => {
 
               <button className="btn-add" disabled={!!emailError} onClick={handleAddNewMembersDepartmentsTable}>Add</button>
               <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
-              <div style={{ color: 'red', marginTop: '8px' }}>
-                {emailError && <span>{emailError}</span>}
-              </div>
 
             </div>
+
+            {/* 🔻 Error Message BELOW the buttons */}
+            {emailError && (
+              <div style={{ color: 'red', marginTop: '10px', textAlign: 'right' }}>
+                <span>{emailError}</span>
+              </div>
+            )}
           </div>
         </div>
       )}
