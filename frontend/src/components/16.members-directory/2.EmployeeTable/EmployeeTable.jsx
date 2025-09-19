@@ -822,7 +822,7 @@ const EmployeeTable = () => {
         </div>
       )}
 
-{showAddModal && (
+      {showAddModal && (
         <div className="modal-add-overlay" onClick={() => setShowAddModal(false)}>
           <div className="modal-add-box w-[500px] max-h-[600px] bg-white rounded-lg p-5 overflow-y-auto shadow-md" onClick={(e) => e.stopPropagation()}>
             <div className="modal-add-title">Add Employee</div>
@@ -881,8 +881,27 @@ const EmployeeTable = () => {
             </select>
 
             <div className="modal-add-buttons">
-              <button className="btn-add" onClick={handleAddNewMembersDepartmentsTable}>Add</button>
-              <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
+            <div
+              className="btn-add"
+              role="button"
+              tabIndex={0}
+              onClick={handleAddNewMembersDepartmentsTable}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddNewMembersDepartmentsTable()}
+            >
+              Add
+            </div>
+
+            <div
+              className="btn-close"
+              role="button"
+              tabIndex={0}
+              onClick={() => setShowAddModal(false)}
+              onKeyDown={(e) => e.key === 'Enter' && setShowAddModal(false)}
+            >
+              Close
+            </div>
+
+
             </div>
           </div>
         </div>
