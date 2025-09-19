@@ -344,38 +344,122 @@ const MembersDepartmentsTable = () => {
   //   }, 1000);
   // };
 
+  // const handleSaveChanges = () => {
+  //   setLoadingSave(true);
+  
+  //   setTimeout(async () => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('NewMembersDepartmentsTableData');
+  
+  //     let dataToSend;
+  
+  //     if (storedData) {
+  //       try {
+  //         dataToSend = JSON.parse(storedData);
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table after Save Changes Button:', dataToSend);
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDepartmentsTableData on save:', err);
+  //         return;
+  //       }
+  //     } else {
+  //       // Fallback: use current order
+  //       dataToSend = currentOrder.map((item, index) => ({
+  //         ...item,
+  //         id: index + 1,
+  //       }));
+  //       ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table (Reordered):', dataToSend);
+  //     }
+  
+  //     try {
+  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //         credentials: 'include',
+  //       });
+
+  //       const { csrf_token } = await csrfRes.json();
+  
+  //       const response = await fetch(`${API_URL}/v1/members-departments/update`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'X-CSRF-TOKEN': csrf_token,
+  //         },
+  //         credentials: 'include',
+  //         body: JSON.stringify({
+  //           organizationName: organization,
+  //           membersDepartmentsData: dataToSend,
+  //         }),
+  //       });
+  
+  //       const result = await response.json();
+  //       ENABLE_CONSOLE_LOGS && console.log('📤 Update response:', result);
+  
+  //       if (!response.ok) {
+  //         console.error('Update failed:', result.message || 'Unknown error');
+  //       } else {
+  //         // ✅ Update Zustand
+  //         setMembersDepartments(dataToSend);
+  
+  //         // ✅ Reset UI
+  //         setIsEditing(false);
+  //         localStorage.removeItem('NewMembersDepartmentsTableData');
+  //       }
+  //     } catch (error) {
+  //       console.error('Update request error:', error);
+  //     }
+  //   }, 1000);
+  // };
+  
+  
+
   const handleSaveChanges = () => {
     setLoadingSave(true);
   
-    setTimeout(async () => {
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    if (!organization || typeof organization !== 'string' || organization.trim() === '') {
+      alert('Organization is missing or invalid.');
       setLoadingSave(false);
+      return;
+    }
   
-      const storedData = localStorage.getItem('NewMembersDepartmentsTableData');
+    setTimeout(async () => {
+      try {
+        const storedData = localStorage.getItem('NewMembersDepartmentsTableData');
   
-      let dataToSend;
+        let reordered = [];
   
-      if (storedData) {
-        try {
-          dataToSend = JSON.parse(storedData);
-          ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table after Save Changes Button:', dataToSend);
-        } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDepartmentsTableData on save:', err);
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Saved Members Departments from localStorage:', parsedData);
+  
+          reordered = parsedData.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Members Departments (from localStorage):', reordered);
+        } else {
+          reordered = currentOrder.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Members Departments (from currentOrder):', reordered);
+        }
+  
+        if (!reordered.length) {
+          alert('No members departments data to save.');
+          setLoadingSave(false);
           return;
         }
-      } else {
-        // Fallback: use current order
-        dataToSend = currentOrder.map((item, index) => ({
-          ...item,
-          id: index + 1,
-        }));
-        ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table (Reordered):', dataToSend);
-      }
   
-      try {
+        // Push to backend
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
           credentials: 'include',
         });
-
+  
         const { csrf_token } = await csrfRes.json();
   
         const response = await fetch(`${API_URL}/v1/members-departments/update`, {
@@ -387,29 +471,33 @@ const MembersDepartmentsTable = () => {
           credentials: 'include',
           body: JSON.stringify({
             organizationName: organization,
-            membersDepartmentsData: dataToSend,
+            membersDepartmentsData: reordered,
           }),
         });
   
         const result = await response.json();
-        ENABLE_CONSOLE_LOGS && console.log('📤 Update response:', result);
   
         if (!response.ok) {
-          console.error('Update failed:', result.message || 'Unknown error');
+          console.error('❌ Failed to update Members Departments:', result.message || 'Unknown error');
+          alert(result.message || 'Update failed');
         } else {
-          // ✅ Update Zustand
-          setMembersDepartments(dataToSend);
+          ENABLE_CONSOLE_LOGS && console.log('✅ Members Departments Update Response:', result);
   
-          // ✅ Reset UI
+          // Update Zustand or React state
+          setMembersDepartments(reordered);
+  
+          // Reset UI state
           setIsEditing(false);
           localStorage.removeItem('NewMembersDepartmentsTableData');
         }
       } catch (error) {
-        console.error('Update request error:', error);
+        console.error('❌ Update request error:', error);
+        alert('Something went wrong while saving changes.');
+      } finally {
+        setLoadingSave(false);
       }
     }, 1000);
   };
-  
   
   
   const handleDischargeChanges = () => {
