@@ -420,6 +420,8 @@ const EmployeeTable = () => {
       setLoadingSave(false);
   
       let dataToSend;
+
+      const organization = useLayoutSettingsStore.getState().organization;
   
       const localData = localStorage.getItem('NewMembersDirectoryTableData');
       if (localData) {
