@@ -39,8 +39,8 @@ const EmployeeTable = () => {
     company: '',
     email: '',
     department: '',
-    memberAccess: '',
-    canLogin: '',
+    memberAccess: 'Leadership',
+    canLogin: 'Yes',
   });
   
 
