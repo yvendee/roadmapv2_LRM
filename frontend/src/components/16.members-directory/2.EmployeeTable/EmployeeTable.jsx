@@ -188,11 +188,9 @@ const EmployeeTable = () => {
   
 
   const handleAddNewMembersDepartmentsTable = async () => {
-    ENABLE_CONSOLE_LOGS && console.log(
-      'New Members Directory Table',
-      JSON.stringify(newMembersDepartmentsTable, null, 2)
-    );
+    ENABLE_CONSOLE_LOGS && console.log('New Members Departments Table', JSON.stringify(newMembersDepartmentsTable, null, 2));
   
+    // Validate required fields
     const {
       fullname,
       company,
@@ -202,21 +200,20 @@ const EmployeeTable = () => {
       canLogin,
     } = newMembersDepartmentsTable;
   
-    // Basic validation
-    if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
-      alert('Full name, company, and email are required.');
+    if (!fullname?.trim() || !company?.trim() || !email?.trim() || !department?.trim() || !memberAccess?.trim() || !canLogin?.trim()) {
+      alert('Please fill all fields.');
       return;
     }
   
     try {
-      // Step 1: CSRF Token
+      // 1. Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
   
-      // Step 2: API Call
-      const response = await fetch(`${API_URL}/v1/members-directory/add-item`, {
+      // 2. Send POST request to add new member
+      const response = await fetch(`${API_URL}/v1/members-directory/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -229,9 +226,9 @@ const EmployeeTable = () => {
             fullname: fullname.trim(),
             company: company.trim(),
             email: email.trim(),
-            department: department?.trim() || '',
-            memberAccess: memberAccess?.trim() || '',
-            canLogin: canLogin?.trim() || '',
+            department: department.trim(),
+            memberAccess: memberAccess.trim(),
+            canLogin: canLogin.trim(),
           },
         }),
       });
@@ -246,10 +243,10 @@ const EmployeeTable = () => {
   
       ENABLE_CONSOLE_LOGS && console.log('✅ New member added:', result.newItem);
   
-      // Step 3: Update store
+      // 3. Update local state/store with new member
       pushMembersDepartmentsTableField(result.newItem);
   
-      // Step 4: Reset state
+      // 4. Reset form/modal
       setShowAddModal(false);
       setNewMembersDepartmentsTable({
         fullname: '',
@@ -260,13 +257,14 @@ const EmployeeTable = () => {
         canLogin: '',
       });
       setIsEditing(false);
-      localStorage.removeItem('NewMembersDirectoryTableData');
+      localStorage.removeItem('NewMembersDepartmentsTableData');
   
     } catch (err) {
       console.error('❌ Add request error:', err);
-      alert('Error occurred while adding new member.');
+      alert('Error occurred while adding member.');
     }
   };
+  
   
   
   
