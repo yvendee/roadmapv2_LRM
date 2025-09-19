@@ -352,31 +352,102 @@ const EmployeeTable = () => {
   // };
   
 
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
+  //   setLoadingSave(true);
+  
+  //   setTimeout(async () => {
+  //     setLoadingSave(false);
+  
+  //     const storedData = localStorage.getItem('NewMembersDirectoryTableData');
+  
+  //     let dataToSend;
+  
+  //     if (storedData) {
+  //       try {
+  //         dataToSend = JSON.parse(storedData);
+  //         ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table after Save Changes Button:', dataToSend);
+  //       } catch (err) {
+  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDirectoryTableData on save:', err);
+  //         return;
+  //       }
+  //     } else {
+  //       dataToSend = currentOrder.map((item, index) => ({
+  //         ...item,
+  //         id: index + 1,
+  //       }));
+  //       ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table (Reordered):', dataToSend);
+  //     }
+  
+  //     try {
+  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //         credentials: 'include',
+  //       });
+  //       const { csrf_token } = await csrfRes.json();
+  
+  //       const response = await fetch(`${API_URL}/v1/members-directory/update`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'X-CSRF-TOKEN': csrf_token,
+  //         },
+  //         credentials: 'include',
+  //         body: JSON.stringify({
+  //           organization,
+  //           membersDirectoryData: dataToSend,
+  //         }),
+  //       });
+  
+  //       const result = await response.json();
+  //       ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
+  
+  //       if (!response.ok) {
+  //         console.error('Update failed:', result.message || 'Unknown error');
+  //       } else {
+  //         localStorage.removeItem('NewMembersDirectoryTableData');
+  //         setIsEditing(false);
+  //       }
+  //     } catch (error) {
+  //       console.error('Update request error:', error);
+  //     }
+  //   }, 1000);
+  // };
+  
+
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
     setTimeout(async () => {
       setLoadingSave(false);
   
-      const storedData = localStorage.getItem('NewMembersDirectoryTableData');
-  
       let dataToSend;
   
-      if (storedData) {
+      const localData = localStorage.getItem('NewMembersDirectoryTableData');
+      if (localData) {
         try {
-          dataToSend = JSON.parse(storedData);
-          ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table after Save Changes Button:', dataToSend);
+          const parsed = JSON.parse(localData);
+          // Re-assign sequential IDs (in case rows were reordered)
+          dataToSend = parsed.map((item, index) => ({
+            ...item,
+            id: index + 1,
+          }));
+  
+          ENABLE_CONSOLE_LOGS && console.log('✅ Reordered from localStorage:', dataToSend);
         } catch (err) {
-          ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDirectoryTableData on save:', err);
+          console.error('❌ Error parsing localStorage reorder data:', err);
           return;
         }
       } else {
+        // Fallback to currentOrder if no localStorage reorder data
         dataToSend = currentOrder.map((item, index) => ({
           ...item,
           id: index + 1,
         }));
-        ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table (Reordered):', dataToSend);
+        ENABLE_CONSOLE_LOGS && console.log('📦 Fallback currentOrder:', dataToSend);
       }
+  
+      // Clear localStorage and hide editing buttons
+      localStorage.removeItem('NewMembersDirectoryTableData');
+      setIsEditing(false);
   
       try {
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -392,22 +463,20 @@ const EmployeeTable = () => {
           },
           credentials: 'include',
           body: JSON.stringify({
-            organization,
+            organizationName: organization,
             membersDirectoryData: dataToSend,
           }),
         });
   
         const result = await response.json();
-        ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
   
-        if (!response.ok) {
-          console.error('Update failed:', result.message || 'Unknown error');
+        if (response.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('✅ Members Directory Updated:', result);
         } else {
-          localStorage.removeItem('NewMembersDirectoryTableData');
-          setIsEditing(false);
+          console.error('❌ Update failed:', result.message || 'Unknown error');
         }
       } catch (error) {
-        console.error('Update request error:', error);
+        console.error('❌ Network error during update:', error);
       }
     }, 1000);
   };
