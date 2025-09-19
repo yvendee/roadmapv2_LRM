@@ -188,11 +188,19 @@ const EmployeeTable = () => {
   
 
 
-  const handleAddNewMembersDepartmentsTable = async () => {
-    ENABLE_CONSOLE_LOGS && console.log(
-      'New Members Directory Table',
-      JSON.stringify(newMembersDepartmentsTable, null, 2)
-    );
+  const handleAddNewMembersDepartmentsTable = async (e) => {
+    if (e) {
+      if (typeof e.preventDefault === 'function') {
+        e.preventDefault();
+      }
+      console.log('Event type triggered on Add:', e.type);
+    }
+  
+    ENABLE_CONSOLE_LOGS &&
+      console.log(
+        'New Members Directory Table',
+        JSON.stringify(newMembersDepartmentsTable, null, 2)
+      );
   
     const {
       fullname,
@@ -203,7 +211,7 @@ const EmployeeTable = () => {
       canLogin,
     } = newMembersDepartmentsTable;
   
-    // // Step 0: Basic validation
+    // Basic Validation (Optional)
     // if (!fullname?.trim() || !company?.trim() || !email?.trim()) {
     //   alert('Full name, company, and email are required.');
     //   return;
@@ -216,7 +224,7 @@ const EmployeeTable = () => {
       });
       const { csrf_token } = await csrfRes.json();
   
-      // Step 2: Send request to Laravel backend
+      // Step 2: POST new member
       const response = await fetch(`${API_URL}/v1/members-directory/add`, {
         method: 'POST',
         headers: {
@@ -245,7 +253,8 @@ const EmployeeTable = () => {
         return;
       }
   
-      ENABLE_CONSOLE_LOGS && console.log('✅ New member added:', result.newItem);
+      ENABLE_CONSOLE_LOGS &&
+        console.log('✅ New member added:', result.newItem);
   
       // Step 3: Update Zustand store
       pushMembersDepartmentsTableField(result.newItem);
@@ -262,12 +271,12 @@ const EmployeeTable = () => {
       });
       setIsEditing(false);
       localStorage.removeItem('NewMembersDirectoryTableData');
-  
     } catch (err) {
       console.error('❌ Add request error:', err);
       alert('Error occurred while adding new member.');
     }
   };
+  
   
 
   const handleCellClick = (id, field) => {
@@ -880,26 +889,37 @@ const EmployeeTable = () => {
               <option value="No">No</option>
             </select>
 
+
+
             <div className="modal-add-buttons">
+
+            {/* <button className="btn-add" onClick={handleAddNewMembersDepartmentsTable}>Add</button>
+            <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button> */}
+
             <div
               className="btn-add"
               role="button"
               tabIndex={0}
-              onClick={handleAddNewMembersDepartmentsTable}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddNewMembersDepartmentsTable()}
+              onClick={(e) => handleAddNewMembersDepartmentsTable(e)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleAddNewMembersDepartmentsTable(e);
+                }
+              }}
             >
               Add
             </div>
 
-            <div
-              className="btn-close"
-              role="button"
-              tabIndex={0}
-              onClick={() => setShowAddModal(false)}
-              onKeyDown={(e) => e.key === 'Enter' && setShowAddModal(false)}
-            >
-              Close
-            </div>
+
+              <div
+                className="btn-close"
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowAddModal(false)}
+                onKeyDown={(e) => e.key === 'Enter' && setShowAddModal(false)}
+              >
+                Close
+              </div>
 
 
             </div>
