@@ -6668,27 +6668,21 @@ Route::post('/api/v1/members-directory/update', function (Request $request) use 
     return response()->json(['message' => 'Members Directory updated successfully']);
 });
 
-// ref: frontend\src\components\16.members-directory\2.EmployeeTable\EmployeeTable.jsx
+
 Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organizationName' => 'required|string',
-        'newItem' => 'required|array',
-        'newItem.fullname' => 'required|string',
-        'newItem.company' => 'required|string',
-        'newItem.email' => 'required|email',
-        'newItem.department' => 'required|string',
-        'newItem.memberAccess' => 'required|string',
-        'newItem.canLogin' => 'required|string',
-    ]);
+    // Directly get inputs without validation
+    $organization = $request->input('organization');
+    $newItem = $request->input('newItem');
 
-    $organizationName = $validated['organizationName'];
-    $newItem = $validated['newItem'];
+    if (!$organization || !$newItem) {
+        return response()->json(['message' => 'Missing required data'], 400);
+    }
 
-    $record = MembersDirectory::where('organizationName', $organizationName)->first();
+    $record = MembersDirectory::where('organizationName', $organization)->first();
 
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
@@ -6711,6 +6705,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
         'fullData' => $existing,
     ]);
 });
+
 
 
 
