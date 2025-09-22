@@ -17,6 +17,9 @@ const HeaderWithPrint = () => {
 
     <>
 
+
+      <div className="row mb-1">
+
       <div id="print-area" className="p-4">
 
         <div className="print-logo-container" style={{ display: 'none' }}>
@@ -28,11 +31,11 @@ const HeaderWithPrint = () => {
         </div>
 
         {/* Spacer */}
-        <div className="w-[200px] h-[100px] bg-transparent" />
+        {/* <div className="w-[200px] h-[100px] bg-transparent" /> */}
 
-      </div>
+        </div>
 
-      <div className="row mb-1">
+
         <div className="col-md-12">
           <div className="card bg-100 shadow-none border px-4 py-2 mr-[15px]">
             <div className="flex items-center justify-between p-2 ms-2 w-full">
