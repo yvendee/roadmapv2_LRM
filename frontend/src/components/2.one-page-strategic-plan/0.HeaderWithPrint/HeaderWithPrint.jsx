@@ -15,14 +15,21 @@ const HeaderWithPrint = () => {
 
   return (
 
-    <div id="print-area" className="p-4">
+    <>
 
-      <div className="print-logo-container" style={{ display: 'none' }}>
-        <img
-          src={logo}
-          alt="MomentumOS"
-          style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
-        />
+      <div id="print-area" className="p-4">
+
+        <div className="print-logo-container" style={{ display: 'none' }}>
+          <img
+            src={logo}
+            alt="MomentumOS"
+            style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
+          />
+        </div>
+
+        {/* Spacer */}
+        <div className="mb-8" /> {/* or use <div className="my-8" /> */}
+
       </div>
 
       <div className="row mb-1">
@@ -47,8 +54,14 @@ const HeaderWithPrint = () => {
           </div>
         </div>
       </div>
+    
+    </>
 
-    </div>
+
+
+
+
+
 
   );
 };
