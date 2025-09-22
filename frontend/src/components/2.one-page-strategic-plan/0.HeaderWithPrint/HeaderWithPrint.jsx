@@ -29,9 +29,8 @@ const HeaderWithPrint = () => {
             style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
           />
         </div>
-
-        {/* Spacer */}
-        {/* <div className="w-[200px] h-[100px] bg-transparent" /> */}
+        <br></br>
+        <br></br>
 
         </div>
 
