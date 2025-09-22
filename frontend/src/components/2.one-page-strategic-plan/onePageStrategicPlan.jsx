@@ -19,6 +19,7 @@ import useCoreCapabilitiesStore from '../../store/left-lower-content/2.one-page-
 import useFourDecisions from '../../store/left-lower-content/2.one-page-strategic-plan/6.fourDecisionsStore';
 import useConstraintsTracker from '../../store/left-lower-content/2.one-page-strategic-plan/7.constraintsTrackerStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import logo from '../../assets/images/webp/momentum-logo.webp'; 
 import { useNavigate } from 'react-router-dom'; 
 import './onePageStrategicPlan.css';
 
@@ -308,9 +309,21 @@ const OnePageStrategicPlan = () => {
         <p>Loading...</p>
       )} */}
 
+
       
       <HeaderWithPrint />
       <div id="print-area" className="p-4">
+
+        <div className="print-logo-container" style={{ display: 'none' }}>
+          <img
+            src={logo}
+            alt="MomentumOS"
+            style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
+          />
+        </div>
+        <br></br>
+        <br></br>
+
         {toggles['Strategic Drivers'] && <StrategicDriversTable />}
         {toggles['Foundations'] && <FoundationsSection />}
         {toggles['3 Year Outlook'] && <ThreeYearOutlook />}

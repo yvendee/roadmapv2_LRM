@@ -4,7 +4,6 @@ import crmBarChart from '../../../assets/images/webp/crm-bar-chart.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { useCompanyFilterStore } from '../../../store/layout/companyFilterStore';
-import logo from '../../../assets/images/webp/momentum-logo.webp'; // Adjust path as needed
 
 const HeaderWithPrint = () => {
   const selected = useCompanyFilterStore((state) => state.selected);
@@ -16,25 +15,7 @@ const HeaderWithPrint = () => {
   return (
 
     <>
-
-
       <div className="row mb-1">
-
-      <div id="print-area" className="p-4">
-
-        <div className="print-logo-container" style={{ display: 'none' }}>
-          <img
-            src={logo}
-            alt="MomentumOS"
-            style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
-          />
-        </div>
-        <br></br>
-        <br></br>
-
-        </div>
-
-
         <div className="col-md-12">
           <div className="card bg-100 shadow-none border px-4 py-2 mr-[15px]">
             <div className="flex items-center justify-between p-2 ms-2 w-full">
