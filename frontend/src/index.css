@@ -75,3 +75,32 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+/* Hide everything by default */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #print-area, #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide Sidebar during print */
+  .sidebar-scroll {
+    display: none !important;
+  }
+
+  /* Optional: remove page scrollbars during print */
+  html, body {
+    overflow: hidden;
+  }
+}
