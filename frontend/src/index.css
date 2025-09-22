@@ -117,4 +117,8 @@ button:focus-visible {
 }
 
 
-
+@media print {
+  .print\:hidden {
+    display: none !important;
+  }
+}

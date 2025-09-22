@@ -431,7 +431,7 @@ const StrategicDriversTable = () => {
             </button> */}
 
             {loggedUser?.role === 'superadmin' && !isSkeleton && (
-              <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
+              <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
                     <div></div>

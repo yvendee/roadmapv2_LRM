@@ -296,21 +296,7 @@ const OnePageStrategicPlan = () => {
 
   return (
     <>
-      
-      {/* <h2 className="text-xl font-bold mb-4">One Page Strategic Plan</h2>
-      {user ? (
-        <table className="table-auto border-collapse border border-gray-400">
-          <tbody>
-            <tr><td className="border p-2">Name</td><td className="border p-2">{user.name}</td></tr>
-            <tr><td className="border p-2">Email</td><td className="border p-2">{user.email}</td></tr>
-          </tbody>
-        </table>
-      ) : (
-        <p>Loading...</p>
-      )} */}
-
-
-      
+            
       <HeaderWithPrint />
       <div id="print-area" className="p-4">
 
