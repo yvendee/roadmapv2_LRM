@@ -28,7 +28,7 @@ const HeaderWithPrint = () => {
         </div>
 
         {/* Spacer */}
-        <div className="mb-8" /> {/* or use <div className="my-8" /> */}
+        <div className="w-[200px] h-[100px] bg-transparent" />
 
       </div>
 
