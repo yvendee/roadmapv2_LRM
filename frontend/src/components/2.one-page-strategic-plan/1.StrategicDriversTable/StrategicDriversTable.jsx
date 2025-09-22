@@ -394,7 +394,7 @@ const StrategicDriversTable = () => {
           <div className="flex gap-2">
             {editedDrivers.length > 0 && (
               <>
-                <button className="pure-green-btn" onClick={handleSaveChanges}>
+                <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
                 {loadingSave ? (
                   <div className="loader-bars">
                     <div></div>
@@ -405,7 +405,7 @@ const StrategicDriversTable = () => {
                     'Save Changes'
                 )}
                 </button>
-                <button className="pure-red-btn" onClick={handleDischargeChanges}>
+                <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
                   {loadingDischarge ? (
                     <div className="loader-bars">
                       <div></div>

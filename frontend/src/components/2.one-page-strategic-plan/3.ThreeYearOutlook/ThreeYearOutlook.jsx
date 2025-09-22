@@ -247,7 +247,7 @@ const ThreeYearOutlook = () => {
               {edited.length > 0 && (
                 <>
                   {/* <button className="pure-green-btn" onClick={handleSave}>Save Changes</button> */}
-                  <button className="pure-green-btn" onClick={handleSave}>
+                  <button className="pure-green-btn print:hidden" onClick={handleSave}>
                     {/* {loadingSave ? 'Saving...' : 'Save Changes'} */}
 
                     {loadingSave ? (
@@ -265,7 +265,7 @@ const ThreeYearOutlook = () => {
                     {loadingDischarge ? 'Discharging...' : 'Discharge Changes'}
                   </button> */}
 
-                  <button className="pure-red-btn" onClick={handleDischargeChanges} disabled={loadingDischarge} >
+                  <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges} disabled={loadingDischarge} >
                     {/* {loadingDischarge ? 'Loading...' : 'Discharge Changes'} */}
 
                     {loadingDischarge ? (
@@ -286,7 +286,7 @@ const ThreeYearOutlook = () => {
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
               {user?.role === 'superadmin' && !hasPendingOutlook && (
-                <button className="pure-blue-btn" onClick={handleAddOutlookClick} disabled={loading}>
+                <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
                     <div className="loader-bars">
                       <div></div><div></div><div></div>

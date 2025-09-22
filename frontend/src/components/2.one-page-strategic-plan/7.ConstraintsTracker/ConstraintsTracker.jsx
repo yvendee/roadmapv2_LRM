@@ -231,12 +231,12 @@ const ConstraintsTracker = () => {
           <div className="flex gap-2">
             {edited.length > 0 && (
               <>
-                <button className="pure-green-btn" onClick={handleSave}>
+                <button className="pure-green-btn print:hidden" onClick={handleSave}>
                   {loadingSave ? (
                     <div className="loader-bars"><div></div><div></div><div></div></div>
                   ) : 'Save Changes'}
                 </button>
-                <button className="pure-red-btn" onClick={handleDischargeChanges} disabled={loadingDischarge}>
+                <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges} disabled={loadingDischarge}>
                   {loadingDischarge ? (
                     <div className="loader-bars"><div></div><div></div><div></div></div>
                   ) : 'Discard'}
@@ -245,7 +245,7 @@ const ConstraintsTracker = () => {
             )}
 
             {user?.role === 'superadmin' && hasRealData && (
-              <button className="pure-blue-btn" onClick={handleAddDecisionClick} disabled={loading}>
+              <button className="pure-blue-btn print:hidden" onClick={handleAddDecisionClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 'Add Constraints Tracker'}
               </button>
             )}

@@ -337,7 +337,7 @@ const FoundationsSection = () => {
           <div className="flex gap-2">
             {edited.length > 0 && (
               <>
-                <button className="pure-green-btn" onClick={handleSaveChanges}>
+                <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
                   {/* {loadingSave ? 'Saving...' : 'Save Changes'} */}
 
                   {loadingSave ? (
@@ -351,7 +351,7 @@ const FoundationsSection = () => {
                   )}
 
                 </button>
-                <button className="pure-red-btn" onClick={handleDischargeChanges}>
+                <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
                   {/* {loadingDischarge ? 'Loading...' : 'Discharge Changes'} */}
 
                   {loadingDischarge ? (
@@ -381,7 +381,7 @@ const FoundationsSection = () => {
             </button> */}
 
             {!hasPlaceholder && (
-              <button className="pure-blue-btn" onClick={handleAddFoundationClick} disabled={loading}>
+              <button className="pure-blue-btn print:hidden" onClick={handleAddFoundationClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
                     <div></div>
