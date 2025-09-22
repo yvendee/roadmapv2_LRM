@@ -56,13 +56,6 @@ const HeaderWithPrint = () => {
       </div>
     
     </>
-
-
-
-
-
-
-
   );
 };
   

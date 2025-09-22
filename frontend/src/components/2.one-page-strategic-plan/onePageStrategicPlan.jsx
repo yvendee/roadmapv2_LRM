@@ -294,7 +294,7 @@ const OnePageStrategicPlan = () => {
   }, [organization]);
 
   return (
-    <div>
+    <>
       
       {/* <h2 className="text-xl font-bold mb-4">One Page Strategic Plan</h2>
       {user ? (
@@ -308,16 +308,18 @@ const OnePageStrategicPlan = () => {
         <p>Loading...</p>
       )} */}
 
-      <HeaderWithPrint />
-      {toggles['Strategic Drivers'] && <StrategicDriversTable />}
-      {toggles['Foundations'] && <FoundationsSection />}
-      {toggles['3 Year Outlook'] && <ThreeYearOutlook />}
-      {toggles['Playing to Win Strategy'] && <PlayingToWin />}
-      {toggles['Core Capabilities'] && <CoreCapabilities />}
-      {toggles['4 Decisions'] && <FourDecisions />}
-      {toggles['Constraints Tracker'] && <ConstraintsTracker />}
+      <div id="print-area" className="p-4">
+        <HeaderWithPrint />
+        {toggles['Strategic Drivers'] && <StrategicDriversTable />}
+        {toggles['Foundations'] && <FoundationsSection />}
+        {toggles['3 Year Outlook'] && <ThreeYearOutlook />}
+        {toggles['Playing to Win Strategy'] && <PlayingToWin />}
+        {toggles['Core Capabilities'] && <CoreCapabilities />}
+        {toggles['4 Decisions'] && <FourDecisions />}
+        {toggles['Constraints Tracker'] && <ConstraintsTracker />}
+      </div>
 
-    </div>
+    </>
   );
 };
 
