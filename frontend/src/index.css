@@ -104,3 +104,14 @@ button:focus-visible {
     overflow: hidden;
   }
 }
+
+
+@media print {
+  .print-logo-container {
+    display: block !important;
+  }
+
+  .print-button {
+    display: none !important;
+  }
+}
