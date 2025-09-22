@@ -308,8 +308,9 @@ const OnePageStrategicPlan = () => {
         <p>Loading...</p>
       )} */}
 
+      
+      <HeaderWithPrint />
       <div id="print-area" className="p-4">
-        <HeaderWithPrint />
         {toggles['Strategic Drivers'] && <StrategicDriversTable />}
         {toggles['Foundations'] && <FoundationsSection />}
         {toggles['3 Year Outlook'] && <ThreeYearOutlook />}
