@@ -503,7 +503,7 @@ const WhoWhatWhenTable = () => {
                     ) : (
                       <>
                       <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
-                      Discard Changes
+                      Discard
                       </>
                   )}
                 </button>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import usePlayingToWinStore, { initialPlayingToWin } from '../../../store/left-lower-content/2.one-page-strategic-plan/4.playingToWinStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../../configs/config';
@@ -326,7 +326,10 @@ const PlayingToWin = () => {
                         <div></div>
                       </div>
                       ) : (
-                        'Save Changes'
+                        <>
+                        <FontAwesomeIcon icon={faSave} className="mr-1" />
+                        Save Changes
+                        </>
                     )}
 
                   </button>
@@ -344,7 +347,10 @@ const PlayingToWin = () => {
                         <div></div>
                       </div>
                       ) : (
-                        'Discard'
+                        <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard
+                        </>
                     )}
 
                   </button>
@@ -361,7 +367,11 @@ const PlayingToWin = () => {
                       <div></div><div></div><div></div>
                     </div>
                   ) : (
-                    'Add Playing to Win Strategy'
+                    // 'Add Playing to Win Strategy'
+                    <>
+                    <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                    Add Playing to Win Strategy
+                    </>
                   )}
                 </button>
               )}

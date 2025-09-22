@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import useThreeYearOutlookStore, { initialOutlooks } from '../../../store/left-lower-content/2.one-page-strategic-plan/3.threeYearOutlookStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../../configs/config';
@@ -257,7 +257,10 @@ const ThreeYearOutlook = () => {
                         <div></div>
                       </div>
                       ) : (
-                        'Save Changes'
+                        <>
+                        <FontAwesomeIcon icon={faSave} className="mr-1" />
+                        Save Changes
+                        </>
                     )}
 
                   </button>
@@ -275,7 +278,10 @@ const ThreeYearOutlook = () => {
                         <div></div>
                       </div>
                       ) : (
-                        'Discard'
+                        <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard
+                        </>
                     )}
 
                   </button>
@@ -292,7 +298,10 @@ const ThreeYearOutlook = () => {
                       <div></div><div></div><div></div>
                     </div>
                   ) : (
-                    'Add Year Outlook'
+                    <>
+                    <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                    Add Year Outlook
+                    </>
                   )}
                 </button>
               )}

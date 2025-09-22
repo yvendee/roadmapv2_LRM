@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useFoundationsStore, { initialFoundations } from '../../../store/left-lower-content/2.one-page-strategic-plan/2.foundationsStore';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import API_URL from '../../../configs/config';
@@ -347,7 +347,10 @@ const FoundationsSection = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Save Changes'
+                      <>
+                      <FontAwesomeIcon icon={faSave} className="mr-1" />
+                      Save Changes
+                      </>
                   )}
 
                 </button>
@@ -361,7 +364,10 @@ const FoundationsSection = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discard'
+                      <>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                      Discard
+                      </>
                   )}
 
                 </button>
@@ -389,7 +395,11 @@ const FoundationsSection = () => {
                     <div></div>
                   </div>
                 ) : (
-                  'Add Foundation'
+                  // 'Add Foundation'
+                  <>
+                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                  Add Foundation
+                  </>
                 )}
               </button>
             )}

@@ -2,7 +2,7 @@
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useStrategicDriversStore, { initialStrategicDrivers } from '../../../store/left-lower-content/2.one-page-strategic-plan/1.strategicDriversStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -402,7 +402,10 @@ const StrategicDriversTable = () => {
                     <div></div>
                   </div>
                   ) : (
-                    'Save Changes'
+                    <>
+                    <FontAwesomeIcon icon={faSave} className="mr-1" />
+                    Save Changes
+                    </>
                 )}
                 </button>
                 <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
@@ -413,22 +416,14 @@ const StrategicDriversTable = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Discard'
+                      <>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                      Discard
+                      </>
                   )}
                 </button>
               </>
             )}
-            {/* <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
-              {loading ? (
-                <div className="loader-bars">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              ) : (
-                'Add Strategic Driver'
-              )}
-            </button> */}
 
             {loggedUser?.role === 'superadmin' && !isSkeleton && (
               <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
@@ -439,7 +434,11 @@ const StrategicDriversTable = () => {
                     <div></div>
                   </div>
                 ) : (
-                  'Add Strategic Driver'
+                  // 'Add Strategic Driver'
+                  <>
+                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                  Add Strategic Driver
+                  </>
                 )}
               </button>
             )}

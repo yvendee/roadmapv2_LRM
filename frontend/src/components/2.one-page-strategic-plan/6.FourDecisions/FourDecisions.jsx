@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import useFourDecisions, { initialFourDecisions } from '../../../store/left-lower-content/2.one-page-strategic-plan/6.fourDecisionsStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -215,19 +215,34 @@ const FourDecisions = () => {
                 <button className="pure-green-btn print:hidden" onClick={handleSave}>
                   {loadingSave ? (
                     <div className="loader-bars"><div></div><div></div><div></div></div>
-                  ) : 'Save Changes'}
+                  ) : 
+                  <>
+                  <FontAwesomeIcon icon={faSave} className="mr-1" />
+                  Save Changes
+                  </>
+                  }
                 </button>
                 <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges} disabled={loadingDischarge}>
                   {loadingDischarge ? (
                     <div className="loader-bars"><div></div><div></div><div></div></div>
-                  ) : 'Discard'}
+                  ) : 
+                  <>
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                  Discard
+                  </>
+                  }
                 </button>
               </>
             )}
 
             {user?.role === 'superadmin' && hasRealData && (
               <button className="pure-blue-btn print:hidden" onClick={handleAddDecisionClick} disabled={loading}>
-                {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 'Add Decisions'}
+                {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 
+                <>
+                <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                Add Decisions
+                </>
+                }
               </button>
             )}
 
