@@ -156,7 +156,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
-            onMouseEnter={(e) => handleMouseEnter(e, 'Score Board')}
+            onMouseEnter={(e) => handleMouseEnter(e, 'Traction Progress')}
             onMouseLeave={handleMouseLeave}
             style={{ position: 'relative' }}
           >
