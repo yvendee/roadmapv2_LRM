@@ -39,6 +39,7 @@ import NotificationButton from './components/notification-icon/NotificationButto
 import AccountButton from './components/account-icon/AccountButton';
 import ChatInterface from './components/0.messaging/Messaging';
 import Tooltip from './components/tooltip/Tooltip';
+import ChatHead from './components/chathead/ChatHead';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import useLoginStore from './store/loginStore';
@@ -191,6 +192,9 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
 
       {/* Tooltip - Rendered above everything else */}
       {tooltip.show && <Tooltip position={tooltip.position} text={tooltip.text} collapsed={collapsed} />}
+      
+
+      <ChatHead />
       
     </div>
   );
