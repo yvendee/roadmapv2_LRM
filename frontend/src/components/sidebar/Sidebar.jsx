@@ -146,8 +146,9 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
           {!collapsed && (
             <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Performance & Progress</p>
           )}
-          <NavLink
-            to="/scoreboard"
+          {/* changed from "scoreboard" to "traction-progress" */}
+          <NavLink            
+            to="/traction-progress" 
             className={({ isActive }) =>
               `sidebar-item flex items-center gap-2 ${
                 isActive
@@ -160,7 +161,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faTachometerAlt} />
-            {!collapsed && <span>Scoreboard</span>}
+            {!collapsed && <span>Traction Progress</span>}
           </NavLink>
 
           {isSuperAdmin && (

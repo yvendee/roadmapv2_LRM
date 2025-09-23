@@ -164,7 +164,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/review" element={<Review />} />
             <Route path="/one-page-strategic-plan" element={<OnePageStrategicPlan />} />
             <Route path="/flywheel" element={<Flywheel />} />
-            <Route path="/scoreboard" element={<Scoreboard />} />
+            <Route path="/traction-progress" element={<Scoreboard />} /> {/* changed from "scoreboard" to "traction-progress" */}
             <Route path="/growth-command-center" element={<GrowthCommandCenter />} />
             <Route path="/company-traction" element={<CompanyTraction />} />
             <Route path="/department-traction" element={<DepartmentTraction />} />
