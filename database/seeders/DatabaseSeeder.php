@@ -59,8 +59,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(ToolsProductEvaluationGridsSeeder::class);
         // $this->call(MembersDepartmentsSeeder::class);
         // $this->call(MembersDirectorySeeder::class);
-        $this->call(NotificationsTableSeeder::class);
         // $this->call(NotificationsTableSeeder::class);
+        $this->call(MessagingMessagesSeeder::class);
+        // $this->call(MessagingMessagesSeeder::class);
         
     }
 

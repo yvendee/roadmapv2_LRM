@@ -56,6 +56,7 @@ use App\Models\DocumentVault;
 use App\Models\MembersDepartment;
 use App\Models\MembersDirectory;
 use App\Models\Notification;
+use App\Models\MessagingMessage;
 
 
 
@@ -6721,6 +6722,214 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
 
 
 
+// // ref: frontend\src\components\0.messaging\Messaging.jsx
+// Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $fullname = $request->query('fullname'); // e.g., "Maricar Aquino"
+//     $sender = $request->query('sender');     // e.g., "Kayven Delatado"
+
+//     // Mock message data structured as: $messages[fullname][sender] = [ ... ]
+//     $messages = [
+//         'Maricar Aquino' => [
+//             'Kayven Delatado' => [
+//                 [
+//                     'id' => 1,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Kayven Delatado',
+//                     'content' => 'Hey, just checking in on the latest update.',
+//                     'datetime' => '2025-08-13 09:00 AM',
+//                 ],
+//                 [
+//                     'id' => 2,
+//                     'sender' => 'Kayven Delatado',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'All good on my side, thanks for following up!',
+//                     'datetime' => '2025-08-13 09:02 AM',
+//                 ],
+//                 [
+//                     'id' => 3,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Kayven Delatado',
+//                     'content' => 'Great to hear! Let’s sync later this afternoon.',
+//                     'datetime' => '2025-08-13 09:05 AM',
+//                 ],
+//                 [
+//                     'id' => 4,
+//                     'sender' => 'Kayven Delatado',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Sure thing, I’ll be free after 2 PM.',
+//                     'datetime' => '2025-08-13 09:06 AM',
+//                 ],
+//                 [
+//                     'id' => 5,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Kayven Delatado',
+//                     'content' => 'Perfect, I’ll send a calendar invite.',
+//                     'datetime' => '2025-08-13 09:08 AM',
+//                 ],
+//             ],
+//             'Jamie Lee' => [
+//                 [
+//                     'id' => 1,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Jamie Lee',
+//                     'content' => 'Hey Jamie, did you get the file?',
+//                     'datetime' => '2025-08-13 10:00 AM',
+//                 ],
+//                 [
+//                     'id' => 2,
+//                     'sender' => 'Jamie Lee',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Yes! Reviewing it now.',
+//                     'datetime' => '2025-08-13 10:01 AM',
+//                 ],
+//                 [
+//                     'id' => 3,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Jamie Lee',
+//                     'content' => 'Cool. Let me know your thoughts.',
+//                     'datetime' => '2025-08-13 10:02 AM',
+//                 ],
+//                 [
+//                     'id' => 4,
+//                     'sender' => 'Jamie Lee',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Looks good so far.',
+//                     'datetime' => '2025-08-13 10:03 AM',
+//                 ],
+//                 [
+//                     'id' => 5,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Jamie Lee',
+//                     'content' => 'Awesome!',
+//                     'datetime' => '2025-08-13 10:04 AM',
+//                 ],
+//             ],
+//             'John Santos' => [
+//                 [
+//                     'id' => 1,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'John Santos',
+//                     'content' => 'John, can we reschedule?',
+//                     'datetime' => '2025-08-13 11:00 AM',
+//                 ],
+//                 [
+//                     'id' => 2,
+//                     'sender' => 'John Santos',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Sure, no problem.',
+//                     'datetime' => '2025-08-13 11:01 AM',
+//                 ],
+//                 [
+//                     'id' => 3,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'John Santos',
+//                     'content' => 'Thanks a lot.',
+//                     'datetime' => '2025-08-13 11:02 AM',
+//                 ],
+//                 [
+//                     'id' => 4,
+//                     'sender' => 'John Santos',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Catch you later.',
+//                     'datetime' => '2025-08-13 11:03 AM',
+//                 ],
+//                 [
+//                     'id' => 5,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'John Santos',
+//                     'content' => 'Bye!',
+//                     'datetime' => '2025-08-13 11:04 AM',
+//                 ],
+//             ],
+//             'Angela Reyes' => [
+//                 [
+//                     'id' => 1,
+//                     'sender' => 'Angela Reyes',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Are you free to chat?',
+//                     'datetime' => '2025-08-13 01:00 PM',
+//                 ],
+//                 [
+//                     'id' => 2,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Angela Reyes',
+//                     'content' => 'Give me 5 mins.',
+//                     'datetime' => '2025-08-13 01:01 PM',
+//                 ],
+//                 [
+//                     'id' => 3,
+//                     'sender' => 'Angela Reyes',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Sure!',
+//                     'datetime' => '2025-08-13 01:02 PM',
+//                 ],
+//                 [
+//                     'id' => 4,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Angela Reyes',
+//                     'content' => 'Ready now.',
+//                     'datetime' => '2025-08-13 01:05 PM',
+//                 ],
+//                 [
+//                     'id' => 5,
+//                     'sender' => 'Angela Reyes',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Calling you.',
+//                     'datetime' => '2025-08-13 01:06 PM',
+//                 ],
+//             ],
+//             'Mark Villanueva' => [
+//                 [
+//                     'id' => 1,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Mark Villanueva',
+//                     'content' => 'Got your request. On it!',
+//                     'datetime' => '2025-08-13 02:00 PM',
+//                 ],
+//                 [
+//                     'id' => 2,
+//                     'sender' => 'Mark Villanueva',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => 'Appreciate it.',
+//                     'datetime' => '2025-08-13 02:01 PM',
+//                 ],
+//                 [
+//                     'id' => 3,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Mark Villanueva',
+//                     'content' => 'Will update you shortly.',
+//                     'datetime' => '2025-08-13 02:02 PM',
+//                 ],
+//                 [
+//                     'id' => 4,
+//                     'sender' => 'Mark Villanueva',
+//                     'receipt' => 'Maricar Aquino',
+//                     'content' => '👍',
+//                     'datetime' => '2025-08-13 02:03 PM',
+//                 ],
+//                 [
+//                     'id' => 5,
+//                     'sender' => 'Maricar Aquino',
+//                     'receipt' => 'Mark Villanueva',
+//                     'content' => 'Done!',
+//                     'datetime' => '2025-08-13 02:04 PM',
+//                 ],
+//             ],
+//         ],
+//     ];
+
+//     return response()->json(
+//         $messages[$fullname][$sender] ?? []
+//     );
+// });
+
+
 // ref: frontend\src\components\0.messaging\Messaging.jsx
 Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -6729,204 +6938,33 @@ Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
         }
     }
 
-    $fullname = $request->query('fullname'); // e.g., "Maricar Aquino"
-    $sender = $request->query('sender');     // e.g., "Kayven Delatado"
+    $fullname = $request->query('fullname'); 
+    $sender = $request->query('sender');     
 
-    // Mock message data structured as: $messages[fullname][sender] = [ ... ]
-    $messages = [
-        'Maricar Aquino' => [
-            'Kayven Delatado' => [
-                [
-                    'id' => 1,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Kayven Delatado',
-                    'content' => 'Hey, just checking in on the latest update.',
-                    'datetime' => '2025-08-13 09:00 AM',
-                ],
-                [
-                    'id' => 2,
-                    'sender' => 'Kayven Delatado',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'All good on my side, thanks for following up!',
-                    'datetime' => '2025-08-13 09:02 AM',
-                ],
-                [
-                    'id' => 3,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Kayven Delatado',
-                    'content' => 'Great to hear! Let’s sync later this afternoon.',
-                    'datetime' => '2025-08-13 09:05 AM',
-                ],
-                [
-                    'id' => 4,
-                    'sender' => 'Kayven Delatado',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Sure thing, I’ll be free after 2 PM.',
-                    'datetime' => '2025-08-13 09:06 AM',
-                ],
-                [
-                    'id' => 5,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Kayven Delatado',
-                    'content' => 'Perfect, I’ll send a calendar invite.',
-                    'datetime' => '2025-08-13 09:08 AM',
-                ],
-            ],
-            'Jamie Lee' => [
-                [
-                    'id' => 1,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Jamie Lee',
-                    'content' => 'Hey Jamie, did you get the file?',
-                    'datetime' => '2025-08-13 10:00 AM',
-                ],
-                [
-                    'id' => 2,
-                    'sender' => 'Jamie Lee',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Yes! Reviewing it now.',
-                    'datetime' => '2025-08-13 10:01 AM',
-                ],
-                [
-                    'id' => 3,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Jamie Lee',
-                    'content' => 'Cool. Let me know your thoughts.',
-                    'datetime' => '2025-08-13 10:02 AM',
-                ],
-                [
-                    'id' => 4,
-                    'sender' => 'Jamie Lee',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Looks good so far.',
-                    'datetime' => '2025-08-13 10:03 AM',
-                ],
-                [
-                    'id' => 5,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Jamie Lee',
-                    'content' => 'Awesome!',
-                    'datetime' => '2025-08-13 10:04 AM',
-                ],
-            ],
-            'John Santos' => [
-                [
-                    'id' => 1,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'John Santos',
-                    'content' => 'John, can we reschedule?',
-                    'datetime' => '2025-08-13 11:00 AM',
-                ],
-                [
-                    'id' => 2,
-                    'sender' => 'John Santos',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Sure, no problem.',
-                    'datetime' => '2025-08-13 11:01 AM',
-                ],
-                [
-                    'id' => 3,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'John Santos',
-                    'content' => 'Thanks a lot.',
-                    'datetime' => '2025-08-13 11:02 AM',
-                ],
-                [
-                    'id' => 4,
-                    'sender' => 'John Santos',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Catch you later.',
-                    'datetime' => '2025-08-13 11:03 AM',
-                ],
-                [
-                    'id' => 5,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'John Santos',
-                    'content' => 'Bye!',
-                    'datetime' => '2025-08-13 11:04 AM',
-                ],
-            ],
-            'Angela Reyes' => [
-                [
-                    'id' => 1,
-                    'sender' => 'Angela Reyes',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Are you free to chat?',
-                    'datetime' => '2025-08-13 01:00 PM',
-                ],
-                [
-                    'id' => 2,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Angela Reyes',
-                    'content' => 'Give me 5 mins.',
-                    'datetime' => '2025-08-13 01:01 PM',
-                ],
-                [
-                    'id' => 3,
-                    'sender' => 'Angela Reyes',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Sure!',
-                    'datetime' => '2025-08-13 01:02 PM',
-                ],
-                [
-                    'id' => 4,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Angela Reyes',
-                    'content' => 'Ready now.',
-                    'datetime' => '2025-08-13 01:05 PM',
-                ],
-                [
-                    'id' => 5,
-                    'sender' => 'Angela Reyes',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Calling you.',
-                    'datetime' => '2025-08-13 01:06 PM',
-                ],
-            ],
-            'Mark Villanueva' => [
-                [
-                    'id' => 1,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Mark Villanueva',
-                    'content' => 'Got your request. On it!',
-                    'datetime' => '2025-08-13 02:00 PM',
-                ],
-                [
-                    'id' => 2,
-                    'sender' => 'Mark Villanueva',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => 'Appreciate it.',
-                    'datetime' => '2025-08-13 02:01 PM',
-                ],
-                [
-                    'id' => 3,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Mark Villanueva',
-                    'content' => 'Will update you shortly.',
-                    'datetime' => '2025-08-13 02:02 PM',
-                ],
-                [
-                    'id' => 4,
-                    'sender' => 'Mark Villanueva',
-                    'receipt' => 'Maricar Aquino',
-                    'content' => '👍',
-                    'datetime' => '2025-08-13 02:03 PM',
-                ],
-                [
-                    'id' => 5,
-                    'sender' => 'Maricar Aquino',
-                    'receipt' => 'Mark Villanueva',
-                    'content' => 'Done!',
-                    'datetime' => '2025-08-13 02:04 PM',
-                ],
-            ],
-        ],
-    ];
+    // Validate input
+    if (!$fullname || !$sender) {
+        return response()->json(['message' => 'Both fullname and sender are required'], 400);
+    }
 
-    return response()->json(
-        $messages[$fullname][$sender] ?? []
-    );
+    // Fetch the first record from the database based on fullname
+    $messageRecord = MessagingMessage::where('fullName', $fullname)
+                                     ->first();
+
+    // Check if the record exists
+    if ($messageRecord) {
+        $messagesData = $messageRecord->messagesData;
+
+        // Check if the messagesData is an array and contains the sender
+        if (isset($messagesData[$fullname][$sender])) {
+            return response()->json($messagesData[$fullname][$sender]);
+        } else {
+            return response()->json(['message' => 'Messages for this sender not found'], 404);
+        }
+    }
+
+    return response()->json(['message' => 'No record found for this fullName'], 404);
 });
+
 
 
 // ref: frontend\src\components\0.messaging\Messaging.jsx
