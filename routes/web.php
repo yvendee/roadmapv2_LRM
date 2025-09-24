@@ -6947,22 +6947,27 @@ Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
     }
 
     // Fetch the first record from the database based on fullname
-    $messageRecord = MessagingMessage::where('fullName', $fullname)
-                                     ->first();
+    $messageRecord = MessagingMessage::where('fullName', $fullname)->first();
 
-    // Check if the record exists
-    if ($messageRecord) {
-        $messagesData = $messageRecord->messagesData;
-
-        // Check if the messagesData is an array and contains the sender
-        if (isset($messagesData[$fullname][$sender])) {
-            return response()->json($messagesData[$fullname][$sender]);
-        } else {
-            return response()->json(['message' => 'Messages for this sender not found'], 404);
-        }
+    if (!$messageRecord) {
+        // No record for fullname found
+        return response()->json(['message' => 'No record found for this fullName'], 404);
     }
 
-    return response()->json(['message' => 'No record found for this fullName'], 404);
+    // messagesData is stored as JSON, decode it to array if necessary
+    $messagesData = $messageRecord->messagesData;
+
+    if (is_string($messagesData)) {
+        $messagesData = json_decode($messagesData, true);
+    }
+
+    // Check if messagesData has this fullname and sender, else return empty array
+    if (isset($messagesData[$fullname]) && isset($messagesData[$fullname][$sender])) {
+        return response()->json($messagesData[$fullname][$sender]);
+    } else {
+        // Return empty array if no messages for this sender
+        return response()->json([]);
+    }
 });
 
 
