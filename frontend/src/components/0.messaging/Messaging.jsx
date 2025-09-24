@@ -294,12 +294,12 @@ const activeContact = savedContacts?.find(
                 onClick={() => handleSelectConversation(c.sender)}
                 >
                 <div className="font-medium">{c.sender}</div>
-                <div className="text-sm text-gray-500 truncate">
+                {/* <div className="text-sm text-gray-500 truncate">
                     {lm ? lm.content : "-"}
                 </div>
                 <div className="text-xs text-gray-400 mt-1">
                     {lm ? lm.datetime : ""}
-                </div>
+                </div> */}
                 </div>
             );
             })}
@@ -356,62 +356,35 @@ const activeContact = savedContacts?.find(
             )}
             </div>
 
-          {/* <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${
-                  msg.sender === user?.fullname ? "justify-end" : "justify-start"
-                }`}
-              >
-                {msg.sender !== user?.fullname ? (
-                  <div className="bg-gray-200 text-gray-900 px-3 py-2 rounded-lg max-w-xs">
-                    {msg.content}
-                    <div className="text-xs text-gray-500 mt-1">
-                      {msg.datetime}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs">
-                    {msg.content}
-                    <div className="text-xs text-blue-200 mt-1">
-                      {msg.datetime}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div> */}
 
           {/* Input */}
-{/* Input */}
-<div className="p-4 border-t flex items-center bg-white">
-  <input
-    type="text"
-    value={input}
-    onChange={(e) => setInput(e.target.value)}
-    placeholder="Type your message..."
-    disabled={!hasActiveContact}
-    className={`flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300 ${
-      !hasActiveContact ? "bg-gray-100 cursor-not-allowed" : ""
-    }`}
-  />
-  <button
-    onClick={sendMessage}
-    disabled={!hasActiveContact}
-    className={`ml-2 p-3 rounded-full flex items-center justify-center ${
-      !hasActiveContact
-        ? "bg-gray-300 cursor-not-allowed"
-        : "bg-blue-500 hover:bg-blue-600"
-    }`}
-    title={!hasActiveContact ? "No messages" : "Send"}
-  >
-    <FontAwesomeIcon
-      icon={faPaperPlane}
-      className={!hasActiveContact ? "text-gray-500" : "text-black"}
-    />
-  </button>
-</div>
+          <div className="p-4 border-t flex items-center bg-white">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              disabled={!hasActiveContact}
+              className={`flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300 ${
+                !hasActiveContact ? "bg-gray-100 cursor-not-allowed" : ""
+              }`}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!hasActiveContact}
+              className={`ml-2 p-3 rounded-full flex items-center justify-center ${
+                !hasActiveContact
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+              title={!hasActiveContact ? "No messages" : "Send"}
+            >
+              <FontAwesomeIcon
+                icon={faPaperPlane}
+                className={!hasActiveContact ? "text-gray-500" : "text-black"}
+              />
+            </button>
+          </div>
 
 
 
