@@ -43,7 +43,17 @@ const WelcomeSection = () => {
               <li><strong>Growth Command Center</strong> – Focus on 3–5 growth drivers that power results
               Together, they give you one system to keep strategy alive and execution on track.</li>
             </ul>
-            
+
+            <h4 className="methodology-title">What You Gain</h4>
+            <ul className="outcomes-list">
+              <li>✅ Focused leadership</li>
+              <li>✅ Ruthless prioritization</li>
+              <li>✅ A culture of accountability</li>
+              <li>✅ Teams that finish what they start</li>
+              <li>✅ Predictable growth with less drama</li>
+            </ul>
+
+            <h4 className="methodology-title">✨ Welcome to the system behind scaling smarter.</h4>
 
           </div>
         </div>
