@@ -15,6 +15,8 @@ import "./Messaging.css";
 // const TO_USER = "Maricar Aquino";
 
 const ChatInterface = () => {
+  // Fetching organization from the store using a callback
+  const organization = useLayoutSettingsStore((state) => state.organization);
   const { messages, addMessage } = useChatInterfaceStore();
   const { contacts } = useContactListStore();
   const { savedContacts, addSavedContact } = useLeftConversationsStore();
@@ -205,9 +207,7 @@ const activeContact = savedContacts?.find(
 
   useEffect(() => {
     const fetchContacts = async () => {
-      // Fetching organization from the store using a callback
-      const organization = useLayoutSettingsStore((state) => state.organization);
-  
+
       try {
         const response = await fetch(`${API_URL}/v1/contact-list?organization=${encodeURIComponent(organization)}`, {
           method: 'GET',
