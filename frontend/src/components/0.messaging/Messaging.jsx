@@ -203,9 +203,9 @@ const activeContact = savedContacts?.find(
   //   fetchContacts();
   // }, [setContacts]);
 
-
   useEffect(() => {
     const fetchContacts = async () => {
+      // Fetching organization from the store using a callback
       const organization = useLayoutSettingsStore((state) => state.organization);
   
       try {
@@ -233,8 +233,7 @@ const activeContact = savedContacts?.find(
   
     fetchContacts();
   }, [setContacts]);
-
-
+  
 
   // Fetch Conversation List Data
   useEffect(() => {
