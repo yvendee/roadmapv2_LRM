@@ -206,7 +206,7 @@ const activeContact = savedContacts?.find(
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const organization = useLayoutSettingsStore.getState().organization; // Fetch organization from the store
+      const organization = useLayoutSettingsStore((state) => state.organization);
   
       try {
         const response = await fetch(`${API_URL}/v1/contact-list?organization=${encodeURIComponent(organization)}`, {
