@@ -6994,7 +6994,6 @@ Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
 
 
 // ref:
-
 Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7005,18 +7004,23 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
     // Retrieve the organization from the query parameter
     $organization = $request->query('organization');
 
-    // If organization is provided, fetch all contacts for that organization
-    $contacts = Auth::where('organization', $organization)
-        ->get(['firstName', 'lastName'])
-        ->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->firstName . ' ' . $user->lastName,
-            ];
-        });
+    // Fetch contacts based on the organization
+    try {
+        $contacts = AuthUser::where('organization', $organization)
+            ->get(['firstName', 'lastName'])
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->firstName . ' ' . $user->lastName,
+                ];
+            });
+        
+        return response()->json($contacts);
 
-    // Return the contacts list as a JSON response
-    return response()->json($contacts);
+    } catch (\Exception $e) {
+        // Catch any exceptions and return a 500 error with the exception message
+        return response()->json(['message' => 'Error fetching contacts: ' . $e->getMessage()], 500);
+    }
 });
 
 
