@@ -6972,7 +6972,29 @@ Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
 
 
 
-// ref: frontend\src\components\0.messaging\Messaging.jsx
+// // ref: frontend\src\components\0.messaging\Messaging.jsx
+// Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     // Return all contacts regardless of sender
+//     $contacts = [
+//         ['id' => 1, 'name' => 'Kayven Delatado'],
+//         ['id' => 2, 'name' => 'Maricar Aquino'],
+//         ['id' => 3, 'name' => 'John Santos'],
+//         ['id' => 4, 'name' => 'Angela Reyes'],
+//         ['id' => 5, 'name' => 'Mark Villanueva'],
+//     ];
+
+//     return response()->json($contacts);
+// });
+
+
+// ref:
+
 Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -6980,17 +7002,24 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
         }
     }
 
-    // Return all contacts regardless of sender
-    $contacts = [
-        ['id' => 1, 'name' => 'Kayven Delatado'],
-        ['id' => 2, 'name' => 'Maricar Aquino'],
-        ['id' => 3, 'name' => 'John Santos'],
-        ['id' => 4, 'name' => 'Angela Reyes'],
-        ['id' => 5, 'name' => 'Mark Villanueva'],
-    ];
+    // Retrieve the organization from the query parameter
+    $organization = $request->query('organization');
 
+    // If organization is provided, fetch all contacts for that organization
+    $contacts = Auth::where('organization', $organization)
+        ->get(['firstName', 'lastName'])
+        ->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->firstName . ' ' . $user->lastName,
+            ];
+        });
+
+    // Return the contacts list as a JSON response
     return response()->json($contacts);
 });
+
+
 
 // ref: frontend\src\components\0.messaging\Messaging.jsx
 Route::get('/api/v1/left-conversations', function (Request $request) use ($API_secure) {

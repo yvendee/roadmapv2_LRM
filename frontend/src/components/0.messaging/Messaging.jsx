@@ -5,6 +5,7 @@ import { faEnvelope, faPlus, faPaperPlane } from "@fortawesome/free-solid-svg-ic
 import useChatInterfaceStore from "../../store/left-lower-content/0.messaging/1.chatInterfaceStore";
 import useContactListStore from "../../store/left-lower-content/0.messaging/2.contactListStore";
 import useLeftConversationsStore from "../../store/left-lower-content/0.messaging/3.leftConversationsStore";
+import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import useLoginStore from '../../store/loginStore';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
@@ -173,11 +174,42 @@ const activeContact = savedContacts?.find(
   }, [activeChatName, user?.fullname, setMessages]);
 
   
-  // Fecth Contact List Data
+  // // Fecth Contact List Data
+  // useEffect(() => {
+  //   const fetchContacts = async () => {
+  //     try {
+  //       const response = await fetch(`${API_URL}/v1/contact-list`, {
+  //         method: 'GET',
+  //         headers: {
+  //           Accept: 'application/json',
+  //           'Content-Type': 'application/json',
+  //         },
+  //         credentials: 'include',
+  //       });
+
+  //       const data = await response.json();
+
+  //       if (response.ok && Array.isArray(data)) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📇 Full Contact List:', data);
+  //         setContacts(data);
+  //       } else {
+  //         console.error('Failed to load contact list:', data?.message);
+  //       }
+  //     } catch (error) {
+  //       console.error('Fetch error:', error);
+  //     }
+  //   };
+
+  //   fetchContacts();
+  // }, [setContacts]);
+
+
   useEffect(() => {
     const fetchContacts = async () => {
+      const organization = useLayoutSettingsStore.getState().organization; // Fetch organization from the store
+  
       try {
-        const response = await fetch(`${API_URL}/v1/contact-list`, {
+        const response = await fetch(`${API_URL}/v1/contact-list?organization=${encodeURIComponent(organization)}`, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -185,9 +217,9 @@ const activeContact = savedContacts?.find(
           },
           credentials: 'include',
         });
-
+  
         const data = await response.json();
-
+  
         if (response.ok && Array.isArray(data)) {
           ENABLE_CONSOLE_LOGS && console.log('📇 Full Contact List:', data);
           setContacts(data);
@@ -198,9 +230,11 @@ const activeContact = savedContacts?.find(
         console.error('Fetch error:', error);
       }
     };
-
+  
     fetchContacts();
   }, [setContacts]);
+
+
 
   // Fetch Conversation List Data
   useEffect(() => {
