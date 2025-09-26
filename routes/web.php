@@ -7425,7 +7425,6 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 
 
 
-
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7477,40 +7476,10 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
 
     // Append the new message to the sender's message data under the receiver's key
     $senderMessages[$receiver][] = $newMessage;
+
+    // Save the updated sender's record
     $senderRecord->messagesData = $senderMessages;
-    $senderRecord->save();  // Save the updated sender's record
-
-    // Do not update or add anything to the top-level Kayven Delatado entry.
-
-    // Fetch receiver record (Kayven Delatado)
-    $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
-
-    // If receiver's record doesn't exist, create a new one
-    if (!$receiverRecord) {
-        $receiverRecord = new \App\Models\MessagingMessage([
-            'u_id' => Str::uuid(),
-            'fullName' => $receiver,
-            'messagesData' => [],  // Empty initially
-            'statusFlag' => 1,
-        ]);
-        $receiverRecord->save();  // Save the newly created receiver record
-    }
-
-    // Fetch receiver's message data
-    $receiverMessages = $receiverRecord->messagesData ?? [];
-    if (is_string($receiverMessages)) {
-        $receiverMessages = json_decode($receiverMessages, true);
-    }
-
-    // If no entry for the sender in receiver's message data, initialize it
-    if (!isset($receiverMessages[$sender])) {
-        $receiverMessages[$sender] = [];
-    }
-
-    // Append the new message to the receiver's message data under the sender's key
-    $receiverMessages[$sender][] = $newMessage;
-    $receiverRecord->messagesData = $receiverMessages;
-    $receiverRecord->save();  // Save the updated receiver's record
+    $senderRecord->save();
 
     // Return success response
     return response()->json([
@@ -7522,6 +7491,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
