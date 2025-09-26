@@ -7470,17 +7470,14 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     }
 
     // Ensure the receiver's messages array has the sender as key
-    if (!isset($receiverMessages[$receiver])) {
-        $receiverMessages[$receiver] = [];
-    }
-
-    // Ensure that there is a key for the sender in the receiver's messages
-    if (!isset($receiverMessages[$receiver][$sender])) {
-        $receiverMessages[$receiver][$sender] = [];
+    if (!isset($receiverMessages[$sender])) {
+        $receiverMessages[$sender] = [];
     }
 
     // Append the new message to the receiver's conversation
-    $receiverMessages[$receiver][$sender][] = $newMessage;
+    $receiverMessages[$sender][] = $newMessage;
+
+    // Update receiver's messagesData with the new message
     $receiverRecord->messagesData = $receiverMessages;
     $receiverRecord->save();  // Save the updated receiver's record
 
@@ -7506,7 +7503,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             $senderMessages = json_decode($senderMessages, true);
         }
 
-        // If no entry for the receiver, initialize it
+        // Ensure there is a key for the receiver's conversation
         if (!isset($senderMessages[$receiver])) {
             $senderMessages[$receiver] = [];
         }
@@ -7537,6 +7534,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
