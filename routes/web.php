@@ -7309,6 +7309,122 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 // });
 
 
+// Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $sender = $request->input('sender');  // e.g., "Maricar Aquino"
+//     $receiver = $request->input('receiver');  // e.g., "Kayven Delatado"
+//     $messageContent = $request->input('message');  // The actual message content
+
+//     // Validate input
+//     if (!$sender || !$receiver || !$messageContent) {
+//         return response()->json(['message' => 'Sender, receiver, and message content are required'], 400);
+//     }
+
+//     // Fetch receiver's record from the database based on receiver's full name
+//     $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
+
+//     // If receiver doesn't exist, create a new receiver record
+//     if (!$receiverRecord) {
+//         $receiverRecord = new \App\Models\MessagingMessage([
+//             'u_id' => Str::uuid(),  // Generate a unique UUID for the receiver
+//             'fullName' => $receiver,
+//             'messagesData' => [],  // Empty messagesData
+//             'statusFlag' => 1, // Default status flag (can be adjusted as needed)
+//         ]);
+//         $receiverRecord->save(); // Save the newly created receiver record
+//     }
+
+//     // Prepare the new message for insertion
+//     $newMessage = [
+//         'id' => now()->timestamp,  // Optionally use a unique id (like timestamp) for each message
+//         'sender' => $sender,
+//         'receipt' => $receiver,
+//         'content' => $messageContent,
+//         'datetime' => now(),
+//     ];
+
+//     // Fetch and decode the existing messagesData for the receiver (if any)
+//     $receiverMessages = $receiverRecord->messagesData ?? [];
+//     if (is_string($receiverMessages)) {
+//         $receiverMessages = json_decode($receiverMessages, true);
+//     }
+
+//     // If the receiver doesn't have a top-level key for the sender, initialize it
+//     if (!isset($receiverMessages[$receiver])) {
+//         $receiverMessages[$receiver] = [];
+//     }
+
+//     // If the sender doesn't exist in the receiver's messagesData, initialize the array
+//     if (!isset($receiverMessages[$receiver][$sender])) {
+//         $receiverMessages[$receiver][$sender] = [];
+//     }
+
+//     // Append the new message to the receiver's conversation under the sender's key
+//     $receiverMessages[$receiver][$sender][] = $newMessage;
+//     $receiverRecord->messagesData = $receiverMessages;
+//     $receiverRecord->save();  // Save the updated receiver's record
+
+//     // Fetch sender's record (create a new one if it doesn't exist)
+//     $senderRecord = \App\Models\MessagingMessage::where('fullName', $sender)->first();
+
+//     if (!$senderRecord) {
+//         // Create a new record for sender if it doesn't exist
+//         $senderRecord = new \App\Models\MessagingMessage([
+//             'u_id' => Str::uuid(),  // Generate a unique UUID for the sender
+//             'fullName' => $sender,
+//             'messagesData' => [
+//                 $receiver => [
+//                     $newMessage,
+//                 ]
+//             ],
+//             'statusFlag' => 1, // Adjust status flag as needed
+//         ]);
+//     } else {
+//         // Add the reverse message (receiver -> sender) to the sender's messagesData
+//         $senderMessages = $senderRecord->messagesData ?? [];
+//         if (is_string($senderMessages)) {
+//             $senderMessages = json_decode($senderMessages, true);
+//         }
+
+//         // If no entry for the receiver, initialize it
+//         if (!isset($senderMessages[$receiver])) {
+//             $senderMessages[$receiver] = [];
+//         }
+
+//         // Append the reverse message (sender -> receiver)
+//         $senderMessages[$receiver][] = [
+//             'id' => now()->timestamp,  // Optionally use a unique id for each message
+//             'sender' => $receiver,
+//             'receipt' => $sender,
+//             'content' => $messageContent,
+//             'datetime' => now(),
+//         ];
+
+//         // Update sender's messagesData
+//         $senderRecord->messagesData = $senderMessages;
+//     }
+
+//     // Save the sender's updated record
+//     $senderRecord->save();
+
+//     // Return the response
+//     return response()->json([
+//         'message' => 'Message sent successfully!',
+//         'data' => [
+//             'sender' => $sender,
+//             'receiver' => $receiver,
+//             'content' => $messageContent,
+//         ]
+//     ], 200);
+// });
+
+
+
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7369,7 +7485,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     $receiverRecord->messagesData = $receiverMessages;
     $receiverRecord->save();  // Save the updated receiver's record
 
-    // Fetch sender's record (create a new one if it doesn't exist)
+    // Now handle the sender's record, which should store all messages as well
     $senderRecord = \App\Models\MessagingMessage::where('fullName', $sender)->first();
 
     if (!$senderRecord) {
@@ -7379,7 +7495,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             'fullName' => $sender,
             'messagesData' => [
                 $receiver => [
-                    $newMessage,
+                    $newMessage,  // Add the new message for this sender/receiver pair
                 ]
             ],
             'statusFlag' => 1, // Adjust status flag as needed
@@ -7396,7 +7512,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             $senderMessages[$receiver] = [];
         }
 
-        // Append the reverse message (sender -> receiver)
+        // Append the reverse message (receiver -> sender) to the sender's message list
         $senderMessages[$receiver][] = [
             'id' => now()->timestamp,  // Optionally use a unique id for each message
             'sender' => $receiver,
@@ -7405,7 +7521,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             'datetime' => now(),
         ];
 
-        // Update sender's messagesData
+        // Update sender's messagesData with the new entry
         $senderRecord->messagesData = $senderMessages;
     }
 
@@ -7422,7 +7538,6 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
-
 
 
 
