@@ -445,9 +445,9 @@ const activeContact = savedContacts?.find(
             >
                 <option value="">-- Select a contact --</option>
                 {contacts.map((contact) => (
-                <option key={contact.id} value={contact.id}>
-                    {contact.name}
-                </option>
+                  <option key={contact.id} value={contact.id}>
+                    {contact.firstName} {contact.lastName} {/* Ensure these fields exist */}
+                  </option>
                 ))}
             </select>
 
