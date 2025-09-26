@@ -7010,7 +7010,7 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
             ->get(['firstName', 'lastName'])
             ->map(function ($user) {
                 return [
-                    'id' => $user->id,
+                    'u_id' => $user->id,
                     'name' => $user->firstName . ' ' . $user->lastName,
                 ];
             });
