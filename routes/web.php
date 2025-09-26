@@ -7456,11 +7456,11 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
 
     // Prepare the new message for insertion
     $newMessage = [
-        'id' => now()->timestamp,  // Optionally use a unique id (like timestamp) for each message
+        'id' => now()->timestamp,  // Unique id (timestamp)
         'sender' => $sender,
         'receipt' => $receiver,
         'content' => $messageContent,
-        'datetime' => now(),
+        'datetime' => now()->toIso8601String(),  // ISO 8601 format
     ];
 
     // Fetch and decode the existing messagesData for the receiver (if any)
@@ -7469,11 +7469,12 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         $receiverMessages = json_decode($receiverMessages, true);
     }
 
-    // Ensure the correct structure for the receiver's data
+    // If the receiver doesn't have a top-level key for the sender, initialize it
     if (!isset($receiverMessages[$receiver])) {
         $receiverMessages[$receiver] = [];
     }
 
+    // If the sender doesn't exist in the receiver's messagesData, initialize the array
     if (!isset($receiverMessages[$receiver][$sender])) {
         $receiverMessages[$receiver][$sender] = [];
     }
@@ -7483,39 +7484,40 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     $receiverRecord->messagesData = $receiverMessages;
     $receiverRecord->save();  // Save the updated receiver's record
 
-    // Now handle the sender's message data:
+    // Fetch sender's record (create a new one if it doesn't exist)
     $senderRecord = \App\Models\MessagingMessage::where('fullName', $sender)->first();
 
     if (!$senderRecord) {
+        // Create a new record for sender if it doesn't exist
         $senderRecord = new \App\Models\MessagingMessage([
-            'u_id' => Str::uuid(),
+            'u_id' => Str::uuid(),  // Generate a unique UUID for the sender
             'fullName' => $sender,
             'messagesData' => [
                 $receiver => [
-                    $newMessage
+                    $newMessage,  // Initialize with the new message
                 ]
             ],
-            'statusFlag' => 1,
+            'statusFlag' => 1, // Adjust status flag as needed
         ]);
     } else {
-        // Fetch and decode the existing messagesData for the sender (if any)
+        // Add the reverse message (receiver -> sender) to the sender's messagesData
         $senderMessages = $senderRecord->messagesData ?? [];
         if (is_string($senderMessages)) {
             $senderMessages = json_decode($senderMessages, true);
         }
 
-        // Ensure the correct structure for the sender's data
+        // If no entry for the receiver, initialize it
         if (!isset($senderMessages[$receiver])) {
             $senderMessages[$receiver] = [];
         }
 
-        // Append the new message for sender's side (receiver -> sender)
+        // Append the reverse message (receiver -> sender)
         $senderMessages[$receiver][] = [
-            'id' => now()->timestamp,  // Optionally use a unique id for each message
-            'sender' => $receiver,     // The receiver becomes the sender
-            'receipt' => $sender,      // The sender becomes the recipient
+            'id' => now()->timestamp,  // Unique id for the reverse message
+            'sender' => $receiver,
+            'receipt' => $sender,
             'content' => $messageContent,
-            'datetime' => now(),
+            'datetime' => now()->toIso8601String(),  // ISO 8601 format for datetime
         ];
 
         // Update sender's messagesData
