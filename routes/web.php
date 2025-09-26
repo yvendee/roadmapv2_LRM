@@ -7208,8 +7208,8 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         }
     }
 
-    $sender = $request->input('sender');  // e.g., "Kayven Delatado"
-    $receiver = $request->input('receiver');  // e.g., "Maricar Aquino"
+    $sender = $request->input('sender');  // e.g., "Maricar Aquino"
+    $receiver = $request->input('receiver');  // e.g., "Kayven Delatado"
     $messageContent = $request->input('message');  // The actual message content
 
     // Validate input
@@ -7217,11 +7217,12 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         return response()->json(['message' => 'Sender, receiver, and message content are required'], 400);
     }
 
-    // Fetch receiver's message record from the database based on receiver's fullname
+    // Fetch receiver's record from the database based on receiver's full name
     $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
 
     if (!$receiverRecord) {
-        return response()->json(['message' => 'Receiver not found'], 404);
+        // If the receiver doesn't exist, return a detailed message
+        return response()->json(['message' => 'Receiver not found. Please ensure the receiver exists in the system.'], 404);
     }
 
     // Prepare the new message for insertion
@@ -7300,6 +7301,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
