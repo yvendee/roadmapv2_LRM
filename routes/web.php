@@ -7425,6 +7425,7 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 
 
 
+use Illuminate\Support\Str;
 
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -7433,84 +7434,84 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         }
     }
 
-    $sender = $request->input('sender');  // e.g., "Maricar Aquino"
-    $receiver = $request->input('receiver');  // e.g., "Kayven Delatado"
-    $messageContent = $request->input('message');  // The actual message content
+    $sender = $request->input('sender');  // "Maricar Aquino"
+    $receiver = $request->input('receiver');  // "Kayven Delatado"
+    $messageContent = $request->input('message');  // "hitesthitest"
 
     // Validate input
     if (!$sender || !$receiver || !$messageContent) {
         return response()->json(['message' => 'Sender, receiver, and message content are required'], 400);
     }
 
-    // Prepare the new message for insertion
+    // Prepare the new message
     $newMessage = [
-        'id' => now()->timestamp,  // Optionally use a unique id (like timestamp) for each message
+        'id' => now()->timestamp,  // Use timestamp or generate unique ID
         'sender' => $sender,
         'receipt' => $receiver,
         'content' => $messageContent,
-        'datetime' => now()->toISOString(),  // Ensure it's in the correct datetime format
+        'datetime' => now()->toISOString(),  // Ensure it's in ISO 8601 format
     ];
 
-    // Fetch sender's record from the database based on sender's full name
+    // Fetch sender record (Maricar Aquino)
     $senderRecord = \App\Models\MessagingMessage::where('fullName', $sender)->first();
 
-    // If sender record doesn't exist, create a new one
+    // If sender's record doesn't exist, create a new one
     if (!$senderRecord) {
         $senderRecord = new \App\Models\MessagingMessage([
-            'u_id' => Str::uuid(),  // Generate a unique UUID for the sender
+            'u_id' => Str::uuid(),
             'fullName' => $sender,
-            'messagesData' => [],  // Initialize empty messagesData
-            'statusFlag' => 1, // Default status flag
+            'messagesData' => [],  // Empty initially
+            'statusFlag' => 1,
         ]);
     }
 
-    // Fetch and decode the sender's existing messagesData (if any)
+    // Fetch sender's message data
     $senderMessages = $senderRecord->messagesData ?? [];
     if (is_string($senderMessages)) {
         $senderMessages = json_decode($senderMessages, true);
     }
 
-    // If no entry for the receiver in sender's messagesData, initialize it
+    // If no entry for the receiver in sender's message data, initialize it
     if (!isset($senderMessages[$receiver])) {
         $senderMessages[$receiver] = [];
     }
 
-    // Append the new message to the sender's messagesData for this receiver
+    // Append the new message to the sender's message data
     $senderMessages[$receiver][] = $newMessage;
     $senderRecord->messagesData = $senderMessages;
     $senderRecord->save();  // Save the updated sender's record
 
-    // Fetch receiver's record from the database based on receiver's full name
+    // Fetch receiver record (Kayven Delatado)
     $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
 
-    // If the receiver record doesn't exist, create a new one
+    // If receiver's record doesn't exist, create a new one
     if (!$receiverRecord) {
         $receiverRecord = new \App\Models\MessagingMessage([
-            'u_id' => Str::uuid(),  // Generate a unique UUID for the receiver
+            'u_id' => Str::uuid(),
             'fullName' => $receiver,
-            'messagesData' => [],  // Initialize empty messagesData
-            'statusFlag' => 1, // Default status flag
+            'messagesData' => [],  // Empty initially
+            'statusFlag' => 1,
         ]);
         $receiverRecord->save();  // Save the newly created receiver record
     }
 
-    // Fetch and decode the receiver's messagesData
+    // Fetch receiver's message data
     $receiverMessages = $receiverRecord->messagesData ?? [];
     if (is_string($receiverMessages)) {
         $receiverMessages = json_decode($receiverMessages, true);
     }
 
-    // If no entry for the sender in receiver's messagesData, initialize it
+    // If no entry for the sender in receiver's message data, initialize it
     if (!isset($receiverMessages[$sender])) {
         $receiverMessages[$sender] = [];
     }
 
-    // Append the new message to the receiver's messagesData for this sender
+    // Append the new message to the receiver's message data
     $receiverMessages[$sender][] = $newMessage;
     $receiverRecord->messagesData = $receiverMessages;
     $receiverRecord->save();  // Save the updated receiver's record
 
-    // Return the response
+    // Return success response
     return response()->json([
         'message' => 'Message sent successfully!',
         'data' => [
@@ -7520,6 +7521,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
