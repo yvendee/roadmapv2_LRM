@@ -140,6 +140,7 @@ const activeContact = savedContacts?.find(
 
           // Save the updated data to localStorage
           localStorage.setItem('leftConversationsData', JSON.stringify(conversationData));
+          addSavedContact({ sender: selected.name, uid: selected.u_id});
 
           // Now send the updated data to the backend
           try {
