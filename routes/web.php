@@ -6931,6 +6931,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
 // });
 
 
+
 // ref: frontend\src\components\0.messaging\Messaging.jsx
 Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -7102,9 +7103,6 @@ Route::get('/api/v1/left-conversations', function (Request $request) use ($API_s
 });
 
 
-
-
-
 // ref: 
 Route::post('/api/v1/left-conversations/add', function (Request $request) use ($API_secure) {
     // Check if the API requires authentication
@@ -7200,6 +7198,109 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
         return response()->json(['message' => 'Error adding left conversation: ' . $e->getMessage()], 500);
     }
 });
+
+
+// routes/web.php or routes/api.php
+Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $sender = $request->input('sender');  // e.g., "Kayven Delatado"
+    $receiver = $request->input('receiver');  // e.g., "Maricar Aquino"
+    $messageContent = $request->input('message');  // The actual message content
+
+    // Validate input
+    if (!$sender || !$receiver || !$messageContent) {
+        return response()->json(['message' => 'Sender, receiver, and message content are required'], 400);
+    }
+
+    // Fetch receiver's message record from the database based on receiver's fullname
+    $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
+
+    if (!$receiverRecord) {
+        return response()->json(['message' => 'Receiver not found'], 404);
+    }
+
+    // Prepare the new message for insertion
+    $newMessage = [
+        'sender' => $sender,
+        'receipt' => $receiver,
+        'content' => $messageContent,
+        'datetime' => now(),
+    ];
+
+    // Decode and append the new message to the receiver's messagesData
+    $receiverMessages = $receiverRecord->messagesData ?? [];
+    if (is_string($receiverMessages)) {
+        $receiverMessages = json_decode($receiverMessages, true);
+    }
+
+    // If there's no entry for this sender, initialize the array
+    if (!isset($receiverMessages[$receiver])) {
+        $receiverMessages[$receiver] = [];
+    }
+
+    // Append the new message to the receiver's conversation
+    $receiverMessages[$receiver][] = $newMessage;
+    $receiverRecord->messagesData = $receiverMessages;
+    $receiverRecord->save();
+
+    // Fetch sender's record (create a new one if it doesn't exist)
+    $senderRecord = \App\Models\MessagingMessage::where('fullName', $sender)->first();
+
+    if (!$senderRecord) {
+        // Create a new record for sender
+        $senderRecord = new \App\Models\MessagingMessage([
+            'u_id' => 1, // Assign the correct user ID
+            'fullName' => $sender,
+            'messagesData' => [
+                $receiver => [
+                    $newMessage,
+                ]
+            ],
+            'statusFlag' => 1, // Adjust status flag as needed
+        ]);
+    } else {
+        // Add the reverse message (receiver -> sender) to the sender's messagesData
+        $senderMessages = $senderRecord->messagesData ?? [];
+        if (is_string($senderMessages)) {
+            $senderMessages = json_decode($senderMessages, true);
+        }
+
+        // If no entry for the receiver, initialize it
+        if (!isset($senderMessages[$sender])) {
+            $senderMessages[$sender] = [];
+        }
+
+        // Append the reverse message (sender -> receiver)
+        $senderMessages[$sender][] = [
+            'sender' => $receiver,
+            'receipt' => $sender,
+            'content' => $messageContent,
+            'datetime' => now(),
+        ];
+
+        // Update sender's messagesData
+        $senderRecord->messagesData = $senderMessages;
+    }
+
+    // Save the sender's updated record
+    $senderRecord->save();
+
+    // Return the response
+    return response()->json([
+        'message' => 'Message sent successfully!',
+        'data' => [
+            'sender' => $sender,
+            'receiver' => $receiver,
+            'content' => $messageContent,
+        ]
+    ], 200);
+});
+
 
 
 

@@ -63,28 +63,88 @@ const ChatInterface = () => {
     }, 4000); // Hide after 4 seconds
   };
 
-// Always return array for safe length check
-const activeContact = savedContacts?.find(
-    (c) => c.sender === activeChatName
+  // Always return array for safe length check
+  const activeContact = savedContacts?.find(
+      (c) => c.sender === activeChatName
   );
   
   const hasActiveContact = !!activeContact; // true if found
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
+  // const sendMessage = () => {
+  //   if (!input.trim()) return;
 
-    const newMessage = {
-      sender: user?.fullname,
-      receipt: activeChatName,
-      content: input,
-      datetime: new Date().toLocaleString(),
+  //   const newMessage = {
+  //     sender: user?.fullname,
+  //     receipt: activeChatName,
+  //     content: input,
+  //     datetime: new Date().toLocaleString(),
+  //   };
+
+  //   console.log("🚀 Sending new message:", newMessage);
+  //   addMessage(newMessage);
+  //   setInput("");
+  // };
+
+
+  const sendMessage = async () => {
+    if (!input || !hasActiveContact) return;
+
+    const selectedContact = contacts.find((c) => c.id === selectedContactId);
+  
+    if (!selectedContact) {
+      console.log('⚠ No contact selected');
+      return;
+    }
+  
+    const messageData = {
+      sender: user?.fullname,            // Sender's full name (from logged-in user)
+      receiver: selectedContact.name,    // Receiver's full name (selected contact)
+      message: input,                    // The content of the message
     };
-
-    console.log("🚀 Sending new message:", newMessage);
-    addMessage(newMessage);
-    setInput("");
+  
+    setLoading(true); // Show loading indicator
+  
+    setTimeout(async () => {
+      setLoading(false); // Hide loading indicator after request
+  
+      try {
+        // Step 1: Fetch CSRF token from the backend
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include', // Include cookies
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        // Step 2: Send the message data to the backend with CSRF protection
+        const response = await fetch(`${API_URL}/v1/send-message`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token, // Include CSRF token in the request header
+          },
+          credentials: 'include', // Include cookies in the request
+          body: JSON.stringify(messageData),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          console.log('Message sent successfully:', result);
+          setInput(""); // Clear the input field after sending the message
+          // You can update your UI here with the new message data if needed
+          showToast('Message sent successfully!', 'success');
+        } else {
+          showToast('Failed to send message.', 'error');
+          console.error('Error sending message:', result.message || 'Unknown error');
+        }
+      } catch (error) {
+        showToast('Error sending message.', 'error');
+        console.error('Error sending message:', error);
+      }
+    }, 1000); // Simulate delay (optional)
   };
-
+  
+  
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setSelectedContactId(null);
