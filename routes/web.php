@@ -7425,6 +7425,7 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 
 
 
+
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7519,6 +7520,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
