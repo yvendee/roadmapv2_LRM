@@ -7308,6 +7308,7 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 //     ], 200);
 // });
 
+
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7353,13 +7354,18 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         $receiverMessages = json_decode($receiverMessages, true);
     }
 
+    // If the receiver doesn't have a top-level key for the sender, initialize it
+    if (!isset($receiverMessages[$receiver])) {
+        $receiverMessages[$receiver] = [];
+    }
+
     // If the sender doesn't exist in the receiver's messagesData, initialize the array
-    if (!isset($receiverMessages[$sender])) {
-        $receiverMessages[$sender] = [];
+    if (!isset($receiverMessages[$receiver][$sender])) {
+        $receiverMessages[$receiver][$sender] = [];
     }
 
     // Append the new message to the receiver's conversation under the sender's key
-    $receiverMessages[$sender][] = $newMessage;
+    $receiverMessages[$receiver][$sender][] = $newMessage;
     $receiverRecord->messagesData = $receiverMessages;
     $receiverRecord->save();  // Save the updated receiver's record
 
@@ -7416,6 +7422,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
