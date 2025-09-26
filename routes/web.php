@@ -7425,7 +7425,6 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 
 
 
-
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7435,7 +7434,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
 
     $sender = $request->input('sender');  // "Maricar Aquino"
     $receiver = $request->input('receiver');  // "Kayven Delatado"
-    $messageContent = $request->input('message');  // "hitesthitest"
+    $messageContent = $request->input('message');  // "this is a final test"
 
     // Validate input
     if (!$sender || !$receiver || !$messageContent) {
@@ -7475,7 +7474,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         $senderMessages[$receiver] = [];
     }
 
-    // Append the new message to the sender's message data
+    // Append the new message to the sender's message data under the receiver's key
     $senderMessages[$receiver][] = $newMessage;
     $senderRecord->messagesData = $senderMessages;
     $senderRecord->save();  // Save the updated sender's record
@@ -7505,7 +7504,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         $receiverMessages[$sender] = [];
     }
 
-    // Append the new message to the receiver's message data
+    // Append the new message to the receiver's message data under the sender's key
     $receiverMessages[$sender][] = $newMessage;
     $receiverRecord->messagesData = $receiverMessages;
     $receiverRecord->save();  // Save the updated receiver's record
@@ -7520,6 +7519,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
