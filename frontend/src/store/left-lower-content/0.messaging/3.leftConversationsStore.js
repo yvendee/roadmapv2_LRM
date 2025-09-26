@@ -1,13 +1,13 @@
 // frontend\src\store\left-lower-content\0.messaging\3.leftConversationsStore.js
 import { create } from 'zustand';
 
-export const initialinitialSavedContact = [
-  { id: 1, sender: 'Kayven Delatado', uid: '-' },
-  { id: 2, sender: 'Jamie Lee', uid: '-' },
-];
-
 // export const initialinitialSavedContact = [
+//   { id: 1, sender: 'Kayven Delatado', uid: '-' },
+//   { id: 2, sender: 'Jamie Lee', uid: '-' },
 // ];
+
+export const initialinitialSavedContact = [
+];
 
 const useLeftConversationsStore = create((set) => ({
   savedContacts: initialinitialSavedContact,
