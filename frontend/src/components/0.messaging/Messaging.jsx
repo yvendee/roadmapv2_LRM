@@ -151,7 +151,7 @@ const activeContact = savedContacts?.find(
             const { csrf_token } = await csrfRes.json();
 
             // Send the updated conversation data to the backend
-            const response = await fetch(`${API_URL}/api/v1/left-conversations/add`, {
+            const response = await fetch(`${API_URL}/v1/left-conversations/add`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
