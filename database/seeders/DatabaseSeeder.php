@@ -60,8 +60,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(MembersDepartmentsSeeder::class);
         // $this->call(MembersDirectorySeeder::class);
         // $this->call(NotificationsTableSeeder::class);
-        $this->call(MessagingMessageSeeder::class);
-        // $this->call(MessagingMessagesSeeder::class);
+        // $this->call(MessagingMessageSeeder::class);
+        $this->call(MessagingLeftConversationsSeeder::class);
+        // $this->call(MessagingLeftConversationsSeeder::class);
         
     }
 
