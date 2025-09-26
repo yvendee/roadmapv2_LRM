@@ -57,6 +57,7 @@ use App\Models\MembersDepartment;
 use App\Models\MembersDirectory;
 use App\Models\Notification;
 use App\Models\MessagingMessage;
+use App\Models\MessagingLeftConversation;
 
 
 
@@ -6993,7 +6994,7 @@ Route::get('/api/v1/messages', function (Request $request) use ($API_secure) {
 // });
 
 
-// ref:
+// ref: frontend\src\components\0.messaging\Messaging.jsx
 Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7026,42 +7027,76 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
 
 
 
+// // ref: frontend\src\components\0.messaging\Messaging.jsx
+// Route::get('/api/v1/left-conversations', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $fullname = $request->query('fullname');
+
+//     $mockData = [
+//         'Kayven Delatado' => [
+//             ['id' => 1, 'sender' => 'Jamie Lee', 'uid' => 'UID-101'],
+//             ['id' => 2, 'sender' => 'Maricar Aquino', 'uid' => 'UID-102'],
+//             ['id' => 3, 'sender' => 'John Santos', 'uid' => 'UID-103'],
+//             ['id' => 4, 'sender' => 'Angela Reyes', 'uid' => 'UID-104'],
+//             ['id' => 5, 'sender' => 'Mark Villanueva', 'uid' => 'UID-105'],
+//         ],
+//         'Jamie Lee' => [
+//             ['id' => 1, 'sender' => 'Kayven Delatado', 'uid' => 'UID-201'],
+//             ['id' => 2, 'sender' => 'Mark Villanueva', 'uid' => 'UID-202'],
+//             ['id' => 3, 'sender' => 'Angela Reyes', 'uid' => 'UID-203'],
+//             ['id' => 4, 'sender' => 'Maricar Aquino', 'uid' => 'UID-204'],
+//             ['id' => 5, 'sender' => 'John Santos', 'uid' => 'UID-205'],
+//         ],
+//         'Maricar Aquino' => [
+//             ['id' => 1, 'sender' => 'Kayven Delatado', 'uid' => 'UID-301'],
+//             ['id' => 2, 'sender' => 'Jamie Lee', 'uid' => 'UID-302'],
+//             // ['id' => 3, 'sender' => 'Angela Reyes', 'uid' => 'UID-303'],
+//             // ['id' => 4, 'sender' => 'John Santos', 'uid' => 'UID-304'],
+//             // ['id' => 5, 'sender' => 'Mark Villanueva', 'uid' => 'UID-305'],
+//         ],
+//     ];
+
+//     return response()->json($mockData[$fullname] ?? []);
+// });
+
 
 // ref: frontend\src\components\0.messaging\Messaging.jsx
 Route::get('/api/v1/left-conversations', function (Request $request) use ($API_secure) {
+    // Check if the API requires authentication
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
+    // Get the fullName from the query parameters
     $fullname = $request->query('fullname');
 
-    $mockData = [
-        'Kayven Delatado' => [
-            ['id' => 1, 'sender' => 'Jamie Lee', 'uid' => 'UID-101'],
-            ['id' => 2, 'sender' => 'Maricar Aquino', 'uid' => 'UID-102'],
-            ['id' => 3, 'sender' => 'John Santos', 'uid' => 'UID-103'],
-            ['id' => 4, 'sender' => 'Angela Reyes', 'uid' => 'UID-104'],
-            ['id' => 5, 'sender' => 'Mark Villanueva', 'uid' => 'UID-105'],
-        ],
-        'Jamie Lee' => [
-            ['id' => 1, 'sender' => 'Kayven Delatado', 'uid' => 'UID-201'],
-            ['id' => 2, 'sender' => 'Mark Villanueva', 'uid' => 'UID-202'],
-            ['id' => 3, 'sender' => 'Angela Reyes', 'uid' => 'UID-203'],
-            ['id' => 4, 'sender' => 'Maricar Aquino', 'uid' => 'UID-204'],
-            ['id' => 5, 'sender' => 'John Santos', 'uid' => 'UID-205'],
-        ],
-        'Maricar Aquino' => [
-            ['id' => 1, 'sender' => 'Kayven Delatado', 'uid' => 'UID-301'],
-            ['id' => 2, 'sender' => 'Jamie Lee', 'uid' => 'UID-302'],
-            // ['id' => 3, 'sender' => 'Angela Reyes', 'uid' => 'UID-303'],
-            // ['id' => 4, 'sender' => 'John Santos', 'uid' => 'UID-304'],
-            // ['id' => 5, 'sender' => 'Mark Villanueva', 'uid' => 'UID-305'],
-        ],
-    ];
+    // Fetch the first matching record from the messaging_left_conversations table
+    try {
+        $conversation = MessagingLeftConversation::where('fullName', $fullname)->first();
 
-    return response()->json($mockData[$fullname] ?? []);
+        // If the conversation exists, return it, otherwise return an empty array
+        if ($conversation) {
+            return response()->json([
+                'u_id' => $conversation->u_id,
+                'fullName' => $conversation->fullName,
+                'leftConversationsData' => $conversation->leftConversationsData,
+                'statusFlag' => $conversation->statusFlag,
+                'created_at' => $conversation->created_at,
+                'updated_at' => $conversation->updated_at
+            ]);
+        } else {
+            return response()->json([], 404); // No matching conversation found
+        }
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error fetching conversation: ' . $e->getMessage()], 500);
+    }
 });
 
 

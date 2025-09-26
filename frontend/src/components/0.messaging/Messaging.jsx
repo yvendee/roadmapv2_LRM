@@ -93,44 +93,6 @@ const activeContact = savedContacts?.find(
   }, [messages]);
 
   // Fetch Messages Data
-  // useEffect(() => {
-  //   if (!user?.fullname || !activeChatName) return;
-
-  //   const fetchMessages = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `${API_URL}/v1/messages?fullname=${encodeURIComponent(
-  //           user.fullname
-  //         )}&sender=${encodeURIComponent(activeChatName)}`,
-  //         {
-  //           method: 'GET',
-  //           headers: {
-  //             Accept: 'application/json',
-  //             'Content-Type': 'application/json',
-  //           },
-  //           credentials: 'include',
-  //         }
-  //       );
-
-  //       const data = await response.json();
-
-  //       if (response.ok && Array.isArray(data)) {
-  //         ENABLE_CONSOLE_LOGS &&
-  //           console.log('💬 Messages for chat:', activeChatName, data);
-  //         setMessages(data);
-  //       } else {
-  //         console.error('❌ Error loading messages:', data?.message);
-  //       }
-  //     } catch (error) {
-  //       console.error('❗ Fetch error:', error);
-  //     }
-  //   };
-
-  //   fetchMessages();
-  // }, [activeChatName, user?.fullname, setMessages]);
-
-
-
   useEffect(() => {
     if (!user?.fullname || !activeChatName) return;
   
@@ -176,35 +138,7 @@ const activeContact = savedContacts?.find(
   }, [activeChatName, user?.fullname, setMessages]);
 
   
-  // // Fecth Contact List Data
-  // useEffect(() => {
-  //   const fetchContacts = async () => {
-  //     try {
-  //       const response = await fetch(`${API_URL}/v1/contact-list`, {
-  //         method: 'GET',
-  //         headers: {
-  //           Accept: 'application/json',
-  //           'Content-Type': 'application/json',
-  //         },
-  //         credentials: 'include',
-  //       });
-
-  //       const data = await response.json();
-
-  //       if (response.ok && Array.isArray(data)) {
-  //         ENABLE_CONSOLE_LOGS && console.log('📇 Full Contact List:', data);
-  //         setContacts(data);
-  //       } else {
-  //         console.error('Failed to load contact list:', data?.message);
-  //       }
-  //     } catch (error) {
-  //       console.error('Fetch error:', error);
-  //     }
-  //   };
-
-  //   fetchContacts();
-  // }, [setContacts]);
-
+  // Fecth Contact List Data
   useEffect(() => {
     const fetchContacts = async () => {
 
