@@ -7201,6 +7201,7 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 
 
 // routes/web.php or routes/api.php
+
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7220,10 +7221,10 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     // Fetch receiver's record from the database based on receiver's full name
     $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
 
-    // If receiver doesn't exist, create a new receiver record
+    // If receiver doesn't exist, create a new receiver record with a generated UUID for u_id
     if (!$receiverRecord) {
-        // Create a new receiver record with empty messagesData
         $receiverRecord = new \App\Models\MessagingMessage([
+            'u_id' => Str::uuid(),  // Generate a unique UUID for the receiver
             'fullName' => $receiver,
             'messagesData' => [],  // Empty messagesData
             'statusFlag' => 1, // Default status flag (can be adjusted as needed)
@@ -7261,7 +7262,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     if (!$senderRecord) {
         // Create a new record for sender if it doesn't exist
         $senderRecord = new \App\Models\MessagingMessage([
-            'u_id' => 1, // Assign the correct user ID (this should be dynamic)
+            'u_id' => Str::uuid(),  // Generate a unique UUID for the sender as well
             'fullName' => $sender,
             'messagesData' => [
                 $receiver => [
@@ -7307,6 +7308,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
