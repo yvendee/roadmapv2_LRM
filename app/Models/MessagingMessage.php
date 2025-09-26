@@ -4,20 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MessagingLeftConversation extends Model
+class MessagingMessage extends Model
 {
-    protected $table = 'messaging_left_conversations'; // Table name
+    protected $table = 'messaging_messages';
 
-    // Fillable attributes
     protected $fillable = [
-        'u_id', 
-        'fullName', 
-        'leftConversationsData', 
+        'u_id',
+        'fullName',
+        'messagesData',
         'statusFlag',
     ];
 
-    // Cast the leftConversationsData to an array (or JSON)
     protected $casts = [
-        'leftConversationsData' => 'array', // This ensures that leftConversationsData is treated as an array when accessed
+        'messagesData' => 'array', // This makes sure messagesData is cast as an array or JSON
     ];
 }

@@ -2,26 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MessagingLeftConversation extends Model
 {
-    use HasFactory;
-
     protected $table = 'messaging_left_conversations'; // Table name
-    protected $primaryKey = 'id'; // Primary key
-    public $timestamps = true; // Enable timestamps (created_at, updated_at)
 
+    // Fillable attributes
     protected $fillable = [
-        'u_id',
-        'fullName',
-        'leftConversationsData',
+        'u_id', 
+        'fullName', 
+        'leftConversationsData', 
         'statusFlag',
     ];
 
-    // Cast the leftConversationsData column to an array
+    // Cast the leftConversationsData to an array (or JSON)
     protected $casts = [
-        'leftConversationsData' => 'array', // Cast JSON column to an array
+        'leftConversationsData' => 'array', // This ensures that leftConversationsData is treated as an array when accessed
     ];
 }
