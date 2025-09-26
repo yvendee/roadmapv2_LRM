@@ -378,7 +378,7 @@ const activeContact = savedContacts?.find(
 
             {/* Messages */}
             <div className="flex-1 flex flex-col">
-            {savedContacts.length === 0 ? (
+            {savedContacts.length === 0 || messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-gray-500">
                 No messages
                 </div>
