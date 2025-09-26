@@ -89,17 +89,16 @@ const ChatInterface = () => {
   const sendMessage = async () => {
     if (!input || !hasActiveContact) return;
 
-    const selectedContact = contacts.find((c) => c.id === selectedContactId);
-  
-    if (!selectedContact) {
-      console.log('⚠ No contact selected');
+    // Ensure the activeChatName is set before proceeding
+    if (!activeChatName) {
+      showToast('⚠ No contact selected', 'error');
       return;
     }
-  
+
     const messageData = {
-      sender: user?.fullname,            // Sender's full name (from logged-in user)
-      receiver: selectedContact.name,    // Receiver's full name (selected contact)
-      message: input,                    // The content of the message
+      sender: user?.fullname,          // Sender's full name (logged-in user)
+      receiver: activeChatName,        // Receiver's full name (selected contact)
+      message: input,                  // The content of the message
     };
   
     setLoading(true); // Show loading indicator
