@@ -1,35 +1,33 @@
 /* frontend\src\components\toast-notification\ToastNotification.css */
 
 .toast {
-    background-color: #d9534f;  /* Red background */
-    color: #fff;               /* White text */
-    padding: 10px 20px;
-    margin: 10px auto;
-    border-radius: 5px;
-    font-size: 16px;
-    max-width: 350px;
-    text-align: center;
+  color: #fff;               /* White text */
+  padding: 10px 20px;
+  margin: 10px auto;
+  border-radius: 5px;
+  font-size: 16px;
+  max-width: 350px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: toastIn 0.5s forwards, toastOut 0.5s forwards 3.5s; /* In and Out animation */
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
+@keyframes toastIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  to {
     opacity: 0;
     transform: translateY(-20px);
-    animation: toastIn 0.5s forwards, toastOut 0.5s forwards 3.5s; /* In and Out animation */
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
   }
-  
-  @keyframes toastIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes toastOut {
-    to {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-  }
-  
+}

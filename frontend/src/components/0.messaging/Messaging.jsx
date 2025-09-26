@@ -46,13 +46,16 @@ const ChatInterface = () => {
       console.log("📢 Selected conversation:", name);
   };
 
-  // Function to show toast notification
-  const showToast = (message) => {
-    setToastMessage(message);
-    setIsToastVisible(true);
+  const showToast = (message, status) => {
+    setToast({
+      message,
+      isVisible: true,
+      status,
+    });
+  
     setTimeout(() => {
-      setIsToastVisible(false); // Hide the toast after 5 seconds
-    }, 5000); // 5 seconds
+      setToast((prev) => ({ ...prev, isVisible: false }));
+    }, 4000); // Hide after 4 seconds
   };
 
 // Always return array for safe length check
@@ -138,14 +141,14 @@ const activeContact = savedContacts?.find(
             if (response.ok) {
               // Show success message in the toast notification
               addSavedContact({ sender: selected.name, uid: selected.u_id});
-              showToast('Left conversation added successfully!');
+              showToast('Left conversation added successfully!', 'success');
             } else {
               // Show error message in the toast notification
-              showToast('Failed to add left conversation.');
+              showToast('Failed to add left conversation.', 'error');
               console.error('Failed to add left conversation:', data.message || 'Unknown error');
             }
           } catch (error) {
-            showToast('Error updating left conversations.');
+            showToast('Error adding left conversation.', 'error');
             console.error('Error updating left conversations:', error);
           }
         } catch (err) {
@@ -480,9 +483,10 @@ const activeContact = savedContacts?.find(
 
       {/* Display Toast Notification */}
       <ToastNotification
-        message={toastMessage}
-        isVisible={isToastVisible}
-        onClose={() => setIsToastVisible(false)}
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={() => setToast({ ...toast, isVisible: false })}
+        status={toast.status} // Pass the success or error status here
       />
 
     </>

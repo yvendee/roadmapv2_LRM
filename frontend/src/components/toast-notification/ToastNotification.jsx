@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import './ToastNotification.css';
 
-const ToastNotification = ({ message, isVisible, onClose }) => {
+const ToastNotification = ({ message, isVisible, onClose, status }) => {
   useEffect(() => {
     if (isVisible) {
       const timer = setTimeout(() => {
@@ -16,8 +16,11 @@ const ToastNotification = ({ message, isVisible, onClose }) => {
 
   if (!isVisible) return null;
 
+  // Determine background color based on status
+  const backgroundColor = status === 'success' ? '#5cb85c' : '#d9534f';  // Green for success, Red for error
+
   return (
-    <div className="toast">
+    <div className="toast" style={{ backgroundColor }}>
       <p>{message}</p>
     </div>
   );
