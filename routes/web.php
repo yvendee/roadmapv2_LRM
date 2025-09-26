@@ -7485,88 +7485,41 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     $receiverRecord->save();  // Save the updated receiver's record
 
 
-
-// Fetch sender's record from the database based on sender's full name
+// Fetch sender's record
 $senderRecord = \App\Models\MessagingMessage::where('fullName', $sender)->first();
 
-// If sender doesn't exist, create a new sender record
 if (!$senderRecord) {
     $senderRecord = new \App\Models\MessagingMessage([
-        'u_id' => Str::uuid(),  // Generate a unique UUID for the sender
+        'u_id' => Str::uuid(),
         'fullName' => $sender,
-        'messagesData' => [],  // Empty messagesData
-        'statusFlag' => 1, // Default status flag (can be adjusted as needed)
+        'messagesData' => [],
+        'statusFlag' => 1,
     ]);
-    $senderRecord->save(); // Save the newly created sender record
 }
 
-// Prepare the new message for insertion
+// Prepare new message
 $newMessage = [
-    'id' => now()->timestamp,  // Optionally use a unique id (like timestamp) for each message
+    'id' => now()->timestamp,
     'sender' => $sender,
     'receipt' => $receiver,
     'content' => $messageContent,
     'datetime' => now(),
 ];
 
-// Fetch and decode the existing messagesData for the sender (if any)
+// Decode existing sender messagesData
 $senderMessages = $senderRecord->messagesData ?? [];
 if (is_string($senderMessages)) {
     $senderMessages = json_decode($senderMessages, true);
 }
 
-// Ensure the conversation structure exists for this sender and receiver
+// Insert message under receiver key inside sender record
 if (!isset($senderMessages[$receiver])) {
-    $senderMessages[$receiver] = [];  // Initialize receiver if not exists
+    $senderMessages[$receiver] = [];
 }
 
-// Append the new message to the sender's conversation under the receiver's key
-$senderMessages[$receiver][] = $newMessage;  // Append to the existing conversation
-
+$senderMessages[$receiver][] = $newMessage;
 $senderRecord->messagesData = $senderMessages;
-$senderRecord->save();  // Save the updated sender's record
-
-// Now let's handle the receiver's message record
-
-// Fetch receiver's record from the database based on receiver's full name
-$receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
-
-// If receiver doesn't exist, create a new receiver record
-if (!$receiverRecord) {
-    $receiverRecord = new \App\Models\MessagingMessage([
-        'u_id' => Str::uuid(),  // Generate a unique UUID for the receiver
-        'fullName' => $receiver,
-        'messagesData' => [],  // Empty messagesData
-        'statusFlag' => 1, // Default status flag (can be adjusted as needed)
-    ]);
-    $receiverRecord->save(); // Save the newly created receiver record
-}
-
-// Prepare the new message for the receiver (same as sender but flipped)
-$receiverMessage = [
-    'id' => now()->timestamp,  // Optionally use a unique id (like timestamp) for each message
-    'sender' => $sender,
-    'receipt' => $receiver,
-    'content' => $messageContent,
-    'datetime' => now(),
-];
-
-// Fetch and decode the existing messagesData for the receiver (if any)
-$receiverMessages = $receiverRecord->messagesData ?? [];
-if (is_string($receiverMessages)) {
-    $receiverMessages = json_decode($receiverMessages, true);
-}
-
-// Ensure the conversation structure exists for this receiver and sender
-if (!isset($receiverMessages[$sender])) {
-    $receiverMessages[$sender] = [];  // Initialize sender if not exists
-}
-
-// Append the new message to the receiver's conversation under the sender's key
-$receiverMessages[$sender][] = $receiverMessage;  // Append to the existing conversation
-
-$receiverRecord->messagesData = $receiverMessages;
-$receiverRecord->save();  // Save the updated receiver's record
+$senderRecord->save();
 
 
     // Return the response

@@ -51,6 +51,8 @@ const WelcomeSection = () => {
               <li>✅ A culture of accountability</li>
               <li>✅ Teams that finish what they start</li>
               <li>✅ Predictable growth with less drama</li>
+              <li>✅ A  strategy that creates competitive advantage</li>
+              
             </ul>
 
             <h4 className="methodology-title">✨ Welcome to the system behind scaling smarter.</h4>
