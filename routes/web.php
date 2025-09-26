@@ -7121,8 +7121,12 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
         $existingConversation = MessagingLeftConversation::where('fullName', $validated['fullname'])->first();
 
         if ($existingConversation) {
-            // Decode the existing leftConversationsData
-            $leftConversationsData = json_decode($existingConversation->leftConversationsData, true);
+            // Check if leftConversationsData is already an array (no need to decode if it's already an array)
+            $leftConversationsData = $existingConversation->leftConversationsData;
+
+            if (is_string($leftConversationsData)) {
+                $leftConversationsData = json_decode($leftConversationsData, true);
+            }
 
             // Find the max ID from the existing conversation data
             $maxId = 0;
