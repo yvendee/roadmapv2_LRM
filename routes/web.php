@@ -7121,33 +7121,64 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
         $existingConversation = MessagingLeftConversation::where('fullName', $validated['fullname'])->first();
 
         if ($existingConversation) {
-            // If the fullName already exists, return an error message
+            // Decode the existing leftConversationsData
+            $leftConversationsData = json_decode($existingConversation->leftConversationsData, true);
+
+            // Check if the sender already exists in the conversation
+            foreach ($leftConversationsData as $conversation) {
+                if ($conversation['sender'] === $validated['sender']) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Sender already exists in the left conversations data.',
+                    ], 400);
+                }
+            }
+
+            // Find the maximum ID in the existing leftConversationsData and increment it
+            $maxId = max(array_column($leftConversationsData, 'id')) + 1;
+
+            // Generate the new conversation entry
+            $newConversation = [
+                'id' => $maxId,  // Use the max ID + 1
+                'sender' => $validated['sender'],
+                'uid' => $validated['uid'],
+            ];
+
+            // Append the new conversation entry to the existing data
+            $leftConversationsData[] = $newConversation;
+
+            // Update the record in the database with the new leftConversationsData
+            $existingConversation->leftConversationsData = json_encode($leftConversationsData);
+            $existingConversation->save();
+
             return response()->json([
-                'status' => 'error',
-                'message' => 'Full name already exists in the left conversations data.',
-            ], 400);
+                'status' => 'success',
+                'message' => 'Left conversation added successfully!',
+                'data' => $existingConversation,
+            ], 200);
+        } else {
+            // If no conversation exists for this fullName, create a new record
+
+            $conversation = new MessagingLeftConversation([
+                'fullName' => $validated['fullname'],
+                'u_id' => $validated['uid'],
+                'leftConversationsData' => json_encode([
+                    [
+                        'id' => 1, // First item
+                        'sender' => $validated['sender'],
+                        'uid' => $validated['uid'],
+                    ]
+                ]),
+                'statusFlag' => null, // Default statusFlag
+            ]);
+            $conversation->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Left conversation added successfully!',
+                'data' => $conversation,
+            ], 200);
         }
-
-        // If no conversation exists for this fullName, create a new record
-        $conversation = new MessagingLeftConversation([
-            'fullName' => $validated['fullname'],
-            'u_id' => $validated['uid'],
-            'leftConversationsData' => json_encode([
-                [
-                    'id' => 1, // First item, can be dynamically generated
-                    'sender' => $validated['sender'],
-                    'uid' => $validated['uid'],
-                ]
-            ]),
-            'statusFlag' => null, // Set default statusFlag
-        ]);
-        $conversation->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Left conversation added successfully!',
-            'data' => $conversation,
-        ], 200);
 
     } catch (\Exception $e) {
         return response()->json(['message' => 'Error adding left conversation: ' . $e->getMessage()], 500);
