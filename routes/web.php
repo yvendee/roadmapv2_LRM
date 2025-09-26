@@ -7456,7 +7456,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
 
     // Prepare the new message for insertion
     $newMessage = [
-        'id' => now()->timestamp,  // Unique id (timestamp)
+        'id' => now()->timestamp,  // Optionally use a unique id (like timestamp) for each message
         'sender' => $sender,
         'receipt' => $receiver,
         'content' => $messageContent,
@@ -7494,7 +7494,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             'fullName' => $sender,
             'messagesData' => [
                 $receiver => [
-                    $newMessage,  // Initialize with the new message
+                    $newMessage,
                 ]
             ],
             'statusFlag' => 1, // Adjust status flag as needed
@@ -7511,13 +7511,13 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             $senderMessages[$receiver] = [];
         }
 
-        // Append the reverse message (receiver -> sender)
+        // Append the reverse message (sender -> receiver)
         $senderMessages[$receiver][] = [
-            'id' => now()->timestamp,  // Unique id for the reverse message
+            'id' => now()->timestamp,  // Optionally use a unique id for each message
             'sender' => $receiver,
             'receipt' => $sender,
             'content' => $messageContent,
-            'datetime' => now()->toIso8601String(),  // ISO 8601 format for datetime
+            'datetime' => now()->toIso8601String(),  // ISO 8601 format
         ];
 
         // Update sender's messagesData
