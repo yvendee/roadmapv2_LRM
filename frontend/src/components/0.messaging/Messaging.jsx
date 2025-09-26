@@ -27,6 +27,11 @@ const ChatInterface = () => {
   const setSavedContacts = useLeftConversationsStore((state) => state.setSavedContacts);
   const [toastMessage, setToastMessage] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toast, setToast] = useState({
+    message: '',
+    isVisible: false,
+    status: '', // 'success' or 'error'
+  });
   const [loading, setLoading] = useState(false); // Loading state for spinner
 
 
