@@ -7007,14 +7007,15 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
     // Fetch contacts based on the organization
     try {
         $contacts = AuthUser::where('organization', $organization)
-            ->get(['firstName', 'lastName'])
+            ->get(['id', 'firstName', 'lastName'])
             ->map(function ($user, $index) {  // `$index` is the key for each iteration
                 return [
-                    'id' => $index + 1, // Auto-generate the ID starting from 1
-                    'name' => $user->firstName . ' ' . $user->lastName,
+                    'id' => $index + 1,  // Auto-generate the ID starting from 1
+                    'u_id' => $user->id,  // Include the database `id` as `u_id`
+                    'name' => $user->firstName . ' ' . $user->lastName,  // Combine first and last name
                 ];
             });
-        
+
         return response()->json($contacts);
 
     } catch (\Exception $e) {
@@ -7022,6 +7023,7 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
         return response()->json(['message' => 'Error fetching contacts: ' . $e->getMessage()], 500);
     }
 });
+
 
 
 
