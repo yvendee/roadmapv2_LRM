@@ -7100,6 +7100,62 @@ Route::get('/api/v1/left-conversations', function (Request $request) use ($API_s
 });
 
 
+// ref: 
+Route::post('/api/v1/left-conversations/add', function (Request $request) use ($API_secure) {
+    // Check if the API requires authentication
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // Validate incoming request data
+    $validated = $request->validate([
+        'fullname' => 'required|string',
+        'sender' => 'required|string',
+        'uid' => 'required|string',
+    ]);
+
+    try {
+        // Check if a conversation with the same fullName already exists
+        $existingConversation = MessagingLeftConversation::where('fullName', $validated['fullname'])->first();
+
+        if ($existingConversation) {
+            // If the fullName already exists, return an error message
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Full name already exists in the left conversations data.',
+            ], 400);
+        }
+
+        // If no conversation exists for this fullName, create a new record
+        $conversation = new MessagingLeftConversation([
+            'fullName' => $validated['fullname'],
+            'u_id' => $validated['uid'],
+            'leftConversationsData' => json_encode([
+                [
+                    'id' => 1, // First item, can be dynamically generated
+                    'sender' => $validated['sender'],
+                    'uid' => $validated['uid'],
+                ]
+            ]),
+            'statusFlag' => null, // Set default statusFlag
+        ]);
+        $conversation->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Left conversation added successfully!',
+            'data' => $conversation,
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error adding left conversation: ' . $e->getMessage()], 500);
+    }
+});
+
+
+
 
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx

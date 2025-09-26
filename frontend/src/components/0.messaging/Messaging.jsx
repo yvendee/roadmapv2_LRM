@@ -6,6 +6,7 @@ import useChatInterfaceStore from "../../store/left-lower-content/0.messaging/1.
 import useContactListStore from "../../store/left-lower-content/0.messaging/2.contactListStore";
 import useLeftConversationsStore from "../../store/left-lower-content/0.messaging/3.leftConversationsStore";
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import ToastNotification from '../../components/toast-notification/ToastNotification';
 import useLoginStore from '../../store/loginStore';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../configs/config';
@@ -24,6 +25,9 @@ const ChatInterface = () => {
   const user = useLoginStore((state) => state.user);
   const setContacts = useContactListStore((state) => state.setContacts);
   const setSavedContacts = useLeftConversationsStore((state) => state.setSavedContacts);
+  const [toastMessage, setToastMessage] = useState('');
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state for spinner
 
 
 //   const [activeChatName, setActiveChatName] = useState(user?.fullname ?? 'Guest');
@@ -36,11 +40,20 @@ const ChatInterface = () => {
   const [selectedContactId, setSelectedContactId] = useState(null);
 
 
-    // Handle selecting a conversation
-    const handleSelectConversation = (name) => {
-        setActiveChatName(name);
-        console.log("📢 Selected conversation:", name);
-    };
+  // Handle selecting a conversation
+  const handleSelectConversation = (name) => {
+      setActiveChatName(name);
+      console.log("📢 Selected conversation:", name);
+  };
+
+  // Function to show toast notification
+  const showToast = (message) => {
+    setToastMessage(message);
+    setIsToastVisible(true);
+    setTimeout(() => {
+      setIsToastVisible(false); // Hide the toast after 5 seconds
+    }, 5000); // 5 seconds
+  };
 
 // Always return array for safe length check
 const activeContact = savedContacts?.find(
@@ -70,16 +83,116 @@ const activeContact = savedContacts?.find(
     setIsModalOpen(false);
   };
 
+  // const handleAddContact = () => {
+  //   const selected = contacts.find((c) => c.id === selectedContactId);
+  //   if (selected) {
+  //     addSavedContact({ sender: selected.name, uid: selected.u_id});
+  //     console.log("📇 Selected contact to add:", selected);
+  //   } else {
+  //     console.log("⚠ No contact selected");
+  //   }
+  //   closeModal();
+  // };
+
+
   const handleAddContact = () => {
-    const selected = contacts.find((c) => c.id === selectedContactId);
-    if (selected) {
-      addSavedContact({ sender: selected.name, uid: "-" });
-      console.log("📇 Selected contact to add:", selected);
-    } else {
-      console.log("⚠ No contact selected");
-    }
-    closeModal();
+    setLoading(true); // Show loading indicator
+
+    setTimeout(async () => {
+      setLoading(false); // Hide loading indicator after request
+
+      const selected = contacts.find((c) => c.id === selectedContactId);
+
+      if (selected) {
+        ENABLE_CONSOLE_LOGS && console.log('Selected contact:', JSON.stringify(selected, null, 2));
+
+        // Retrieve the current left conversations data
+        const storedData = localStorage.getItem('leftConversationsData');
+
+        try {
+          let conversationData = [];
+
+          if (storedData) {
+            // Parse the existing leftConversationsData
+            const parsedData = JSON.parse(storedData);
+
+            // Append the new contact to the left conversations data
+            conversationData = [
+              ...parsedData,
+              {
+                id: parsedData.length + 1, // Generate new ID for the new conversation
+                sender: selected.name,
+                uid: selected.u_id,
+              },
+            ];
+
+            ENABLE_CONSOLE_LOGS && console.log('Updated left conversations data:', conversationData);
+          } else {
+            // If no data in localStorage, create a new array
+            conversationData = [
+              {
+                id: 1,
+                sender: selected.name,
+                uid: selected.u_id,
+              },
+            ];
+          }
+
+          // Save the updated data to localStorage
+          localStorage.setItem('leftConversationsData', JSON.stringify(conversationData));
+
+          // Now send the updated data to the backend
+          try {
+            // Fetch CSRF token
+            const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+              credentials: 'include', // Include cookies
+            });
+
+            const { csrf_token } = await csrfRes.json();
+
+            // Send the updated conversation data to the backend
+            const response = await fetch(`${API_URL}/api/v1/left-conversations/add`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf_token, // Use the CSRF token in the request header
+              },
+              credentials: 'include', // Include cookies in the request
+              body: JSON.stringify({
+                fullname: selected.name, // Full name of the contact
+                sender: selected.name, // Sender's name
+                uid: selected.u_id, // Unique identifier
+              }),
+            });
+
+            const data = await response.json();
+            ENABLE_CONSOLE_LOGS && console.log('Left conversations updated response:', data);
+
+            if (response.ok) {
+              // Show success message in the toast notification
+              showToast('Left conversation added successfully!');
+            } else {
+              // Show error message in the toast notification
+              showToast('Failed to add left conversation.');
+              console.error('Failed to add left conversation:', data.message || 'Unknown error');
+            }
+          } catch (error) {
+            showToast('Error updating left conversations.');
+            console.error('Error updating left conversations:', error);
+          }
+        } catch (err) {
+          ENABLE_CONSOLE_LOGS && console.error('Error parsing leftConversationsData on save:', err);
+        }
+      } else {
+        console.log('⚠ No contact selected');
+      }
+
+      closeModal(); // Close the modal after operation completes
+    }, 1000); // Simulate delay
   };
+  
+
+
 
   const lastMessageByContact = useMemo(() => {
     const map = {};
@@ -395,7 +508,14 @@ const activeContact = savedContacts?.find(
             </div>
             </div>
         </div>
-        )}
+      )}
+
+      {/* Display Toast Notification */}
+      <ToastNotification
+        message={toastMessage}
+        isVisible={isToastVisible}
+        onClose={() => setIsToastVisible(false)}
+      />
 
     </>
   );
