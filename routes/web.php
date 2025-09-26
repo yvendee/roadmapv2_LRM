@@ -7007,12 +7007,12 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
     // Fetch contacts based on the organization
     try {
         $contacts = AuthUser::where('organization', $organization)
-            ->get(['id', 'firstName', 'lastName'])
+            ->get(['id', 'u_id', 'firstName', 'lastName'])  // Get `id`, `u_id`, `firstName`, `lastName`
             ->map(function ($user, $index) {  // `$index` is the key for each iteration
                 return [
-                    'id' => $index + 1,  // Auto-generate the ID starting from 1
-                    'u_id' => $user->id,  // Include the database `id` as `u_id`
-                    'name' => $user->firstName . ' ' . $user->lastName,  // Combine first and last name
+                    'id' => $index + 1,  // Auto-generate a sequential ID starting from 1
+                    'u_id' => $user->u_id,  // Use `u_id` from the database
+                    'name' => $user->firstName . ' ' . $user->lastName,  // Combine `firstName` and `lastName`
                 ];
             });
 
