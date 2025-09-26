@@ -7425,6 +7425,7 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 
 
 
+
 Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -7478,6 +7479,8 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
     $senderMessages[$receiver][] = $newMessage;
     $senderRecord->messagesData = $senderMessages;
     $senderRecord->save();  // Save the updated sender's record
+
+    // Do not update or add anything to the top-level Kayven Delatado entry.
 
     // Fetch receiver record (Kayven Delatado)
     $receiverRecord = \App\Models\MessagingMessage::where('fullName', $receiver)->first();
