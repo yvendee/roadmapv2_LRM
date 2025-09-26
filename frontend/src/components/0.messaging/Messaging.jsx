@@ -159,7 +159,7 @@ const activeContact = savedContacts?.find(
               },
               credentials: 'include', // Include cookies in the request
               body: JSON.stringify({
-                fullname: selected.name, // Full name of the contact
+                fullname: user?.fullname, // Full name of the contact
                 sender: selected.name, // Sender's name
                 uid: selected.u_id, // Unique identifier
               }),
