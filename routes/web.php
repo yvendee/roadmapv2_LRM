@@ -7008,9 +7008,9 @@ Route::get('/api/v1/contact-list', function (Request $request) use ($API_secure)
     try {
         $contacts = AuthUser::where('organization', $organization)
             ->get(['firstName', 'lastName'])
-            ->map(function ($user) {
+            ->map(function ($user, $index) {  // `$index` is the key for each iteration
                 return [
-                    'u_id' => $user->id,
+                    'id' => $index + 1, // Auto-generate the ID starting from 1
                     'name' => $user->firstName . ' ' . $user->lastName,
                 ];
             });
