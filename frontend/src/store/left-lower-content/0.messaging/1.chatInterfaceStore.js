@@ -20,20 +20,6 @@ import { create } from 'zustand';
 
 
 export const initialMessages = [
-  {
-    id: 1,
-    sender: '',  // right side
-    receipt: '',
-    content: '',
-    datetime: '',
-  },
-  {
-    id: 2,
-    sender: '', // left side
-    receipt: '',
-    content: '',
-    datetime: '',
-  },
 ];
 
 const useChatInterfaceStore = create((set) => ({
