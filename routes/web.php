@@ -7498,19 +7498,25 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
             'statusFlag' => 1,
         ]);
     } else {
-        // Add the reverse message (sender -> receiver) to the sender's messagesData
+        // Fetch and decode the existing messagesData for the sender (if any)
         $senderMessages = $senderRecord->messagesData ?? [];
         if (is_string($senderMessages)) {
             $senderMessages = json_decode($senderMessages, true);
         }
 
-        // Ensure the sender's message structure is correct
+        // Ensure the correct structure for the sender's data
         if (!isset($senderMessages[$receiver])) {
             $senderMessages[$receiver] = [];
         }
 
-        // Append the new message for sender's side
-        $senderMessages[$receiver][] = $newMessage;
+        // Append the new message for sender's side (receiver -> sender)
+        $senderMessages[$receiver][] = [
+            'id' => now()->timestamp,  // Optionally use a unique id for each message
+            'sender' => $receiver,     // The receiver becomes the sender
+            'receipt' => $sender,      // The sender becomes the recipient
+            'content' => $messageContent,
+            'datetime' => now(),
+        ];
 
         // Update sender's messagesData
         $senderRecord->messagesData = $senderMessages;
