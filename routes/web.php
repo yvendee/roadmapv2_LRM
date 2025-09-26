@@ -7527,6 +7527,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
 
 
 
+
 // ref: frontend\src\components\company-dropdown\TopbarDropdown.jsx
 // ref: frontend\src\pages\login\Login.jsx
 Route::get('/api/v1/get-layout-toggles', function (Request $request) use ($API_secure) {
