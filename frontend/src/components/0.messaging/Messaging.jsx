@@ -106,41 +106,7 @@ const activeContact = savedContacts?.find(
       if (selected) {
         ENABLE_CONSOLE_LOGS && console.log('Selected contact:', JSON.stringify(selected, null, 2));
 
-        // Retrieve the current left conversations data
-        const storedData = localStorage.getItem('leftConversationsData');
-
         try {
-          let conversationData = [];
-
-          if (storedData) {
-            // Parse the existing leftConversationsData
-            const parsedData = JSON.parse(storedData);
-
-            // Append the new contact to the left conversations data
-            conversationData = [
-              ...parsedData,
-              {
-                id: parsedData.length + 1, // Generate new ID for the new conversation
-                sender: selected.name,
-                uid: selected.u_id,
-              },
-            ];
-
-            ENABLE_CONSOLE_LOGS && console.log('Updated left conversations data:', conversationData);
-          } else {
-            // If no data in localStorage, create a new array
-            conversationData = [
-              {
-                id: 1,
-                sender: selected.name,
-                uid: selected.u_id,
-              },
-            ];
-          }
-
-          // Save the updated data to localStorage
-          localStorage.setItem('leftConversationsData', JSON.stringify(conversationData));
-          addSavedContact({ sender: selected.name, uid: selected.u_id});
 
           // Now send the updated data to the backend
           try {
@@ -171,6 +137,7 @@ const activeContact = savedContacts?.find(
 
             if (response.ok) {
               // Show success message in the toast notification
+              addSavedContact({ sender: selected.name, uid: selected.u_id});
               showToast('Left conversation added successfully!');
             } else {
               // Show error message in the toast notification
