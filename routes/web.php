@@ -7434,7 +7434,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
 
     $sender = $request->input('sender');  // "Maricar Aquino"
     $receiver = $request->input('receiver');  // "Kayven Delatado"
-    $messageContent = $request->input('message');  // "this is a final test"
+    $messageContent = $request->input('message');  // "heloo"
 
     // Validate input
     if (!$sender || !$receiver || !$messageContent) {
@@ -7519,6 +7519,7 @@ Route::post('/api/v1/send-message', function (Request $request) use ($API_secure
         ]
     ], 200);
 });
+
 
 
 
