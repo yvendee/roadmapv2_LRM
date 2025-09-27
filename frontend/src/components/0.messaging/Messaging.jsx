@@ -1,5 +1,5 @@
 // frontend\src\components\0.messaging\Messaging.jsx
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef  } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faPlus, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import useChatInterfaceStore from "../../store/left-lower-content/0.messaging/1.chatInterfaceStore";
@@ -33,6 +33,18 @@ const ChatInterface = () => {
     status: '', // 'success' or 'error'
   });
   const [loading, setLoading] = useState(false); // Loading state for spinner
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
 
 //   const [activeChatName, setActiveChatName] = useState(user?.fullname ?? 'Guest');
@@ -494,7 +506,10 @@ const ChatInterface = () => {
                 No messages
                 </div>
             ) : (
-                <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+                <div className="flex-1 p-4 space-y-4 overflow-y-auto"
+                  ref={messagesEndRef}
+                >
+                  
                 {messages.map((msg) => (
                     <div
                     key={msg.id}
