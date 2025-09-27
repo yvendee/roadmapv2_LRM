@@ -7495,6 +7495,7 @@ if (!$senderRecord) {
         'messagesData' => [],
         'statusFlag' => 1,
     ]);
+    $senderRecord->save();
 }
 
 // Prepare new message
@@ -7517,7 +7518,12 @@ if (!isset($senderMessages[$receiver])) {
     $senderMessages[$receiver] = [];
 }
 
-$senderMessages[$receiver][] = $newMessage;
+// If the sender doesn't exist in the receiver's messagesData, initialize the array
+if (!isset($senderMessages[$receiver][$sender])) {
+    $senderMessages[$receiver][$sender] = [];
+}
+
+$senderMessages[$receiver][$sender][] = $newMessage;
 $senderRecord->messagesData = $senderMessages;
 $senderRecord->save();
 
@@ -7532,6 +7538,7 @@ $senderRecord->save();
         ]
     ], 200);
 });
+
 
 
 
