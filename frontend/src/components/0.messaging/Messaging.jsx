@@ -139,7 +139,17 @@ const ChatInterface = () => {
   
         if (response.ok) {
 
-          addMessage(messageData);
+          // addMessage(messageData);
+
+          addMessage({
+            id: result.data?.id ?? Date.now(), // fallback if backend doesn't return an id
+            sender: result.data?.sender ?? user?.fullname,
+            receipt: result.data?.receiver ?? activeChatName,
+            content: result.data?.message ?? input,
+            datetime: result.data?.datetime ?? new Date().toLocaleString(),
+          });
+          
+          
           ENABLE_CONSOLE_LOGS && console.log("Conversation Data: ", messages)
           ENABLE_CONSOLE_LOGS && console.log('Message sent successfully:', result);
           setInput(""); // Clear the input field after sending the message
