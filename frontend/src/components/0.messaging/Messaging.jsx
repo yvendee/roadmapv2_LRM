@@ -276,8 +276,7 @@ const ChatInterface = () => {
   
         if (response.ok) {
           if (Array.isArray(data)) {
-            ENABLE_CONSOLE_LOGS &&
-              console.log('💬 Messages for chat:', activeChatName, data);
+            ENABLE_CONSOLE_LOGS && console.log('💬 Messages for chat:', activeChatName, data);
             setMessages(data);  // data could be [] or populated
           } else {
             // If backend returns something else (e.g. object with error), clear messages
