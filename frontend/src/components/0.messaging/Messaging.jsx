@@ -100,6 +100,16 @@ const ChatInterface = () => {
       receiver: activeChatName,        // Receiver's full name (selected contact)
       message: input,                  // The content of the message
     };
+
+    
+    const newMessage = {
+      sender: user?.fullname,
+      receipt: activeChatName,
+      content: input,
+      datetime: new Date().toLocaleString(),
+    };
+
+    addMessage(newMessage);
   
     setLoading(true); // Show loading indicator
   
