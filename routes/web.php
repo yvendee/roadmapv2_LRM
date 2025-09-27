@@ -7513,15 +7513,15 @@ if (is_string($senderMessages)) {
     $senderMessages = json_decode($senderMessages, true);
 }
 
-// Insert message under receiver key inside sender record
-if (!isset($senderMessages[$sender])) {
-    $senderMessages[$sender] = [];
-}
+// // Insert message under receiver key inside sender record
+// if (!isset($senderMessages[$sender])) {
+//     $senderMessages[$sender] = [];
+// }
 
-// If the sender doesn't exist in the receiver's messagesData, initialize the array
-if (!isset($senderMessages[$receiver][$sender])) {
-    $senderMessages[$sender][$receiver] = [];
-}
+// // If the sender doesn't exist in the receiver's messagesData, initialize the array
+// if (!isset($senderMessages[$receiver][$sender])) {
+//     $senderMessages[$sender][$receiver] = [];
+// }
 
 $senderMessages[$sender][$receiver][] = $newMessage;
 $senderRecord->messagesData = $senderMessages;
