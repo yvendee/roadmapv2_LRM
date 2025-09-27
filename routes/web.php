@@ -7514,18 +7514,19 @@ if (is_string($senderMessages)) {
 }
 
 // Insert message under receiver key inside sender record
-if (!isset($senderMessages[$receiver])) {
-    $senderMessages[$receiver] = [];
+if (!isset($senderMessages[$sender])) {
+    $senderMessages[$sender] = [];
 }
 
 // If the sender doesn't exist in the receiver's messagesData, initialize the array
 if (!isset($senderMessages[$receiver][$sender])) {
-    $senderMessages[$receiver][$sender] = [];
+    $senderMessages[$sender][$receiver] = [];
 }
 
-$senderMessages[$receiver][$sender][] = $newMessage;
+$senderMessages[$sender][$receiver][] = $newMessage;
 $senderRecord->messagesData = $senderMessages;
 $senderRecord->save();
+
 
 
     // Return the response
