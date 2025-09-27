@@ -138,7 +138,7 @@ const ChatInterface = () => {
         const result = await response.json();
   
         if (response.ok) {
-          // addMessage(messageData);
+          addMessage(messageData);
           console.log('Message sent successfully:', result);
           setInput(""); // Clear the input field after sending the message
           // You can update your UI here with the new message data if needed
