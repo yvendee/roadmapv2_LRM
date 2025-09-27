@@ -44,6 +44,17 @@ const ChatInterface = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState(null);
 
+  const formatToLocalDatetime = (isoString) => {
+    return new Date(isoString).toLocaleString(undefined, {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+  
 
   // Handle selecting a conversation
   const handleSelectConversation = (name) => {
@@ -149,7 +160,7 @@ const ChatInterface = () => {
             datetime: result.data?.datetime ?? new Date().toLocaleString(),
           });
           
-          
+
           ENABLE_CONSOLE_LOGS && console.log("Conversation Data: ", messages)
           ENABLE_CONSOLE_LOGS && console.log('Message sent successfully:', result);
           setInput(""); // Clear the input field after sending the message
@@ -286,16 +297,34 @@ const ChatInterface = () => {
   
         const data = await response.json();
   
+        // if (response.ok) {
+        //   if (Array.isArray(data)) {
+        //     ENABLE_CONSOLE_LOGS && console.log('💬 Messages for chat:', activeChatName, data);
+        //     setMessages(data);  // data could be [] or populated
+        //   } else {
+        //     // If backend returns something else (e.g. object with error), clear messages
+        //     console.warn('⚠️ Messages response not an array, resetting messages');
+        //     setMessages([]);
+        //   }
+        // }
+
         if (response.ok) {
           if (Array.isArray(data)) {
+            const formattedData = data.map((msg) => ({
+              ...msg,
+              datetime: formatToLocalDatetime(msg.datetime),
+            }));
             ENABLE_CONSOLE_LOGS && console.log('💬 Messages for chat:', activeChatName, data);
-            setMessages(data);  // data could be [] or populated
-          } else {
+            setMessages(formattedData);
+          }
+          else {
             // If backend returns something else (e.g. object with error), clear messages
             console.warn('⚠️ Messages response not an array, resetting messages');
             setMessages([]);
           }
-        } else {
+        }
+        
+         else {
           console.error('❌ Error loading messages:', data?.message);
           setMessages([]); // Clear messages on error
         }
