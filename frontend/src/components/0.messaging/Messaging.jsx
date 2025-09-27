@@ -539,48 +539,81 @@ const ChatInterface = () => {
           </div> */}
 
           {/* Messages */}
-<div className="flex-1 flex flex-col overflow-hidden">
-  {savedContacts.length === 0 || messages.length === 0 ? (
-    <div className="flex items-center justify-center h-full text-gray-500">
-      No messages
-    </div>
-  ) : (
-    <div
-      className="flex-1 p-4 space-y-4 overflow-y-auto"
-      ref={messagesEndRef}
-    >
-      {messages.map((msg) => (
-        <div
-          key={msg.id}
-          className={`flex ${
-            msg.sender === user?.fullname ? "justify-end" : "justify-start"
-          }`}
-        >
-          {msg.sender !== user?.fullname ? (
-            <div className="bg-gray-200 text-gray-900 px-3 py-2 rounded-lg max-w-xs">
-              {msg.content}
-              <div className="text-xs text-gray-500 mt-1">
-                {msg.datetime}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {savedContacts.length === 0 || messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                No messages
               </div>
-            </div>
-          ) : (
-            <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs">
-              {msg.content}
-              <div className="text-xs text-blue-200 mt-1">
-                {msg.datetime}
+            ) : (
+              <div
+                className="flex-1 p-4 space-y-4 overflow-y-auto"
+                ref={messagesEndRef}
+              >
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${
+                      msg.sender === user?.fullname ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    {msg.sender !== user?.fullname ? (
+                      <div className="bg-gray-200 text-gray-900 px-3 py-2 rounded-lg max-w-xs">
+                        {msg.content}
+                        <div className="text-xs text-gray-500 mt-1">
+                          {msg.datetime}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs">
+                        {msg.content}
+                        <div className="text-xs text-blue-200 mt-1">
+                          {msg.datetime}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
-
+            )}
+          </div>
 
           {/* Input */}
-          <div className="p-4 border-t flex items-center bg-white">
+          <div className="p-4 border-t flex items-end bg-white">
+            <textarea
+              rows={1}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              disabled={!hasActiveContact}
+              className={`flex-1 border rounded-lg px-3 py-2 resize-none max-h-32 overflow-y-auto focus:outline-none focus:ring focus:ring-blue-300 ${
+                !hasActiveContact ? "bg-gray-100 cursor-not-allowed" : ""
+              }`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage();
+                }
+              }}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!hasActiveContact}
+              className={`ml-2 p-3 rounded-full flex items-center justify-center ${
+                !hasActiveContact
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+              title={!hasActiveContact ? "No messages" : "Send"}
+            >
+              <FontAwesomeIcon
+                icon={faPaperPlane}
+                className={!hasActiveContact ? "text-gray-500" : "text-black"}
+              />
+            </button>
+          </div>
+
+
+          {/* <div className="p-4 border-t flex items-center bg-white">
             <input
               type="text"
               value={input}
@@ -606,7 +639,7 @@ const ChatInterface = () => {
                 className={!hasActiveContact ? "text-gray-500" : "text-black"}
               />
             </button>
-          </div>
+          </div> */}
 
 
 
