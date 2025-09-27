@@ -499,44 +499,84 @@ const ChatInterface = () => {
             <span className="ml-2 font-semibold">{activeChatName}</span>
           </div>
 
-            {/* Messages */}
-            <div className="flex-1 flex flex-col">
-            {savedContacts.length === 0 || messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-gray-500">
-                No messages
-                </div>
-            ) : (
-                <div className="flex-1 p-4 space-y-4 overflow-y-auto"
-                  ref={messagesEndRef}
-                >
-                  
-                {messages.map((msg) => (
-                    <div
-                    key={msg.id}
-                    className={`flex ${
-                        msg.sender === user?.fullname ? "justify-end" : "justify-start"
-                    }`}
-                    >
-                    {msg.sender !== user?.fullname ? (
-                        <div className="bg-gray-200 text-gray-900 px-3 py-2 rounded-lg max-w-xs">
-                        {msg.content}
-                        <div className="text-xs text-gray-500 mt-1">
-                            {msg.datetime}
-                        </div>
-                        </div>
-                    ) : (
-                        <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs">
-                        {msg.content}
-                        <div className="text-xs text-blue-200 mt-1">
-                            {msg.datetime}
-                        </div>
-                        </div>
-                    )}
-                    </div>
-                ))}
-                </div>
-            )}
+          {/* Messages */}
+          {/* <div className="flex-1 flex flex-col">
+          {savedContacts.length === 0 || messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+              No messages
+              </div>
+          ) : (
+              <div className="flex-1 p-4 space-y-4 overflow-y-auto"
+                ref={messagesEndRef}
+              >
+                
+              {messages.map((msg) => (
+                  <div
+                  key={msg.id}
+                  className={`flex ${
+                      msg.sender === user?.fullname ? "justify-end" : "justify-start"
+                  }`}
+                  >
+                  {msg.sender !== user?.fullname ? (
+                      <div className="bg-gray-200 text-gray-900 px-3 py-2 rounded-lg max-w-xs">
+                      {msg.content}
+                      <div className="text-xs text-gray-500 mt-1">
+                          {msg.datetime}
+                      </div>
+                      </div>
+                  ) : (
+                      <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs">
+                      {msg.content}
+                      <div className="text-xs text-blue-200 mt-1">
+                          {msg.datetime}
+                      </div>
+                      </div>
+                  )}
+                  </div>
+              ))}
+              </div>
+          )}
+          </div> */}
+
+          {/* Messages */}
+<div className="flex-1 flex flex-col overflow-hidden">
+  {savedContacts.length === 0 || messages.length === 0 ? (
+    <div className="flex items-center justify-center h-full text-gray-500">
+      No messages
+    </div>
+  ) : (
+    <div
+      className="flex-1 p-4 space-y-4 overflow-y-auto"
+      ref={messagesEndRef}
+    >
+      {messages.map((msg) => (
+        <div
+          key={msg.id}
+          className={`flex ${
+            msg.sender === user?.fullname ? "justify-end" : "justify-start"
+          }`}
+        >
+          {msg.sender !== user?.fullname ? (
+            <div className="bg-gray-200 text-gray-900 px-3 py-2 rounded-lg max-w-xs">
+              {msg.content}
+              <div className="text-xs text-gray-500 mt-1">
+                {msg.datetime}
+              </div>
             </div>
+          ) : (
+            <div className="bg-blue-500 text-white px-3 py-2 rounded-lg max-w-xs">
+              {msg.content}
+              <div className="text-xs text-blue-200 mt-1">
+                {msg.datetime}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
 
           {/* Input */}
