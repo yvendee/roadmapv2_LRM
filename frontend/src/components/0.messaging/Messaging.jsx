@@ -102,14 +102,14 @@ const ChatInterface = () => {
     };
 
     
-    const newMessage = {
-      sender: user?.fullname,
-      receipt: activeChatName,
-      content: input,
-      datetime: new Date().toLocaleString(),
-    };
+    // const newMessage = {
+    //   sender: user?.fullname,
+    //   receipt: activeChatName,
+    //   content: input,
+    //   datetime: new Date().toLocaleString(),
+    // };
 
-    addMessage(newMessage);
+    // addMessage(newMessage);
   
     setLoading(true); // Show loading indicator
   
@@ -138,8 +138,10 @@ const ChatInterface = () => {
         const result = await response.json();
   
         if (response.ok) {
-          // addMessage(messageData);
-          console.log('Message sent successfully:', result);
+
+          addMessage(messageData);
+          ENABLE_CONSOLE_LOGS && console.log("Conversation Data: ", messages)
+          ENABLE_CONSOLE_LOGS && console.log('Message sent successfully:', result);
           setInput(""); // Clear the input field after sending the message
           // You can update your UI here with the new message data if needed
           showToast('Message sent successfully!', 'success');
