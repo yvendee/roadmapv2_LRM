@@ -25,18 +25,18 @@ export const initialMessages = [
 const useChatInterfaceStore = create((set) => ({
   messages: initialMessages,
   setMessages: (msgs) => set({ messages: msgs }),
-  // addMessage: (message) =>
-  //   set((state) => {
-  //     const newMsg = { ...message, id: state.messages.length + 1 };
-  //     console.log("📨 New message added to store:", newMsg);
-  //     return {
-  //       messages: [...state.messages, newMsg],
-  //     };
-  //   }),
-  addMessage: (newMessage) =>
-    set((state) => ({
-      messages: [...state.messages, newMessage],
-    })),
+  addMessage: (message) =>
+    set((state) => {
+      const newMsg = { ...message, id: state.messages.length + 1 };
+      console.log("📨 New message added to store:", newMsg);
+      return {
+        messages: [...state.messages, newMsg],
+      };
+    }),
+  // addMessage: (newMessage) =>
+  //   set((state) => ({
+  //     messages: [...state.messages, newMessage],
+  //   })),
   updateMessageField: (id, field, value) =>
     set((state) => ({
       messages: state.messages.map((msg) =>
