@@ -539,7 +539,7 @@ const ChatInterface = () => {
           </div> */}
 
           {/* Messages */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          {/* <div className="flex-1 flex flex-col overflow-hidden">
             {savedContacts.length === 0 || messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-gray-500">
                 No messages
@@ -575,7 +575,38 @@ const ChatInterface = () => {
                 ))}
               </div>
             )}
+          </div> */}
+
+<div className="flex-1 flex flex-col overflow-hidden">
+  {savedContacts.length === 0 || messages.length === 0 ? (
+    <div className="flex items-center justify-center h-full text-gray-500">
+      No messages
+    </div>
+  ) : (
+    <div className="flex-1 p-4 space-y-4 overflow-y-auto overflow-x-hidden" ref={messagesEndRef}>
+      {messages.map((msg) => (
+        <div
+          key={msg.id}
+          className={`flex ${msg.sender === user?.fullname ? "justify-end" : "justify-start"}`}
+        >
+          <div className={`px-3 py-2 rounded-lg max-w-md break-words whitespace-pre-wrap overflow-hidden ${
+            msg.sender === user?.fullname
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 text-gray-900"
+          }`}>
+            {msg.content}
+            <div className={`text-xs mt-1 ${
+              msg.sender === user?.fullname ? "text-blue-200" : "text-gray-500"
+            }`}>
+              {msg.datetime}
+            </div>
           </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
           {/* Input */}
           <div className="p-4 border-t flex items-end bg-white">
