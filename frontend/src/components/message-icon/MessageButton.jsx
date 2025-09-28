@@ -8,9 +8,9 @@ const MessageButton = () => {
   const loggedUser = useLoginStore((state) => state.user);
   const navigate = useNavigate();
 
-  if (loggedUser?.role !== 'superadmin') {
-    return null; // Don't render the button
-  }
+  // if (loggedUser?.role !== 'superadmin') {
+  //   return null; // Don't render the button
+  // }
 
   return (
     <button
