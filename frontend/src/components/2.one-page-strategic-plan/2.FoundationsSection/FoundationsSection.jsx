@@ -236,28 +236,57 @@ const FoundationsSection = () => {
   };
   
 
-  const handleDeleteFoundation = (id) => {
-    // Remove the foundation with the given id
-    const updated = foundations.filter(item => item.id !== id);
+  // const handleDeleteFoundation = (id) => {
+  //   // Remove the foundation with the given id
+  //   const updated = foundations.filter(item => item.id !== id);
     
-    // Update store and localStorage
-    // setFoundations(updated);
-    localStorage.setItem('foundationsData', JSON.stringify(updated));
+  //   // Update store and localStorage
+  //   // setFoundations(updated);
+  //   localStorage.setItem('foundationsData', JSON.stringify(updated));
 
-    // Update localOrder state for immediate UI update
-    setLocalOrder(updated);
+  //   // Update localOrder state for immediate UI update
+  //   setLocalOrder(updated);
     
-    // Add this change to the edited state if not already present, to show save/discard buttons
+  //   // Add this change to the edited state if not already present, to show save/discard buttons
+  //   setEdited(prev => {
+  //     if (!prev.some(e => e.id === id)) {
+  //       return [...prev, { id }];
+  //     }
+  //     return prev;
+  //   });
+    
+  //   console.log(`🗑️ Foundation with ID ${id} deleted.`);
+  // };
+  
+  
+  
+  const handleDeleteFoundation = (idToDelete) => {
+    // Step 1: Filter out the deleted item
+    const filtered = localOrder.filter(item => item.id !== idToDelete);
+  
+    // Step 2: Reindex remaining items
+    const reindexed = filtered.map((item, index) => ({
+      ...item,
+      id: index + 1,
+    }));
+  
+    // Step 3: Update both local state and Zustand store
+    setLocalOrder(reindexed);
+    setFoundations(reindexed); // Ensure Zustand store is synced
+  
+    // Step 4: Update localStorage
+    localStorage.setItem('foundationsData', JSON.stringify(reindexed));
+  
+    // Step 5: Mark as edited
     setEdited(prev => {
-      if (!prev.some(e => e.id === id)) {
-        return [...prev, { id }];
+      if (!prev.some(e => e.id === idToDelete)) {
+        return [...prev, { id: 'reindex' }];
       }
       return prev;
     });
-    
-    console.log(`🗑️ Foundation with ID ${id} deleted.`);
-  };
   
+    ENABLE_CONSOLE_LOGS && console.log(`🗑️ Foundation with ID ${idToDelete} deleted and reindexed.`);
+  };
   
   
   const handleDischargeChanges = () => {
@@ -451,9 +480,16 @@ const FoundationsSection = () => {
                 )}
               </h6>
 
+              
+
               <p
                 className="text-sm whitespace-pre-line text-gray-700 cursor-pointer"
                 onClick={() => handleCellClick(item.id, 'content')}
+                // onClick={() => {
+                //   if (item.content !== '-' && loggedUser?.role === 'superadmin') {
+                //     handleCellClick(item.id, 'content');
+                //   }
+                // }}
               >
                 {/* {editingCell.id === item.id && editingCell.field === 'content' ? (
                   <textarea
