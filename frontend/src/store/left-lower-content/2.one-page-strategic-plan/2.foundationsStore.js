@@ -70,6 +70,12 @@ export const initialFoundations = [
 
 const useFoundationsStore = create((set) => ({
   foundations: initialFoundations,
+
+  // Store the initial state when app loads
+  baselineFoundations: initialFoundations,
+
+  setBaselineFoundations: (data) => set({ baselineFoundations: data }),
+
   setFoundations: (newFoundations) => set({ foundations: newFoundations }),
   loadFoundationsFromAPI: (data) => set({ foundations: data }), 
   updateFoundationField: (id, field, value) =>

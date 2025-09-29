@@ -33,7 +33,7 @@ const OnePageStrategicPlan = () => {
   const loadCoreCapabilitieFromAPI = useCoreCapabilitiesStore((state) => state.setCoreCapabilities);
   const loadFourDesicionsFromAPI = useFourDecisions((state) => state.setFourDecisions);
   const loadConstraintsTrackerFromAPI = useConstraintsTracker((state) => state.setConstraintsTracker);
-
+  const setBaselineFoundations = useFoundationsStore((state) => state.setBaselineFoundations)
 
   const navigate = useNavigate(); // Ensure it's inside your component
   const toggles = useLayoutSettingsStore((state) => state.toggles);
@@ -96,6 +96,7 @@ const OnePageStrategicPlan = () => {
           if (res.ok) {
             ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Foundations data:', json);
             loadFoundationsFromAPI(json);
+            setBaselineFoundations(json);
           } else if (res.status === 401) {
             navigate('/', { state: { loginError: 'Session Expired' } });
           } else {

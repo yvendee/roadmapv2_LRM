@@ -288,7 +288,7 @@ const FoundationsSection = () => {
     ENABLE_CONSOLE_LOGS && console.log(`🗑️ Foundation with ID ${idToDelete} deleted and reindexed.`);
   };
   
-  
+
   const handleDischargeChanges = () => {
     setLoadingDischarge(true);
     setTimeout(() => {
@@ -307,9 +307,18 @@ const FoundationsSection = () => {
   const confirmDischarge = () => {
     localStorage.removeItem('foundationsData');
     setEdited([]);
-    const currentState = useFoundationsStore.getState().foundations;
-    console.log('Resetting foundations to current store state:', currentState);
-    setLocalOrder(currentState);  // reset local UI state to last saved store state
+    // const currentState = useFoundationsStore.getState().foundations;
+    // console.log('Resetting foundations to current store state:', currentState);
+
+    const { baselineFoundations } = useFoundationsStore.getState();
+
+    // ✅ Console log to inspect baselineFoundations before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineFoundations:', baselineFoundations);
+
+    setFoundations(baselineFoundations);
+    setLocalOrder(baselineFoundations);
+
+    // setLocalOrder(currentState);  // reset local UI state to last saved store state
     setShowConfirmModal(false);
   };
 
