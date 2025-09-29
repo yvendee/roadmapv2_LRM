@@ -238,15 +238,7 @@ const FoundationsSection = () => {
 
   const handleDeleteFoundation = (id) => {
     // Remove the foundation with the given id
-    // const updated = foundations.filter(item => item.id !== id);
-
-    const filtered = foundations.filter(item => item.id !== id);
-
-    // Reindex IDs starting from 1
-    const updated = filtered.map((item, index) => ({
-      ...item,
-      id: index + 1,
-    }));
+    const updated = foundations.filter(item => item.id !== id);
     
     // Update store and localStorage
     // setFoundations(updated);
