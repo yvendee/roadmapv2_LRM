@@ -315,7 +315,7 @@ const ThreeYearOutlook = () => {
             <div key={item.id} className="relative border rounded-md p-4 shadow-sm bg-white min-h-[100px]">
               {user?.role === 'superadmin' && item.value !== '-' &&  (
                 <div
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  className="absolute top-2 right-2 text-red-500 hover:text-red-700 print:hidden"
                   onClick={() => handleDelete(item.id)}
                   title="Delete"
                 >

@@ -462,7 +462,7 @@ const FoundationsSection = () => {
             >
               {loggedUser?.role === 'superadmin' && !isPlaceholder && (
                 <div
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  className="absolute top-2 right-2 text-red-500 hover:text-red-700 print:hidden"
                   onClick={() => handleDeleteFoundation(item.id)}
                   title="Delete"
                 >

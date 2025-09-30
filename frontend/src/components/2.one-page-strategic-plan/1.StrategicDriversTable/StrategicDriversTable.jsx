@@ -460,7 +460,7 @@ const StrategicDriversTable = () => {
               )} */}
 
               {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                <th className="border px-4 py-2 text-center">Delete</th>
+                <th className="border px-4 py-2 text-center print:hidden">Delete</th>
               )}
             </tr>
           </thead>
@@ -729,7 +729,7 @@ const StrategicDriversTable = () => {
                 )} */}
 
                 {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                  <td className="border px-4 py-3 text-center">
+                  <td className="border px-4 py-3 text-center print:hidden">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}
                       className="text-red-600 hover:text-red-800"

@@ -288,7 +288,7 @@ const ConstraintsTracker = () => {
             <div className="flex justify-center items-center">Status</div>
           </th>
           {user?.role === 'superadmin' && hasRealData && (
-            <th className="border px-3 py-2">
+            <th className="border px-3 py-2 print:hidden">
               <div className="flex justify-center items-center"></div>
             </th>
           )}
@@ -373,7 +373,7 @@ const ConstraintsTracker = () => {
             ))}
 
             {user?.role === 'superadmin' && hasRealData && (
-              <td className="border px-3 py-2 text-center">
+              <td className="border px-3 py-2 text-center print:hidden">
                 <FontAwesomeIcon
                   icon={faTrashAlt}
                   className="text-red-500 cursor-pointer hover:text-red-700"

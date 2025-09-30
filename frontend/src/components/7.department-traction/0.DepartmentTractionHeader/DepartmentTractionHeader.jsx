@@ -47,14 +47,14 @@ const DepartmentTractionHeader = () => {
                       className="dropdown-option"
                     >
                       <FontAwesomeIcon icon={faBullseye} />
-                      <span>Print Department Annual Priorities</span>
+                      <span>Print Department Annual Priorities Only</span>
                     </div>
                     <div
                       onClick={() => handlePrint('department-traction')}
                       className="dropdown-option"
                     >
                       <FontAwesomeIcon icon={faBolt} />
-                      <span>Print Department Traction</span>
+                      <span>Print Department Traction Only</span>
                     </div>
                   </div>
                 </div>

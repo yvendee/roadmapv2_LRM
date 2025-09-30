@@ -261,7 +261,7 @@ const FourDecisions = () => {
             <th className="border px-3 py-2 text-center">Q4</th>
 
             {user?.role === 'superadmin' && hasRealData && (
-              <th className="border px-3 py-2"></th>
+              <th className="border px-3 py-2 print:hidden"></th>
             )}
 
           </tr>
@@ -299,7 +299,7 @@ const FourDecisions = () => {
               ))}
 
               {user?.role === 'superadmin' && hasRealData && (
-                <td className="border px-3 py-2 text-center">
+                <td className="border px-3 py-2 text-center print:hidden">
                   <FontAwesomeIcon
                     icon={faTrashAlt}
                     className="text-red-500 cursor-pointer hover:text-red-700"
