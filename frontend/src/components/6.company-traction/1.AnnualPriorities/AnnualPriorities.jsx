@@ -377,7 +377,7 @@ const AnnualPriorities = () => {
           <div className="flex gap-2">
 
             {isEditing && <>
-                <button className="pure-green-btn" onClick={handleSaveChanges}>
+                <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
                 {loadingSave ? (
                   <div className="loader-bars">
                     <div></div>
@@ -388,7 +388,7 @@ const AnnualPriorities = () => {
                     'Save Changes'
                 )}
                 </button>
-                <button className="pure-red-btn" onClick={handleDischargeChanges}>
+                <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
                   {loadingDischarge ? (
                     <div className="loader-bars">
                       <div></div>
@@ -403,7 +403,7 @@ const AnnualPriorities = () => {
             }
 
             {loggedUser?.role === 'superadmin' && !isSkeleton && (
-              <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
+              <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
                     <div></div>
@@ -431,7 +431,7 @@ const AnnualPriorities = () => {
               <th className="border px-4 py-2 ">Description</th>
               <th className="border px-4 py-2"></th>
               {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                <th className="border px-4 py-2 text-center"></th>
+                <th className="border px-4 py-2 text-center print:hidden"></th>
               )}
             </tr>
           </thead>
@@ -550,7 +550,7 @@ const AnnualPriorities = () => {
                 
                 {/* delete button */}
                 {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                  <td className="border px-4 py-3 text-center">
+                  <td className="border px-4 py-3 text-center print:hidden">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}
                       className="text-red-600 hover:text-red-800"
