@@ -168,7 +168,7 @@ const NotificationButton = () => {
       {open && (
         <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
           <ul className="p-2 space-y-2 max-h-60 overflow-y-auto text-sm text-gray-700 dark:text-gray-300">
-            {notifications.map((notif, idx) => (
+            {/* {notifications.map((notif, idx) => (
               <li
                 key={idx}
                 className={`px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 ${
@@ -181,7 +181,28 @@ const NotificationButton = () => {
                   }}
                 />
               </li>
-            ))}
+            ))} */}
+            {notifications.length === 0 ? (
+              <li className="px-3 py-2 text-gray-500 dark:text-gray-400 text-sm">
+                No notifications found.
+              </li>
+            ) : (
+              notifications.map((notif, idx) => (
+                <li
+                  key={idx}
+                  className={`px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                    notif.notification_status === "unread" ? 'font-semibold' : ''
+                  }`}
+                >
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: highlightMentions(notif.message),
+                    }}
+                  />
+                </li>
+              ))
+            )}
+
           </ul>
         </div>
       )}
