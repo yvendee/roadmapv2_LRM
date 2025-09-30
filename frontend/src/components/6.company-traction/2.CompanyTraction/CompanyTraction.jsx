@@ -550,7 +550,7 @@ const CompanyTraction = () => {
 
             </div>
             <div
-              className="pure-green-btn cursor-pointer"
+              className="pure-green-btn cursor-pointer print:hidden"
               onClick={() => setShowCompleted(!showCompleted)}
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
