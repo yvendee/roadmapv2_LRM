@@ -41,7 +41,7 @@ const CompanyTractionHeader = () => {
 
                     <div
                       onClick={() => handlePrint('annual')}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white cursor-pointer transition-colors"
                     >
                       <FontAwesomeIcon icon={faBullseye} />
                       <span>Print Annual Priorities Only</span>
@@ -49,7 +49,7 @@ const CompanyTractionHeader = () => {
 
                     <div
                       onClick={() => handlePrint('traction')}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white cursor-pointer transition-colors"
                     >
                       <FontAwesomeIcon icon={faBolt} />
                       <span>Print Traction Only</span>
