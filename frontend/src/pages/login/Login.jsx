@@ -198,7 +198,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       {/* <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"> */}
       {/* <div className="bg-white p-8 w-full max-w-md"> */}
-      <div className="bg-white p-10 w-full max-w-md rounded-xl shadow-lg">
+      <div className="bg-white shadow-lg w-full max-w-md mx-auto flex flex-col justify-center p-10">
         <div className="flex justify-center mb-6">
           <img src={logo} alt="MomentumOS" className="h-10" />
         </div>
