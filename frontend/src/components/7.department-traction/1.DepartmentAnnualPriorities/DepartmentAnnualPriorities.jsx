@@ -138,28 +138,6 @@ const DepartmentAnnualPriorities = () => {
     }, 1000);
   };
 
-  // const handleAddNewAnnualPriority = () => {
-  //   ENABLE_CONSOLE_LOGS && console.log('New Department Annual Priorities:', JSON.stringify(newAnnualPriority, null, 2));
-
-  //   // 2. Hide Save / Discharge
-  //   setEditedAnnualPriorities([]);
-  
-  //   // 3. Remove localStorage temp data
-  //   localStorage.removeItem('departmentAnnualPrioritiesData');
-  
-  //   // 4. Push to Zustand store
-  //   pushDepartmentAnnualPriorities(newAnnualPriority);
-  
-  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
-  //   // Not required unless you deep reset from localStorage elsewhere
-  
-  //   // Close modal
-  //   setShowAddModal(false);
-  
-  //   // Reset form input
-  //   setNewAnnualPriority({ description: '', status: 'Tracking' });
-  // };
-
 
 const handleAddNewAnnualPriority = async () => {
   ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
@@ -321,9 +299,6 @@ const handleAddNewAnnualPriority = async () => {
     setEditedAnnualPriorities(prev => prev.find(d=>d.id===draggedId) ? prev : [...prev, { id: draggedId }]);
   };
 
-  // const handleDragEnd = () => {
-  //   setDraggedId(null);
-  // };
 
   const handleDragEnd = () => {
     setDraggedId(null);
@@ -374,7 +349,7 @@ const handleAddNewAnnualPriority = async () => {
           <div className="flex gap-2">
             {editedAnnualPriorities.length > 0 && (
               <>
-                <button className="pure-green-btn" onClick={handleSaveChanges}>
+                <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
                 {loadingSave ? (
                   <div className="loader-bars">
                     <div></div>
@@ -385,7 +360,7 @@ const handleAddNewAnnualPriority = async () => {
                     'Save Changes'
                 )}
                 </button>
-                <button className="pure-red-btn" onClick={handleDischargeChanges}>
+                <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
                   {loadingDischarge ? (
                     <div className="loader-bars">
                       <div></div>
@@ -400,7 +375,7 @@ const handleAddNewAnnualPriority = async () => {
             )}
 
             {loggedUser?.role === 'superadmin' && !isSkeleton && (
-              <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
+              <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
                     <div></div>
@@ -428,7 +403,7 @@ const handleAddNewAnnualPriority = async () => {
               <th className="border px-4 py-2 ">Description</th>
               <th className="border px-4 py-2"></th>
               {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                <th className="border px-4 py-2 text-center"></th>
+                <th className="border px-4 py-2 text-center print:hidden"></th>
               )}
             </tr>
           </thead>
@@ -547,7 +522,7 @@ const handleAddNewAnnualPriority = async () => {
                 
                 {/* delete button */}
                 {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                  <td className="border px-4 py-3 text-center">
+                  <td className="border px-4 py-3 text-center print:hidden">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}
                       className="text-red-600 hover:text-red-800"

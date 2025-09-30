@@ -506,7 +506,7 @@ const DepartmentTractionTable = () => {
         {/* Action Buttons */}
         {isSuperAdmin && (
           <div className="flex gap-2">
-            <div className="pure-blue-btn cursor-pointer flex items-center" onClick={handleAddNewTractionClick}>
+            <div className="pure-blue-btn cursor-pointer flex items-center print:hidden" onClick={handleAddNewTractionClick}>
               
               {loading ? (
                   <div className="loader-bars">
@@ -523,7 +523,7 @@ const DepartmentTractionTable = () => {
 
             </div>
             <div
-              className="pure-green-btn cursor-pointer"
+              className="pure-green-btn cursor-pointer print:hidden"
               onClick={() => setShowCompleted(!showCompleted)}
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
@@ -540,7 +540,7 @@ const DepartmentTractionTable = () => {
       {isEditing && isSuperAdmin && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
-            <div className="pure-green-btn" onClick={handleSaveChanges}>
+            <div className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
 
             {loadingSave ? (
                   <div className="loader-bars">
@@ -554,7 +554,7 @@ const DepartmentTractionTable = () => {
 
               
             </div>
-            <div className="pure-red-btn" onClick={handleDischargeChanges}>
+            <div className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
               {loadingDischarge ? (
                   <div className="loader-bars">
                     <div></div>
@@ -616,7 +616,7 @@ const DepartmentTractionTable = () => {
               <th className="border px-4 py-2">Due Date</th>
               <th className="border px-4 py-2">Rank</th>
               <th className="border px-4 py-2">Comments</th>
-              {isSuperAdmin && <th className="border px-4 py-2">Delete</th>}
+              {isSuperAdmin && <th className="border px-4 py-2 print:hidden">Delete</th>}
             </tr>
           </thead>
           <tbody>
@@ -834,7 +834,7 @@ const DepartmentTractionTable = () => {
                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 cursor-pointer" />
                   </td> */}
                   {isSuperAdmin && (
-                    <td className="border px-4 py-2 text-center">
+                    <td className="border px-4 py-2 text-center print:hidden">
                       <FontAwesomeIcon
                         icon={faTrashAlt}
                         className="text-red-600 cursor-pointer"

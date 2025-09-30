@@ -10,16 +10,37 @@ import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
+import logo from '../../assets/images/webp/momentum-logo.webp'; 
 import './departmentTraction.css';
 
 const DepartmentTraction = () => {
-
+  const [printMode, setPrintMode] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const organization = useLayoutSettingsStore((state) => state.organization);
   const loadDepartmentAnnualPrioritiesFromAPI = useDepartmentAnnualPrioritiesStore((state) => state.loadDepartmentAnnualPrioritiesFromAPI);
   const setDepartmentTraction = useDepartmentTractionStore((state) => state.setDepartmentTraction);
   const setBaselineDepartmentTraction = useDepartmentTractionStore((state) => state.setBaselineDepartmentTraction);
+  
+
+   // Listen for custom print event
+   useEffect(() => {
+    const handlePrintEvent = (event) => {
+      const type = event.detail?.type;
+      if (type === 'department-annual' || type === 'department-traction') {
+        setPrintMode(type);
+
+        setTimeout(() => {
+          window.print();
+          setPrintMode(null);
+        }, 100);
+      }
+    };
+
+    window.addEventListener('print-section', handlePrintEvent);
+    return () => window.removeEventListener('print-section', handlePrintEvent);
+  }, []);
+  
   // Fetch Department-Annual-Priorities
   useEffect(() => {
     const encodedOrg = encodeURIComponent(organization);
@@ -94,55 +115,35 @@ const DepartmentTraction = () => {
 
   }, [organization]);
   
-  // const { user, setUser } = useUserStore();
-  // const [error, setError] = useState(null);
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   fetch(`${API_URL}/mock-response4`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     }
-  //   })
-  //   .then(async (res) => {
-  //     const json = await res.json();
-  //     if (res.ok) {
-  //       setUser(json.data);
-  //     } else if (res.status === 401) {
-  //       navigate('/', { state: {loginError: 'Session Expired'} });
-  //     } else {
-  //       setError(json.message || 'Failed to fetch user data');
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error('API error:', err);
-  //     setError('Something went wrong.');
-  //   });
-  // }, [setUser, navigate]);
 
   return (
-    // <div>
-    //   <h2 className="text-xl font-bold mb-4">Department Traction</h2>
-    //   {error ? (
-    //     <p className="text-red-500">{error}</p>
-    //   ) : user ? (
-    //     <table className="table-auto border-collapse border border-gray-400">
-    //       <tbody>
-    //         <tr><td className="border p-2">Name</td><td className="border p-2">{user.name}</td></tr>
-    //         <tr><td className="border p-2">Email</td><td className="border p-2">{user.email}</td></tr>
-    //       </tbody>
-    //     </table>
-    //   ) : (
-    //     <p>Loading...</p>
-    //   )}
-    // </div>
 
     <div className="main-content-view">
       <DepartmentTractionHeader />
-      <DepartmentAnnualPriorities />
-      <DepartmentTractionTable />
+      {/* <DepartmentAnnualPriorities />
+      <DepartmentTractionTable /> */}
+
+      <div id="print-area" className="p-4">
+        <div className="print-logo-container" style={{ display: 'none' }}>
+          <img
+            src={logo}
+            alt="MomentumOS"
+            style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
+          />
+        </div>
+        <br />
+        <br />
+
+        {printMode === null && (
+          <>
+            <DepartmentAnnualPriorities />
+            <DepartmentTractionTable />
+          </>
+        )}
+
+        {printMode === 'department-annual' && <DepartmentAnnualPriorities />}
+        {printMode === 'department-traction' && <DepartmentTractionTable />}
+      </div>
 
       <span>&nbsp;</span>  
     </div>
