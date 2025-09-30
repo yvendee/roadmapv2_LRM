@@ -7,7 +7,7 @@
 .chat-window {
   position: fixed;
   bottom: 90px;
-  right: 40px;
+  right: 50px;
   width: 320px;
   max-height: 480px;
   background-color: #fff;
