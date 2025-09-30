@@ -15,20 +15,20 @@ const CompanyTractionHeader = () => {
   return (
     <div className="row mb-1">
       <div className="col-md-12">
-        <div className="card bg-100 shadow-none border px-4 py-2">
-          <div className="d-flex align-items-center justify-between px-2">
-
-            {/* Left: image and title */}
-            <div className="col-sm-auto inline-center d-flex align-items-center gap-3 p-2 ms-2">
+        <div className="card bg-100 shadow-none border px-4 py-2 mr-[15px]">
+          <div className="flex items-center justify-between p-2 ms-2 w-full">
+            
+            {/* Left: icon + title */}
+            <div className="flex items-center gap-3">
               <img src={crmBarChart} alt="" width="90" />
               <h4 className="fw-bold mb-0">Company Traction</h4>
             </div>
 
-            {/* Right: print dropdown */}
-            <div className="position-relative">
+            {/* Right: print button with dropdown */}
+            <div className="relative inline-block text-left">
               <div
                 onClick={() => setShowDropdown(prev => !prev)}
-                className="btn btn-dark btn-sm d-flex align-items-center gap-2 cursor-pointer dark:text-black"
+                className="btn btn-dark btn-sm flex items-center gap-1 dark:text-black cursor-pointer"
               >
                 <FontAwesomeIcon icon={faPrint} />
                 <span>Print</span>
@@ -36,12 +36,12 @@ const CompanyTractionHeader = () => {
               </div>
 
               {showDropdown && (
-                <div className="position-absolute end-0 mt-2 w-100 bg-white border rounded shadow z-10">
+                <div className="absolute right-0 mt-2 w-64 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50">
                   <div className="py-1">
 
                     <div
                       onClick={() => handlePrint('annual')}
-                      className="d-flex align-items-center gap-2 px-3 py-2 text-sm text-gray-700 hover-bg-gray-100 cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                     >
                       <FontAwesomeIcon icon={faBullseye} />
                       <span>Print Annual Priorities Only</span>
@@ -49,7 +49,7 @@ const CompanyTractionHeader = () => {
 
                     <div
                       onClick={() => handlePrint('traction')}
-                      className="d-flex align-items-center gap-2 px-3 py-2 text-sm text-gray-700 hover-bg-gray-100 cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                     >
                       <FontAwesomeIcon icon={faBolt} />
                       <span>Print Traction Only</span>
