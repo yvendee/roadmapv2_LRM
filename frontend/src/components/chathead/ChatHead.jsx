@@ -93,7 +93,7 @@ function ChatHead() {
           style={{
             position: 'fixed',
             bottom: '90px',
-            right: '20px',
+            right: '40px',
             width: '320px',
             maxHeight: '480px',
             backgroundColor: '#fff',
