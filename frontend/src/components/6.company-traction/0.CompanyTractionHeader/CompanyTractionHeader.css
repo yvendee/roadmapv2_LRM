@@ -9,10 +9,14 @@
     color: #374151; /* Tailwind's text-gray-700 */
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); /* Fine shadow */
+    border-radius: 4px;
+    margin: 2px 6px;
   }
   
   .dropdown-option:hover {
-    background-color: #0d6efd; /* Bootstrap's primary blue */
+    background-color: #0d6efd; /* Bootstrap primary blue */
     color: #ffffff;
   }
+  
   
