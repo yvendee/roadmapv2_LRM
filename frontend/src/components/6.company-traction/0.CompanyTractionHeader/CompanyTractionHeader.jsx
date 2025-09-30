@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import crmBarChart from '../../../assets/images/webp/crm-bar-chart.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrint, faChevronDown, faBullseye, faBolt } from '@fortawesome/free-solid-svg-icons';
+import './CompanyTractionHeader.css'; 
 
 const CompanyTractionHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -17,7 +18,7 @@ const CompanyTractionHeader = () => {
       <div className="col-md-12">
         <div className="card bg-100 shadow-none border px-4 py-2 mr-[15px]">
           <div className="flex items-center justify-between p-2 ms-2 w-full">
-            
+
             {/* Left: icon + title */}
             <div className="flex items-center gap-3">
               <img src={crmBarChart} alt="" width="90" />
@@ -41,7 +42,7 @@ const CompanyTractionHeader = () => {
 
                     <div
                       onClick={() => handlePrint('annual')}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white cursor-pointer transition-colors"
+                      className="dropdown-option"
                     >
                       <FontAwesomeIcon icon={faBullseye} />
                       <span>Print Annual Priorities Only</span>
@@ -49,7 +50,7 @@ const CompanyTractionHeader = () => {
 
                     <div
                       onClick={() => handlePrint('traction')}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white cursor-pointer transition-colors"
+                      className="dropdown-option"
                     >
                       <FontAwesomeIcon icon={faBolt} />
                       <span>Print Traction Only</span>
