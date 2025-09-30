@@ -1,3 +1,8 @@
+/* frontend\src\components\chathead\ChatHead.css */
+.always-black {
+  color: black !important;
+}
+
 /* Chat Window */
 .chat-window {
   position: fixed;

@@ -1,3 +1,4 @@
+// frontend\src\components\chathead\ChatHead.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import chatheadImage from '../../assets/images/webp/chathead.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -54,7 +55,7 @@ function ChatHead() {
             <div className="chat-header-left">
               <img src={chatheadImage} alt="Support" className="chat-avatar" />
               <div>
-                <div className="chat-title">Live Support</div>
+                <div className="chat-title always-black">Live Support</div>
                 <div className="chat-status">● online</div>
               </div>
             </div>
@@ -90,7 +91,7 @@ function ChatHead() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              className="chat-input"
+              className="chat-input always-black"
             />
             <button onClick={handleSend} className="send-button">
               <FontAwesomeIcon icon={faPaperPlane} />
