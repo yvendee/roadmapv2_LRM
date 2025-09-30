@@ -7,10 +7,20 @@ import './CompanyTractionHeader.css';
 const CompanyTractionHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // const handlePrint = (type) => {
+  //   setShowDropdown(false);
+  //   console.log(`Printing: ${type}`);
+  //   window.print();
+  // };
+
   const handlePrint = (type) => {
     setShowDropdown(false);
-    console.log(`Printing: ${type}`);
-    window.print();
+  
+    // Dispatch custom event to CompanyTraction
+    const event = new CustomEvent('print-section', {
+      detail: { type }, // 'annual' or 'traction'
+    });
+    window.dispatchEvent(event);
   };
 
   return (

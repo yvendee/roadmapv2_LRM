@@ -5,9 +5,8 @@ import AnnualPriorities from './1.AnnualPriorities/AnnualPriorities';
 import CompanyTractionTable from './2.CompanyTraction/CompanyTraction';
 import useAnnualPrioritiesStore from '../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import useCompanyTractionStore from '../../store/left-lower-content/6.company-traction/2.companyTractionStore';
-
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
-import useUserStore from '../../store/userStore';
+import logo from '../../assets/images/webp/momentum-logo.webp'; 
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
@@ -15,8 +14,7 @@ import './companyTraction.css';
 
 
 const CompanyTraction = () => {
-  const { user, setUser } = useUserStore();
-  const [error, setError] = useState(null);
+  const [printMode, setPrintMode] = useState(null); // 'annual' | 'traction' | null
   const navigate = useNavigate();
   const organization = useLayoutSettingsStore((state) => state.organization);
   const loadAnnualPrioritiesFromAPI = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
@@ -24,6 +22,25 @@ const CompanyTraction = () => {
   const setBaselineCompanyTraction = useCompanyTractionStore((state) => state.setBaselineCompanyTraction);
   // const { setCompanyTraction } = useCompanyTractionStore.getState();
 
+
+  // Allow header to trigger this
+  useEffect(() => {
+    const handleCustomPrint = (event) => {
+      const type = event.detail?.type;
+      if (type === 'annual' || type === 'traction') {
+        setPrintMode(type);
+
+        // Wait a tick to allow the component to re-render before printing
+        setTimeout(() => {
+          window.print();
+          setPrintMode(null); // Reset after print
+        }, 100);
+      }
+    };
+
+    window.addEventListener('print-section', handleCustomPrint);
+    return () => window.removeEventListener('print-section', handleCustomPrint);
+  }, []);
 
 
   // Fetch Annual-Priorities
@@ -113,8 +130,31 @@ const CompanyTraction = () => {
 
     <div className="main-content-view">
       <CompanyTractionHeader />
-      <AnnualPriorities />
-      <CompanyTractionTable />
+      {/* <AnnualPriorities />
+      <CompanyTractionTable /> */}
+
+      <div id="print-area" className="p-4">
+        <div className="print-logo-container" style={{ display: 'none' }}>
+          <img
+            src={logo}
+            alt="MomentumOS"
+            style={{ height: '40px', position: 'absolute', top: '10px', left: '10px' }}
+          />
+        </div>
+        <br />
+        <br />
+
+        {printMode === null && (
+          <>
+            <AnnualPriorities />
+            <CompanyTractionTable />
+          </>
+        )}
+
+        {printMode === 'annual' && <AnnualPriorities />}
+        {printMode === 'traction' && <CompanyTractionTable />}
+      </div>
+
       <span>&nbsp;</span>  
     </div>
 
