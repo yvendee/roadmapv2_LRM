@@ -117,26 +117,6 @@ const CompanyTraction = () => {
     } 
   }, []);
 
-  // useEffect(() => {
-  //   const storedData = localStorage.getItem('companyTractionData');
-  //   if (storedData) {
-  //     setIsEditing(true); // Mark as edited
-  //     try {
-  //       // setData(JSON.parse(storedData));
-  //       setCompanyTraction(JSON.parse(storedData));
-  //     } catch (e) {
-  //       console.error('Failed to parse companyTractionData from localStorage', e);
-  //       // setData(storeData);
-  //     }
-  //   } 
-  //   else {
-  //     // Store the initial state (only once)
-  //     const currentData = useCompanyTractionStore.getState().companyTraction;
-  //     useCompanyTractionStore.getState().setBaselineCompanyTraction(currentData)
-  //   }
-  // }, [setCompanyTraction]);
-
-
 
   const getTimeAgo = (timestamp) => {
     const now = new Date();
@@ -161,12 +141,6 @@ const CompanyTraction = () => {
     return 'just now';
   };
 
-  // function formatDateForDisplay(dateString) {
-  //   if (!dateString) return 'Click to set date'; // or empty display
-  //   const [year, month, day] = dateString.split('-');
-  //   if (!year || !month || !day) return 'Click to set date';
-  //   return `${month}/${day}/${year}`;
-  // }
   
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
@@ -239,20 +213,6 @@ const CompanyTraction = () => {
     setCommentModalOpen(true);
   };
 
-  // const handleEditChange = (e, rowId, field) => {
-  //   const value = e.target.value;
-  //   setCompanyTraction((prev) => {
-  //     const updatedData = { ...prev };
-  //     updatedData[activeQuarter] = updatedData[activeQuarter].map((row) =>
-  //       row.id === rowId ? { ...row, [field]: value } : row
-  //     );
-
-  //     // Save updated data to localStorage immediately after modification
-  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-
-  //     return updatedData;
-  //   });
-  // };
 
   const handleEditChange = (e, rowId, field) => {
     const value = e.target.value;
@@ -573,7 +533,7 @@ const CompanyTraction = () => {
         {/* Action Buttons */}
         {isSuperAdmin && (
           <div className="flex gap-2">
-            <div className="pure-blue-btn cursor-pointer flex items-center" onClick={handleAddCompanyTractionClick}>
+            <div className="pure-blue-btn cursor-pointer flex items-center print:hidden" onClick={handleAddCompanyTractionClick}>
 
               {loading ? (
                 <div className="loader-bars">
@@ -607,7 +567,7 @@ const CompanyTraction = () => {
       {isEditing && isSuperAdmin && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
-            <div className="pure-green-btn" onClick={handleSaveChanges}>
+            <div className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
               
               {loadingSave ? (
                 <div className="loader-bars">
@@ -620,7 +580,7 @@ const CompanyTraction = () => {
               )}
 
             </div>
-            <div className="pure-red-btn" onClick={handleDischargeChanges}>
+            <div className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
 
               {loadingDischarge ? (
                 <div className="loader-bars">
@@ -683,7 +643,7 @@ const CompanyTraction = () => {
               <th className="border px-4 py-2">Due Date</th>
               <th className="border px-4 py-2">Rank</th>
               <th className="border px-4 py-2">Comments</th>
-              {isSuperAdmin && <th className="border px-4 py-2">Delete</th>}
+              {isSuperAdmin && <th className="border px-4 py-2 print:hidden">Delete</th>}
             </tr>
           </thead>
           <tbody>
@@ -903,7 +863,7 @@ const CompanyTraction = () => {
                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 cursor-pointer" />
                   </td> */}
                   {isSuperAdmin && (
-                    <td className="border px-4 py-2 text-center">
+                    <td className="border px-4 py-2 text-center print:hidden">
                       <FontAwesomeIcon
                         icon={faTrashAlt}
                         className="text-red-600 cursor-pointer"
