@@ -20,7 +20,8 @@ import {
   faFolder,
   faUserTie,
   faChevronDown,
-  faChevronUp
+  faChevronUp,
+  faArrowRightLong
 } from '@fortawesome/free-solid-svg-icons';
 import './Sidebar.css';
 import useUserStore from '../../store/userStore';
@@ -496,6 +497,32 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             <FontAwesomeIcon icon={faUserTie} />
             {!collapsed && <span>Member's Directory</span>}
           </NavLink>
+
+
+          {isSuperAdmin && (
+            <>
+              {!collapsed && (
+                <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Admin</p>
+              )}
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `sidebar-item flex items-center gap-2 ${
+                    isActive
+                      ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                      : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+                  }`
+                }
+                onMouseEnter={(e) => handleMouseEnter(e, 'Admin Panel')}
+                onMouseLeave={handleMouseLeave}
+                style={{ position: 'relative' }}
+              >
+                <FontAwesomeIcon icon={faArrowRightLong} />
+                {!collapsed && <span>Admin Panel</span>}
+              </NavLink>
+            </>
+          )}
+
 
 
       </nav>
