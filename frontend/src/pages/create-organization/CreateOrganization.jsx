@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
+import ToastNotification from '../../components/toast-notification/ToastNotification'; 
 import './CreateOrganization.css';
 
 const CreateOrganization = () => {
@@ -13,6 +14,17 @@ const CreateOrganization = () => {
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // ✅ Toast state
+  const [toast, setToast] = useState({ message: '', isVisible: false, status: '' });
+
+  const showToast = (message, status) => {
+    setToast({ message, isVisible: true, status });
+  };
+
+  const hideToast = () => {
+    setToast({ ...toast, isVisible: false });
+  };
 
   const resetForm = () => {
     setName('');
@@ -57,15 +69,18 @@ const CreateOrganization = () => {
       const data = await response.json();
 
       if (response.ok && data.status === 'success') {
+        showToast('Organization has been created!', 'success'); // ✅ show green toast
         setFeedback({ type: 'success', message: 'Organization has been created!' });
         resetForm();
       } else {
         const errMsg = data.message || 'Failed to create organization.';
+        showToast(errMsg, 'error'); // ✅ show red toast
         setFeedback({ type: 'error', message: errMsg });
         if (data.errors) setErrors(data.errors);
       }
     } catch (error) {
       console.error('Create organization error:', error);
+      showToast('Server error. Please try again later.', 'error'); // ✅ show red toast
       setFeedback({ type: 'error', message: 'Server error. Please try again later.' });
     } finally {
       setLoading(false);
@@ -90,8 +105,8 @@ const CreateOrganization = () => {
               value={value}
               onChange={(e) => set(e.target.value)}
               className="create-org-floating-input-field"
-              placeholder=" " // required for :placeholder-shown CSS trick
-              required // enables browser validation styling
+              placeholder=" " 
+              required 
             />
             <label htmlFor={id}>{label}</label>
             {errors[id] && <p className="create-org-error">{errors[id]}</p>}
@@ -121,6 +136,15 @@ const CreateOrganization = () => {
           </div>
         )}
       </div>
+
+      {/* ✅ Toast Notification */}
+      <ToastNotification
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+        status={toast.status}
+      />
+
     </div>
   );
 };
