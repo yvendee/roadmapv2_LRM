@@ -428,8 +428,6 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
 
 
 
-
-
 //
     // Route::post('/api/create-user', function (Request $request) {
     //     // ✅ Check if email already exists in the auth table
@@ -598,16 +596,16 @@ Route::post('/api/create-organization', function (Request $request) {
         ], 409); // 409 Conflict
     }
 
-    // ✅ Create the organization
-    $organization = Organization::create([
-        'organizationName' => $request->input('name'),
-        'industry' => $request->input('industry'),
-        'size' => $request->input('size'),
-        'location' => $request->input('location'),
-        'token' => Str::random(40),
-        'status' => null,
-        'owner' => null,
-    ]);
+    // // ✅ Create the organization
+    // $organization = Organization::create([
+    //     'organizationName' => $request->input('name'),
+    //     'industry' => $request->input('industry'),
+    //     'size' => $request->input('size'),
+    //     'location' => $request->input('location'),
+    //     'token' => Str::random(40),
+    //     'status' => null,
+    //     'owner' => null,
+    // ]);
 
     // // ✅ Create corresponding layout settings
     // OpspLayoutSetting::create([
@@ -648,13 +646,13 @@ Route::post('/api/create-organization', function (Request $request) {
     //     'statusFlag' => null,
     // ]);
 
-    // // 🆕 Create a new record in opsp_playingtowin_strategy
-    // OpspPlayingtowinStrategy::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'playingToWinStrategyData' => null,
-    //     'statusFlag' => null,
-    // ]);
+    // 🆕 Create a new record in opsp_playingtowin_strategy
+    OpspPlayingtowinStrategy::create([
+        'u_id' => $organization->u_id,
+        'organizationName' => $organization->organizationName,
+        'playingToWinStrategyData' => null,
+        'statusFlag' => null,
+    ]);
 
     // // 🆕 Create a new record in opsp_core_capabilities
     // OpspCoreCapability::create([
