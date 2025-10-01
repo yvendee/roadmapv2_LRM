@@ -24,64 +24,64 @@ class Organization extends Model
     {
         parent::boot();
 
-        // Automatically generate UUID when creating
-        static::creating(function ($model) {
-            $model->u_id = (string) Str::uuid();
-        });
-
+        // // Automatically generate UUID when creating
         // static::creating(function ($model) {
-        //     $model->u_id = 'f5f9c6a3-f52b-410d-abf8-44f5459120c0';
+        //     $model->u_id = (string) Str::uuid();
         // });
+
+        static::creating(function ($model) {
+            $model->u_id = 'f5f9c6a3-f52b-410d-abf8-44f5459120c0';
+        });
 
         // Automatically create related records after organization creation
         static::created(function ($organization) {
 
-            // 🧩 Layout settings
-            \App\Models\OpspLayoutSetting::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'strategicDriversStatus' => 'true',
-                'FoundationsStatus' => 'true',
-                'threeYearOutlookStatus' => 'true',
-                'playingToWinStatus' => 'true',
-                'coreCapabilitiesStatus' => 'true',
-                'fourDecisionsStatus' => 'true',
-                'ConstraintsTrackerStatus' => 'true',
-                'modifiedByEmail' => null,
-                'statusFlag' => null,
-            ]);
+            // // 🧩 Layout settings
+            // \App\Models\OpspLayoutSetting::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'strategicDriversStatus' => 'true',
+            //     'FoundationsStatus' => 'true',
+            //     'threeYearOutlookStatus' => 'true',
+            //     'playingToWinStatus' => 'true',
+            //     'coreCapabilitiesStatus' => 'true',
+            //     'fourDecisionsStatus' => 'true',
+            //     'ConstraintsTrackerStatus' => 'true',
+            //     'modifiedByEmail' => null,
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Strategic Drivers
-            \App\Models\OpspStrategicDriver::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'strategicDriversData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Strategic Drivers
+            // \App\Models\OpspStrategicDriver::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'strategicDriversData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Foundations
-            \App\Models\OpspFoundation::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'foundationsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Foundations
+            // \App\Models\OpspFoundation::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'foundationsData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Three Year Outlook
-            \App\Models\OpspThreeyearOutlook::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'threeyearOutlookData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Three Year Outlook
+            // \App\Models\OpspThreeyearOutlook::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'threeyearOutlookData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Playing to Win Strategy
-            \App\Models\OpspPlayingtowinStrategy::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'playingToWinStrategyData' => null,
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Playing to Win Strategy
+            // \App\Models\OpspPlayingtowinStrategy::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'playingToWinStrategyData' => null,
+            //     'statusFlag' => null,
+            // ]);
 
             // 🆕 Core Capabilities
             \App\Models\OpspCoreCapability::create([
@@ -107,13 +107,13 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
-            // 🆕 Flywheel
-            \App\Models\Flywheel::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'fileLink' => null,
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Flywheel
+            // \App\Models\Flywheel::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'fileLink' => null,
+            //     'statusFlag' => null,
+            // ]);
 
             // 🆕 Scoreboard: Annual Priorities
             \App\Models\ScoreboardAnnualpriority::create([
@@ -139,189 +139,198 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
-            // 🆕 GCC: Metrics
-            \App\Models\GccMetric::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'metricsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 GCC: Metrics
+            // \App\Models\GccMetric::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'metricsData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Company Traction: Annual Priorities
-            \App\Models\CompanyTractionAnnualPriority::create([
+            // 🆕 GCC: Revenue Growth
+            \App\Models\GccRevenueGrowth::create([
                 'u_id' => $organization->u_id,
                 'organizationName' => $organization->organizationName,
-                'annualPrioritiesData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Company Traction: Company Traction
-            \App\Models\CompanyTractionCompanyTraction::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'companyTractionData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Department Traction: Annual Priorities
-            \App\Models\DepartmentTractionAnnualPriority::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'annualPrioritiesData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Department Traction: Company Traction
-            \App\Models\DepartmentTractionCompanyTraction::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'companyTractionData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Thirteen Week Sprint
-            \App\Models\ThirteenWeekSprint::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'thirteenWeekSprintData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Who What When
-            \App\Models\WhoWhatWhen::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'whoWhatWhenData' => [],
+                'financialGrowthData' => [], // empty array as default
                 'statusFlag' => null,
             ]);
 
 
-            // 🆕 Session Dates: Monthly Sessions
-            \App\Models\SessionDatesMonthlySessions::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'sessionDatesMonthlySessionsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Company Traction: Annual Priorities
+            // \App\Models\CompanyTractionAnnualPriority::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'annualPrioritiesData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Session Dates: Monthly Sessions Tracker
-            \App\Models\SessionDatesMonthlySessionsTracker::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'sessionDatesMonthlySessionsTrackerData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Company Traction: Company Traction
+            // \App\Models\CompanyTractionCompanyTraction::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'companyTractionData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
+            // // 🆕 Department Traction: Annual Priorities
+            // \App\Models\DepartmentTractionAnnualPriority::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'annualPrioritiesData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Session Dates: Quarterly Sessions
-            \App\Models\SessionDatesQuarterlySessions::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'sessionDatesQuarterlySessionsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Department Traction: Company Traction
+            // \App\Models\DepartmentTractionCompanyTraction::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'companyTractionData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Coaching Checklist Panel
-            \App\Models\CoachingChecklistPanel::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'coachingChecklistPanelsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Thirteen Week Sprint
+            // \App\Models\ThirteenWeekSprint::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'thirteenWeekSprintData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Coaching Alignment: Current Focus
-            \App\Models\CoachingAlignmentCurrentFocus::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'coachingAlignmentCurrentFocusData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Coaching Alignment: Current Business Pulse
-            \App\Models\CoachingAlignmentCurrentBusinessPulse::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'coachingAlignmentCurrentBusinessPulseData' => [],
-                'statusFlag' => null,
-            ]);
-
-
-            // 🆕 Coaching Alignment: What's Next
-            \App\Models\CoachingAlignmentWhatsNext::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'coachingAlignmentWhatsNextData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🆕 Coaching Alignment: Coaching Goal
-            \App\Models\CoachingAlignmentCoachingGoal::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'coachingAlignmentCoachingGoalsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Who What When
+            // \App\Models\WhoWhatWhen::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'whoWhatWhenData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
 
-            // 🆕 Tools Issue
-            \App\Models\ToolsIssue::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'toolsIssuesData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Session Dates: Monthly Sessions
+            // \App\Models\SessionDatesMonthlySessions::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'sessionDatesMonthlySessionsData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Session Dates: Monthly Sessions Tracker
+            // \App\Models\SessionDatesMonthlySessionsTracker::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'sessionDatesMonthlySessionsTrackerData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
 
-            // 🆕 Tools Victory
-            \App\Models\ToolsVictory::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'toolsVictoriesData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Session Dates: Quarterly Sessions
+            // \App\Models\SessionDatesQuarterlySessions::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'sessionDatesQuarterlySessionsData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Coaching Checklist Panel
+            // \App\Models\CoachingChecklistPanel::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'coachingChecklistPanelsData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Coaching Alignment: Current Focus
+            // \App\Models\CoachingAlignmentCurrentFocus::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'coachingAlignmentCurrentFocusData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Coaching Alignment: Current Business Pulse
+            // \App\Models\CoachingAlignmentCurrentBusinessPulse::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'coachingAlignmentCurrentBusinessPulseData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
 
-            // 🆕 Tools Product Evaluation Grid
-            \App\Models\ToolsProductEvaluationGrid::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'toolsProductEvaluationGridsData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Coaching Alignment: What's Next
+            // \App\Models\CoachingAlignmentWhatsNext::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'coachingAlignmentWhatsNextData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Coaching Alignment: Coaching Goal
+            // \App\Models\CoachingAlignmentCoachingGoal::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'coachingAlignmentCoachingGoalsData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
 
-            // 🆕 Tools Big Idea
-            \App\Models\ToolsBigIdea::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'toolsBigIdeasData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Tools Issue
+            // \App\Models\ToolsIssue::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'toolsIssuesData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
 
-            // 🆕 Document Vault
-            \App\Models\DocumentVault::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'documentVaultData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Tools Victory
+            // \App\Models\ToolsVictory::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'toolsVictoriesData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
-            // 🆕 Members Department
-            \App\Models\MembersDepartment::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'membersDepartmentsData' => [],
-                'statusFlag' => null,
-            ]);
 
-            // 🆕 Members Directory
-            \App\Models\MembersDirectory::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'membersDirectoryData' => [],
-                'statusFlag' => null,
-            ]);
+            // // 🆕 Tools Product Evaluation Grid
+            // \App\Models\ToolsProductEvaluationGrid::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'toolsProductEvaluationGridsData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+
+            // // 🆕 Tools Big Idea
+            // \App\Models\ToolsBigIdea::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'toolsBigIdeasData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+
+            // // 🆕 Document Vault
+            // \App\Models\DocumentVault::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'documentVaultData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Members Department
+            // \App\Models\MembersDepartment::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'membersDepartmentsData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // // 🆕 Members Directory
+            // \App\Models\MembersDirectory::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'membersDirectoryData' => [],
+            //     'statusFlag' => null,
+            // ]);
 
         });
     }
