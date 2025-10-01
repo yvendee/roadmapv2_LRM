@@ -1467,6 +1467,47 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
 });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
+// Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (Request $request) use ($API_secure) {
+//     // 🔐 Secure session check
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'newItem' => 'required|array',
+//         'newItem.id' => 'required|integer',
+//         'newItem.year' => 'required|string',
+//         'newItem.value' => 'required|string',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $newItem = $validated['newItem'];
+
+//     $record = OpspThreeyearOutlook::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Organization not found.'], 404);
+//     }
+
+//     // Get current outlook data as array (already casted by the model)
+//     $data = $record->threeyearOutlookData ?? [];
+//     $data[] = $newItem;
+
+//     $record->threeyearOutlookData = $data; // Auto JSON by cast
+//     $record->save();
+
+//     return response()->json([
+//         'message' => 'New outlook added successfully.',
+//         'data' => $newItem,
+//     ]);
+// });
+
+// ref: frontend\src\components\2.one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Models\OpspThreeyearOutlook;
+
 Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (Request $request) use ($API_secure) {
     // 🔐 Secure session check
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -1490,11 +1531,14 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (
         return response()->json(['message' => 'Organization not found.'], 404);
     }
 
-    // Get current outlook data as array (already casted by the model)
-    $data = $record->threeyearOutlookData ?? [];
+    // 🛡️ Ensure data is always treated as array (even if null or malformed)
+    $data = is_array($record->threeyearOutlookData) ? $record->threeyearOutlookData : [];
+
+    // ➕ Add the new item
     $data[] = $newItem;
 
-    $record->threeyearOutlookData = $data; // Auto JSON by cast
+    // 💾 Save updated array (automatically JSON-encoded by Laravel)
+    $record->threeyearOutlookData = $data;
     $record->save();
 
     return response()->json([
