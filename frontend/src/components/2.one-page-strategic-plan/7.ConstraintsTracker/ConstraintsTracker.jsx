@@ -254,7 +254,7 @@ const ConstraintsTracker = () => {
               </>
             )}
 
-            {user?.role === 'superadmin' && hasRealData && (
+            {user?.role === 'superadmin' && !hasRealData && (
               <button className="pure-blue-btn print:hidden" onClick={handleAddDecisionClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 
                 <>

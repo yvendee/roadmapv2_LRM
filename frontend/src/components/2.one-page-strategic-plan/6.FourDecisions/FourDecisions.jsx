@@ -34,15 +34,18 @@ const FourDecisions = () => {
     setFourDecisions(storeFourDecisions); // Copy from global store once
   }, [storeFourDecisions]);
 
-  const hasRealData = fourDecisions.some(
-    (item) =>
-      item.description !== '-' ||
-      item.orig !== '-' ||
-      item.q1 !== '-' ||
-      item.q2 !== '-' ||
-      item.q3 !== '-' ||
-      item.q4 !== '-'
-  );
+  // const hasRealData = fourDecisions.some(
+  //   (item) =>
+  //     item.description !== '-' ||
+  //     item.orig !== '-' ||
+  //     item.q1 !== '-' ||
+  //     item.q2 !== '-' ||
+  //     item.q3 !== '-' ||
+  //     item.q4 !== '-'
+  // );
+
+  const hasRealData = fourDecisions.some(item => item.value === '-');
+
 
   useEffect(() => {
     const stored = localStorage.getItem('FourDecisions');
@@ -235,7 +238,7 @@ const FourDecisions = () => {
               </>
             )}
 
-            {user?.role === 'superadmin' && hasRealData && (
+            {user?.role === 'superadmin' && !hasRealData && (
               <button className="pure-blue-btn print:hidden" onClick={handleAddDecisionClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 
                 <>
@@ -251,7 +254,7 @@ const FourDecisions = () => {
       </div>
 
       <table className="min-w-full border border-gray-200 text-sm">
-        <thead className="bg-gray-50 text-green-700">
+        {/* <thead className="bg-gray-50 text-green-700">
           <tr>
             <th className="border px-3 py-2 text-left">Description</th>
             <th className="border px-3 py-2 text-center">Orig</th>
@@ -265,7 +268,38 @@ const FourDecisions = () => {
             )}
 
           </tr>
+        </thead> */}
+
+        <thead className="bg-gray-50 text-green-700 text-sm">
+          <tr>
+            <th className="border px-3 py-2">
+              <div className="text-left">Description</div> {/* Left aligned */}
+            </th>
+            <th className="border px-3 py-2">
+              <div className="flex justify-center items-center">Orig</div>
+            </th>
+            <th className="border px-3 py-2">
+              <div className="flex justify-center items-center">Q1</div>
+            </th>
+            <th className="border px-3 py-2">
+              <div className="flex justify-center items-center">Q2</div>
+            </th>
+            <th className="border px-3 py-2">
+              <div className="flex justify-center items-center">Q3</div>
+            </th>
+            <th className="border px-3 py-2">
+              <div className="flex justify-center items-center">Q4</div>
+            </th>
+
+            {user?.role === 'superadmin' && !hasRealData && (
+              <th className="border px-3 py-2 print:hidden">
+              </th>
+            )}
+
+          </tr>
         </thead>
+
+
         <tbody>
           {fourDecisions.map((item) => (
             <tr key={item.id} className="hover:bg-gray-50">
