@@ -589,128 +589,23 @@ Route::post('/api/create-organization', function (Request $request) {
 
     // 🔍 Check if organization already exists
     $existing = Organization::where('organizationName', $request->input('name'))->first();
-    // if ($existing) {
-    //     return response()->json([
-    //         'status' => 'error',
-    //         'message' => 'Organization is already present'
-    //     ], 409); // 409 Conflict
-    // }
+    if ($existing) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Organization is already present'
+        ], 409); // 409 Conflict
+    }
 
-    // // ✅ Create the organization
-    // $organization = Organization::create([
-    //     'organizationName' => $request->input('name'),
-    //     'industry' => $request->input('industry'),
-    //     'size' => $request->input('size'),
-    //     'location' => $request->input('location'),
-    //     'token' => Str::random(40),
-    //     'status' => null,
-    //     'owner' => null,
-    // ]);
-
-    // // ✅ Create corresponding layout settings
-    // OpspLayoutSetting::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'strategicDriversStatus' => 'true',
-    //     'FoundationsStatus' => 'true',
-    //     'threeYearOutlookStatus' => 'true',
-    //     'playingToWinStatus' => 'true',
-    //     'coreCapabilitiesStatus' => 'true',
-    //     'fourDecisionsStatus' => 'true',
-    //     'ConstraintsTrackerStatus' => 'true',
-    //     'modifiedByEmail' => null,
-    //     'statusFlag' => null,
-    // ]);
-
-    // // 🆕 Create a new record in opsp_strategic_drivers
-    // OpspStrategicDriver::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'strategicDriversData' => [],
-    //     'statusFlag' => null,
-    // ]);
-
-    // // 🆕 Create a new record in opsp_foundations
-    // OpspFoundation::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'foundationsData' => [],
-    //     'statusFlag' => null,
-    // ]);
-
-    // // 🆕 Create a new record in opsp_threeyear_outlook
-    // OpspThreeyearOutlook::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'threeyearOutlookData' => [],
-    //     'statusFlag' => null,
-    // ]);
-
-    // 🆕 Create a new record in opsp_playingtowin_strategy
-    OpspPlayingtowinStrategy::create([
-        'u_id' => $organization->u_id,
-        'organizationName' => $organization->organizationName,
-        'playingToWinStrategyData' => null,
-        'statusFlag' => null,
+    // ✅ Create the organization
+    $organization = Organization::create([
+        'organizationName' => $request->input('name'),
+        'industry' => $request->input('industry'),
+        'size' => $request->input('size'),
+        'location' => $request->input('location'),
+        'token' => Str::random(40),
+        'status' => null,
+        'owner' => null,
     ]);
-
-    // // 🆕 Create a new record in opsp_core_capabilities
-    // OpspCoreCapability::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'coreCapabilitiesData' => [],
-    //     'statusFlag' => null,
-    // ]);
-
-    // // 🆕 Create a new record in opsp_fourDecisions
-    // OpspFourDecision::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'fourDecisionsData' => [],
-    //     'statusFlag' => null,
-    // ]);
-    
-    // // 🆕 Create a new record in opsp_constraints_tracker
-    // OpspConstraintsTracker::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'constraintsTrackerData' => [],
-    //     'statusFlag' => null,
-    // ]);
-    
-
-    // // 🆕 Create a new record in flywheel
-    // Flywheel::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'fileLink' => null,
-    //     'statusFlag' => null,
-    // ]);
-
-    // // 🆕 Create a new record in scoreboard_annualpriorities
-    // ScoreboardAnnualpriority::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'annualPrioritiesdData' => [],
-    //     'statusFlag' => null,
-    // ]);
-    
-    // // 🆕 Create a new record in scoreboard_company_traction_card
-    // ScoreboardCompanyTractionCard::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'companyTractionCardData' => [],
-    //     'statusFlag' => null,
-    // ]);
-
-    // // 🆕 Create a new record in scoreboard_project_progress_card
-    // ScoreboardProjectProgressCard::create([
-    //     'u_id' => $organization->u_id,
-    //     'organizationName' => $organization->organizationName,
-    //     'projectProgressCardData' => [],
-    //     'statusFlag' => null,
-    // ]);
-
 
     return response()->json([
         'status' => 'success',
