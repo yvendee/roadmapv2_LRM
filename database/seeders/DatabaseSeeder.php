@@ -29,11 +29,11 @@ class DatabaseSeeder extends Seeder
         // $this->call(OpspStrategicDriversSeeder::class);
         // $this->call(OpspFoundationsSeeder::class);
         // $this->call(OpspThreeyearOutlookSeeder::class);
-        // $this->call(OpspPlayingtowinStrategySeeder::class);
+        $this->call(OpspPlayingtowinStrategySeeder::class);
         // $this->call(OpspCoreCapabilitiesSeeder::class);
         // $this->call(OpspFourDecisionsSeeder::class);
         // $this->call(OpspConstraintsTrackerSeeder::class);
-        // $this->call(FlywheelSeeder::class);
+        $this->call(FlywheelSeeder::class);
         // $this->call(ScoreboardAnnualprioritiesSeeder::class);
         // $this->call(ScoreboardCompanyTractionCardSeeder::class);
         // $this->call(ScoreboardProjectProgressCardSeeder::class);
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(MembersDirectorySeeder::class);
         // $this->call(NotificationsTableSeeder::class);
         // $this->call(MessagingMessageSeeder::class);
-        $this->call(MessagingLeftConversationsSeeder::class);
+        // $this->call(MessagingLeftConversationsSeeder::class);
         // $this->call(MessagingLeftConversationsSeeder::class);
         
     }

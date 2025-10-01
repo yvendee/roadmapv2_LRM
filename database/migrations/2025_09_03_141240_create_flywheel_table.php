@@ -10,7 +10,7 @@ class CreateFlywheelTable extends Migration
     {
         Schema::create('flywheel', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('u_id');
+            $table->string('u_id');
             $table->string('organizationName');
             $table->text('fileLink')->nullable();
             $table->string('statusFlag')->nullable();

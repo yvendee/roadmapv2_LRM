@@ -10,7 +10,7 @@ class CreateOpspPlayingtowinStrategyTable extends Migration
     {
         Schema::create('opsp_playingtowin_strategy', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('u_id');
+            $table->uuid('u_id');
             $table->string('organizationName');
             $table->longText('playingToWinStrategyData')->nullable(); // JSON or large text
             $table->string('statusFlag')->nullable();
