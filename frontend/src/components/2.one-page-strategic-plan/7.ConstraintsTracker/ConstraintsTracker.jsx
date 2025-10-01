@@ -287,7 +287,7 @@ const ConstraintsTracker = () => {
           <th className="border px-3 py-2">
             <div className="flex justify-center items-center">Status</div>
           </th>
-          {user?.role === 'superadmin' && hasRealData && (
+          {user?.role === 'superadmin' && !hasRealData && (
             <th className="border px-3 py-2 print:hidden">
               <div className="flex justify-center items-center"></div>
             </th>

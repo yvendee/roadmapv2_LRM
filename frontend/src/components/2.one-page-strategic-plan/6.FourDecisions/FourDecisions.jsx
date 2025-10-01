@@ -332,7 +332,7 @@ const FourDecisions = () => {
                 </td>
               ))}
 
-              {user?.role === 'superadmin' && hasRealData && (
+              {user?.role === 'superadmin' && !hasRealData && (
                 <td className="border px-3 py-2 text-center print:hidden">
                   <FontAwesomeIcon
                     icon={faTrashAlt}
