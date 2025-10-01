@@ -587,8 +587,8 @@ Route::post('/api/create-organization', function (Request $request) {
         ], 422);
     }
 
-    // // 🔍 Check if organization already exists
-    // $existing = Organization::where('organizationName', $request->input('name'))->first();
+    // 🔍 Check if organization already exists
+    $existing = Organization::where('organizationName', $request->input('name'))->first();
     // if ($existing) {
     //     return response()->json([
     //         'status' => 'error',
