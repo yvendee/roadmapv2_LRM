@@ -140,37 +140,17 @@ const ThreeYearOutlook = () => {
     }, 1000);
   };
 
-  // const handleDelete = (id) => {
-  //   const updated = outlooks.filter(o => o.id !== id);
-
-  //   setOutlooks(updated);
-  //   localStorage.setItem('threeYearOutlook', JSON.stringify(updated));
-  //   if (!edited.includes(id)) setEdited([...edited, id]);
-
-  //   ENABLE_CONSOLE_LOGS && console.log(`🗑️ Outlook with ID ${id} deleted.`);
-  //   // ENABLE_CONSOLE_LOGS && console.log('📦 Updated Outlooks:', updated);
-  // };
-
   const handleDelete = (id) => {
-    // Step 1: Filter out the deleted item
-    const filtered = outlooks.filter(o => o.id !== id);
-  
-    // Step 2: Reindex remaining items
-    const reindexed = filtered.map((item, index) => ({
-      ...item,
-      id: index + 1,
-    }));
-  
-    // Step 3: Update local state and localStorage
-    setOutlooks(reindexed);
-    localStorage.setItem('threeYearOutlook', JSON.stringify(reindexed));
-  
-    // Step 4: Mark as edited
-    if (!edited.includes(id)) setEdited([...edited, 'reindex']);
-  
-    ENABLE_CONSOLE_LOGS && console.log(`🗑️ Outlook with ID ${id} deleted and reindexed.`);
+    const updated = outlooks.filter(o => o.id !== id);
+
+
+    setOutlooks(updated);
+    localStorage.setItem('threeYearOutlook', JSON.stringify(updated));
+    if (!edited.includes(id)) setEdited([...edited, id]);
+
+    ENABLE_CONSOLE_LOGS && console.log(`🗑️ Outlook with ID ${id} deleted.`);
+    // ENABLE_CONSOLE_LOGS && console.log('📦 Updated Outlooks:', updated);
   };
-  
 
   // const handleSave = () => {
 
