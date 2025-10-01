@@ -28,21 +28,22 @@ const CoreCapabilities = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const organization = useLayoutSettingsStore((state) => state.organization);
 
-  
+  const hasRealData = coreCapabilities.some(item => item.value === '-');
+
   useEffect(() => {
     setCoreCapabilities(storeCapabilities); // Copy from global store once
   }, [storeCapabilities]);
 
 
-  const hasRealData = coreCapabilities.some(
-    (item) =>
-      item.description !== '-' ||
-      item.orig !== '-' ||
-      item.q1 !== '-' ||
-      item.q2 !== '-' ||
-      item.q3 !== '-' ||
-      item.q4 !== '-'
-  );
+  // const hasRealData = coreCapabilities.some(
+  //   (item) =>
+  //     item.description !== '-' ||
+  //     item.orig !== '-' ||
+  //     item.q1 !== '-' ||
+  //     item.q2 !== '-' ||
+  //     item.q3 !== '-' ||
+  //     item.q4 !== '-'
+  // );
 
   useEffect(() => {
     const stored = localStorage.getItem('CoreCapabilities');
@@ -254,7 +255,7 @@ const CoreCapabilities = () => {
               </>
             )}
 
-            {user?.role === 'superadmin' && hasRealData && (
+            {user?.role === 'superadmin' && !hasRealData && (
               <button className="pure-blue-btn print:hidden" onClick={handleAddCapabilityClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 
                 <>
