@@ -1574,7 +1574,12 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
 });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
-Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (Request $request) {
+Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (Request $request) use ($API_secure) {
+    // 🔐 Secure session check
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
     $validated = $request->validate([
         'organization' => 'required|string',
         'newItem' => 'required|array',
@@ -1592,10 +1597,11 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (
         return response()->json(['message' => 'Organization not found.'], 404);
     }
 
-    $data = json_decode($record->threeyearOutlookData, true) ?? [];
+    // Get current outlook data as array (already casted by the model)
+    $data = $record->threeyearOutlookData ?? [];
     $data[] = $newItem;
 
-    $record->threeyearOutlookData = json_encode($data);
+    $record->threeyearOutlookData = $data; // Auto JSON by cast
     $record->save();
 
     return response()->json([
@@ -1603,6 +1609,8 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (
         'data' => $newItem,
     ]);
 });
+
+
 
 //
     // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
