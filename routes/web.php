@@ -1504,10 +1504,6 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
 // });
 
 // ref: frontend\src\components\2.one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Models\OpspThreeyearOutlook;
-
 Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/add', function (Request $request) use ($API_secure) {
     // 🔐 Secure session check
     if ($API_secure && !$request->session()->get('logged_in')) {
