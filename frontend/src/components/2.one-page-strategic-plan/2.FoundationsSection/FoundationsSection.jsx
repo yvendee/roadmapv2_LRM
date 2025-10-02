@@ -132,9 +132,17 @@ const FoundationsSection = () => {
 
 
   const handleAddFoundation = async () => {
-    ENABLE_CONSOLE_LOGS && console.log('🆕 New Foundation:', newFoundation);
+
+    const foundationToAdd = {
+      title: newFoundation.title?.trim() || 'Untitled',
+      content: newFoundation.content?.trim() || 'empty',
+    };
+
+    ENABLE_CONSOLE_LOGS && console.log('🆕 New Foundation:', foundationToAdd);
+
+    const updated = [...foundations, foundationToAdd];
   
-    const updated = [...foundations, newFoundation];
+    // const updated = [...foundations, newFoundation];
   
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -153,14 +161,14 @@ const FoundationsSection = () => {
         credentials: 'include',
         body: JSON.stringify({
           organization,
-          newFoundation,
+          newFoundation: foundationToAdd,
         }),
       });
   
       const data = await response.json();
   
       if (response.ok && data.status === 'success') {
-        ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', newFoundation);
+        ENABLE_CONSOLE_LOGS && console.log('✅ New Foundation Added:', foundationToAdd);
         ENABLE_CONSOLE_LOGS && console.log('📦 Full Updated Foundations List:', data.updatedData);
   
         // Update store with the new list

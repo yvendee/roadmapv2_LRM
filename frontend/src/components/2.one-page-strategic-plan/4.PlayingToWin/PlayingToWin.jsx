@@ -80,7 +80,13 @@ const PlayingToWin = () => {
 
   const handleAdd = async () => {
     const nextId = Math.max(0, ...playingtowins.map(o => o.id || 0)) + 1;
-    const newItem = { id: nextId, ...newPlayingToWin };
+    // const newItem = { id: nextId, ...newPlayingToWin };
+    const newItem = {
+      id: nextId,
+      title: newPlayingToWin.title?.trim() ? newPlayingToWin.title : 'Untitled',
+      value: newPlayingToWin.value?.trim() ? newPlayingToWin.value : 'empty',
+    };
+    
     const organization = useLayoutSettingsStore.getState().organization;
   
     try {
