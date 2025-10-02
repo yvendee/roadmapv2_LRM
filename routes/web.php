@@ -2918,19 +2918,12 @@ Route::get('/api/v1/company-traction/annual-priorities', function (Request $requ
 // ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
 
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $request->validate([
-        'organizationName' => 'required|string',
-        'annualPrioritiesData' => 'required|array',
-    ]);
-
     $organization = $request->input('organizationName');
-    $newData = $request->input('annualPrioritiesData');
+    $newData = $request->input('annualPrioritiesData', []); // Defaults to empty array if not provided
 
     $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
 
@@ -2946,6 +2939,38 @@ Route::post('/api/v1/company-traction/annual-priorities/update', function (Reque
         'data' => $record->annualPrioritiesData,
     ]);
 });
+
+
+// Route::post('/api/v1/company-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
+
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $request->validate([
+//         'organizationName' => 'required|string',
+//         'annualPrioritiesData' => 'required|array',
+//     ]);
+
+//     $organization = $request->input('organizationName');
+//     $newData = $request->input('annualPrioritiesData');
+
+//     $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Record not found'], 404);
+//     }
+
+//     $record->annualPrioritiesData = $newData;
+//     $record->save();
+
+//     return response()->json([
+//         'message' => 'Annual priorities updated successfully',
+//         'data' => $record->annualPrioritiesData,
+//     ]);
+// });
 
 // ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
@@ -3174,28 +3199,12 @@ Route::get('/api/v1/company-traction/traction-data', function (Request $request)
 
 // ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
 Route::post('/api/v1/company-traction/traction-data/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    // Validate request inputs
-    $validator = Validator::make($request->all(), [
-        'organizationName' => 'required|string|max:255',
-        'companyTraction' => 'required|array', // expects JSON array/object
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'errors' => $validator->errors(),
-        ], 422);
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organizationName = $request->input('organizationName');
-    $companyTractionData = $request->input('companyTraction');
+    $companyTractionData = $request->input('companyTraction', []); // Default to empty array if not provided
 
     // Find the record by organizationName
     $record = CompanyTractionCompanyTraction::where('organizationName', $organizationName)->first();
@@ -3207,7 +3216,7 @@ Route::post('/api/v1/company-traction/traction-data/update', function (Request $
         ], 404);
     }
 
-    // Update the companyTractionData column (store as JSON)
+    // Update the companyTractionData column
     $record->companyTractionData = $companyTractionData;
     $record->save();
 
@@ -3217,6 +3226,52 @@ Route::post('/api/v1/company-traction/traction-data/update', function (Request $
         'data' => $record,
     ]);
 });
+
+
+// Route::post('/api/v1/company-traction/traction-data/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     // Validate request inputs
+//     $validator = Validator::make($request->all(), [
+//         'organizationName' => 'required|string|max:255',
+//         'companyTraction' => 'required|array', // expects JSON array/object
+//     ]);
+
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'Validation failed',
+//             'errors' => $validator->errors(),
+//         ], 422);
+//     }
+
+//     $organizationName = $request->input('organizationName');
+//     $companyTractionData = $request->input('companyTraction');
+
+//     // Find the record by organizationName
+//     $record = CompanyTractionCompanyTraction::where('organizationName', $organizationName)->first();
+
+//     if (!$record) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => "Organization '$organizationName' not found",
+//         ], 404);
+//     }
+
+//     // Update the companyTractionData column (store as JSON)
+//     $record->companyTractionData = $companyTractionData;
+//     $record->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'Company Traction data updated successfully',
+//         'data' => $record,
+//     ]);
+// });
 
 // ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
 Route::post('/api/v1/company-traction/traction-data/add', function (Request $request) {
