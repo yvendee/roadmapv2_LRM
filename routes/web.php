@@ -1892,7 +1892,7 @@ Route::post('/api/v1/one-page-strategic-plan/core-capabilities/add', function (R
     // });
 
 
-// ref:
+// ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
 Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -1915,16 +1915,17 @@ Route::get('/api/v1/one-page-strategic-plan/four-decisions', function (Request $
     ]);
 });
 
+// ref: frontend\src\components\2.one-page-strategic-plan\6.FourDecisions\FourDecisions.jsx
 Route::post('/api/v1/one-page-strategic-plan/four-decisions/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->input('organization');
-    $fourDecisions = $request->input('fourDecisions');
+    $fourDecisions = $request->input('fourDecisions', []); // default to empty array if missing
 
-    if (!$organization || !$fourDecisions) {
-        return response()->json(['message' => 'Missing required fields'], 400);
+    if (!$organization) {
+        return response()->json(['message' => 'Missing required organization field'], 400);
     }
 
     $record = OpspFourDecision::where('organizationName', $organization)->first();
@@ -1941,6 +1942,7 @@ Route::post('/api/v1/one-page-strategic-plan/four-decisions/update', function (R
         'updatedData' => $record->fourDecisionsData,
     ]);
 });
+
 
 Route::post('/api/v1/one-page-strategic-plan/four-decisions/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
