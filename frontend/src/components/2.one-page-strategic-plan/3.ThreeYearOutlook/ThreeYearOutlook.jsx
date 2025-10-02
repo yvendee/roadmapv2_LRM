@@ -369,8 +369,7 @@ const ThreeYearOutlook = () => {
                     onBlur={(finalHtml) => handleBlur(item.id, 'value', finalHtml)}
                     autoFocus
                   />
-                // ) : item.value === '-' ? (
-                ) : item.value === '-' || item.value === null ? (
+                ) : item.value === '-' ? (
                   <div className="skeleton w-32 h-4"></div>
                 ) : (
                   <div dangerouslySetInnerHTML={{ __html: item.value }} style={{ whiteSpace: 'pre-wrap' }} />
