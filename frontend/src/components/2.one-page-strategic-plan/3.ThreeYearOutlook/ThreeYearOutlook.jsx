@@ -152,20 +152,7 @@ const ThreeYearOutlook = () => {
     // ENABLE_CONSOLE_LOGS && console.log('📦 Updated Outlooks:', updated);
   };
 
-  // const handleSave = () => {
 
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-
-  //     ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', outlooks);
-  //     setEdited([]);
-  //     localStorage.removeItem('threeYearOutlook');
-  
-  //   }, 1000);
-
-  // };
 
   const handleSave = async () => {
     setLoadingSave(true);
@@ -362,7 +349,12 @@ const ThreeYearOutlook = () => {
                 ) : item.value === '-' ? (
                   <div className="skeleton w-32 h-4"></div>
                 ) : (
-                  item.value
+                  item.value.split('\n').map((line, index) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))
                 )}
               </p>
 
