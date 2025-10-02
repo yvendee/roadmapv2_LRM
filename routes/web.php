@@ -1081,19 +1081,12 @@ Route::get('/api/v1/one-page-strategic-plan/strategic-drivers', function (Reques
 
 // ref: // frontend\src\components\one-page-strategic-plan\1.StrategicDriversTable\StrategicDriversTable.jsx
 Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'strategicDriversData' => 'required|array',
-    ]);
-
-    $organization = $validated['organization'];
-    $strategicDriversData = $validated['strategicDriversData'];
+    $organization = $request->input('organization');
+    $strategicDriversData = $request->input('strategicDriversData', []); // default to empty array
 
     // ✅ Reindex items to make sure every item has an 'id'
     $strategicDriversData = array_map(function ($driver, $index) {
@@ -1112,6 +1105,40 @@ Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function
 
     return response()->json(['status' => 'success', 'message' => 'Strategic Drivers updated successfully']);
 });
+
+
+// Route::post('/api/v1/one-page-strategic-plan/strategic-drivers/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'strategicDriversData' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $strategicDriversData = $validated['strategicDriversData'];
+
+//     // ✅ Reindex items to make sure every item has an 'id'
+//     $strategicDriversData = array_map(function ($driver, $index) {
+//         $driver['id'] = $index + 1;
+//         return $driver;
+//     }, $strategicDriversData, array_keys($strategicDriversData));
+
+//     $record = OpspStrategicDriver::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['status' => 'error', 'message' => 'Organization not found'], 404);
+//     }
+
+//     $record->strategicDriversData = $strategicDriversData;
+//     $record->save();
+
+//     return response()->json(['status' => 'success', 'message' => 'Strategic Drivers updated successfully']);
+// });
 
 //
     // // ref: frontend\src\components\2.one-page-strategic-plan\onePageStrategicPlan.jsx
@@ -1261,13 +1288,12 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/update', function (Requ
         }
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'foundationsData' => 'required|array',
-    ]);
+    $organization = $request->input('organization');
+    $foundationsData = $request->input('foundationsData', []); // default to empty array if missing
 
-    $organization = $validated['organization'];
-    $foundationsData = $validated['foundationsData'];
+    if (!$organization) {
+        return response()->json(['status' => 'error', 'message' => 'Missing required organization field'], 400);
+    }
 
     $record = OpspFoundation::where('organizationName', $organization)->first();
 
@@ -1280,6 +1306,34 @@ Route::post('/api/v1/one-page-strategic-plan/foundations/update', function (Requ
 
     return response()->json(['status' => 'success', 'message' => 'Foundations data updated successfully']);
 });
+
+
+// Route::post('/api/v1/one-page-strategic-plan/foundations/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'foundationsData' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $foundationsData = $validated['foundationsData'];
+
+//     $record = OpspFoundation::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['status' => 'error', 'message' => 'Organization not found'], 404);
+//     }
+
+//     $record->foundationsData = $foundationsData;
+//     $record->save();
+
+//     return response()->json(['status' => 'success', 'message' => 'Foundations data updated successfully']);
+// });
 
 // ref: frontend/src/components/one-page-strategic-plan/2.FoundationsSection/FoundationsSection.jsx
 Route::post('/api/v1/one-page-strategic-plan/foundations/add', function (Request $request) use ($API_secure) {
