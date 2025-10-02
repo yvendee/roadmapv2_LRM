@@ -29,9 +29,7 @@ const ThreeYearOutlook = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // const hasPendingOutlook = outlooks.some(item => item.value === '-');
-  const hasPendingOutlook = outlooks.some(item => item.value === '-' || item.value === null);
-
+  const hasPendingOutlook = outlooks.some(item => item.value === '-');
 
   // useEffect(() => {
   //   const stored = localStorage.getItem('threeYearOutlook');
@@ -305,8 +303,7 @@ const ThreeYearOutlook = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {outlooks.map((item) => (
             <div key={item.id} className="relative border rounded-md p-4 shadow-sm bg-white min-h-[100px]">
-              {/* {user?.role === 'superadmin' && item.value !== '-' &&  ( */}
-              {user?.role === 'superadmin' && item.value !== '-' && item.value !== null && (
+              {user?.role === 'superadmin' && item.value !== '-' &&  (
                 <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700 print:hidden"
                   onClick={() => handleDelete(item.id)}
@@ -317,9 +314,9 @@ const ThreeYearOutlook = () => {
               )}
               
               <h6
-                className={`text-sm font-semibold text-gray-800 ${user?.role === 'superadmin' && item.value !== '-'  && item.value !== null ? 'cursor-pointer' : ''}`}
+                className={`text-sm font-semibold text-gray-800 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
                 onClick={() =>
-                  user?.role === 'superadmin' && item.value !== '-'  && item.value !== null && setEditing({ field: 'year', id: item.id })
+                  user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'year', id: item.id })
                 }
               >
                 {item.value === '-' ? (
@@ -337,11 +334,9 @@ const ThreeYearOutlook = () => {
               </h6>
 
               <p
-                className={`text-sm text-gray-700 mt-1 ${user?.role === 'superadmin' && item.value !== '-'  && item.value !== null ? 'cursor-pointer' : ''}`}
+                className={`text-sm text-gray-700 mt-1 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
                 onClick={() =>
-                  // user?.role === 'superadmin' && item.value !== '-'  && item.value !== null && setEditing({ field: 'value', id: item.id })
-                  user?.role === 'superadmin' && (item.value === null || item.value === '-' || item.value) && setEditing({ field: 'value', id: item.id })
-
+                  user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'value', id: item.id })
                 }
               >
                 {/* {editing.field === 'value' && editing.id === item.id ? (
