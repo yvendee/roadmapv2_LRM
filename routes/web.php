@@ -1442,10 +1442,10 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
     // 🧾 Validate incoming data
     $validated = $request->validate([
         'organization' => 'required|string',
-        'outlooks' => 'required|array|min:1',
-        'outlooks.*.id' => 'required|integer',
-        'outlooks.*.year' => 'required|string',
-        'outlooks.*.value' => 'required|string',
+        'outlooks' => 'required|array',
+        'outlooks.*.id' => 'sometimes|integer', // 🆗 Only validate if present
+        'outlooks.*.year' => 'sometimes|string',
+        'outlooks.*.value' => 'sometimes|string',
     ]);
 
     $organization = $validated['organization'];
