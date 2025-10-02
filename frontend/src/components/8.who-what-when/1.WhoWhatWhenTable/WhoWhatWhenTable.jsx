@@ -315,11 +315,11 @@ const WhoWhatWhenTable = () => {
           ENABLE_CONSOLE_LOGS && console.log('📥 Reindexed Who-What-When (from currentOrder):', reordered);
         }
   
-        if (!reordered.length) {
-          alert('No Who-What-When data to save.');
-          setLoadingSave(false);
-          return;
-        }
+        // if (!reordered.length) {
+        //   // alert('No Who-What-When data to save.');
+        //   setLoadingSave(false);
+        //   return;
+        // }
   
         // Push to backend
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
