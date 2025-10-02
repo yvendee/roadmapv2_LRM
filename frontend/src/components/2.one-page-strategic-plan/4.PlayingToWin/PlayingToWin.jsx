@@ -67,17 +67,7 @@ const PlayingToWin = () => {
     if (!edited.includes(id)) setEdited((prev) => [...prev, id]);
   };
 
-  // const handleBlur = (id, field, newValue) => {
-  //   const updatedPlayingToWin = playingtowins.map((item) =>
-  //     item.id === id ? { ...item, [field]: newValue } : item
-  //   );
-  //   setPlayingToWin(updatedPlayingToWin);
-  //   // localStorage.setItem('PlayingToWin', JSON.stringify(updatedPlayingToWin));
-  //   localStorage.setItem('PlayingToWin', JSON.stringify(localOrder));
-  //   markEdited(id);
-  //   if (!edited.includes(id)) setEdited([...edited, id]);
-  //   setEditing({ field: null, id: null });
-  // };
+
 
   const handleBlur = (id, field, newValue) => {
     updatePlayingToWin(id, field, newValue);
@@ -87,19 +77,6 @@ const PlayingToWin = () => {
     setEditing({ field: null, id: null });
   };
 
-  // const handleAdd = () => {
-  //   const nextId = Math.max(0, ...playingtowins.map(o => o.id || 0)) + 1;
-  //   const newItem = { id: nextId, ...newPlayingToWin };
-  //   pushPlayingToWin(newItem);
-  //   localStorage.removeItem('PlayingToWin');
-  //   setNewPlayingToWin({ title: '', value: '' });
-  //   setShowAddModal(false);
-  //   markEdited(nextId);
-  //   // setEdited([...edited, nextId]);
-
-  //   ENABLE_CONSOLE_LOGS && console.log('✅ New PlayingToWin Added:', newItem);
-  //   // console.log('📦 Full Updated PlayingToWin:', [...playingtowins, newItem]);
-  // };
 
   const handleAdd = async () => {
     const nextId = Math.max(0, ...playingtowins.map(o => o.id || 0)) + 1;
@@ -174,30 +151,6 @@ const PlayingToWin = () => {
     // ENABLE_CONSOLE_LOGS && console.log('📦 Updated PlayingToWins:', updated);
   };
 
-  // const handleSave = () => {
-
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //     console.log('📤 Saving to store:', playingtowins);
-  //     setEdited([]);
-  //     localStorage.removeItem('PlayingToWin');
-  //     setPlayingToWin(localOrder);
-  //   }, 1000);
-
-  // };
-
-  // const handleSave = () => {
-  //   setLoadingSave(true);
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //     setEdited([]);
-  //     localStorage.removeItem('PlayingToWin');
-  //     ENABLE_CONSOLE_LOGS && console.log('📤 Saving to store:', localOrder);
-  //     setPlayingToWin(localOrder);
-  //   }, 1000);
-  // };
 
   const handleSave = async () => {
     setLoadingSave(true);
@@ -255,13 +208,6 @@ const PlayingToWin = () => {
     }, 1000);
   };
 
-  // const confirmDischarge = () => {
-  //   localStorage.removeItem('PlayingToWin');
-  //   setEdited([]);
-  //   setLocalOrder(playingtowins);
-  //   setPlayingToWin(initialPlayingToWin);
-  //   setShowConfirmModal(false);
-  // };
 
   const confirmDischarge = () => {
     localStorage.removeItem('PlayingToWin');

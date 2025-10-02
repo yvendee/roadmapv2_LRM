@@ -7,6 +7,7 @@ import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-soli
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../../configs/config';
+import RichTextEditor from './RichTextEditor';
 import './ThreeYearOutlook.css';
 
 const ThreeYearOutlook = () => {
@@ -338,7 +339,7 @@ const ThreeYearOutlook = () => {
                   user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'value', id: item.id })
                 }
               >
-                {editing.field === 'value' && editing.id === item.id ? (
+                {/* {editing.field === 'value' && editing.id === item.id ? (
                   <textarea
                     autoFocus
                     defaultValue={item.value}
@@ -349,13 +350,28 @@ const ThreeYearOutlook = () => {
                 ) : item.value === '-' ? (
                   <div className="skeleton w-32 h-4"></div>
                 ) : (
-                  item.value.split('\n').map((line, index) => (
-                    <React.Fragment key={index}>
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))
+                  item.value
+                )} */}
+
+
+                {editing.field === 'value' && editing.id === item.id ? (
+                  <RichTextEditor
+                    value={item.value}
+                    onChange={(val) => {
+                      const updatedOutlooks = outlooks.map((o) =>
+                        o.id === item.id ? { ...o, value: val } : o
+                      );
+                      setOutlooks(updatedOutlooks);
+                    }}
+                    onBlur={(finalHtml) => handleBlur(item.id, 'value', finalHtml)}
+                    autoFocus
+                  />
+                ) : item.value === '-' ? (
+                  <div className="skeleton w-32 h-4"></div>
+                ) : (
+                  <div dangerouslySetInnerHTML={{ __html: item.value }} style={{ whiteSpace: 'pre-wrap' }} />
                 )}
+
               </p>
 
             </div>
