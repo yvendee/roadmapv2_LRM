@@ -82,7 +82,17 @@ const FourDecisions = () => {
 
   const handleAdd = async () => {
     const nextId = Math.max(0, ...fourDecisions.map((o) => o.id || 0)) + 1;
-    const newItem = { id: nextId, ...newFourDecisions };
+    // const newItem = { id: nextId, ...newFourDecisions };
+    const fallback = {
+      description: newFourDecisions.description?.trim() || 'Untitled Decision',
+      orig: newFourDecisions.orig?.trim() || 'N/A',
+      q1: newFourDecisions.q1?.trim() || 'TBD',
+      q2: newFourDecisions.q2?.trim() || 'TBD',
+      q3: newFourDecisions.q3?.trim() || 'TBD',
+      q4: newFourDecisions.q4?.trim() || 'TBD',
+    };
+  
+    const newItem = { id: nextId, ...fallback };
   
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {

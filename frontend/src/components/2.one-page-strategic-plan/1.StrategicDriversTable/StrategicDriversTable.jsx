@@ -122,12 +122,20 @@ const StrategicDriversTable = () => {
   };
 
   const handleAddNewDriver = async () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Driver:', JSON.stringify(newDriver, null, 2));
+
+    const driverToAdd = {
+      title: newDriver.title?.trim() || 'Untitled Driver',
+      description: newDriver.description?.trim() || 'No description',
+      kpi: newDriver.kpi?.trim() || 'N/A',
+      status: newDriver.status || 'Tracking',
+    };
+
+    ENABLE_CONSOLE_LOGS && console.log('New Driver:', JSON.stringify(driverToAdd, null, 2));
   
     const currentDrivers = useStrategicDriversStore.getState().strategicDrivers;
   
     // Append new driver to the current list
-    const updated = [...currentDrivers, newDriver];
+    const updated = [...currentDrivers, driverToAdd];
   
     // Reindex with new IDs
     const reordered = updated.map((driver, index) => ({

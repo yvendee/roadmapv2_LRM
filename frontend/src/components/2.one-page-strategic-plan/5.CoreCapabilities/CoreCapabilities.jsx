@@ -80,7 +80,18 @@ const CoreCapabilities = () => {
 
   const handleAdd = async () => {
     const nextId = Math.max(0, ...coreCapabilities.map((o) => o.id || 0)) + 1;
-    const newItem = { id: nextId, ...newCapability };
+    
+    // const newItem = { id: nextId, ...newCapability };
+    const fallbackCapability = {
+      description: newCapability.description?.trim() || 'Untitled Capability',
+      orig: newCapability.orig?.trim() || 'N/A',
+      q1: newCapability.q1?.trim() || 'TBD',
+      q2: newCapability.q2?.trim() || 'TBD',
+      q3: newCapability.q3?.trim() || 'TBD',
+      q4: newCapability.q4?.trim() || 'TBD',
+    };
+
+    const newItem = { id: nextId, ...fallbackCapability };
   
     ENABLE_CONSOLE_LOGS && console.log('📤 Adding CoreCapability:', newItem);
   
