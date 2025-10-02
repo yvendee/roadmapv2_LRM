@@ -2,8 +2,12 @@
 
 import { create } from 'zustand';
 
+// export const initialCurrentFocus = {
+//   focusItems: ['Test', 'test'],
+// };
+
 export const initialCurrentFocus = {
-  focusItems: ['Test', 'test'],
+  focusItems: [],
 };
 
 const useCurrentFocusStore = create((set) => ({

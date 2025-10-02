@@ -2,8 +2,12 @@
 
 import { create } from 'zustand';
 
+// export const initialWhatsNext = {
+//   whatsNextItems: ['Test', 'test'],
+// };
+
 export const initialWhatsNext = {
-  whatsNextItems: ['Test', 'test'],
+  whatsNextItems: [],
 };
 
 const useWhatsNextStore = create((set) => ({

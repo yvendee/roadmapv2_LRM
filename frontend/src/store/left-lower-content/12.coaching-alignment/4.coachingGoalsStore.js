@@ -1,8 +1,12 @@
 // frontend/src/store/left-lower-content/12.coaching-alignment/4.coachingGoalsStore.js
 import { create } from 'zustand';
 
+// export const initialCoachingGoals = {
+//   coachingGoalsItems: ['Test', 'test', 'Hello', 'World'],
+// };
+
 export const initialCoachingGoals = {
-  coachingGoalsItems: ['Test', 'test', 'Hello', 'World'],
+  coachingGoalsItems: [],
 };
 
 const useCoachingGoalsStore = create((set) => ({

@@ -1,23 +1,27 @@
 // frontend\src\store\left-lower-content\12.coaching-alignment\2.currentBusinessPulseStore.js
 import { create } from 'zustand';
 
-export const initialBusinessPulse = [
-  {
-    category: 'Strategic Clarity',
-    rating: 1,
-    notes: ['test', 'test'],
-  },
-  {
-    category: 'Execution Discipline',
-    rating: 'N/A',
-    notes: [],
-  },
-  {
-    category: 'Leadership & Team Health',
-    rating: 'N/A',
-    notes: [],
-  },
-];
+// export const initialBusinessPulse = [
+//   {
+//     category: 'Strategic Clarity',
+//     rating: 1,
+//     notes: ['test', 'test'],
+//   },
+//   {
+//     category: 'Execution Discipline',
+//     rating: 'N/A',
+//     notes: [],
+//   },
+//   {
+//     category: 'Leadership & Team Health',
+//     rating: 'N/A',
+//     notes: [],
+//   },
+// ];
+
+
+export const initialBusinessPulse = [];
+
 
 const useBusinessPulseStore = create((set) => ({
   pulseItems: initialBusinessPulse,
