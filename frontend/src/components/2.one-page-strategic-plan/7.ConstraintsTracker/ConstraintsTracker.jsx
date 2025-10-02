@@ -35,14 +35,17 @@ const ConstraintsTracker = () => {
     setConstraintsTracker(storeConstraintsTracker); // Copy from global store once
   }, [storeConstraintsTracker]);
 
-  const hasRealData = constraintsTracker.some(
-    (item) =>
-      item.constraintTitle !== '-' ||
-      item.description !== '-' ||
-      item.owner !== '-' ||
-      item.actions !== '-' ||
-      item.status !== '-'
-  );
+  // const hasRealData = constraintsTracker.some(
+  //   (item) =>
+  //     item.constraintTitle !== '-' ||
+  //     item.description !== '-' ||
+  //     item.owner !== '-' ||
+  //     item.actions !== '-' ||
+  //     item.status !== '-'
+  // );
+
+  const hasRealData = constraintsTracker.some(item => item.value === '-');
+
 
   useEffect(() => {
     const stored = localStorage.getItem('ConstraintsTracker');

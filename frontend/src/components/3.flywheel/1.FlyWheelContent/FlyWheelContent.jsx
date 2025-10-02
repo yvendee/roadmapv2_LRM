@@ -124,24 +124,37 @@ const FlyWheelContent = () => {
             </p>
 
           <form onSubmit={handleUpload} className="upload-form always-black">
-            <label htmlFor="file-upload">Upload File: <span className="required">*</span></label>
-            
-            {/* Hide the real file input */}
-            <input
-              type="file"
-              id="file-upload"
-              onChange={handleFileChange}
-              required
-              style={{ display: 'none' }}
-            />
+          <label htmlFor="file-upload" style={{ display: 'block', marginBottom: '8px' }}>
+            Upload File: <span className="required">*</span>
+          </label>
 
-            {/* Custom label to trigger file select */}
-            <label
-              htmlFor="file-upload"
-              className="custom-file-label px-3 py-2 border rounded cursor-pointer inline-block"
-            >
-              Choose File: {file ? file.name : 'No file'}
-            </label>
+          {/* Hide native file input */}
+          <input
+            type="file"
+            id="file-upload"
+            onChange={handleFileChange}
+            required
+            style={{ display: 'none' }}
+          />
+
+          {/* Custom label for file selection */}
+          <label
+            htmlFor="file-upload"
+            className="custom-file-label"
+            style={{
+              display: 'inline-block',
+              padding: '8px 12px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginBottom: '12px',
+              userSelect: 'none',
+            }}
+          >
+            Choose File: {file ? file.name : 'No file'}
+          </label>
+
+
             <div
               role="button"
               onClick={!loading ? handleUpload : undefined} 
