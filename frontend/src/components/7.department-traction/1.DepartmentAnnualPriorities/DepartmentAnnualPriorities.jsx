@@ -140,7 +140,14 @@ const DepartmentAnnualPriorities = () => {
 
 
 const handleAddNewAnnualPriority = async () => {
-  ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
+
+  // Set defaults if empty
+  const priorityToSend = {
+    description: newAnnualPriority.description?.trim() || 'empty',
+    status: newAnnualPriority.status || '0.00%',
+  };
+
+  ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(priorityToSend, null, 2));
 
   try {
     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -159,7 +166,7 @@ const handleAddNewAnnualPriority = async () => {
       credentials: 'include',
       body: JSON.stringify({
         organizationName: org,
-        newAnnualPriority,
+        newAnnualPriority: priorityToSend,
       }),
     });
 

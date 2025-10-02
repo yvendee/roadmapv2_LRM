@@ -213,6 +213,8 @@ const DepartmentTractionTable = () => {
 
 
   const handleEditChange = (e, rowId, field) => {
+    setIsEditing(true); 
+    
     const value = e.target.value;
   
     // Update the store
