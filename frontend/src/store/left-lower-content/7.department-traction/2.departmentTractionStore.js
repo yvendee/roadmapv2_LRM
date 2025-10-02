@@ -94,14 +94,28 @@ const useDepartmentTractionStore = create((set) => ({
 
   setDepartmentTraction: (data) => set({ departmentTraction: data }),
 
-  addDepartmentTraction: (quarter, item) =>
-    set((state) => ({
-      departmentTraction: {
-        ...state.departmentTraction,
-        [quarter]: [...state.departmentTraction[quarter], item],
-      },
-    })),
+  // addDepartmentTraction: (quarter, item) =>
+  //   set((state) => ({
+  //     departmentTraction: {
+  //       ...state.departmentTraction,
+  //       [quarter]: [...state.departmentTraction[quarter], item],
+  //     },
+  //   })),
 
+  addDepartmentTraction: (quarter, item) =>
+    set((state) => {
+      const existing = Array.isArray(state.departmentTraction[quarter])
+        ? state.departmentTraction[quarter]
+        : [];
+      return {
+        departmentTraction: {
+          ...state.departmentTraction,
+          [quarter]: [...existing, item],
+        },
+      };
+    }),
+
+    
   updateDepartmentTractionField: (quarter, id, field, value) =>
     set((state) => ({
       departmentTraction: {

@@ -215,6 +215,8 @@ const CompanyTraction = () => {
 
 
   const handleEditChange = (e, rowId, field) => {
+
+    setIsEditing(true); 
     const value = e.target.value;
   
     // Update the store
@@ -224,7 +226,20 @@ const CompanyTraction = () => {
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
   };
-  
+
+//   const handleEditChange = (e, id, field) => {
+//   const newValue = e.target.value;
+//   setCompanyTraction((prev) => {
+//     const updated = { ...prev };
+//     for (const quarter in updated) {
+//       updated[quarter] = updated[quarter].map((item) =>
+//         item.id === id ? { ...item, [field]: newValue } : item
+//       );
+//     }
+//     return updated;
+//   });
+//   setIsEditing(true); // ✅ Show action buttons
+// };
 
   const handleProgressChange = (e, rowId) => {
     const value = e.target.value;
