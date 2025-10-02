@@ -358,13 +358,9 @@ const ThreeYearOutlook = () => {
 
                 {editing.field === 'value' && editing.id === item.id ? (
                   <RichTextEditor
-                    value={item.value}
-                    onChange={(val) => {
-                      const updatedOutlooks = outlooks.map((o) =>
-                        o.id === item.id ? { ...o, value: val } : o
-                      );
-                      setOutlooks(updatedOutlooks);
-                    }}
+                    // value={item.value}
+                    value={storeOutlooks.find((o) => o.id === item.id)?.value || ''}
+                    onChange={(val) => updateOutlook(item.id, 'value', val)}
                     onBlur={(finalHtml) => handleBlur(item.id, 'value', finalHtml)}
                     autoFocus
                   />
