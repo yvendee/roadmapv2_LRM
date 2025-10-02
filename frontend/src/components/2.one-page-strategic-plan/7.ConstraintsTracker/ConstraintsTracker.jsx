@@ -396,7 +396,7 @@ const ConstraintsTracker = () => {
           <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
             <div className="modal-add-title">Add Constraints Tracker</div>
             {/* { constraintTitle: '', description: '', owner: '', actions: '', status: ''} */}
-            {['Constraint Title', 'description', 'owner', 'actions', 'status'].map((field) => (
+            {['constraintTitle', 'description', 'owner', 'actions', 'status'].map((field) => (
               <div key={field}>
               <label className="modal-add-label capitalize">{field}</label>
               {field === 'status' ? (
