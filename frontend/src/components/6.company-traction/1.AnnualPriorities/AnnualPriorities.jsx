@@ -104,34 +104,16 @@ const AnnualPriorities = () => {
   };
 
 
-  // const handleAddNewAnnualPriority = () => {
-  //   ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
-
-  //   // 2. Hide Save / Discharge
-  //   // setEditedAnnualPriorities([]);
-  //   setIsEditing(false);
-
-  
-  //   // 3. Remove localStorage temp data
-  //   localStorage.removeItem('annualPrioritiesData');
-  
-  //   // 4. Push to Zustand store
-  //   pushAnnualPriorities(newAnnualPriority);
-  
-  //   // 5. Optionally: force-refresh the UI by resetting store (if needed)
-  //   // Not required unless you deep reset from localStorage elsewhere
-  
-  //   // Close modal
-  //   setShowAddModal(false);
-  
-  //   // Reset form input
-  //   setNewAnnualPriority({ description: '', status: 'Tracking' });
-  // };
-
-
   const handleAddNewAnnualPriority = async () => {
-    ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(newAnnualPriority, null, 2));
-  
+
+    const cleanPriority = {
+      description: newAnnualPriority.description.trim() || 'empty',
+      status: newAnnualPriority.status?.trim() || '0.00%',
+    };
+
+    ENABLE_CONSOLE_LOGS && console.log('New Annual Priority:', JSON.stringify(cleanPriority, null, 2));
+
+    
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
@@ -147,7 +129,7 @@ const AnnualPriorities = () => {
         credentials: 'include',
         body: JSON.stringify({
           organizationName: organization,
-          newPriority: newAnnualPriority,
+          newPriority: cleanPriority,
         }),
       });
   

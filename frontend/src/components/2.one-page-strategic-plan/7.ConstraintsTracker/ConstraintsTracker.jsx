@@ -99,11 +99,11 @@ const ConstraintsTracker = () => {
     const nextId = Math.max(0, ...constraintsTracker.map((o) => o.id || 0)) + 1;
     const newItem = {
       id: nextId,
-      constraintTitle,
-      description,
-      owner,
-      actions,
-      status,
+      constraintTitle: constraintTitle.trim(),
+      description: description.trim(),
+      owner: owner.trim(),
+      actions: actions.trim(),
+      status: status.trim(),
     };
   
     try {

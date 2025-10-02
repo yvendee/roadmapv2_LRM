@@ -95,13 +95,27 @@ const useCompanyTractionStore = create((set) => ({
 
   setCompanyTraction: (data) => set({ companyTraction: data }),
 
+  // addCompanyTraction: (quarter, item) =>
+  //   set((state) => ({
+  //     companyTraction: {
+  //       ...state.companyTraction,
+  //       [quarter]: [...state.companyTraction[quarter], item],
+  //     },
+  //   })),
+
   addCompanyTraction: (quarter, item) =>
-    set((state) => ({
-      companyTraction: {
-        ...state.companyTraction,
-        [quarter]: [...state.companyTraction[quarter], item],
-      },
-    })),
+    set((state) => {
+      const existing = Array.isArray(state.companyTraction[quarter])
+        ? state.companyTraction[quarter]
+        : [];
+      return {
+        companyTraction: {
+          ...state.companyTraction,
+          [quarter]: [...existing, item],
+        },
+      };
+    }),
+  
 
   updateCompanyTractionField: (quarter, id, field, value) =>
     set((state) => ({

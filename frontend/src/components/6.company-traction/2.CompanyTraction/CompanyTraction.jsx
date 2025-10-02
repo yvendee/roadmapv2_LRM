@@ -414,6 +414,15 @@ const CompanyTraction = () => {
 
 
   async function handleAddNewTraction() {
+
+    // // Fallbacks
+    // const cleanedForm = {
+    //   ...form,
+    //   description: form.description?.trim() || 'empty',
+    //   progress: form.progress?.trim() || '0%',
+    //   dueDate: form.dueDate || '', // we'll handle formatting below
+    // };
+
     const mmddyyyy = form.dueDate
       ? `${form.dueDate.split('-')[1]}-${form.dueDate.split('-')[2]}-${form.dueDate.split('-')[0]}`
       : 'Click to set date';
