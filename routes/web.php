@@ -1474,21 +1474,24 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    // 🧾 Validate incoming data
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'outlooks' => 'required|array', // ✅ It allow empty arrays
-    ]);
+    // Skip validation entirely
+    $organization = $request->input('organization');
+    $outlooks = $request->input('outlooks');
 
-    $organization = $validated['organization'];
-    $outlooks = $validated['outlooks'];
+    // Optional: fallback if null
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization'], 422);
+    }
+    if ($outlooks === null) {
+        $outlooks = [];
+    }
 
     // 📦 Fetch or create record
     $record = OpspThreeyearOutlook::firstOrNew([
         'organizationName' => $organization,
     ]);
 
-    // 💾 Save updated data as JSON (even if it's an empty array)
+    // 💾 Save updated data as JSON (even if empty array)
     $record->threeyearOutlookData = json_encode($outlooks);
     $record->save();
 
@@ -1497,6 +1500,7 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
         'data' => $outlooks,
     ]);
 });
+
 
 
 // ref: frontend\src\components\2.one-page-strategic-plan\3.ThreeYearOutlook\ThreeYearOutlook.jsx
