@@ -336,7 +336,9 @@ const ThreeYearOutlook = () => {
               <p
                 className={`text-sm text-gray-700 mt-1 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
                 onClick={() =>
-                  user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'value', id: item.id })
+                  // user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'value', id: item.id })
+                  user?.role === 'superadmin' && setEditing({ field: 'value', id: item.id })
+
                 }
               >
                 {/* {editing.field === 'value' && editing.id === item.id ? (
@@ -353,7 +355,6 @@ const ThreeYearOutlook = () => {
                   item.value
                 )} */}
 
-
                 {editing.field === 'value' && editing.id === item.id ? (
                   <RichTextEditor
                     value={item.value}
@@ -369,7 +370,8 @@ const ThreeYearOutlook = () => {
                 ) : item.value === '-' ? (
                   <div className="skeleton w-32 h-4"></div>
                 ) : (
-                  <div dangerouslySetInnerHTML={{ __html: item.value }} style={{ whiteSpace: 'pre-wrap' }} />
+                  // <div dangerouslySetInnerHTML={{ __html: item.value }} style={{ whiteSpace: 'pre-wrap' }} />
+                  <div dangerouslySetInnerHTML={{ __html: item.value || '' }} />
                 )}
 
               </p>
