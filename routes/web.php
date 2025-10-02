@@ -3485,28 +3485,12 @@ Route::get('/api/v1/department-traction/annual-priorities', function (Request $r
 
 // ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/department-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    // Validate request inputs
-    $validator = Validator::make($request->all(), [
-        'organizationName' => 'required|string|max:255',
-        'annualPrioritiesData' => 'required|array', // expects JSON array
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'errors' => $validator->errors(),
-        ], 422);
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organizationName = $request->input('organizationName');
-    $annualPrioritiesData = $request->input('annualPrioritiesData');
+    $annualPrioritiesData = $request->input('annualPrioritiesData', []); // Default to empty array
 
     // Find the record by organizationName
     $record = DepartmentTractionAnnualPriority::where('organizationName', $organizationName)->first();
@@ -3518,7 +3502,7 @@ Route::post('/api/v1/department-traction/annual-priorities/update', function (Re
         ], 404);
     }
 
-    // Update the annualPrioritiesData column (store as JSON)
+    // Update the annualPrioritiesData column
     $record->annualPrioritiesData = $annualPrioritiesData;
     $record->save();
 
@@ -3528,6 +3512,52 @@ Route::post('/api/v1/department-traction/annual-priorities/update', function (Re
         'data' => $record,
     ]);
 });
+
+
+// Route::post('/api/v1/department-traction/annual-priorities/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     // Validate request inputs
+//     $validator = Validator::make($request->all(), [
+//         'organizationName' => 'required|string|max:255',
+//         'annualPrioritiesData' => 'required|array', // expects JSON array
+//     ]);
+
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'Validation failed',
+//             'errors' => $validator->errors(),
+//         ], 422);
+//     }
+
+//     $organizationName = $request->input('organizationName');
+//     $annualPrioritiesData = $request->input('annualPrioritiesData');
+
+//     // Find the record by organizationName
+//     $record = DepartmentTractionAnnualPriority::where('organizationName', $organizationName)->first();
+
+//     if (!$record) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => "Organization '$organizationName' not found",
+//         ], 404);
+//     }
+
+//     // Update the annualPrioritiesData column (store as JSON)
+//     $record->annualPrioritiesData = $annualPrioritiesData;
+//     $record->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'Annual Priorities data updated successfully',
+//         'data' => $record,
+//     ]);
+// });
 
 // ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/department-traction/annual-priorities/add', function (Request $request) use ($API_secure) {
@@ -3628,19 +3658,12 @@ Route::get('/api/v1/department-traction/traction-data', function (Request $reque
 
 // ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organizationName' => 'required|string|max:255',
-        'departmentTractionData' => 'required|array',
-    ]);
-
-    $orgName = $validated['organizationName'];
-    $tractionData = $validated['departmentTractionData'];
+    $orgName = $request->input('organizationName');
+    $tractionData = $request->input('departmentTractionData', []); // Default to empty array
 
     $record = DepartmentTractionCompanyTraction::where('organizationName', $orgName)->first();
 
@@ -3660,6 +3683,41 @@ Route::post('/api/v1/department-traction/traction-data/update', function (Reques
         'data' => $record,
     ]);
 });
+
+
+// Route::post('/api/v1/department-traction/traction-data/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validated = $request->validate([
+//         'organizationName' => 'required|string|max:255',
+//         'departmentTractionData' => 'required|array',
+//     ]);
+
+//     $orgName = $validated['organizationName'];
+//     $tractionData = $validated['departmentTractionData'];
+
+//     $record = DepartmentTractionCompanyTraction::where('organizationName', $orgName)->first();
+
+//     if (!$record) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => "Organization '$orgName' not found",
+//         ], 404);
+//     }
+
+//     $record->companyTractionData = $tractionData;
+//     $record->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'Company traction data updated successfully',
+//         'data' => $record,
+//     ]);
+// });
 
 // ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/department-traction/traction-data/add', function (Request $request) {
@@ -4031,18 +4089,12 @@ Route::get('/api/v1/thirteen-week-sprint', function (Request $request) use ($API
 
 // ref: frontend\src\components\7A.thirteen-week-sprint\1.WeeklySprintTracker\WeeklySprintTracker.jsx
 Route::post('/api/v1/thirteen-week-sprint/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->input('organization');
-    $data = $request->input('thirteenWeekSprintData');
-
-    if (!$organization || !$data) {
-        return response()->json(['message' => 'Organization and data are required'], 400);
-    }
+    $data = $request->input('thirteenWeekSprintData', []); // Default to empty array if missing
 
     $record = ThirteenWeekSprint::where('organizationName', $organization)->first();
 
@@ -4050,12 +4102,39 @@ Route::post('/api/v1/thirteen-week-sprint/update', function (Request $request) u
         return response()->json(['message' => 'No record found for this organization'], 404);
     }
 
-    // Save the updated weekly sprint data
     $record->thirteenWeekSprintData = $data;
     $record->save();
 
     return response()->json(['message' => 'ThirteenWeekSprintData updated successfully']);
 });
+
+
+// Route::post('/api/v1/thirteen-week-sprint/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->input('organization');
+//     $data = $request->input('thirteenWeekSprintData');
+
+//     if (!$organization || !$data) {
+//         return response()->json(['message' => 'Organization and data are required'], 400);
+//     }
+
+//     $record = ThirteenWeekSprint::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'No record found for this organization'], 404);
+//     }
+
+//     // Save the updated weekly sprint data
+//     $record->thirteenWeekSprintData = $data;
+//     $record->save();
+
+//     return response()->json(['message' => 'ThirteenWeekSprintData updated successfully']);
+// });
 
 // ref: frontend\src\components\8.who-what-when\whoWhatWhen.jsx
 Route::get('/api/v1/who-what-when', function (Request $request) use ($API_secure) {
@@ -4090,10 +4169,6 @@ Route::post('/api/v1/who-what-when/update', function (Request $request) use ($AP
 
     $organization = $request->input('organization');
     $newData = $request->input('whoWhatWhenData');
-
-    if (!$organization || !$newData) {
-        return response()->json(['message' => 'Organization and whoWhatWhenData are required'], 400);
-    }
 
     $record = WhoWhatWhen::where('organizationName', $organization)->first();
 
@@ -4704,7 +4779,7 @@ Route::get('/api/v1/coaching-checklist/project-progress', function (Request $req
 //     );
 // });
 
-// ref:
+// ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
 Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4742,30 +4817,51 @@ Route::get('/api/v1/coaching-checklist/panels', function (Request $request) use 
 
 
 
-// ref:
+// ref: frontend\src\components\11.coaching-checklist\2.CollapsiblePanels\CollapsiblePanels.jsx
 Route::post('/api/v1/coaching-checklist/panels/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->input('organization');
-    $panels = $request->input('panels');
-
-    if (!$organization || !is_array($panels)) {
-        return response()->json(['message' => 'Invalid input'], 400);
-    }
+    $panels = $request->input('panels', []); // Default to empty array if not provided
 
     // Find or create the record
-    $record = CoachingChecklistPanel::firstOrCreate(
-        ['organizationName' => $organization]
-    );
+    $record = CoachingChecklistPanel::firstOrCreate([
+        'organizationName' => $organization
+    ]);
 
-    // Save JSON panels data
+    // Save panels data as JSON
     $record->coachingChecklistPanelsData = $panels;
     $record->save();
 
     return response()->json(['message' => 'Panels updated successfully']);
 });
+
+
+// Route::post('/api/v1/coaching-checklist/panels/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $organization = $request->input('organization');
+//     $panels = $request->input('panels');
+
+//     if (!$organization || !is_array($panels)) {
+//         return response()->json(['message' => 'Invalid input'], 400);
+//     }
+
+//     // Find or create the record
+//     $record = CoachingChecklistPanel::firstOrCreate(
+//         ['organizationName' => $organization]
+//     );
+
+//     // Save JSON panels data
+//     $record->coachingChecklistPanelsData = $panels;
+//     $record->save();
+
+//     return response()->json(['message' => 'Panels updated successfully']);
+// });
 
 
 // ref: 
@@ -4845,7 +4941,7 @@ Route::post('/api/v1/coaching-checklist/update-pdflink', function (Request $requ
 // });
 
 
-// ref: 
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/current-focus', function (Request $request) use ($API_secure) {
     // ✅ Secure session check
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -4871,23 +4967,18 @@ Route::get('/api/v1/coaching-alignment/current-focus', function (Request $reques
 });
 
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\1.CurrentFocus\CurrentFocus.jsx
 Route::post('/api/v1/coaching-alignment/current-focus/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'focusItems' => 'required|array',
+    $organization = $request->input('organization');
+    $focusItems = $request->input('focusItems', []); // Default to empty array
+
+    $record = CoachingAlignmentCurrentFocus::firstOrCreate([
+        'organizationName' => $organization
     ]);
-
-    $organization = $validated['organization'];
-    $focusItems = $validated['focusItems'];
-
-    $record = CoachingAlignmentCurrentFocus::firstOrCreate(
-        ['organizationName' => $organization]
-    );
 
     $record->coachingAlignmentCurrentFocusData = [
         'focusItems' => $focusItems
@@ -4899,7 +4990,34 @@ Route::post('/api/v1/coaching-alignment/current-focus/update', function (Request
 });
 
 
-// ref: 
+// Route::post('/api/v1/coaching-alignment/current-focus/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'focusItems' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $focusItems = $validated['focusItems'];
+
+//     $record = CoachingAlignmentCurrentFocus::firstOrCreate(
+//         ['organizationName' => $organization]
+//     );
+
+//     $record->coachingAlignmentCurrentFocusData = [
+//         'focusItems' => $focusItems
+//     ];
+
+//     $record->save();
+
+//     return response()->json(['message' => 'Focus items updated successfully']);
+// });
+
+
+// ref: frontend\src\components\12.coaching-alignment\1.CurrentFocus\CurrentFocus.jsx
 Route::post('/api/v1/coaching-alignment/current-focus/delete-item', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5004,7 +5122,7 @@ Route::post('/api/v1/coaching-alignment/current-focus/delete-item', function (Re
 //     return response()->json($data[$organization] ?? []);
 // });
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -5029,23 +5147,18 @@ Route::get('/api/v1/coaching-alignment/current-business-pulse', function (Reques
 
 
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\2.CurrentBusinessPulse\CurrentBusinessPulse.jsx
 Route::post('/api/v1/coaching-alignment/current-business-pulse/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'pulseData' => 'required|array',
+    $organization = $request->input('organization');
+    $pulseData = $request->input('pulseData', []); // default to empty array if missing
+
+    $record = CoachingAlignmentCurrentBusinessPulse::firstOrCreate([
+        'organizationName' => $organization
     ]);
-
-    $organization = $validated['organization'];
-    $pulseData = $validated['pulseData'];
-
-    $record = CoachingAlignmentCurrentBusinessPulse::firstOrCreate(
-        ['organizationName' => $organization]
-    );
 
     $record->coachingAlignmentCurrentBusinessPulseData = $pulseData;
     $record->save();
@@ -5053,8 +5166,31 @@ Route::post('/api/v1/coaching-alignment/current-business-pulse/update', function
     return response()->json(['message' => 'Business pulse updated successfully']);
 });
 
+// Route::post('/api/v1/coaching-alignment/current-business-pulse/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
 
-// ref:
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'pulseData' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $pulseData = $validated['pulseData'];
+
+//     $record = CoachingAlignmentCurrentBusinessPulse::firstOrCreate(
+//         ['organizationName' => $organization]
+//     );
+
+//     $record->coachingAlignmentCurrentBusinessPulseData = $pulseData;
+//     $record->save();
+
+//     return response()->json(['message' => 'Business pulse updated successfully']);
+// });
+
+
+// ref: frontend\src\components\12.coaching-alignment\2.CurrentBusinessPulse\CurrentBusinessPulse.jsx
 Route::post('/api/v1/coaching-alignment/current-business-pulse/delete-item', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5111,7 +5247,7 @@ Route::post('/api/v1/coaching-alignment/current-business-pulse/delete-item', fun
 //     return response()->json($data[$organization] ?? ['whatsNextItems' => []]);
 // });
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/whats-next', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5133,19 +5269,14 @@ Route::get('/api/v1/coaching-alignment/whats-next', function (Request $request) 
 });
 
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\3.WhatsNext\WhatsNext.jsx
 Route::post('/api/v1/coaching-alignment/whats-next/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'whatsNextItems' => 'required|array',
-    ]);
-
-    $organization = $validated['organization'];
-    $items = $validated['whatsNextItems'];
+    $organization = $request->input('organization');
+    $items = $request->input('whatsNextItems', []); // default to empty array if missing
 
     // Find or create the record
     $record = CoachingAlignmentWhatsNext::firstOrCreate(
@@ -5162,7 +5293,35 @@ Route::post('/api/v1/coaching-alignment/whats-next/update', function (Request $r
 });
 
 
-// ref:
+// Route::post('/api/v1/coaching-alignment/whats-next/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'whatsNextItems' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $items = $validated['whatsNextItems'];
+
+//     // Find or create the record
+//     $record = CoachingAlignmentWhatsNext::firstOrCreate(
+//         ['organizationName' => $organization]
+//     );
+
+//     // Save updated data
+//     $record->coachingAlignmentWhatsNextData = [
+//         'whatsNextItems' => $items,
+//     ];
+//     $record->save();
+
+//     return response()->json(['message' => 'WhatsNext items updated successfully']);
+// });
+
+
+// ref: frontend\src\components\12.coaching-alignment\3.WhatsNext\WhatsNext.jsx
 Route::post('/api/v1/coaching-alignment/whats-next/delete-item', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5224,7 +5383,7 @@ Route::post('/api/v1/coaching-alignment/whats-next/delete-item', function (Reque
 // });
 
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\coachingAlignment.jsx
 Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5246,26 +5405,21 @@ Route::get('/api/v1/coaching-alignment/coaching-goals', function (Request $reque
 });
 
 
-// ref:
+// ref: frontend\src\components\12.coaching-alignment\4.CoachingGoals\CoachingGoals.jsx
 Route::post('/api/v1/coaching-alignment/coaching-goals/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    // ✅ Validate input
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'coachingGoalsItems' => 'required|array',
-    ]);
+    $organization = $request->input('organization');
+    $goalsItems = $request->input('coachingGoalsItems', []); // default empty array if missing
 
-    // ✅ Find or create record by organizationName
     $record = CoachingAlignmentCoachingGoal::firstOrCreate(
-        ['organizationName' => $validated['organization']]
+        ['organizationName' => $organization]
     );
 
-    // ✅ Update data
     $record->coachingAlignmentCoachingGoalsData = [
-        'coachingGoalsItems' => $validated['coachingGoalsItems'],
+        'coachingGoalsItems' => $goalsItems,
     ];
 
     $record->save();
@@ -5273,8 +5427,34 @@ Route::post('/api/v1/coaching-alignment/coaching-goals/update', function (Reques
     return response()->json(['message' => 'Coaching goals updated successfully']);
 });
 
+// Route::post('/api/v1/coaching-alignment/coaching-goals/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
 
-// ref:
+//     // ✅ Validate input
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'coachingGoalsItems' => 'required|array',
+//     ]);
+
+//     // ✅ Find or create record by organizationName
+//     $record = CoachingAlignmentCoachingGoal::firstOrCreate(
+//         ['organizationName' => $validated['organization']]
+//     );
+
+//     // ✅ Update data
+//     $record->coachingAlignmentCoachingGoalsData = [
+//         'coachingGoalsItems' => $validated['coachingGoalsItems'],
+//     ];
+
+//     $record->save();
+
+//     return response()->json(['message' => 'Coaching goals updated successfully']);
+// });
+
+
+// ref: frontend\src\components\12.coaching-alignment\4.CoachingGoals\CoachingGoals.jsx
 Route::post('/api/v1/coaching-alignment/coaching-goals/delete-item', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5433,7 +5613,7 @@ Route::post('/api/v1/coaching-alignment/coaching-goals/delete-item', function (R
 
 
 
-// ref:
+// ref: frontend\src\components\13a.issues\Issues.jsx
 Route::get('/api/v1/tools/issues', function (Request $request) {
     $organization = $request->query('organization');
 
@@ -5451,19 +5631,17 @@ Route::get('/api/v1/tools/issues', function (Request $request) {
 });
 
 
-// ref:
+// ref: frontend\src\components\13a.issues\1.IssueTable\IssueTable.jsx
 Route::post('/api/v1/tools/issues/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->input('organization');
-    $newData = $request->input('toolsIssuesData');
+    $newData = $request->input('toolsIssuesData', []);
 
-    if (!$organization || !$newData || !is_array($newData)) {
-        return response()->json(['message' => 'Organization and toolsIssuesData are required and must be valid'], 400);
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
     }
 
     $record = ToolsIssue::where('organizationName', $organization)->first();
@@ -5478,9 +5656,35 @@ Route::post('/api/v1/tools/issues/update', function (Request $request) use ($API
     return response()->json(['message' => 'Tools Issues data updated successfully']);
 });
 
+// Route::post('/api/v1/tools/issues/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->input('organization');
+//     $newData = $request->input('toolsIssuesData');
+
+//     // if (!$organization || !$newData || !is_array($newData)) {
+//     //     return response()->json(['message' => 'Organization and toolsIssuesData are required and must be valid'], 400);
+//     // }
+
+//     $record = ToolsIssue::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'No record found for this organization'], 404);
+//     }
+
+//     $record->toolsIssuesData = $newData;
+//     $record->save();
+
+//     return response()->json(['message' => 'Tools Issues data updated successfully']);
+// });
 
 
-// ref:
+
+// ref: frontend\src\components\13a.issues\1.IssueTable\IssueTable.jsx
 Route::post('/api/v1/tools/issues/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -5647,13 +5851,12 @@ Route::post('/api/v1/tools/victories/update', function (Request $request) use ($
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'toolsVictoriesData' => 'required|array',
-    ]);
+    $organization = $request->input('organization');
+    $victoriesData = $request->input('toolsVictoriesData', []); // default to empty array if missing
 
-    $organization = $validated['organization'];
-    $victoriesData = $validated['toolsVictoriesData'];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
     $record = ToolsVictory::where('organizationName', $organization)->first();
 
@@ -5669,6 +5872,35 @@ Route::post('/api/v1/tools/victories/update', function (Request $request) use ($
         'data' => $record->toolsVictoriesData,
     ]);
 });
+
+
+// Route::post('/api/v1/tools/victories/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'toolsVictoriesData' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $victoriesData = $validated['toolsVictoriesData'];
+
+//     $record = ToolsVictory::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'No record found for this organization'], 404);
+//     }
+
+//     $record->toolsVictoriesData = $victoriesData;
+//     $record->save();
+
+//     return response()->json([
+//         'message' => 'Tools Victories data updated successfully.',
+//         'data' => $record->toolsVictoriesData,
+//     ]);
+// });
 
 
 // ref: frontend\src\components\13b.victories\1.VictoriesTable\VictoriesTable.jsx
@@ -5865,18 +6097,20 @@ Route::post('/api/v1/tools/big-ideas/update', function (Request $request) use ($
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'toolsBigIdeasData' => 'required|array',
-    ]);
+    $organization = $request->input('organization');
+    $bigIdeasData = $request->input('toolsBigIdeasData', []);
 
-    $record = ToolsBigIdea::where('organizationName', $validated['organization'])->first();
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
+
+    $record = ToolsBigIdea::where('organizationName', $organization)->first();
 
     if (!$record) {
         return response()->json(['message' => 'No record found for this organization'], 404);
     }
 
-    $record->toolsBigIdeasData = $validated['toolsBigIdeasData'];
+    $record->toolsBigIdeasData = $bigIdeasData;
     $record->save();
 
     return response()->json([
@@ -5884,6 +6118,32 @@ Route::post('/api/v1/tools/big-ideas/update', function (Request $request) use ($
         'data' => $record->toolsBigIdeasData,
     ]);
 });
+
+
+// Route::post('/api/v1/tools/big-ideas/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'toolsBigIdeasData' => 'required|array',
+//     ]);
+
+//     $record = ToolsBigIdea::where('organizationName', $validated['organization'])->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'No record found for this organization'], 404);
+//     }
+
+//     $record->toolsBigIdeasData = $validated['toolsBigIdeasData'];
+//     $record->save();
+
+//     return response()->json([
+//         'message' => 'Tools Big Ideas data updated successfully.',
+//         'data' => $record->toolsBigIdeasData,
+//     ]);
+// });
 
 // ref: frontend\src\components\13c.big-ideas\1.BigIdeasTable\BigIdeasTable.jsx
 Route::post('/api/v1/tools/big-ideas/add', function (Request $request) use ($API_secure) {
@@ -6113,13 +6373,12 @@ Route::post('/api/v1/tools/product-evaluation-grid/update', function (Request $r
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'reordered' => 'required|array',
-    ]);
+    $organization = $request->input('organization');
+    $updatedData = $request->input('reordered', []); // default to empty array if missing
 
-    $organization = $validated['organization'];
-    $updatedData = $validated['reordered'];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
     $record = ToolsProductEvaluationGrid::where('organizationName', $organization)->first();
 
@@ -6135,6 +6394,34 @@ Route::post('/api/v1/tools/product-evaluation-grid/update', function (Request $r
         'updatedData' => $updatedData,
     ]);
 });
+
+// Route::post('/api/v1/tools/product-evaluation-grid/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'reordered' => 'required|array',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $updatedData = $validated['reordered'];
+
+//     $record = ToolsProductEvaluationGrid::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Record not found for organization'], 404);
+//     }
+
+//     $record->toolsProductEvaluationGridsData = $updatedData;
+//     $record->save();
+
+//     return response()->json([
+//         'message' => 'Product Evaluation Grid updated successfully.',
+//         'updatedData' => $updatedData,
+//     ]);
+// });
 
 // ref: frontend\src\components\13d.product-evaluation-grid\1.ProductEvaluationGridTable\ProductEvaluationGridTable.jsx
 Route::post('/api/v1/tools/product-evaluation-grid/add', function (Request $request) use ($API_secure) {
@@ -6326,26 +6613,18 @@ Route::get('/api/v1/document-vault/list', function (Request $request) use ($API_
 });
 
 
-// ref: 
+// ref: frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.jsx
 Route::post('/api/v1/document-vault/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organization' => 'required|string',
-        'documentVaultData' => 'required|array',
-        'documentVaultData.*.id' => 'required|integer',
-        'documentVaultData.*.projectName' => 'required|string',
-        'documentVaultData.*.date' => 'required|date',
-        'documentVaultData.*.link' => 'nullable|string',
-        'documentVaultData.*.viewLink' => 'nullable|string',
-        'documentVaultData.*.uploadLink' => 'nullable|string',
-        'documentVaultData.*.pdflink' => 'nullable|string',
-    ]);
+    $organization = $request->input('organization');
+    $newData = $request->input('documentVaultData', []); // default empty array if missing
 
-    $organization = $validated['organization'];
-    $newData = $validated['documentVaultData'];
+    if (!$organization) {
+        return response()->json(['message' => 'Organization is required'], 400);
+    }
 
     $record = DocumentVault::where('organizationName', $organization)->first();
 
@@ -6361,6 +6640,41 @@ Route::post('/api/v1/document-vault/update', function (Request $request) use ($A
         'updatedData' => $newData,
     ]);
 });
+
+// Route::post('/api/v1/document-vault/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organization' => 'required|string',
+//         'documentVaultData' => 'required|array',
+//         'documentVaultData.*.id' => 'required|integer',
+//         'documentVaultData.*.projectName' => 'required|string',
+//         'documentVaultData.*.date' => 'required|date',
+//         'documentVaultData.*.link' => 'nullable|string',
+//         'documentVaultData.*.viewLink' => 'nullable|string',
+//         'documentVaultData.*.uploadLink' => 'nullable|string',
+//         'documentVaultData.*.pdflink' => 'nullable|string',
+//     ]);
+
+//     $organization = $validated['organization'];
+//     $newData = $validated['documentVaultData'];
+
+//     $record = DocumentVault::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Record not found for organization: ' . $organization], 404);
+//     }
+
+//     $record->documentVaultData = $newData;
+//     $record->save();
+
+//     return response()->json([
+//         'message' => 'Document vault data updated successfully.',
+//         'updatedData' => $newData,
+//     ]);
+// });
 
 
 // ref: frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.jsx
@@ -6414,7 +6728,7 @@ Route::post('/api/v1/document-vault/add', function (Request $request) use ($API_
     ]);
 });
 
-// ref:
+// ref: frontend\src\components\14.document-vault\1.DocumentVaultTable\DocumentVaultTable.jsx
 Route::post('/api/v1/document-vault/update-pdflink', function (Request $request) use ($API_secure) {
     // Security check
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -6523,27 +6837,52 @@ Route::get('/api/v1/members-departments', function (Request $request) use ($API_
 
 
 // ref: frontend\src\components\15.members-departments\1.MembersDepartmentsTable\MembersDepartmentsTable.jsx
+// Route::post('/api/v1/members-departments/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $validated = $request->validate([
+//         'organizationName' => 'required|string',
+//         'membersDepartmentsData' => 'required|array',
+//     ]);
+
+//     $record = MembersDepartment::where('organizationName', $validated['organizationName'])->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Organization not found'], 404);
+//     }
+
+//     $record->membersDepartmentsData = $validated['membersDepartmentsData'];
+//     $record->save();
+
+//     return response()->json(['message' => 'Members departments updated successfully.']);
+// });
+
 Route::post('/api/v1/members-departments/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
-        'organizationName' => 'required|string',
-        'membersDepartmentsData' => 'required|array',
-    ]);
+    $organizationName = $request->input('organizationName');
+    $membersDepartmentsData = $request->input('membersDepartmentsData', []); // default empty array if missing
 
-    $record = MembersDepartment::where('organizationName', $validated['organizationName'])->first();
+    if (!$organizationName) {
+        return response()->json(['message' => 'Organization name is required'], 400);
+    }
+
+    $record = MembersDepartment::where('organizationName', $organizationName)->first();
 
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
     }
 
-    $record->membersDepartmentsData = $validated['membersDepartmentsData'];
+    $record->membersDepartmentsData = $membersDepartmentsData;
     $record->save();
 
     return response()->json(['message' => 'Members departments updated successfully.']);
 });
+
 
 
 // ref: frontend\src\components\15.members-departments\1.MembersDepartmentsTable\MembersDepartmentsTable.jsx
@@ -6706,10 +7045,10 @@ Route::post('/api/v1/members-directory/update', function (Request $request) use 
     }
 
     $organization = $request->input('organization');
-    $membersDirectoryData = $request->input('membersDirectoryData');
+    $membersDirectoryData = $request->input('membersDirectoryData', []); // default to empty array
 
-    if (!$organization || !$membersDirectoryData) {
-        return response()->json(['message' => 'Missing organization or data'], 400);
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization'], 400);
     }
 
     $record = MembersDirectory::where('organizationName', $organization)->first();
@@ -6723,6 +7062,31 @@ Route::post('/api/v1/members-directory/update', function (Request $request) use 
 
     return response()->json(['message' => 'Members Directory updated successfully']);
 });
+
+
+// Route::post('/api/v1/members-directory/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $organization = $request->input('organization');
+//     $membersDirectoryData = $request->input('membersDirectoryData');
+
+//     if (!$organization || !$membersDirectoryData) {
+//         return response()->json(['message' => 'Missing organization or data'], 400);
+//     }
+
+//     $record = MembersDirectory::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Organization not found'], 404);
+//     }
+
+//     $record->membersDirectoryData = $membersDirectoryData;
+//     $record->save();
+
+//     return response()->json(['message' => 'Members Directory updated successfully']);
+// });
 
 
 Route::post('/api/v1/members-directory/add', function (Request $request) use ($API_secure) {
