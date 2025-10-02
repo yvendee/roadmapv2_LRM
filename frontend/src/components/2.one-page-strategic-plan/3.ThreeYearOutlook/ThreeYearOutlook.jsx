@@ -371,7 +371,7 @@ const ThreeYearOutlook = () => {
                 ) : item.value === '-' ? (
                   <div className="skeleton w-32 h-4"></div>
                 ) : (
-                  <div dangerouslySetInnerHTML={{ __html: item.value }} style={{ whiteSpace: 'pre-wrap' }} />
+                  <div dangerouslySetInnerHTML={{ __html: item.value || 'Empty (click to edit)' }} style={{ whiteSpace: 'pre-wrap' }} />
                 )}
 
               </p>
