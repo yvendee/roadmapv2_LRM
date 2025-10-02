@@ -1781,10 +1781,10 @@ Route::post('/api/v1/one-page-strategic-plan/core-capabilities/update', function
     }
 
     $organization = $request->input('organization');
-    $coreCapabilities = $request->input('coreCapabilities');
+    $coreCapabilities = $request->input('coreCapabilities', []); // default to empty array if missing
 
-    if (!$organization || !$coreCapabilities) {
-        return response()->json(['message' => 'Missing required fields'], 400);
+    if (!$organization) {
+        return response()->json(['message' => 'Missing required organization field'], 400);
     }
 
     $record = OpspCoreCapability::where('organizationName', $organization)->first();
@@ -1798,6 +1798,7 @@ Route::post('/api/v1/one-page-strategic-plan/core-capabilities/update', function
 
     return response()->json(['message' => 'Core Capabilities updated successfully']);
 });
+
 
 // ref: rontend\src\components\2.one-page-strategic-plan\5.CoreCapabilities\CoreCapabilities.jsx
 Route::post('/api/v1/one-page-strategic-plan/core-capabilities/add', function (Request $request) use ($API_secure) {
