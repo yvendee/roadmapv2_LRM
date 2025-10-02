@@ -37,7 +37,7 @@ const EmployeeTable = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newMembersDepartmentsTable, setNewMembersDepartmentsTable] = useState({
     fullname: '',
-    company: '',
+    company: organization || '',
     email: '',
     department: '',
     memberAccess: 'Leadership',
@@ -291,127 +291,6 @@ const EmployeeTable = () => {
     setEditingCell({ id: null, field: null });
   };
 
-  
-  // const handleSaveChanges = () => {
-
-  //   setLoadingSave(true);
-  
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  
-  //     const storedData = localStorage.getItem('NewMembersDirectoryTableData');
-  
-  //     if (storedData) {
-  //       try {
-  //         const parsedData = JSON.parse(storedData);
-  
-  //         // 1. Log to console
-  //         ENABLE_CONSOLE_LOGS && console.log('Saved Members Departments Table after Save Changes Button:', parsedData);
-  
-  //         // 2. Update Zustand store
-  //         setMembersDepartments(parsedData);
-
-  //         // Reindex IDs
-  //         const reordered = parsedData.map((driver, index) => ({
-  //           ...driver,
-  //           id: index + 1,
-  //         }));
-
-  //         ENABLE_CONSOLE_LOGS &&  console.log('Saved Members Departments Table (Reindexed):', reordered);
-
-  //         setMembersDepartments(reordered);
-  
-  //         // 3. Clear edited state (hides buttons)
-  //         setIsEditing(false);
-
-  
-  //         // 4. Remove from localStorage
-  //         localStorage.removeItem('NewMembersDirectoryTableData');
-  //       } catch (err) {
-  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDirectoryTableData on save:', err);
-  //       }
-  //     } else {
-
-  //       // No localStorage changes, use current drag order
-
-  //       const reordered = currentOrder.map((driver, index) => ({
-  //         ...driver,
-  //         id: index + 1,
-  //       }));
-
-  //       ENABLE_CONSOLE_LOGS &&  console.log('Saved Members Departments Table (reordered):', reordered);
-  //       setMembersDepartments(reordered);
-  //       setIsEditing(false);
-
-
-  //       // Remove from localStorage
-  //       localStorage.removeItem('NewMembersDirectoryTableData');
-
-  //     }
-  //   }, 1000);
-  // };
-  
-
-  // const handleSaveChanges = () => {
-  //   setLoadingSave(true);
-  
-  //   setTimeout(async () => {
-  //     setLoadingSave(false);
-  
-  //     const storedData = localStorage.getItem('NewMembersDirectoryTableData');
-  
-  //     let dataToSend;
-  
-  //     if (storedData) {
-  //       try {
-  //         dataToSend = JSON.parse(storedData);
-  //         ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table after Save Changes Button:', dataToSend);
-  //       } catch (err) {
-  //         ENABLE_CONSOLE_LOGS && console.error('Error parsing NewMembersDirectoryTableData on save:', err);
-  //         return;
-  //       }
-  //     } else {
-  //       dataToSend = currentOrder.map((item, index) => ({
-  //         ...item,
-  //         id: index + 1,
-  //       }));
-  //       ENABLE_CONSOLE_LOGS && console.log('Saved Members Directory Table (Reordered):', dataToSend);
-  //     }
-  
-  //     try {
-  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-  //         credentials: 'include',
-  //       });
-  //       const { csrf_token } = await csrfRes.json();
-  
-  //       const response = await fetch(`${API_URL}/v1/members-directory/update`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'X-CSRF-TOKEN': csrf_token,
-  //         },
-  //         credentials: 'include',
-  //         body: JSON.stringify({
-  //           organization,
-  //           membersDirectoryData: dataToSend,
-  //         }),
-  //       });
-  
-  //       const result = await response.json();
-  //       ENABLE_CONSOLE_LOGS && console.log('Update response:', result);
-  
-  //       if (!response.ok) {
-  //         console.error('Update failed:', result.message || 'Unknown error');
-  //       } else {
-  //         localStorage.removeItem('NewMembersDirectoryTableData');
-  //         setCurrentOrder(dataToSend);
-  //         setIsEditing(false);
-  //       }
-  //     } catch (error) {
-  //       console.error('Update request error:', error);
-  //     }
-  //   }, 1000);
-  // };
   
 
   const handleSaveChanges = () => {
@@ -1002,11 +881,6 @@ const EmployeeTable = () => {
           </div>
         </div>
       )}
-
-
-
-
-
 
     </div>
 
