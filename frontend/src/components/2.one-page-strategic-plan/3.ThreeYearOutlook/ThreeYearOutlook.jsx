@@ -339,7 +339,9 @@ const ThreeYearOutlook = () => {
               <p
                 className={`text-sm text-gray-700 mt-1 ${user?.role === 'superadmin' && item.value !== '-'  && item.value !== null ? 'cursor-pointer' : ''}`}
                 onClick={() =>
-                  user?.role === 'superadmin' && item.value !== '-'  && item.value !== null && setEditing({ field: 'value', id: item.id })
+                  // user?.role === 'superadmin' && item.value !== '-'  && item.value !== null && setEditing({ field: 'value', id: item.id })
+                  user?.role === 'superadmin' && (item.value === null || item.value === '-' || item.value) && setEditing({ field: 'value', id: item.id })
+
                 }
               >
                 {/* {editing.field === 'value' && editing.id === item.id ? (
