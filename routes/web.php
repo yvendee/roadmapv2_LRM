@@ -1477,10 +1477,7 @@ Route::post('/api/v1/one-page-strategic-plan/three-year-outlook/update', functio
     // 🧾 Validate incoming data
     $validated = $request->validate([
         'organization' => 'required|string',
-        'outlooks' => 'required|array', // ✅ Removed min:1 to allow empty arrays
-        'outlooks.*.id' => 'sometimes|integer', // 🆗 Only validate if present
-        'outlooks.*.year' => 'sometimes|string',
-        'outlooks.*.value' => 'sometimes|string',
+        'outlooks' => 'required|array', // ✅ It allow empty arrays
     ]);
 
     $organization = $validated['organization'];
