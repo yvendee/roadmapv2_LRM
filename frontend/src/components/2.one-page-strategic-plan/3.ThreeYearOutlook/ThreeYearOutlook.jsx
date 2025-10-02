@@ -86,7 +86,12 @@ const ThreeYearOutlook = () => {
 
   const handleAdd = async () => {
     const nextId = Math.max(0, ...outlooks.map((o) => o.id || 0)) + 1;
-    const newItem = { id: nextId, ...newOutlook };
+    // const newItem = { id: nextId, ...newOutlook };
+    const newItem = {
+      id: nextId,
+      year: newOutlook.year?.trim() ? newOutlook.year : '2025',  // ✅ Default to "2025"
+      value: newOutlook.value?.trim() ? newOutlook.value : 'empty', // ✅ Default to "empty"
+    };
   
     try {
       ENABLE_CONSOLE_LOGS && console.log('✅ New 3-Year Outlook:', newItem);
