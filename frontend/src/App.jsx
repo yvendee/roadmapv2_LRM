@@ -29,6 +29,7 @@ import ProductEvaluationGrid from './components/13d.product-evaluation-grid/Prod
 import DocumentVault from './components/14.document-vault/documentVault';
 import MembersDepartments from './components/15.members-departments/membersDepartments';
 import MembersDirectory from './components/16.members-directory/membersDirectory';
+import AdminPanel from './components/admin-panel/AdminPanel';
 import Chat from './components/chat/Chat';
 import TopbarDropdown from './components/company-dropdown/TopbarDropdown';
 import ThemeToggle from './components/theme-icon/ThemeToggle';
@@ -55,6 +56,15 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
   const isStrategicPlanPage = location.pathname === '/one-page-strategic-plan'; // Check if on the right page
 
+  const isAdminPanelPage = location.pathname === '/admin-panel';
+
+  // Use this to hide sidebar, upper, lower content when on admin panel
+  const showMainLayout = !isLoginPage && !isAdminPanelPage;
+
+  // Optionally: redirect non-superadmin users away from admin panel
+  if (isAdminPanelPage && !isSuperAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
   useSessionKeepAlive();
 
@@ -89,7 +99,8 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
     <div className="flex min-h-screen min-w-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       
       {/* Right Content */}
-      {!isLoginPage && (
+      {/* {!isLoginPage && ( */}
+      {showMainLayout && (
         <>
           <Sidebar isDark={isDark} setIsDark={setIsDark} collapsed={collapsed} 
             onShowTooltip={showTooltipHandler} 
@@ -126,7 +137,8 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
 
       {/* Left Upper Content */}
       <div className={`flex flex-col flex-1 ${isLoginPage ? 'h-screen' : 'p-4 h-screen'}`}>
-        {!isLoginPage && (
+        {/* {!isLoginPage && ( */}
+        {showMainLayout && (
           // <div className="flex justify-end items-center space-x-4 mb-6">
           <div className="flex justify-between items-center space-x-4 mb-6">
             {/* <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
@@ -185,6 +197,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/members-directory" element={<MembersDirectory />} />
             <Route path="/messaging" element={<ChatInterface />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/admin-panel" element={<AdminPanel />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
