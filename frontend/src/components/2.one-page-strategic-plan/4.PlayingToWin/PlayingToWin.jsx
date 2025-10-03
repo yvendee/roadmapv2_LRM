@@ -263,7 +263,7 @@ const PlayingToWin = () => {
       <div className="playing-to-win">
         <div className="flex justify-between items-center mb-4">
           <h5 className="text-md font-semibold text-green-700">Playing to Win Strategy</h5>
-          {user?.role === 'superadmin' && (
+          {user?.role === 'superadmin' && !hasPlayingToWin (
             <div className="flex gap-2">
               {edited.length > 0 && (
                 <>
