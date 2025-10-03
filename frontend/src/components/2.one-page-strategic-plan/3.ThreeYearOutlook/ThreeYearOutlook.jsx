@@ -294,7 +294,10 @@ const ThreeYearOutlook = () => {
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
               {/* {user?.role === 'superadmin' && !hasPendingOutlook && ( */}
-              {user?.role === 'superadmin' && !hasPendingOutlook && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
+              {user?.role === 'superadmin'
+              && Array.isArray(outlooks)
+              && !hasPendingOutlook 
+              && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
 
                 <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
