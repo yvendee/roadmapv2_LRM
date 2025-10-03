@@ -18,7 +18,10 @@ function ChatHead() {
 
   const chatToggleRef = useRef(null);
   const [dragging, setDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 30, y: 20 });
+  const [position, setPosition] = useState(() => ({
+    x: window.innerWidth - 90, // 60px icon + 30px margin
+    y: window.innerHeight - 90, // 60px icon + 30px margin
+  }));
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
   
@@ -169,6 +172,7 @@ function ChatHead() {
           userSelect: 'none',
           zIndex: 9999,
         }}
+        
         
       >
         {!isChatOpen && <div className="chat-label">Need Help?</div>}
