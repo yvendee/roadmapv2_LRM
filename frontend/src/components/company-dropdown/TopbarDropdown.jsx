@@ -36,6 +36,8 @@ const TopbarDropdown = () => {
     // Simulate a delay before fetching
     setTimeout(async () => {
       try {
+
+        // ✅ Step 1: Fetch Layout Toggles
         const response = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(option)}`);
         const result = await response.json();
 
@@ -53,6 +55,35 @@ const TopbarDropdown = () => {
         } else {
           console.error('Server error:', result.message);
         }
+
+        // ✅ Step 2: Fetch Company Traction Users
+        try {
+          const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(option)}`,
+            {
+              credentials: 'include',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+
+          const tractionUsers = await tractionUserRes.json();
+          ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
+
+          const firstUser = tractionUsers[0] || null;
+
+          useCompanyTractionUserStore.setState({
+            users: tractionUsers,
+            selectedUser: firstUser,
+          });
+        } catch (tractionErr) {
+          console.error('Error fetching traction users:', tractionErr);
+        }
+
+
       } catch (error) {
         console.error('Network error:', error);
       } finally {

@@ -138,15 +138,18 @@ const Login = () => {
             console.error('Post-login fetch error:', error);
           }
 
-          // Fetch Company Traction Users
+          // ✅ Step 3: Fetch Company Traction Users using the selected organization
           try {
-            const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users`, {
-              credentials: 'include',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-            });
+            const tractionUserRes = await fetch(
+              `${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(firstCompany)}`,
+              {
+                credentials: 'include',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
 
             if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
 
@@ -156,12 +159,11 @@ const Login = () => {
 
             const firstUser = tractionUsers[0] || null;
 
-            // Update Zustand store
+            // ✅ Update Zustand store
             useCompanyTractionUserStore.setState({
               users: tractionUsers,
               selectedUser: firstUser,
             });
-
           } catch (error) {
             console.error('Error fetching traction users:', error);
           }

@@ -8163,8 +8163,7 @@ Route::post('/api/v1/notifications/mark-read', function (Request $request) use (
 
 
 // ref: frontend\src\pages\login\Login.jsx
-Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {
-    
+Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -8172,12 +8171,43 @@ Route::get('/api/v1/company-traction-users', function (Request $request) use ($A
         $user = $request->session()->get('user');
     }
 
-    return response()->json([
-        'Maricar', 
-        'Chuck', 
-        // 'Arlene'
-    ]);
+    $orgName = $request->query('organizationName');
+
+    if (!$orgName) {
+        return response()->json(['message' => 'organizationName is required'], 400);
+    }
+
+    $directory = MembersDirectory::where('organizationName', $orgName)->first();
+
+    if (!$directory) {
+        return response()->json([]); // Return empty array if not found
+    }
+
+    $firstNames = collect($directory->membersDirectoryData)
+        ->map(function ($member) {
+            $parts = explode(' ', trim($member['fullname']));
+            return $parts[0]; // Get the first name
+        });
+
+    return response()->json($firstNames);
 });
+
+
+// Route::get('/api/v1/company-traction-users', function (Request $request) use ($API_secure)  {
+    
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//         $user = $request->session()->get('user');
+//     }
+
+//     return response()->json([
+//         'Maricar', 
+//         'Chuck', 
+//         // 'Arlene'
+//     ]);
+// });
 
 // ref: frontend\src\components\layout-icon\LayoutButton.jsx
 Route::post('/api/v1/update-layout-toggles', function (Request $request) use ($API_secure) {
