@@ -223,10 +223,15 @@ const ThreeYearOutlook = () => {
 
   const confirmDischarge = () => {
     localStorage.removeItem('threeYearOutlook');
+
     setEdited([]);
-    // ✅ Get current value from Zustand store (not the initial)
-    const currentState = useThreeYearOutlookStore.getState().outlooks;
-    setOutlooks(currentState);
+
+    const { setBaselineOutlooks } = useThreeYearOutlookStore.getState();
+
+    // ✅ Console log to inspect setBaselineOutlooks before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring setBaselineOutlooks:', setBaselineOutlooks);
+
+    setOutlooks(setBaselineOutlooks);
     setShowConfirmModal(false);
   };
   

@@ -34,6 +34,7 @@ const OnePageStrategicPlan = () => {
   const loadFourDesicionsFromAPI = useFourDecisions((state) => state.setFourDecisions);
   const loadConstraintsTrackerFromAPI = useConstraintsTracker((state) => state.setConstraintsTracker);
   const setBaselineFoundations = useFoundationsStore((state) => state.setBaselineFoundations)
+  const setBaselineOutlooks = useThreeYearOutlookStore((state) => state.setBaselineOutlooks);
 
   const navigate = useNavigate(); // Ensure it's inside your component
   const toggles = useLayoutSettingsStore((state) => state.toggles);
@@ -134,6 +135,7 @@ const OnePageStrategicPlan = () => {
     
             if (Array.isArray(outlookArr)) {
               loadOutlooksFromAPI(outlookArr);
+              setBaselineOutlooks(outlookArr);
             } else {
               console.error(`⚠️ No outlooks found for organization: ${organization}`);
             }

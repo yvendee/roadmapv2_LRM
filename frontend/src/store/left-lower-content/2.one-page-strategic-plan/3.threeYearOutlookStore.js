@@ -10,6 +10,12 @@ export const initialOutlooks = [
 const useThreeYearOutlookStore = create((set) => ({
   outlooks: initialOutlooks,
 
+  // Store the initial state when app loads
+  baselineOutlooks: initialOutlooks,
+
+  setBaselineOutlooks: (data) => set({ baselineOutlooks: data }),
+  
+
   setOutlooks: (data) => set({ outlooks: data }),
 
   updateOutlook: (id, field, value) =>
