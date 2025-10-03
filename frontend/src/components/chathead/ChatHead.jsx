@@ -18,12 +18,10 @@ function ChatHead() {
 
   const chatToggleRef = useRef(null);
   const [dragging, setDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 30, y: window.innerHeight - 100 });
-
+  const [position, setPosition] = useState({ x: 30, y: 20 });
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
-
-
+  
   
 
   const handleMouseDown = (e) => {
