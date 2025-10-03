@@ -1,32 +1,38 @@
 import React, { useState } from 'react';
 import './AdminPanelSidebar.css';
 import logo from '../../assets/images/webp/momentum-logo.webp';
-import { FaBars, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { 
+  FaBars, FaChevronDown, FaChevronUp, 
+  FaTachometerAlt, FaBullseye, FaLightbulb, FaCalendarAlt, 
+  FaBuilding, FaUsers, FaUserShield, FaTable 
+} from 'react-icons/fa';
 
 const MENU_ITEMS = [
-  { label: 'Dashboard' },
-  { label: 'Growth Goals' },
+  { label: 'Dashboard', icon: <FaTachometerAlt /> },
+  { label: 'Growth Goals', icon: <FaBullseye /> },
   { 
     label: 'Key Thrust Strategic Drivers',
+    icon: <FaLightbulb />,
     children: [
-      'Strategic Alignments',
-      'Annual Priorities',
-      'Core Values',
-      'Foundational Documents',
-      'Win Strategies',
+      { label: 'Strategic Alignments', icon: <FaBullseye /> },
+      { label: 'Annual Priorities', icon: <FaCalendarAlt /> },
+      { label: 'Core Values', icon: <FaLightbulb /> },
+      { label: 'Foundational Documents', icon: <FaBuilding /> },
+      { label: 'Win Strategies', icon: <FaBullseye /> },
     ],
   },
   { 
     label: 'Meetings',
+    icon: <FaCalendarAlt />,
     children: [
-      'Monthly Meetings',
-      'Quarterly Meetings',
+      { label: 'Monthly Meetings', icon: <FaCalendarAlt /> },
+      { label: 'Quarterly Meetings', icon: <FaCalendarAlt /> },
     ],
   },
-  { label: 'Companies' },
-  { label: 'Users' },
-  { label: 'Roles' },
-  { label: 'Table Headers' },
+  { label: 'Companies', icon: <FaBuilding /> },
+  { label: 'Users', icon: <FaUsers /> },
+  { label: 'Roles', icon: <FaUserShield /> },
+  { label: 'Table Headers', icon: <FaTable /> },
 ];
 
 export default function AdminPanelSidebar({
@@ -54,7 +60,10 @@ export default function AdminPanelSidebar({
             onClick={() => toggleExpand(item.label)}
             className={`admin-menu-item flex justify-between items-center ${selectedItem === item.label ? 'active' : ''}`}
           >
-            <span>{item.label}</span>
+            <span className="flex items-center gap-2">
+              {item.icon}
+              {item.label}
+            </span>
             {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
           </button>
 
@@ -62,11 +71,14 @@ export default function AdminPanelSidebar({
             <div className="admin-submenu pl-6">
               {item.children.map(subItem => (
                 <button
-                  key={subItem}
-                  onClick={() => setSelectedItem(subItem)}
-                  className={`admin-menu-item sub-item ${selectedItem === subItem ? 'active' : ''}`}
+                  key={subItem.label}
+                  onClick={() => setSelectedItem(subItem.label)}
+                  className={`admin-menu-item sub-item ${selectedItem === subItem.label ? 'active' : ''}`}
                 >
-                  {subItem}
+                  <span className="flex items-center gap-2">
+                    {subItem.icon}
+                    {subItem.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -79,8 +91,9 @@ export default function AdminPanelSidebar({
       <button
         key={item.label}
         onClick={() => setSelectedItem(item.label)}
-        className={`admin-menu-item ${selectedItem === item.label ? 'active' : ''}`}
+        className={`admin-menu-item flex items-center gap-2 ${selectedItem === item.label ? 'active' : ''}`}
       >
+        {item.icon}
         {item.label}
       </button>
     );
