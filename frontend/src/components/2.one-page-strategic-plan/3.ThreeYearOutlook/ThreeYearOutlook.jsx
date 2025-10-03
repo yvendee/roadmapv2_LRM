@@ -231,10 +231,10 @@ const ThreeYearOutlook = () => {
     // ✅ Console log to inspect setBaselineOutlooks before setting
     ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring setBaselineOutlooks:', setBaselineOutlooks);
 
-
+    setOutlooks(setBaselineOutlooks);
     // ✅ Get current value from Zustand store (not the initial)
-    const currentState = useThreeYearOutlookStore.getState().outlooks;
-    setOutlooks(currentState);
+    // const currentState = useThreeYearOutlookStore.getState().outlooks;
+    // setOutlooks(currentState);
     setShowConfirmModal(false);
   };
   
