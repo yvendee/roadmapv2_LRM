@@ -95,6 +95,34 @@
     background-color: #2563eb;
     color: white;
   }
+
+  
+  .admin-submenu {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1.5rem; /* indentation */
+  }
+  
+  .admin-menu-item.sub-item {
+    font-size: 0.875rem;
+    color: #555;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .admin-menu-item.sub-item:hover {
+    background-color: #e2e8f0; /* lighter hover */
+  }
+  
+  .admin-menu-item.sub-item.active {
+    background-color: #2563eb;
+    color: white;
+  }
+  
   
 /* Hide sidebar toggle button on screens wider than or equal to 768px */
 @media (min-width: 768px) {

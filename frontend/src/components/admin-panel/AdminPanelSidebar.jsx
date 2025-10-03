@@ -1,23 +1,32 @@
-import React from 'react';
-import './AdminPanelSidebar.css'; // <-- Import the CSS file
+import React, { useState } from 'react';
+import './AdminPanelSidebar.css';
 import logo from '../../assets/images/webp/momentum-logo.webp';
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const MENU_ITEMS = [
-  'Dashboard',
-  'Growth Goals',
-  'Key Thrust Strategic Drivers',
-  'Strategic Alignments',
-  'Annual Priorities',
-  'Core Values',
-  'Foundational Documents',
-  'Win Strategies',
-  'Monthly Meetings',
-  'Quarterly Meetings',
-  'Companies',
-  'Users',
-  'Roles',
-  'Table Headers',
+  { label: 'Dashboard' },
+  { label: 'Growth Goals' },
+  { 
+    label: 'Key Thrust Strategic Drivers',
+    children: [
+      'Strategic Alignments',
+      'Annual Priorities',
+      'Core Values',
+      'Foundational Documents',
+      'Win Strategies',
+    ],
+  },
+  { 
+    label: 'Meetings',
+    children: [
+      'Monthly Meetings',
+      'Quarterly Meetings',
+    ],
+  },
+  { label: 'Companies' },
+  { label: 'Users' },
+  { label: 'Roles' },
+  { label: 'Table Headers' },
 ];
 
 export default function AdminPanelSidebar({
@@ -26,6 +35,57 @@ export default function AdminPanelSidebar({
   setSelectedItem,
   onToggleSidebar,
 }) {
+  const [expandedItems, setExpandedItems] = useState({});
+
+  const toggleExpand = (label) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
+
+  const renderMenuItem = (item) => {
+    if (item.children) {
+      const isExpanded = expandedItems[item.label];
+
+      return (
+        <div key={item.label}>
+          <button
+            onClick={() => toggleExpand(item.label)}
+            className={`admin-menu-item flex justify-between items-center ${selectedItem === item.label ? 'active' : ''}`}
+          >
+            <span>{item.label}</span>
+            {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+
+          {isExpanded && (
+            <div className="admin-submenu pl-6">
+              {item.children.map(subItem => (
+                <button
+                  key={subItem}
+                  onClick={() => setSelectedItem(subItem)}
+                  className={`admin-menu-item sub-item ${selectedItem === subItem ? 'active' : ''}`}
+                >
+                  {subItem}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <button
+        key={item.label}
+        onClick={() => setSelectedItem(item.label)}
+        className={`admin-menu-item ${selectedItem === item.label ? 'active' : ''}`}
+      >
+        {item.label}
+      </button>
+    );
+  };
+
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
       {/* Header */}
@@ -38,15 +98,7 @@ export default function AdminPanelSidebar({
 
       {/* Menu Items */}
       <nav className="admin-menu">
-        {MENU_ITEMS.map((item) => (
-          <button
-            key={item}
-            onClick={() => setSelectedItem(item)}
-            className={`admin-menu-item ${selectedItem === item ? 'active' : ''}`}
-          >
-            {item}
-          </button>
-        ))}
+        {MENU_ITEMS.map(renderMenuItem)}
       </nav>
     </aside>
   );
