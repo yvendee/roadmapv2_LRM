@@ -226,12 +226,12 @@ const ThreeYearOutlook = () => {
 
     setEdited([]);
 
-    const { setBaselineOutlooks } = useThreeYearOutlookStore.getState();
+    const { baselineOutlooks } = useThreeYearOutlookStore.getState();
 
-    // ✅ Console log to inspect setBaselineOutlooks before setting
-    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring setBaselineOutlooks:', setBaselineOutlooks);
+    // ✅ Console log to inspect baselineOutlooks before setting
+    ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring baselineOutlooks:', baselineOutlooks);
 
-    setOutlooks(setBaselineOutlooks);
+    setOutlooks(baselineOutlooks);
     // ✅ Get current value from Zustand store (not the initial)
     // const currentState = useThreeYearOutlookStore.getState().outlooks;
     // setOutlooks(currentState);
