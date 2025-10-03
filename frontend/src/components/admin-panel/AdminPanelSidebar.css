@@ -21,10 +21,32 @@
   
   @media (min-width: 768px) {
     .admin-sidebar {
+      /* Remove fixed transform */
+      position: relative;
+      /* Remove forced transform here */
+    }
+  
+    /* Add this to hide sidebar when NOT open */
+    .admin-sidebar:not(.open) {
+      transform: translateX(-100%);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 240px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 30;
+      transition: transform 0.3s ease-in-out;
+    }
+  
+    /* When open, show sidebar */
+    .admin-sidebar.open {
       transform: translateX(0);
       position: relative;
+      box-shadow: none;
     }
   }
+  
   
   .admin-sidebar-header {
     display: flex;
