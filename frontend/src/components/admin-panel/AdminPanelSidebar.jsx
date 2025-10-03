@@ -33,19 +33,22 @@ export default function AdminPanelSidebar({
         md:relative md:translate-x-0 md:flex md:flex-col md:w-64`}
     >
       {/* Logo + Toggle button */}
-      <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
-        <img
-          src={logo}
-          alt="Momentum Logo"
-          className="h-8 object-contain"
-        />
-        <button
-          onClick={onToggleSidebar}
-          className="md:hidden text-gray-700 dark:text-gray-200 focus:outline-none"
-        >
-          <FaBars size={20} />
-        </button>
-      </div>
+      <div className="h-16 border-b border-gray-200 dark:border-gray-700 px-3 flex items-center">
+        <div className="flex items-center justify-between w-full">
+            <img
+            src={logo}
+            alt="Momentum Logo"
+            className="h-8 object-contain"
+            />
+            <button
+            onClick={onToggleSidebar}
+            className="md:hidden text-gray-700 dark:text-gray-200 focus:outline-none ml-2"
+            >
+            <FaBars size={20} />
+            </button>
+        </div>
+        </div>
+
 
       {/* Menu items */}
       <nav className="flex flex-col flex-1 overflow-y-auto px-2 py-4 space-y-1">
