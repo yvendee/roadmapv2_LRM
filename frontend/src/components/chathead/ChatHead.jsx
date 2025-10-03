@@ -1,72 +1,103 @@
+// frontend\src\components\chathead\ChatHead.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import chatheadImage from '../../assets/images/webp/chathead.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import './ChatHead.css';
+import './ChatHead.css'; // Make sure this line is present
 
 function ChatHead() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [position, setPosition] = useState(null);
+  const [messages, setMessages] = useState([
+    { sender: 'user', text: 'test', time: '6 months ago' },
+    { sender: 'bot', text: 'I understand your concern. Let me look into that for you.', time: '6 months ago' },
+  ]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const dragging = useRef(false);
-  const dragOffset = useRef({ x: 0, y: 0 });
 
-  const toggleChat = () => {
-    if (!dragging.current) {
-      setIsChatOpen((prev) => !prev);
-    }
-  };
+  const chatToggleRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 30, y: 20 });
+  const offsetRef = useRef({ x: 0, y: 0 });
 
-  const getInitialPosition = () => {
-    return {
-      x: window.innerWidth - 30 - 60,
-      y: window.innerHeight - 20 - 60,
+
+  const handleMouseDown = (e) => {
+    setDragging(true);
+    const rect = chatToggleRef.current.getBoundingClientRect();
+    offsetRef.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
     };
   };
-
-  const onMouseDown = (e) => {
-    dragging.current = true;
-
-    if (!position) {
-      const initPos = getInitialPosition();
-      setPosition(initPos);
-      dragOffset.current = { x: e.clientX - initPos.x, y: e.clientY - initPos.y };
-    } else {
-      dragOffset.current = { x: e.clientX - position.x, y: e.clientY - position.y };
-    }
-  };
-
-  const onMouseMove = (e) => {
-    if (!dragging.current) return;
+  
+  const handleMouseMove = (e) => {
+    if (!dragging) return;
+    const newX = e.clientX - offsetRef.current.x;
+    const newY = e.clientY - offsetRef.current.y;
+  
     setPosition({
-      x: e.clientX - dragOffset.current.x,
-      y: e.clientY - dragOffset.current.y,
+      x: Math.max(0, newX),
+      y: Math.max(0, newY),
     });
   };
-
-  const onMouseUp = () => {
-    dragging.current = false;
+  
+  const handleMouseUp = () => {
+    setDragging(false);
   };
+  
+  useEffect(() => {
+    if (dragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    } else {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    }
+  
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [dragging]);
+  
 
   useEffect(() => {
-    if (dragging.current) {
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    } else {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [position]);
+  }, [messages]);
+
+  const toggleChat = () => setIsChatOpen(!isChatOpen);
+
+  const handleSend = () => {
+    const trimmed = input.trim();
+    if (trimmed === '') return;
+
+    setMessages(prev => [
+      ...prev,
+      { sender: 'user', text: trimmed, time: 'just now' },
+      { sender: 'bot', text: 'typing', time: '', typing: true }
+    ]);
+    setInput('');
+    setIsTyping(true);
+
+    setTimeout(() => {
+      setMessages(prev => {
+        const filtered = prev.filter(msg => !msg.typing);
+        return [
+          ...filtered,
+          { sender: 'bot', text: 'How can I help you?', time: 'just now' }
+        ];
+      });
+      setIsTyping(false);
+    }, 2000);
+  };
 
   return (
     <>
       {isChatOpen && (
         <div className="chat-window">
-          {/* Your existing chat window JSX */}
           <div className="chat-header">
             <div className="chat-header-left">
               <img src={chatheadImage} alt="Support" className="chat-avatar" />
@@ -78,36 +109,63 @@ function ChatHead() {
             <div className="chat-close" onClick={toggleChat}>×</div>
           </div>
 
-          {/* Messages and Footer ... */}
+          <div className="chat-messages">
+            {messages.map((msg, index) => (
+              <div key={index} className={`chat-message-row ${msg.sender}`}>
+                <div className={`chat-bubble ${msg.sender}`}>
+                  {msg.typing ? (
+                    <div className="typing-indicator">
+                      <span className="dot" />
+                      <span className="dot delay1" />
+                      <span className="dot delay2" />
+                    </div>
+                  ) : (
+                    <>
+                      {msg.text}
+                      <div className="chat-time">{msg.time}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="chat-footer">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              className="chat-input always-black"
+            />
+            <button onClick={handleSend} className="send-button">
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Draggable chat toggle */}
+      {/* <div className="chat-toggle" onClick={toggleChat}>
+        {!isChatOpen && <div className="chat-label">Need Help?</div>}
+        <div className="chat-icon">
+          <img src={chatheadImage} alt="Chat Head" className="chat-image" />
+        </div>
+      </div> */}
+
       <div
         className="chat-toggle"
-        onClick={toggleChat}
-        onMouseDown={onMouseDown}
-        style={
-          position
-            ? {
-                position: 'fixed',
-                left: position.x,
-                top: position.y,
-                bottom: 'auto',
-                right: 'auto',
-                cursor: 'grab',
-                userSelect: 'none',
-              }
-            : {}
-        }
+        ref={chatToggleRef}
+        onMouseDown={handleMouseDown}
+        style={{ right: position.x, bottom: position.y, position: 'fixed' }}
       >
-        {/* Show bubble only if chat is closed */}
         {!isChatOpen && <div className="chat-label">Need Help?</div>}
-
         <div className="chat-icon">
           <img src={chatheadImage} alt="Chat Head" className="chat-image" />
         </div>
       </div>
+
     </>
   );
 }
