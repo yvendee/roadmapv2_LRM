@@ -19,7 +19,7 @@ function ChatHead() {
   const chatToggleRef = useRef(null);
   const [dragging, setDragging] = useState(false);
   const [position, setPosition] = useState(() => ({
-    x: window.innerWidth - 90, // 60px icon + 30px margin
+    x: window.innerWidth - 140, // 90 + 50 => moves icon 50px left
     y: window.innerHeight - 90, // 60px icon + 30px margin
   }));
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
