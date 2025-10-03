@@ -118,7 +118,7 @@
 }
 
 /* Toggle Chat Button */
-.chat-toggle {
+/* .chat-toggle {
   position: fixed;
   bottom: 20px;
   right: 30px;
@@ -126,7 +126,21 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+} */
+
+
+.chat-toggle {
+  /* Remove bottom and right */
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
 }
+.chat-toggle:active {
+  cursor: grabbing;
+}
+
 .chat-label {
   margin-right: 10px;
   background-color: #3B82F6;

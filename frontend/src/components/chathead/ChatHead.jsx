@@ -47,6 +47,48 @@ function ChatHead() {
     }, 2000);
   };
 
+
+  const [position, setPosition] = useState({ x: 30, y: 20 }); // initial left and top for the toggle
+  const [dragging, setDragging] = useState(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setDragging(true);
+    dragOffset.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    };
+  };
+
+  const handleMouseMove = (e) => {
+    if (!dragging) return;
+    setPosition({
+      x: e.clientX - dragOffset.current.x,
+      y: e.clientY - dragOffset.current.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setDragging(false);
+  };
+
+  useEffect(() => {
+    if (dragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [dragging]);
+
+
+
   return (
     <>
       {isChatOpen && (
@@ -100,12 +142,27 @@ function ChatHead() {
         </div>
       )}
 
-      <div className="chat-toggle" onClick={toggleChat}>
+      {/* <div className="chat-toggle" onClick={toggleChat}>
+        {!isChatOpen && <div className="chat-label">Need Help?</div>}
+        <div className="chat-icon">
+          <img src={chatheadImage} alt="Chat Head" className="chat-image" />
+        </div>
+      </div> */}
+
+      <div
+        className="chat-toggle"
+        onClick={!dragging ? toggleChat : undefined}
+        onMouseDown={handleMouseDown}
+        style={{ left: position.x, top: position.y, position: 'fixed' }}
+      >
         {!isChatOpen && <div className="chat-label">Need Help?</div>}
         <div className="chat-icon">
           <img src={chatheadImage} alt="Chat Head" className="chat-image" />
         </div>
       </div>
+
+
+
     </>
   );
 }
