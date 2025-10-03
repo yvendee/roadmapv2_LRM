@@ -56,7 +56,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
   const isStrategicPlanPage = location.pathname === '/one-page-strategic-plan'; // Check if on the right page
 
-  const isAdminPanelPage = location.pathname === '/admin-panel';
+  const isAdminPanelPage = location.pathname === '/admin';
 
   // Use this to hide sidebar, upper, lower content when on admin panel
   const showMainLayout = !isLoginPage && !isAdminPanelPage;
