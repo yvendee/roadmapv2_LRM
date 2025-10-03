@@ -19,26 +19,26 @@ function ChatHead() {
   const chatToggleRef = useRef(null);
   const [dragging, setDragging] = useState(false);
   const [position, setPosition] = useState({ x: 30, y: 20 });
-  const offsetRef = useRef({ x: 0, y: 0 });
-
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [initialPos, setInitialPos] = useState({ x: 0, y: 0 });
+  
 
   const handleMouseDown = (e) => {
+    e.preventDefault();
     setDragging(true);
-    const rect = chatToggleRef.current.getBoundingClientRect();
-    offsetRef.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
+    setDragStart({ x: e.clientX, y: e.clientY });
+    setInitialPos({ x: position.x, y: position.y });
   };
   
   const handleMouseMove = (e) => {
     if (!dragging) return;
-    const newX = e.clientX - offsetRef.current.x;
-    const newY = e.clientY - offsetRef.current.y;
+  
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
   
     setPosition({
-      x: Math.max(0, newX),
-      y: Math.max(0, newY),
+      x: initialPos.x + dx,
+      y: initialPos.y + dy,
     });
   };
   
@@ -60,6 +60,7 @@ function ChatHead() {
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [dragging]);
+  
   
 
   useEffect(() => {
@@ -158,13 +159,21 @@ function ChatHead() {
         className="chat-toggle"
         ref={chatToggleRef}
         onMouseDown={handleMouseDown}
-        style={{ right: position.x, bottom: position.y, position: 'fixed' }}
+        onClick={() => !dragging && toggleChat()}
+        style={{
+          right: `${position.x}px`,
+          bottom: `${position.y}px`,
+          position: 'fixed',
+          cursor: dragging ? 'grabbing' : 'pointer',
+          userSelect: 'none',
+        }}
       >
         {!isChatOpen && <div className="chat-label">Need Help?</div>}
         <div className="chat-icon">
           <img src={chatheadImage} alt="Chat Head" className="chat-image" />
         </div>
       </div>
+
 
     </>
   );
