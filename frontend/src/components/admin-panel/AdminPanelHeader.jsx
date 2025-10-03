@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from '../../assets/images/webp/momentum-logo.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar }) {
   return (
@@ -15,7 +14,12 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         <FontAwesomeIcon icon={faBars} size="lg" />
       </button>
 
-      {/* Other header content */}
+      {/* Circular profile image */}
+      <img
+        src="https://i.pravatar.cc/40" // Replace with your actual user profile image path
+        alt="User Profile"
+        className="w-10 h-10 rounded-full object-cover"
+      />
     </header>
   );
 }
