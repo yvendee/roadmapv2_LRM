@@ -1,5 +1,6 @@
 // frontend/src/components/admin-panel/AdminPanelSidebar.jsx
 import React from 'react';
+import logo from '../../assets/images/webp/momentum-logo.webp'; // ✅ Import logo
 
 const MENU_ITEMS = [
   'Dashboard',
@@ -25,6 +26,16 @@ export default function AdminPanelSidebar({ sidebarOpen, selectedItem, setSelect
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         md:relative md:translate-x-0 md:flex md:flex-col md:w-64`}
     >
+      {/* Logo section */}
+      <div className="flex items-center justify-center h-20 px-4 border-b border-gray-200 dark:border-gray-700">
+        <img
+          src={logo}
+          alt="Momentum Logo"
+          className="h-10 object-contain"
+        />
+      </div>
+
+      {/* Menu items */}
       <nav className="flex flex-col flex-1 overflow-y-auto px-2 py-4 space-y-1">
         {MENU_ITEMS.map((item) => (
           <button
