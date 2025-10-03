@@ -1,5 +1,3 @@
-// frontend/src/components/admin-panel/AdminPanel.jsx
-
 import React, { useState, useEffect } from 'react';
 import AdminPanelHeader from './AdminPanelHeader';
 import AdminPanelSidebar from './AdminPanelSidebar';
@@ -33,7 +31,8 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-white dark:bg-gray-900 text-black dark:text-white overflow-hidden">
+    <div className="flex w-screen h-screen overflow-hidden bg-white dark:bg-gray-900 text-black dark:text-white">
+      {/* Sidebar (z-10 so it layers properly in mobile) */}
       <AdminPanelSidebar
         sidebarOpen={sidebarOpen}
         selectedItem={selectedItem}
@@ -41,7 +40,8 @@ export default function AdminPanel() {
         onToggleSidebar={toggleSidebar}
       />
 
-      <div className={`flex flex-col flex-1 min-h-full overflow-hidden ${!isMobile ? 'md:ml-64' : ''}`}>
+      {/* Right Side: Header + Content */}
+      <div className="flex flex-col flex-1 h-screen">
         <AdminPanelHeader
           isMobile={isMobile}
           sidebarOpen={sidebarOpen}
