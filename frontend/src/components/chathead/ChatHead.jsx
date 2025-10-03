@@ -1,9 +1,8 @@
-// frontend\src\components\chathead\ChatHead.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import chatheadImage from '../../assets/images/webp/chathead.webp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import './ChatHead.css'; // Make sure this line is present
+import './ChatHead.css';
 
 function ChatHead() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -14,6 +13,14 @@ function ChatHead() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Position state for draggable chat toggle, null means using default CSS bottom/right
+  const [position, setPosition] = useState(null); 
+
+  // To track drag offset between mouse and toggle element
+  const dragOffset = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -47,47 +54,53 @@ function ChatHead() {
     }, 2000);
   };
 
-
-  const [position, setPosition] = useState({ x: 30, y: 20 }); // initial left and top for the toggle
-  const [dragging, setDragging] = useState(false);
-  const dragOffset = useRef({ x: 0, y: 0 });
-
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    setDragging(true);
-    dragOffset.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    };
+  // Convert bottom/right initial CSS to left/top pixels based on window size & chat-toggle size
+  const convertBottomRightToLeftTop = () => {
+    const toggle = document.querySelector('.chat-toggle');
+    if (!toggle) return { x: window.innerWidth - 30 - 60, y: window.innerHeight - 20 - 60 };
+    const rect = toggle.getBoundingClientRect();
+    return { x: rect.left, y: rect.top };
   };
 
-  const handleMouseMove = (e) => {
-    if (!dragging) return;
+  const onMouseDown = (e) => {
+    e.preventDefault();
+    // If first drag, convert bottom/right to left/top coords
+    if (position === null) {
+      const { x, y } = convertBottomRightToLeftTop();
+      setPosition({ x, y });
+      dragOffset.current = { x: e.clientX - x, y: e.clientY - y };
+    } else {
+      dragOffset.current = { x: e.clientX - position.x, y: e.clientY - position.y };
+    }
+    setIsDragging(true);
+  };
+
+  const onMouseMove = (e) => {
+    if (!isDragging) return;
     setPosition({
       x: e.clientX - dragOffset.current.x,
       y: e.clientY - dragOffset.current.y,
     });
   };
 
-  const handleMouseUp = () => {
-    setDragging(false);
+  const onMouseUp = () => {
+    setIsDragging(false);
   };
 
+  // Attach global mousemove and mouseup handlers when dragging
   useEffect(() => {
-    if (dragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+    if (isDragging) {
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     } else {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
     }
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
     };
-  }, [dragging]);
-
-
+  }, [isDragging]);
 
   return (
     <>
@@ -142,27 +155,21 @@ function ChatHead() {
         </div>
       )}
 
-      {/* <div className="chat-toggle" onClick={toggleChat}>
-        {!isChatOpen && <div className="chat-label">Need Help?</div>}
-        <div className="chat-icon">
-          <img src={chatheadImage} alt="Chat Head" className="chat-image" />
-        </div>
-      </div> */}
-
       <div
         className="chat-toggle"
-        onClick={!dragging ? toggleChat : undefined}
-        onMouseDown={handleMouseDown}
-        style={{ left: position.x, top: position.y, position: 'fixed' }}
+        onClick={() => !isDragging && toggleChat()}
+        onMouseDown={onMouseDown}
+        style={
+          position
+            ? { position: 'fixed', left: position.x, top: position.y, bottom: 'auto', right: 'auto' }
+            : undefined
+        }
       >
         {!isChatOpen && <div className="chat-label">Need Help?</div>}
         <div className="chat-icon">
           <img src={chatheadImage} alt="Chat Head" className="chat-image" />
         </div>
       </div>
-
-
-
     </>
   );
 }
