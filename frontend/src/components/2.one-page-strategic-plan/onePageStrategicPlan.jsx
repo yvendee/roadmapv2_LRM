@@ -134,7 +134,7 @@ const OnePageStrategicPlan = () => {
             const outlookArr = json[organization];
     
             if (Array.isArray(outlookArr)) {
-              loadOutlooksFromAPI(outlookArr);
+              loadOutlooksFromAPI (outlookArr);
               setBaselineOutlooks(outlookArr);
             } else {
               console.error(`⚠️ No outlooks found for organization: ${organization}`);
@@ -149,7 +149,7 @@ const OnePageStrategicPlan = () => {
           console.error('API error:', err);
         });
     }
-  }, [organization, loadOutlooksFromAPI, navigate]);
+  }, [organization, setOutlooks , navigate]);
   
 
   // Playing-To-Win

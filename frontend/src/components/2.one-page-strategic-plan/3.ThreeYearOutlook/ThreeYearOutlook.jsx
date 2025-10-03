@@ -231,7 +231,10 @@ const ThreeYearOutlook = () => {
     // ✅ Console log to inspect setBaselineOutlooks before setting
     ENABLE_CONSOLE_LOGS &&  console.log('💾 Restoring setBaselineOutlooks:', setBaselineOutlooks);
 
-    setOutlooks(setBaselineOutlooks);
+
+    // ✅ Get current value from Zustand store (not the initial)
+    const currentState = useThreeYearOutlookStore.getState().outlooks;
+    setOutlooks(currentState);
     setShowConfirmModal(false);
   };
   
@@ -294,10 +297,7 @@ const ThreeYearOutlook = () => {
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
               {/* {user?.role === 'superadmin' && !hasPendingOutlook && ( */}
-              {user?.role === 'superadmin'
-              && Array.isArray(outlooks)
-              && !hasPendingOutlook 
-              && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
+              {user?.role === 'superadmin' && !hasPendingOutlook && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
 
                 <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
