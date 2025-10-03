@@ -206,7 +206,9 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
       {/* Tooltip - Rendered above everything else */}
       {tooltip.show && <Tooltip position={tooltip.position} text={tooltip.text} collapsed={collapsed} />}
       
-      {!isLoginPage && location.pathname !== '/messaging' && (
+      
+      {/* {!isLoginPage && location.pathname !== '/messaging' && ( */}
+      {showMainLayout && location.pathname !== '/messaging' && (
         <ChatHead />
       )}
       
