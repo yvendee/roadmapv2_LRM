@@ -97,6 +97,9 @@ const Login = () => {
             localStorage.removeItem('rememberedPassword');
           }
 
+
+          let firstCompany = null; 
+          
           try {
 
             // ✅ Step 1: Fetch Company Options
