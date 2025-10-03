@@ -86,7 +86,6 @@ const PlayingToWin = () => {
       title: newPlayingToWin.title?.trim() ? newPlayingToWin.title : 'Untitled',
       value: newPlayingToWin.value?.trim() ? newPlayingToWin.value : 'empty',
     };
-    
     const organization = useLayoutSettingsStore.getState().organization;
   
     try {
@@ -263,31 +262,22 @@ const PlayingToWin = () => {
       <div className="playing-to-win">
         <div className="flex justify-between items-center mb-4">
           <h5 className="text-md font-semibold text-green-700">Playing to Win Strategy</h5>
-          {user?.role === 'superadmin' && !hasPlayingToWin && (
+          {user?.role === 'superadmin' && (
             <div className="flex gap-2">
               {edited.length > 0 && (
                 <>
-                  {/* <button className="pure-green-btn" onClick={handleSave}>Save Changes</button> */}
-                  <button className="pure-green-btn print:hidden" onClick={handleSave}>
-                    {/* {loadingSave ? 'Saving...' : 'Save Changes'} */}
-
-                    {loadingSave ? (
-                      <div className="loader-bars">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                      </div>
+                  {!localOrder.some((item) => item.title === '-' || item.value === '-') && (
+                    <button className="pure-green-btn print:hidden" onClick={handleSave}>
+                      {loadingSave ? (
+                        <div className="loader-bars"><div></div><div></div><div></div></div>
                       ) : (
                         <>
-                        <FontAwesomeIcon icon={faSave} className="mr-1" />
-                        Save Changes
+                          <FontAwesomeIcon icon={faSave} className="mr-1" />
+                          Save Changes
                         </>
-                    )}
-
-                  </button>
-                  {/* <button className="pure-red-btn" onClick={handleDischargeChanges} disabled={loadingDischarge}>
-                    {loadingDischarge ? 'Discharging...' : 'Discharge Changes'}
-                  </button> */}
+                      )}
+                    </button>
+                  )}
 
                   <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges} disabled={loadingDischarge} >
                     {/* {loadingDischarge ? 'Loading...' : 'Discharge Changes'} */}
@@ -312,7 +302,8 @@ const PlayingToWin = () => {
 
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
-              {user?.role === 'superadmin' && !hasPlayingToWin && (
+              {/* {user?.role === 'superadmin' && !hasPlayingToWin && ( */}
+              {user?.role === 'superadmin' && !hasPlayingToWin && !localOrder.some(item => item.title === '-' || item.value === '-') && (
                 <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
                     <div className="loader-bars">
