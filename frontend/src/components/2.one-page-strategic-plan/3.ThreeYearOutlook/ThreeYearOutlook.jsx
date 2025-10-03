@@ -241,7 +241,7 @@ const ThreeYearOutlook = () => {
             <div className="flex gap-2">
               {edited.length > 0 && (
                 <>
-                  {/* <button className="pure-green-btn" onClick={handleSave}>Save Changes</button> */}
+                 {!storeOutlooks.some((item) => item.title === '-' || item.value === '-') && (
                   <button className="pure-green-btn print:hidden" onClick={handleSave}>
                     {/* {loadingSave ? 'Saving...' : 'Save Changes'} */}
 
@@ -259,6 +259,8 @@ const ThreeYearOutlook = () => {
                     )}
 
                   </button>
+                  )}
+
                   {/* <button className="pure-red-btn" onClick={handleDischargeChanges} disabled={loadingDischarge}>
                     {loadingDischarge ? 'Discharging...' : 'Discharge Changes'}
                   </button> */}
@@ -286,7 +288,9 @@ const ThreeYearOutlook = () => {
 
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
-              {user?.role === 'superadmin' && !hasPendingOutlook && (
+              {/* {user?.role === 'superadmin' && !hasPendingOutlook && ( */}
+              {user?.role === 'superadmin' && !hasPendingOutlook && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
+
                 <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
                     <div className="loader-bars">
