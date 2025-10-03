@@ -197,7 +197,7 @@ function Layout({ isDark, setIsDark, collapsed, setCollapsed }) {
             <Route path="/members-directory" element={<MembersDirectory />} />
             <Route path="/messaging" element={<ChatInterface />} />
             <Route path="/chat" element={<Chat />} />
-            <Route path="/admin-panel" element={<AdminPanel />} />
+            <Route path="/admin" element={<AdminPanel />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
