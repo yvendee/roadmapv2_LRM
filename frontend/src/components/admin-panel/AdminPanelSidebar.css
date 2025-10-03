@@ -96,3 +96,9 @@
     color: white;
   }
   
+/* Hide sidebar toggle button on screens wider than or equal to 768px */
+@media (min-width: 768px) {
+    .sidebar-toggle-btn {
+      display: none;
+    }
+}
