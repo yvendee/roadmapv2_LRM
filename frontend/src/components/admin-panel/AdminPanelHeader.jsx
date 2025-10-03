@@ -15,7 +15,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         aria-label="Toggle Sidebar"
       >
         {/* Use an icon here, e.g., hamburger or chevron */}
-        <FaBars size={20} />
+        <faBars size={20} />
       </button>
 
       {/* Your other header content here */}
