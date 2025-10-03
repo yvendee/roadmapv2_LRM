@@ -149,7 +149,7 @@ const OnePageStrategicPlan = () => {
           console.error('API error:', err);
         });
     }
-  }, [organization, setOutlooks , navigate]);
+  }, [organization, loadOutlooksFromAPI , navigate]);
   
 
   // Playing-To-Win
