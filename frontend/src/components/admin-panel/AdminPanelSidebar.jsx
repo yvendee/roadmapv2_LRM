@@ -1,23 +1,23 @@
-// frontend/src/components/admin-panel/AdminPanelSidebar.jsx
 import React from 'react';
+import './AdminPanelSidebar.css'; // <-- Import the CSS file
 import logo from '../../assets/images/webp/momentum-logo.webp';
-import { FaBars, FaTachometerAlt, FaBullseye, FaCogs, FaHandshake, FaCalendarAlt, FaBuilding, FaUsers, FaUserShield, FaTable, FaFileAlt, FaLightbulb, FaRocket, FaCheckCircle } from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
 
 const MENU_ITEMS = [
-  { label: 'Dashboard', icon: <FaTachometerAlt /> },
-  { label: 'Growth Goals', icon: <FaRocket /> },
-  { label: 'Key Thrust Strategic Drivers', icon: <FaBullseye /> },
-  { label: 'Strategic Alignments', icon: <FaCogs /> },
-  { label: 'Annual Priorities', icon: <FaCheckCircle /> },
-  { label: 'Core Values', icon: <FaLightbulb /> },
-  { label: 'Foundational Documents', icon: <FaFileAlt /> },
-  { label: 'Win Strategies', icon: <FaHandshake /> },
-  { label: 'Monthly Meetings', icon: <FaCalendarAlt /> },
-  { label: 'Quarterly Meetings', icon: <FaCalendarAlt /> },
-  { label: 'Companies', icon: <FaBuilding /> },
-  { label: 'Users', icon: <FaUsers /> },
-  { label: 'Roles', icon: <FaUserShield /> },
-  { label: 'Table Headers', icon: <FaTable /> },
+  'Dashboard',
+  'Growth Goals',
+  'Key Thrust Strategic Drivers',
+  'Strategic Alignments',
+  'Annual Priorities',
+  'Core Values',
+  'Foundational Documents',
+  'Win Strategies',
+  'Monthly Meetings',
+  'Quarterly Meetings',
+  'Companies',
+  'Users',
+  'Roles',
+  'Table Headers',
 ];
 
 export default function AdminPanelSidebar({
@@ -27,44 +27,24 @@ export default function AdminPanelSidebar({
   onToggleSidebar,
 }) {
   return (
-    <aside
-      className={`fixed top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg z-30 transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:relative md:translate-x-0 md:flex md:flex-col md:w-64`}
-    >
-      {/* Logo + Toggle button */}
-      <div className="h-16 border-b border-gray-200 dark:border-gray-700 px-3 flex items-center">
-        <div className="flex items-center justify-between w-full">
-            <img
-            src={logo}
-            alt="Momentum Logo"
-            className="h-8 object-contain"
-            />
-            <button
-            onClick={onToggleSidebar}
-            className="md:hidden text-gray-700 dark:text-gray-200 focus:outline-none ml-2"
-            >
-            <FaBars size={20} />
-            </button>
-        </div>
-        </div>
+    <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+      {/* Header */}
+      <div className="admin-sidebar-header">
+        <img src={logo} alt="Momentum Logo" className="admin-logo" />
+        <button onClick={onToggleSidebar} className="sidebar-toggle-btn">
+          <FaBars size={20} />
+        </button>
+      </div>
 
-
-      {/* Menu items */}
-      <nav className="flex flex-col flex-1 overflow-y-auto px-2 py-4 space-y-1">
-        {MENU_ITEMS.map(({ label, icon }) => (
+      {/* Menu Items */}
+      <nav className="admin-menu">
+        {MENU_ITEMS.map((item) => (
           <button
-            key={label}
-            onClick={() => setSelectedItem(label)}
-            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 w-full
-              ${
-                selectedItem === label
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-              }`}
+            key={item}
+            onClick={() => setSelectedItem(item)}
+            className={`admin-menu-item ${selectedItem === item ? 'active' : ''}`}
           >
-            <span className="text-lg">{icon}</span>
-            <span>{label}</span>
+            {item}
           </button>
         ))}
       </nav>
