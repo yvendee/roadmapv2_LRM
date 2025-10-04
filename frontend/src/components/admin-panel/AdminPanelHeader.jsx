@@ -18,7 +18,9 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
       <img
         src="https://i.pravatar.cc/40"
         alt="User Profile"
-        className="w-10 h-10 rounded-full object-cover mr-4 mt-0.5"
+        className="w-10 h-10 rounded-full object-cover mr-4 self-center"
+        // className="w-10 h-10 rounded-full object-cover mr-4"
+        // className="w-10 h-10 rounded-full object-cover mr-4 mt-0.5"
       />
     </header>
   );
