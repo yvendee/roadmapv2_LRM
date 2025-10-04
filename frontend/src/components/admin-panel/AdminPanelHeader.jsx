@@ -14,11 +14,11 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         <FontAwesomeIcon icon={faBars} size="lg" />
       </button>
 
-      {/* Circular profile image */}
+      {/* Circular profile image with margin-right */}
       <img
-        src="https://i.pravatar.cc/40" // Replace with your actual user profile image path
+        src="https://i.pravatar.cc/40"
         alt="User Profile"
-        className="w-10 h-10 rounded-full object-cover"
+        className="w-10 h-10 rounded-full object-cover mr-4" // ← margin-right added here
       />
     </header>
   );

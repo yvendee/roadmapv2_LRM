@@ -4,35 +4,48 @@ import logo from '../../assets/images/webp/momentum-logo.webp';
 import { 
   FaBars, FaChevronDown, FaChevronUp, 
   FaTachometerAlt, FaBullseye, FaLightbulb, FaCalendarAlt, 
-  FaBuilding, FaUsers, FaUserShield, FaTable 
+  FaBuilding, FaUsers, FaUserShield, FaTable, FaKey, FaWrench, FaStar, FaChartLine, FaTools  
 } from 'react-icons/fa';
 
 const MENU_ITEMS = [
   { label: 'Dashboard', icon: <FaTachometerAlt /> },
   { label: 'Growth Goals', icon: <FaBullseye /> },
   { 
-    label: 'Key Thrust Strategic Drivers',
+    label: 'OPSP',
     icon: <FaLightbulb />,
     children: [
-      { label: 'Strategic Alignments', icon: <FaBullseye /> },
+      { label: 'Key Thrust Strategic Drivers', icon: <FaKey /> },
+      { label: 'Strategic Alignments', icon: <FaLightbulb />, },
       { label: 'Annual Priorities', icon: <FaCalendarAlt /> },
-      { label: 'Core Values', icon: <FaLightbulb /> },
-      { label: 'Foundational Documents', icon: <FaBuilding /> },
-      { label: 'Win Strategies', icon: <FaBullseye /> },
     ],
   },
   { 
-    label: 'Meetings',
+    label: 'Tools',
+    icon: <FaWrench />,
+    children: [
+      { label: 'Core Values', icon: <FaStar /> },
+      { label: 'Foundational Documents', icon: <FaBuilding /> },
+      { label: 'Win Strategies', icon: <FaChartLine  /> },
+    ],
+  },
+  { 
+    label: 'Session Dates',
     icon: <FaCalendarAlt />,
     children: [
       { label: 'Monthly Meetings', icon: <FaCalendarAlt /> },
       { label: 'Quarterly Meetings', icon: <FaCalendarAlt /> },
     ],
   },
-  { label: 'Companies', icon: <FaBuilding /> },
-  { label: 'Users', icon: <FaUsers /> },
-  { label: 'Roles', icon: <FaUserShield /> },
-  { label: 'Table Headers', icon: <FaTable /> },
+  { 
+    label: 'Maintenance',
+    icon: <FaTools />,
+    children: [
+      { label: 'Companies', icon: <FaBuilding /> },
+      { label: 'Users', icon: <FaUsers /> },
+      { label: 'Roles', icon: <FaUserShield /> },
+      { label: 'Table Headers', icon: <FaTable /> },
+    ],
+  },
 ];
 
 export default function AdminPanelSidebar({
