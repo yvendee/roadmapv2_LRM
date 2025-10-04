@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './AdminPanelSidebar.css';
 import logo from '../../assets/images/webp/momentum-logo.webp';
+import PanelLeftIcon from '../../assets/images/svg/PanelLeftIcon';
 import { 
   FaBars, FaChevronDown, FaChevronUp, 
   FaTachometerAlt, FaBullseye, FaLightbulb, FaCalendarAlt, 
@@ -117,8 +118,8 @@ export default function AdminPanelSidebar({
       {/* Header */}
       <div className="admin-sidebar-header">
         <img src={logo} alt="Momentum Logo" className="admin-logo" />
-        <button onClick={onToggleSidebar} className="sidebar-toggle-btn">
-          <FaBars size={20} />
+        <button onClick={onToggleSidebar} className="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+          <PanelLeftIcon />
         </button>
       </div>
 
