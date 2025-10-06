@@ -1,3 +1,4 @@
+// frontend\src\components\admin-panel\AdminPanelSidebar.jsx
 import React, { useState } from 'react';
 import './AdminPanelSidebar.css';
 import logo from '../../assets/images/webp/momentum-logo.webp';

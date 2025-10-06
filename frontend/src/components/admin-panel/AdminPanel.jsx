@@ -1,3 +1,4 @@
+// frontend\src\components\admin-panel\AdminPanel.jsx
 import React, { useState, useEffect } from 'react';
 import AdminPanelHeader from './AdminPanelHeader';
 import AdminPanelSidebar from './AdminPanelSidebar';

@@ -1,3 +1,4 @@
+// frontend\src\components\admin-panel\AdminPanelHeader.jsx
 import React from 'react';
 import PanelLeftIcon from '../../assets/images/svg/PanelLeftIcon';
 
