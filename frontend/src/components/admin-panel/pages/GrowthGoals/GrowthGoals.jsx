@@ -1,6 +1,7 @@
 // frontend\src\components\admin-panel\pages\GrowthGoals\GrowthGoals.jsx
 import React from 'react';
 import { FaEdit } from 'react-icons/fa';
+import './GrowthGoals.css';
 
 const dummyData = [
   { company: 'Chuck Gulledge Advisors, LLC', tableName: '', year: '', annualGoal: '2,000,000' },
@@ -24,7 +25,7 @@ export default function GrowthGoals() {
           <div className="text-sm text-gray-500">Growth Goals &gt; List</div>
           <h1 className="text-2xl font-semibold">Growth Goals</h1>
         </div>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded">
+        <button className="new-growth-goal-btn">
           New growth goal
         </button>
       </div>
