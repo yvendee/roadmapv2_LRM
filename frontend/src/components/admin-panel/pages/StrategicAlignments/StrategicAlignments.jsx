@@ -1,6 +1,7 @@
 // frontend\src\components\admin-panel\pages\StrategicAlignments\StrategicAlignments.jsx
 import React from 'react';
 import { FaEdit } from 'react-icons/fa';
+import './StrategicAlignments.css';
 
 const dummyAlignments = [
   {
@@ -28,10 +29,10 @@ export default function StrategicAlignments() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="text-sm text-gray-500">OPSP &gt; Strategic Alignments</div>
-          <h1 className="text-2xl font-semibold">Strategic Alignments</h1>
+          <h2 className="text-2xl font-semibold">Strategic Alignments</h2>
         </div>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded">
-          New strategic alignment
+        <button className="new-strategic-alignment-btn">
+            New strategic alignment
         </button>
       </div>
 

@@ -1,6 +1,7 @@
 // frontend\src\components\admin-panel\pages\AnnualPriorities\AnnualPriorities.jsx
 import React from 'react';
 import { FaEdit } from 'react-icons/fa';
+import './AnnualPriorities.css';
 
 const dummyPriorities = [
   {
@@ -28,9 +29,9 @@ export default function AnnualPriorities() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="text-sm text-gray-500">OPSP &gt; Annual Priorities</div>
-          <h1 className="text-2xl font-semibold">Annual Priorities</h1>
+          <h2 className="text-2xl font-semibold">Annual Priorities</h2>
         </div>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded">
+        <button className="new-annual-priority-btn">
           New annual priority
         </button>
       </div>

@@ -1,6 +1,7 @@
 // frontend\src\components\admin-panel\pages\KeyThrustStrategicDrivers\KeyThrustStrategicDrivers.jsx
 import React from 'react';
 import { FaEdit } from 'react-icons/fa';
+import './KeyThrustStrategicDrivers.css';
 
 const dummyDrivers = [
   {
@@ -31,9 +32,9 @@ export default function KeyThrustStrategicDrivers() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <div className="text-sm text-gray-500">OPSP &gt; Key Thrust Strategic Drivers</div>
-          <h1 className="text-2xl font-semibold">Key Thrust Strategic Drivers</h1>
+          <h2 className="text-2xl font-semibold">Key Thrust Strategic Drivers</h2>
         </div>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded">
+        <button className="new-strategic-driver-btn">
           New strategic driver
         </button>
       </div>
