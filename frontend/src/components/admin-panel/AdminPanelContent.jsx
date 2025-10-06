@@ -2,6 +2,10 @@ import GrowthGoals from './pages/GrowthGoals/GrowthGoals';
 import KeyThrustStrategicDrivers from './pages/KeyThrustStrategicDrivers/KeyThrustStrategicDrivers';
 import StrategicAlignments from './pages/StrategicAlignments/StrategicAlignments';
 import AnnualPriorities from './pages/AnnualPriorities/AnnualPriorities';
+import CoreValues from './pages/CoreValues/CoreValues';
+import FoundationalDocuments from './pages/FoundationalDocuments/FoundationalDocuments';
+import WinStrategies from './pages/WinStrategies/WinStrategies';
+import MonthlyMeetings from './pages/MonthlyMeetings/MonthlyMeetings';
 
 export default function AdminPanelContent({ selectedItem }) {
   return (
@@ -10,12 +14,20 @@ export default function AdminPanelContent({ selectedItem }) {
       {selectedItem === 'Key Thrust Strategic Drivers' && <KeyThrustStrategicDrivers />}
       {selectedItem === 'Strategic Alignments' && <StrategicAlignments />}
       {selectedItem === 'Annual Priorities' && <AnnualPriorities />}
+      {selectedItem === 'Core Values' && <CoreValues />}
+      {selectedItem === 'Foundational Documents' && <FoundationalDocuments />}
+      {selectedItem === 'Win Strategies' && <WinStrategies />}
+      {selectedItem === 'Monthly Meetings' && <MonthlyMeetings />}
       
       {/* Fallback view */}
       {selectedItem !== 'Growth Goals' && 
        selectedItem !== 'Key Thrust Strategic Drivers' && 
        selectedItem !== 'Strategic Alignments' &&
        selectedItem !== 'Annual Priorities' && 
+       selectedItem !== 'Core Values' && 
+       selectedItem !== 'Foundational Documents' && 
+       selectedItem !== 'Win Strategies' && 
+       selectedItem !== 'Monthly Meetings' && 
       (
         <>
           <h1 className="text-2xl font-semibold mb-4">{selectedItem}</h1>
