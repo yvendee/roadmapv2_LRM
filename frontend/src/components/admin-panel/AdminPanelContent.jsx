@@ -6,6 +6,7 @@ import CoreValues from './pages/CoreValues/CoreValues';
 import FoundationalDocuments from './pages/FoundationalDocuments/FoundationalDocuments';
 import WinStrategies from './pages/WinStrategies/WinStrategies';
 import MonthlyMeetings from './pages/MonthlyMeetings/MonthlyMeetings';
+import QuarterlyMeetings from './pages/QuarterlyMeetings/QuarterlyMeetings';
 
 export default function AdminPanelContent({ selectedItem }) {
   return (
@@ -18,6 +19,7 @@ export default function AdminPanelContent({ selectedItem }) {
       {selectedItem === 'Foundational Documents' && <FoundationalDocuments />}
       {selectedItem === 'Win Strategies' && <WinStrategies />}
       {selectedItem === 'Monthly Meetings' && <MonthlyMeetings />}
+      {selectedItem === 'Quarterly Meetings' && <QuarterlyMeetings />}
       
       {/* Fallback view */}
       {selectedItem !== 'Growth Goals' && 
@@ -28,6 +30,7 @@ export default function AdminPanelContent({ selectedItem }) {
        selectedItem !== 'Foundational Documents' && 
        selectedItem !== 'Win Strategies' && 
        selectedItem !== 'Monthly Meetings' && 
+       selectedItem !== 'Quarterly Meetings' && 
       (
         <>
           <h1 className="text-2xl font-semibold mb-4">{selectedItem}</h1>
