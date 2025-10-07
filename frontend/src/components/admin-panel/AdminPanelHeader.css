@@ -10,6 +10,8 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
+  text-align: left;
+  line-height: 1.5;
 }
 
 .dropdown-item:hover {
@@ -20,4 +22,10 @@
   border-bottom: 1px solid #e5e7eb; /* gray-200 */
   font-weight: 500;
   background-color: #f9fafb; /* gray-50 */
+}
+
+.dropdown-item svg,
+.dropdown-header svg {
+  flex-shrink: 0;
+  font-size: 16px;
 }

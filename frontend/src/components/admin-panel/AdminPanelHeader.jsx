@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import useLoginStore from '../../store/loginStore';
 import PanelLeftIcon from '../../assets/images/svg/PanelLeftIcon';
 import { FaUser, FaGlobe, FaSignOutAlt } from 'react-icons/fa';
-import './AdminPanelHeader.css'; // Custom CSS
-
-const API_URL = import.meta.env.VITE_API_URL;
+import './AdminPanelHeader.css'; 
+import API_URL from '../../configs/config';
+import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
 
 export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar }) {
   const navigate = useNavigate();
@@ -67,34 +67,36 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
           onClick={() => setDropdownOpen(!dropdownOpen)}
         />
 
-        {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
-            <div className="dropdown-header">
-              <FaUser />
-              <span>{user?.fullname || 'Unknown User'}</span>
-            </div>
-            <button
-              onClick={() => {
-                setDropdownOpen(false);
-                navigate('/home');
-              }}
-              className="dropdown-item"
-            >
-              <FaGlobe />
-              <span>Client Portal</span>
-            </button>
-            <button
-              onClick={() => {
-                setDropdownOpen(false);
-                handleLogout();
-              }}
-              className="dropdown-item"
-            >
-              <FaSignOutAlt />
-              <span>Signout</span>
-            </button>
+      {dropdownOpen && (
+        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
+          <div className="dropdown-header">
+            <FaUser />
+            <span>{user?.fullname || 'Unknown User'}</span>
           </div>
-        )}
+          <button
+            onClick={() => {
+              setDropdownOpen(false);
+              navigate('/home');
+            }}
+            className="dropdown-item"
+          >
+            <FaGlobe />
+            <span>Client Portal</span>
+          </button>
+          <button
+            onClick={() => {
+              setDropdownOpen(false);
+              handleLogout();
+            }}
+            className="dropdown-item"
+          >
+            <FaSignOutAlt />
+            <span>Signout</span>
+          </button>
+        </div>
+      )}
+
+
       </div>
     </header>
   );
