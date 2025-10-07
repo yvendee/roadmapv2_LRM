@@ -7,6 +7,9 @@ import FoundationalDocuments from './pages/FoundationalDocuments/FoundationalDoc
 import WinStrategies from './pages/WinStrategies/WinStrategies';
 import MonthlyMeetings from './pages/MonthlyMeetings/MonthlyMeetings';
 import QuarterlyMeetings from './pages/QuarterlyMeetings/QuarterlyMeetings';
+import Companies from './pages/Companies/Companies'
+import Roles from './pages/Roles/Roles';
+import TableHeaders from './pages/TableHeaders/TableHeaders';
 
 export default function AdminPanelContent({ selectedItem }) {
   return (
@@ -20,6 +23,9 @@ export default function AdminPanelContent({ selectedItem }) {
       {selectedItem === 'Win Strategies' && <WinStrategies />}
       {selectedItem === 'Monthly Meetings' && <MonthlyMeetings />}
       {selectedItem === 'Quarterly Meetings' && <QuarterlyMeetings />}
+      {selectedItem === 'Companies' && <Companies />}
+      {selectedItem === 'Roles' && <Roles />}
+      {selectedItem === 'Table Headers' && <TableHeaders />}
       
       {/* Fallback view */}
       {selectedItem !== 'Growth Goals' && 
@@ -30,7 +36,10 @@ export default function AdminPanelContent({ selectedItem }) {
        selectedItem !== 'Foundational Documents' && 
        selectedItem !== 'Win Strategies' && 
        selectedItem !== 'Monthly Meetings' && 
-       selectedItem !== 'Quarterly Meetings' && 
+       selectedItem !== 'Quarterly Meetings' &&
+       selectedItem !== 'Companies' && 
+       selectedItem !== 'Roles' && 
+       selectedItem !== 'Table Headers' && 
       (
         <>
           <h1 className="text-2xl font-semibold mb-4">{selectedItem}</h1>
