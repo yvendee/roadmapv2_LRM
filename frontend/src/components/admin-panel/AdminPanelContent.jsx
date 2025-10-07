@@ -1,3 +1,4 @@
+import Dashboard from './pages/Dashboard/Dashboard'
 import GrowthGoals from './pages/GrowthGoals/GrowthGoals';
 import KeyThrustStrategicDrivers from './pages/KeyThrustStrategicDrivers/KeyThrustStrategicDrivers';
 import StrategicAlignments from './pages/StrategicAlignments/StrategicAlignments';
@@ -15,6 +16,7 @@ import TableHeaders from './pages/TableHeaders/TableHeaders';
 export default function AdminPanelContent({ selectedItem }) {
   return (
     <main className="p-4 overflow-auto flex-grow bg-gray-50 dark:bg-gray-900">
+      {selectedItem === 'Dashboard' && <Dashboard />}
       {selectedItem === 'Growth Goals' && <GrowthGoals />}
       {selectedItem === 'Key Thrust Strategic Drivers' && <KeyThrustStrategicDrivers />}
       {selectedItem === 'Strategic Alignments' && <StrategicAlignments />}
@@ -30,7 +32,8 @@ export default function AdminPanelContent({ selectedItem }) {
       {selectedItem === 'Table Headers' && <TableHeaders />}
       
       {/* Fallback view */}
-      {selectedItem !== 'Growth Goals' && 
+      {selectedItem !== 'Dashboard' && 
+       selectedItem !== 'Growth Goals' && 
        selectedItem !== 'Key Thrust Strategic Drivers' && 
        selectedItem !== 'Strategic Alignments' &&
        selectedItem !== 'Annual Priorities' && 
