@@ -1,13 +1,11 @@
-// frontend/src/components/admin-panel/AdminPanelHeader.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLoginStore from '../../store/loginStore';
 import PanelLeftIcon from '../../assets/images/svg/PanelLeftIcon';
-import { FaUser, FaSignOutAlt, FaGlobe } from 'react-icons/fa';
-import API_URL from '../../configs/config';
-import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
-import './AdminPanelHeader.css'; 
+import { FaUser, FaGlobe, FaSignOutAlt } from 'react-icons/fa';
+import './AdminPanelHeader.css'; // Include the custom CSS below
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar }) {
   const navigate = useNavigate();
@@ -15,7 +13,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
-  // Close dropdown if clicked outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -50,7 +48,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
   };
 
   return (
-    <header className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700 relative">
+    <header className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
       {/* Sidebar toggle button */}
       <button
         onClick={toggleSidebar}
@@ -60,30 +58,35 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         <PanelLeftIcon width={24} height={24} />
       </button>
 
-      {/* Profile image and dropdown */}
+      {/* Profile image with dropdown */}
       <div className="relative" ref={dropdownRef}>
         <img
           src="https://i.pravatar.cc/40"
           alt="User Profile"
-          className="w-10 h-10 rounded-full object-cover cursor-pointer"
+          className="w-10 h-10 rounded-full object-cover mr-4 mt-0.5 cursor-pointer"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         />
 
         {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
+          <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
             <div className="px-4 py-2 text-sm text-gray-700 dark:text-white border-b border-gray-100 dark:border-gray-600 flex items-center gap-2">
-              <FaUser />
-              {user?.fullname || 'Unknown User'}
+              <FaUser /> {user?.fullname || 'Unknown User'}
             </div>
             <button
-              onClick={() => navigate('/home')}
+              onClick={() => {
+                setDropdownOpen(false);
+                navigate('/home');
+              }}
               className="dropdown-item"
             >
               <FaGlobe />
               Client Portal
             </button>
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                setDropdownOpen(false);
+                handleLogout();
+              }}
               className="dropdown-item"
             >
               <FaSignOutAlt />
@@ -95,4 +98,3 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
     </header>
   );
 }
-

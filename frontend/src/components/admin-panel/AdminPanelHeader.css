@@ -10,15 +10,18 @@
     border: none;
     font-size: 14px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
   }
   
   .dropdown-item:hover {
-    background-color: #f3f4f6; /* bg-gray-100 */
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
   }
+  
   .dark .dropdown-item {
-    color: #d1d5db; /* text-gray-300 */
+    color: #d1d5db; /* dark:text-gray-300 */
   }
+  
   .dark .dropdown-item:hover {
-    background-color: #374151; /* dark:bg-gray-700 */
+    background-color: #374151; /* dark:hover:bg-gray-700 */
   }
   
