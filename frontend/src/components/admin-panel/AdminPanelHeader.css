@@ -22,3 +22,18 @@
   font-weight: 500;
   background-color: #f9fafb; /* gray-50 */
 }
+
+.admin-profile-initials {
+  width: 40px;
+  height: 40px;
+  background-color: #1e40af; /* blue-800 */
+  color: white;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem; /* text-sm */
+  user-select: none;
+}
+

@@ -12,6 +12,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -27,12 +28,14 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
       const response = await fetch(`${API_URL}/logout`, {
         method: 'GET',
         credentials: 'include',
-        headers: { Accept: 'application/json' },
+        headers: {
+          Accept: 'application/json',
+        },
       });
 
       if (!response.ok) throw new Error('Logout failed');
-      const data = await response.json();
 
+      const data = await response.json();
       if (data.status === 'success') {
         navigate('/', { state: { loginError: 'You have successfully logged out' } });
       } else {
@@ -41,12 +44,6 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
     } catch (error) {
       alert('Logout error: ' + error.message);
     }
-  };
-
-  const getInitials = (fullname) => {
-    if (!fullname) return '??';
-    const [first = '', last = ''] = fullname.trim().split(' ');
-    return `${first[0] || ''}${last[0] || ''}`.toUpperCase();
   };
 
   return (
@@ -60,25 +57,14 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         <PanelLeftIcon width={24} height={24} />
       </button>
 
-      {/* Profile initials with dropdown */}
+      {/* Profile image and dropdown */}
       <div className="relative" ref={dropdownRef}>
-        {/* Initial-based profile circle */}
-        <div
-          className="admin-profile-initials mr-4 mt-0.5 cursor-pointer"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          {getInitials(user?.fullname)}
-        </div>
-
-        {/* Old image-based profile (commented out) */}
-        {/*
         <img
           src="https://i.pravatar.cc/40"
           alt="User Profile"
           className="w-10 h-10 rounded-full object-cover mr-4 mt-0.5 cursor-pointer"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         />
-        */}
 
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
@@ -118,3 +104,4 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
     </header>
   );
 }
+
