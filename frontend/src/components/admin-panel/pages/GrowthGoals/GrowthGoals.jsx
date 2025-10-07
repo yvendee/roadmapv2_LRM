@@ -22,7 +22,7 @@ export default function GrowthGoals() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Growth Goals &gt; List</div>
+          <div className="text-sm text-gray-500 mb-1">Growth Goals &gt; List</div>
           <h2 className="text-2xl font-semibold">Growth Goals</h2>
         </div>
         <button className="new-growth-goal-btn">
