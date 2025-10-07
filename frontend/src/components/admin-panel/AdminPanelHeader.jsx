@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import useLoginStore from '../../store/loginStore';
 import PanelLeftIcon from '../../assets/images/svg/PanelLeftIcon';
 import { FaUser, FaGlobe, FaSignOutAlt } from 'react-icons/fa';
-import './AdminPanelHeader.css'; 
-import API_URL from '../../configs/config';
-import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
+import './AdminPanelHeader.css';
+import API_URL, { ENABLE_CONSOLE_LOGS } from '../../configs/config';
 
 export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar }) {
   const navigate = useNavigate();
@@ -73,26 +72,28 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
               <FaUser />
               <span>{user?.fullname || 'Unknown User'}</span>
             </div>
-            <button
+
+            <div
+              className="dropdown-item"
               onClick={() => {
                 setDropdownOpen(false);
                 navigate('/home');
               }}
-              className="dropdown-item"
             >
               <FaGlobe />
               <span>Client Portal</span>
-            </button>
-            <button
+            </div>
+
+            <div
+              className="dropdown-item"
               onClick={() => {
                 setDropdownOpen(false);
                 handleLogout();
               }}
-              className="dropdown-item"
             >
               <FaSignOutAlt />
               <span>Signout</span>
-            </button>
+            </div>
           </div>
         )}
       </div>
