@@ -8,6 +8,7 @@ import WinStrategies from './pages/WinStrategies/WinStrategies';
 import MonthlyMeetings from './pages/MonthlyMeetings/MonthlyMeetings';
 import QuarterlyMeetings from './pages/QuarterlyMeetings/QuarterlyMeetings';
 import Companies from './pages/Companies/Companies'
+import Users from './pages/Users/Users'
 import Roles from './pages/Roles/Roles';
 import TableHeaders from './pages/TableHeaders/TableHeaders';
 
@@ -24,6 +25,7 @@ export default function AdminPanelContent({ selectedItem }) {
       {selectedItem === 'Monthly Meetings' && <MonthlyMeetings />}
       {selectedItem === 'Quarterly Meetings' && <QuarterlyMeetings />}
       {selectedItem === 'Companies' && <Companies />}
+      {selectedItem === 'Users' && <Users />}
       {selectedItem === 'Roles' && <Roles />}
       {selectedItem === 'Table Headers' && <TableHeaders />}
       
@@ -38,6 +40,7 @@ export default function AdminPanelContent({ selectedItem }) {
        selectedItem !== 'Monthly Meetings' && 
        selectedItem !== 'Quarterly Meetings' &&
        selectedItem !== 'Companies' && 
+       selectedItem !== 'Users' && 
        selectedItem !== 'Roles' && 
        selectedItem !== 'Table Headers' && 
       (
