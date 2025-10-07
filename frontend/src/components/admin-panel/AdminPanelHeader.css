@@ -1,5 +1,5 @@
-.dropdown-item,
-.dropdown-header {
+.admin-dropdown-item,
+.admin-dropdown-header {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -8,16 +8,16 @@
   font-size: 14px;
   color: #374151; /* gray-700 */
   background-color: transparent;
-  border: none;
   cursor: pointer;
 }
 
-.dropdown-item:hover {
+.admin-dropdown-item:hover {
   background-color: #f3f4f6; /* gray-100 */
 }
 
-.dropdown-header {
+.admin-dropdown-header {
   border-bottom: 1px solid #e5e7eb; /* gray-200 */
   font-weight: 500;
   background-color: #f9fafb; /* gray-50 */
 }
+

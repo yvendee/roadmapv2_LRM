@@ -68,24 +68,26 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
 
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
-            <div className="dropdown-header">
+            <div className="admin-dropdown-header">
               <FaUser />
               <span>{user?.fullname || 'Unknown User'}</span>
             </div>
 
             <div
-              className="dropdown-item"
+              className="admin-dropdown-item"
               onClick={() => {
                 setDropdownOpen(false);
                 navigate('/home');
               }}
             >
-              <FaGlobe />
-              <span>Client Portal</span>
+              <div className="flex items-center gap-2">
+                <FaGlobe />
+                <span>Client Portal</span>
+              </div>
             </div>
 
             <div
-              className="dropdown-item"
+              className="admin-dropdown-item"
               onClick={() => {
                 setDropdownOpen(false);
                 handleLogout();
@@ -96,7 +98,6 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
                 <span>Signout</span>
               </div>
             </div>
-
           </div>
         )}
       </div>
