@@ -91,9 +91,12 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
                 handleLogout();
               }}
             >
-              <FaSignOutAlt />
-              <span>Signout</span>
+              <div className="flex items-center gap-2">
+                <FaSignOutAlt />
+                <span>Signout</span>
+              </div>
             </div>
+
           </div>
         )}
       </div>
