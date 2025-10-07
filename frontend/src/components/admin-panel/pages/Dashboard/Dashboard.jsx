@@ -1,5 +1,4 @@
-// frontend/src/components/admin-panel/pages/Dashboard/Dashboard.jsx
-
+// frontend\src\components\admin-panel\pages\Dashboard\Dashboard.jsx
 import React, { useState } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +11,6 @@ export default function DashboardWidget() {
   const user = useLoginStore((state) => state.user);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
-
   const getInitials = (fullname) => {
     if (!fullname) return '??';
     const [first = '', last = ''] = fullname.trim().split(' ');
@@ -20,6 +18,8 @@ export default function DashboardWidget() {
   };
 
   const handleLogout = async () => {
+    setIsSigningOut(true);
+
     try {
       const response = await fetch(`${API_URL}/logout`, {
         method: 'GET',
@@ -30,13 +30,24 @@ export default function DashboardWidget() {
       });
 
       const data = await response.json();
-      if (response.ok && data.status === 'success') {
-        navigate('/', { state: { loginError: 'You have successfully logged out' } });
-      } else {
-        alert('Logout failed: ' + (data.message || 'Unknown error'));
-      }
+
+      // Simulate a delay of 3 seconds
+      setTimeout(() => {
+        setIsSigningOut(false);
+
+        if (response.ok && data.status === 'success') {
+          navigate('/', {
+            state: { loginError: 'You have successfully logged out' },
+          });
+        } else {
+          alert('Logout failed: ' + (data.message || 'Unknown error'));
+        }
+      }, 3000);
     } catch (error) {
-      alert('Logout error: ' + error.message);
+      setTimeout(() => {
+        setIsSigningOut(false);
+        alert('Logout error: ' + error.message);
+      }, 3000);
     }
   };
 
