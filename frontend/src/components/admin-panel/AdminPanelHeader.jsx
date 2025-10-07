@@ -67,36 +67,34 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
           onClick={() => setDropdownOpen(!dropdownOpen)}
         />
 
-      {dropdownOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
-          <div className="dropdown-header">
-            <FaUser />
-            <span>{user?.fullname || 'Unknown User'}</span>
+        {dropdownOpen && (
+          <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
+            <div className="dropdown-header">
+              <FaUser />
+              <span>{user?.fullname || 'Unknown User'}</span>
+            </div>
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                navigate('/home');
+              }}
+              className="dropdown-item"
+            >
+              <FaGlobe />
+              <span>Client Portal</span>
+            </button>
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                handleLogout();
+              }}
+              className="dropdown-item"
+            >
+              <FaSignOutAlt />
+              <span>Signout</span>
+            </button>
           </div>
-          <button
-            onClick={() => {
-              setDropdownOpen(false);
-              navigate('/home');
-            }}
-            className="dropdown-item"
-          >
-            <FaGlobe />
-            <span>Client Portal</span>
-          </button>
-          <button
-            onClick={() => {
-              setDropdownOpen(false);
-              handleLogout();
-            }}
-            className="dropdown-item"
-          >
-            <FaSignOutAlt />
-            <span>Signout</span>
-          </button>
-        </div>
-      )}
-
-
+        )}
       </div>
     </header>
   );
