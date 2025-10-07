@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useLoginStore from '../../store/loginStore';
 import PanelLeftIcon from '../../assets/images/svg/PanelLeftIcon';
 import { FaUser, FaGlobe, FaSignOutAlt } from 'react-icons/fa';
-import './AdminPanelHeader.css'; // Include the custom CSS below
+import './AdminPanelHeader.css'; // Custom CSS
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -30,7 +30,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         method: 'GET',
         credentials: 'include',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
       });
 
@@ -58,7 +58,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
         <PanelLeftIcon width={24} height={24} />
       </button>
 
-      {/* Profile image with dropdown */}
+      {/* Profile image and dropdown */}
       <div className="relative" ref={dropdownRef}>
         <img
           src="https://i.pravatar.cc/40"
@@ -69,8 +69,9 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
 
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50">
-            <div className="px-4 py-2 text-sm text-gray-700 dark:text-white border-b border-gray-100 dark:border-gray-600 flex items-center gap-2">
-              <FaUser /> {user?.fullname || 'Unknown User'}
+            <div className="dropdown-header">
+              <FaUser />
+              <span>{user?.fullname || 'Unknown User'}</span>
             </div>
             <button
               onClick={() => {
@@ -80,7 +81,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
               className="dropdown-item"
             >
               <FaGlobe />
-              Client Portal
+              <span>Client Portal</span>
             </button>
             <button
               onClick={() => {
@@ -90,7 +91,7 @@ export default function AdminPanelHeader({ isMobile, sidebarOpen, toggleSidebar 
               className="dropdown-item"
             >
               <FaSignOutAlt />
-              Signout
+              <span>Signout</span>
             </button>
           </div>
         )}
