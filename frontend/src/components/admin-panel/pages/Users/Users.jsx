@@ -30,7 +30,7 @@ export default function Users() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Maintenance &gt; Users</div>
+          <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Users</div>
           <h2 className="text-2xl font-semibold">Users</h2>
         </div>
         <button className="new-user-btn">New user</button>

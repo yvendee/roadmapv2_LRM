@@ -16,7 +16,7 @@ export default function TableHeaders() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Maintenance &gt; Table Headers</div>
+          <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Table Headers</div>
           <h2 className="text-2xl font-semibold">Table Headers</h2>
         </div>
         <button className="new-table-header-btn">New table header</button>

@@ -17,7 +17,7 @@ export default function Companies() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Maintenance &gt; Companies</div>
+          <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Companies</div>
           <h2 className="text-2xl font-semibold">Companies</h2>
         </div>
         <button className="new-company-btn">New company</button>

@@ -31,7 +31,7 @@ export default function KeyThrustStrategicDrivers() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">OPSP &gt; Key Thrust Strategic Drivers</div>
+          <div className="text-sm text-gray-500 mb-1">OPSP &gt; Key Thrust Strategic Drivers</div>
           <h2 className="text-2xl font-semibold">Key Thrust Strategic Drivers</h2>
         </div>
         <button className="new-strategic-driver-btn">

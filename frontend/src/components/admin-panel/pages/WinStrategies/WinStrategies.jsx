@@ -16,7 +16,7 @@ export default function WinStrategies() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Tools &gt; Win Strategies</div>
+          <div className="text-sm text-gray-500 mb-1">Tools &gt; Win Strategies</div>
           <h2 className="text-2xl font-semibold">Win Strategies</h2>
         </div>
         <button className="new-win-strategy-btn">New win strategy</button>

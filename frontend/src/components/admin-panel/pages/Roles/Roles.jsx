@@ -16,7 +16,7 @@ export default function Roles() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Maintenance &gt; Roles</div>
+          <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Roles</div>
           <h2 className="text-2xl font-semibold">Roles</h2>
         </div>
         <button className="new-role-btn">New role</button>

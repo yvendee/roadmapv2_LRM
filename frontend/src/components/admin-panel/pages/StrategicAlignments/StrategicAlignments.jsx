@@ -28,7 +28,7 @@ export default function StrategicAlignments() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">OPSP &gt; Strategic Alignments</div>
+          <div className="text-sm text-gray-500 mb-1">OPSP &gt; Strategic Alignments</div>
           <h2 className="text-2xl font-semibold">Strategic Alignments</h2>
         </div>
         <button className="new-strategic-alignment-btn">

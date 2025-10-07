@@ -36,7 +36,7 @@ export default function QuarterlyMeetings() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Session Dates &gt; Quarterly Meetings</div>
+          <div className="text-sm text-gray-500 mb-1">Session Dates &gt; Quarterly Meetings</div>
           <h2 className="text-2xl font-semibold">Quarterly Meetings</h2>
         </div>
         <button className="new-quarterly-meeting-btn">New quarterly meeting</button>

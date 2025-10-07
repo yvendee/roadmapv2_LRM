@@ -28,7 +28,7 @@ export default function AnnualPriorities() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">OPSP &gt; Annual Priorities</div>
+          <div className="text-sm text-gray-500 mb-1">OPSP &gt; Annual Priorities</div>
           <h2 className="text-2xl font-semibold">Annual Priorities</h2>
         </div>
         <button className="new-annual-priority-btn">

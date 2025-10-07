@@ -16,7 +16,7 @@ export default function CoreValues() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="text-sm text-gray-500">Tools &gt; Core Values</div>
+          <div className="text-sm text-gray-500 mb-1">Tools &gt; Core Values</div>
           <h2 className="text-2xl font-semibold">Core Values</h2>
         </div>
         <button className="new-core-value-btn">New core value</button>
