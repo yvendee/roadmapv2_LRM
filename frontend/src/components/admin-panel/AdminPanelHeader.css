@@ -1,0 +1,24 @@
+.dropdown-item {
+    width: 100%;
+    padding: 10px 16px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    color: #374151; /* text-gray-700 */
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f3f4f6; /* bg-gray-100 */
+  }
+  .dark .dropdown-item {
+    color: #d1d5db; /* text-gray-300 */
+  }
+  .dark .dropdown-item:hover {
+    background-color: #374151; /* dark:bg-gray-700 */
+  }
+  
