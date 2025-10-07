@@ -10,6 +10,8 @@ import API_URL from '../../../../configs/config';
 export default function DashboardWidget() {
   const navigate = useNavigate();
   const user = useLoginStore((state) => state.user);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
 
   const getInitials = (fullname) => {
     if (!fullname) return '??';
@@ -51,9 +53,19 @@ export default function DashboardWidget() {
           </div>
         </div>
 
-        <button className="dash-widget-signout-btn" onClick={handleLogout}>
-          <FaSignOutAlt className="dash-widget-signout-icon" />
-          Sign out
+        <button
+          className="dash-widget-signout-btn"
+          onClick={handleLogout}
+          disabled={isSigningOut}
+        >
+          {isSigningOut ? (
+            <div className="dash-widget-spinner"></div>
+          ) : (
+            <>
+              <FaSignOutAlt className="dash-widget-signout-icon" />
+              Sign out
+            </>
+          )}
         </button>
       </div>
     </div>
