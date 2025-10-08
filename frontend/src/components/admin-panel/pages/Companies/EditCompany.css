@@ -1,102 +1,22 @@
-.edit-company-container {
-    padding: 24px;
-    max-width: 1000px;
-    margin: auto;
-  }
-  
-  .edit-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-  }
-  
-  .edit-header h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .delete-btn {
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .form-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  
-  .form-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-input {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
-  
-  .required {
-    color: red;
-  }
-  
-  .quarters-container h3 {
-    font-size: 1.2rem;
-    margin-bottom: 16px;
-  }
-  
-  .quarters-grid {
+.quarters-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-  
-  .quarter-box {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 16px;
-    background-color: white;
-  }
-  
-  .quarter-header {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  
-  .selected-months {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 8px;
+    grid-template-columns: repeat(2, 1fr); /* Q1 & Q2, Q3 & Q4 in rows */
+    gap: 1rem;
   }
   
   .month-pill {
     background-color: #f97316; /* orange-500 */
     color: white;
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-size: 0.875rem;
-    display: flex;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    margin: 0.25rem;
+    font-size: 0.875rem;
   }
   
   .month-pill span {
+    margin-left: 0.5rem;
     cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .month-dropdown {
-    padding: 6px 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 100%;
   }
   
