@@ -1,16 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Companies.css';
 import { FaEdit } from 'react-icons/fa';
 import useCompanyStore from '../../../../store/admin-panel/companies/companyStore';
 import EditCompany from './EditCompany';
+import API_URL from '../../../../configs/config';
+import { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
+
 
 export default function Companies() {
   const { companies, setSelectedCompany, selectedCompany } = useCompanyStore();
 
 
+  useEffect(() => {
+    (async () => {
+      try {
+        // Fetch CSRF token first
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+        const { csrf_token } = await csrfRes.json();
+
+        // Then fetch companies with the CSRF token header
+        const res = await fetch(`${API_URL}/api/v1/admin-panel/companies`, {
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch companies');
+        }
+        const json = await res.json();
+        const data = json.data || [];
+        ENABLE_CONSOLE_LOGS && console.log('Fetched companies:', data);
+        setCompanies(data);
+      } catch (error) {
+        console.error('Error loading companies:', error);
+      }
+    })();
+  }, [setCompanies]);
+
 
   const handleEditCompany = (company) => {
-    console.log('✏️ Editing Company:', company);
+    ENABLE_CONSOLE_LOGS &&  console.log('✏️ Editing Company:', company);
     setSelectedCompany(company);
   };
 
@@ -48,8 +83,8 @@ export default function Companies() {
           <button
             className="delete-btn"
             onClick={() => {
-              console.log('🗑️ Delete clicked');
-              console.log('Selected Company:', selectedCompany);
+              ENABLE_CONSOLE_LOGS &&  console.log('🗑️ Delete clicked');
+              ENABLE_CONSOLE_LOGS &&  console.log('Selected Company:', selectedCompany);
             }}
           >
             Delete

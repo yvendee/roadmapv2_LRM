@@ -8255,3 +8255,30 @@ Route::post('/api/v1/update-layout-toggles', function (Request $request) use ($A
         'message' => 'Layout toggles updated successfully',
     ]);
 });
+
+
+// ref:
+Route::get('/api/v1/admin-panel/companies', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organizations = Organization::select('organizationName')->get();
+
+    // Map organizations to include an auto increment id starting from 1
+    $companies = $organizations->map(function ($org, $index) {
+        return [
+            'id' => $index + 1,
+            'name' => $org->organizationName,
+        ];
+    });
+
+    return response()->json([
+        'data' => $companies,
+    ]);
+});
+
+
+
