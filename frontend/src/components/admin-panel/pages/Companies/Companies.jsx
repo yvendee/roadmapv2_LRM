@@ -22,7 +22,7 @@ export default function Companies() {
         const { csrf_token } = await csrfRes.json();
 
         // Then fetch companies with the CSRF token header
-        const res = await fetch(`${API_URL}/api/v1/admin-panel/companies`, {
+        const res = await fetch(`${API_URL}/v1/admin-panel/companies`, {
           credentials: 'include',
           headers: {
             Accept: 'application/json',
