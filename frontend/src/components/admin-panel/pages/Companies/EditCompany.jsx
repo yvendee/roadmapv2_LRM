@@ -13,7 +13,6 @@ const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 export default function EditCompany() {
   const [company, setCompany] = useState({
     name: 'eDoc Innovations',
-    code: 'EDOC008Z',
     quarters: {
       Q1: ['January', 'February'],
       Q2: ['April', 'May', 'June'],
@@ -59,12 +58,12 @@ export default function EditCompany() {
           </label>
           <input value={company.name} className="form-input" />
         </div>
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>
             Company Code<span className="required">*</span>
           </label>
           <input value={company.code} className="form-input" />
-        </div>
+        </div> */}
       </div>
 
       <div className="quarters-container">

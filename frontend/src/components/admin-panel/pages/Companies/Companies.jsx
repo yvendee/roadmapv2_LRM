@@ -50,7 +50,7 @@ export default function Companies() {
               <tr>
                 <th className="p-3"><input type="checkbox" /></th>
                 <th className="p-3">Name</th>
-                <th className="p-3">Company Code</th>
+                {/* <th className="p-3">Company Code</th> */}
                 <th className="p-3"></th>
               </tr>
             </thead>
@@ -62,7 +62,7 @@ export default function Companies() {
                 >
                   <td className="p-3"><input type="checkbox" /></td>
                   <td className="p-3">{company.name}</td>
-                  <td className="p-3">{company.code}</td>
+                  {/* <td className="p-3">{company.code}</td> */}
                   <td className="p-3 text-right">
                     <button
                       className="text-orange-500 hover:text-orange-600"
