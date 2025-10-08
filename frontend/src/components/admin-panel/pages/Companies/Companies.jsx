@@ -106,24 +106,40 @@ export default function Companies() {
               </tr>
             </thead>
             <tbody>
-              {companies.map((company) => (
+            {companies.map((company) => {
+              const isLoading = !company.name?.trim(); // Check if name is empty, null, or only whitespace
+
+              return (
                 <tr
                   key={company.id}
                   className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <td className="p-3"><input type="checkbox" /></td>
-                  <td className="p-3">{company.name}</td>
-                  {/* <td className="p-3">{company.code}</td> */}
+
+                  <td className="p-3">
+                    {isLoading ? (
+                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+                    ) : (
+                      company.name
+                    )}
+                  </td>
+
                   <td className="p-3 text-right">
-                    <button
-                      className="text-orange-500 hover:text-orange-600"
-                      onClick={() => handleEditCompany(company)}
-                    >
-                      <FaEdit />
-                    </button>
+                    {isLoading ? (
+                      <div className="h-4 w-6 bg-gray-200 rounded-full animate-pulse inline-block" />
+                    ) : (
+                      <button
+                        className="text-orange-500 hover:text-orange-600"
+                        onClick={() => handleEditCompany(company)}
+                      >
+                        <FaEdit />
+                      </button>
+                    )}
                   </td>
                 </tr>
-              ))}
+              );
+            })}
+
             </tbody>
           </table>
 

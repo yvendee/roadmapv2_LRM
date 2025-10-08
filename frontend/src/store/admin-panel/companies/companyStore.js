@@ -3,9 +3,9 @@ import { create } from 'zustand';
 
 const useCompanyStore = create((set) => ({
   companies: [
-    { id: 1, name: 'ABC Corp' },
-    { id: 2, name: 'XYZ Ltd' },
-    { id: 3, name: 'Example Inc' },
+    { id: 1, name: '' },
+    { id: 2, name: '' },
+    { id: 3, name: '' },
   ],
   selectedCompany: null,
 
