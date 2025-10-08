@@ -2,16 +2,43 @@ import React from 'react';
 import './EditCompany.css';
 import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
 
-const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+const allMonths = [
+  'January', 'February', 'March',
+  'April', 'May', 'June',
+  'July', 'August', 'September',
+  'October', 'November', 'December',
+];
+
+const quartersList = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 export default function EditCompany() {
-  const {
-    company,
-    setCompanyName,
-    handleMonthAdd,
-    handleMonthRemove,
-    getAvailableMonths,
-  } = useEditCompanyStore();
+  const name = useEditCompanyStore((state) => state.name);
+  const quarters = useEditCompanyStore((state) => state.quarters);
+  const setName = useEditCompanyStore((state) => state.setName);
+  const setQuarters = useEditCompanyStore((state) => state.setQuarters);
+
+  const getAvailableMonths = () => {
+    const selectedMonths = Object.values(quarters).flat();
+    return allMonths.filter((month) => !selectedMonths.includes(month));
+  };
+
+  const handleMonthAdd = (quarter, month) => {
+    if (!month) return;
+
+    const updated = {
+      ...quarters,
+      [quarter]: [...quarters[quarter], month],
+    };
+    setQuarters(updated);
+  };
+
+  const handleMonthRemove = (quarter, month) => {
+    const updated = {
+      ...quarters,
+      [quarter]: quarters[quarter].filter((m) => m !== month),
+    };
+    setQuarters(updated);
+  };
 
   return (
     <div className="edit-company-container">
@@ -21,8 +48,8 @@ export default function EditCompany() {
             Name<span className="required">*</span>
           </label>
           <input
-            value={company.name}
-            onChange={(e) => setCompanyName(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="form-input"
           />
         </div>
@@ -38,12 +65,12 @@ export default function EditCompany() {
         <h3>Quarters</h3>
 
         <div className="quarters-grid">
-          {quarters.map((q) => (
+          {quartersList.map((q) => (
             <div key={q} className="quarter-box">
               <div className="quarter-header">{q}</div>
 
               <div className="selected-months">
-                {company.quarters[q].map((month) => (
+                {quarters[q].map((month) => (
                   <div key={month} className="month-pill">
                     {month}
                     <span onClick={() => handleMonthRemove(q, month)}>&times;</span>
