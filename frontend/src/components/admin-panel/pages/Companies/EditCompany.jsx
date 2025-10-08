@@ -1,69 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './EditCompany.css';
-
-const allMonths = [
-  'January', 'February', 'March',
-  'April', 'May', 'June',
-  'July', 'August', 'September',
-  'October', 'November', 'December',
-];
+import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
 
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 export default function EditCompany() {
-  const [company, setCompany] = useState({
-    name: 'eDoc Innovations',
-    quarters: {
-      Q1: ['January', 'February'],
-      Q2: ['April', 'May', 'June'],
-      Q3: ['July', 'August'],
-      Q4: ['October', 'November'],
-    },
-  });
-
-  const getAvailableMonths = () => {
-    const selectedMonths = Object.values(company.quarters).flat();
-    return allMonths.filter((month) => !selectedMonths.includes(month));
-  };
-
-  const handleMonthAdd = (quarter, month) => {
-    if (!month) return;
-    setCompany((prev) => ({
-      ...prev,
-      quarters: {
-        ...prev.quarters,
-        [quarter]: [...prev.quarters[quarter], month],
-      },
-    }));
-  };
-
-  const handleMonthRemove = (quarter, month) => {
-    setCompany((prev) => ({
-      ...prev,
-      quarters: {
-        ...prev.quarters,
-        [quarter]: prev.quarters[quarter].filter((m) => m !== month),
-      },
-    }));
-  };
+  const {
+    company,
+    setCompanyName,
+    handleMonthAdd,
+    handleMonthRemove,
+    getAvailableMonths,
+  } = useEditCompanyStore();
 
   return (
     <div className="edit-company-container">
-
-
       <div className="form-row">
         <div className="form-group">
           <label>
             Name<span className="required">*</span>
           </label>
-          <input value={company.name} className="form-input" />
+          <input
+            value={company.name}
+            onChange={(e) => setCompanyName(e.target.value)}
+            className="form-input"
+          />
         </div>
-        {/* <div className="form-group">
-          <label>
-            Company Code<span className="required">*</span>
-          </label>
-          <input value={company.code} className="form-input" />
-        </div> */}
       </div>
 
       <div className="quarters-container">
@@ -89,7 +51,7 @@ export default function EditCompany() {
                 className="month-dropdown"
               >
                 <option value="">Select a month</option>
-                {getAvailableMonths().map((month) => (
+                {getAvailableMonths(q).map((month) => (
                   <option key={month} value={month}>
                     {month}
                   </option>
