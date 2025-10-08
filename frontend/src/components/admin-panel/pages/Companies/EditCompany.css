@@ -2,77 +2,82 @@
     padding: 24px;
     max-width: 1000px;
     margin: auto;
-}
+  }
   
-.edit-header {
+  .edit-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-}
+  }
   
-.edit-header h2 {
+  .edit-header h2 {
     font-size: 1.5rem;
     font-weight: bold;
-}
+  }
   
-.delete-btn {
+  .delete-btn {
     background-color: #ef4444;
     color: white;
     border: none;
     padding: 8px 14px;
     border-radius: 4px;
     cursor: pointer;
-}
+  }
   
-.form-row {
+  .form-row {
     display: flex;
     gap: 16px;
     margin-bottom: 32px;
-}
-
-.form-group {
+  }
+  
+  .form-group {
     flex: 1;
     display: flex;
     flex-direction: column;
-}
-
-.form-input {
+  }
+  
+  .form-input {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
-}
-
-.required {
+  }
+  
+  .required {
     color: red;
-}
-
-.quarters-container h3 {
+  }
+  
+  .quarters-container h3 {
     font-size: 1.2rem;
     margin-bottom: 16px;
-}
-
-.quarter-box {
+  }
+  
+  .quarters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .quarter-box {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 16px;
-    margin-bottom: 16px;
     background-color: white;
-}
-
-.quarter-header {
+  }
+  
+  .quarter-header {
     font-weight: bold;
     margin-bottom: 8px;
-}
-
-.selected-months {
+  }
+  
+  .selected-months {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 8px;
-}
-
-.month-pill {
+  }
+  
+  .month-pill {
     background-color: #f97316; /* orange-500 */
     color: white;
     border-radius: 20px;
@@ -81,16 +86,17 @@
     display: flex;
     align-items: center;
     gap: 6px;
-}
-
-.month-pill span {
+  }
+  
+  .month-pill span {
     cursor: pointer;
     font-weight: bold;
-}
-
-.month-dropdown {
+  }
+  
+  .month-dropdown {
     padding: 6px 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
-}
+    width: 100%;
+  }
   

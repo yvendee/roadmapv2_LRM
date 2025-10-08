@@ -15,21 +15,24 @@ export default function EditCompany() {
     name: 'eDoc Innovations',
     code: 'EDOC008Z',
     quarters: {
-      Q1: ['January', 'February'],
-      Q2: ['April', 'May', 'June'],
-      Q3: ['July', 'August'],
-      Q4: ['October', 'November'],
+      Q1: ['January', 'February', 'March'],
+      Q2: ['April', 'June', 'July', 'August'],
+      Q3: ['September', 'October', 'November'],
+      Q4: ['December'],
     }
   });
 
   const getAvailableMonths = (currentQuarter) => {
+    // Collect months from other quarters
     const selected = Object.entries(company.quarters)
       .filter(([q]) => q !== currentQuarter)
       .flatMap(([, months]) => months);
+
     return allMonths.filter(month => !selected.includes(month));
   };
 
   const handleMonthAdd = (quarter, month) => {
+    if (!month) return;
     setCompany(prev => ({
       ...prev,
       quarters: {
@@ -69,29 +72,31 @@ export default function EditCompany() {
 
       <div className="quarters-container">
         <h3>Quarters</h3>
-        {quarters.map(q => (
-          <div key={q} className="quarter-box">
-            <div className="quarter-header">{q}</div>
-            <div className="selected-months">
-              {company.quarters[q].map(month => (
-                <div key={month} className="month-pill">
-                  {month}
-                  <span onClick={() => handleMonthRemove(q, month)}>&times;</span>
-                </div>
-              ))}
+        <div className="quarters-grid">
+          {quarters.map(q => (
+            <div key={q} className="quarter-box">
+              <div className="quarter-header">{q}</div>
+              <div className="selected-months">
+                {company.quarters[q].map(month => (
+                  <div key={month} className="month-pill">
+                    {month}
+                    <span onClick={() => handleMonthRemove(q, month)}>&times;</span>
+                  </div>
+                ))}
+              </div>
+              <select
+                onChange={e => handleMonthAdd(q, e.target.value)}
+                value=""
+                className="month-dropdown"
+              >
+                <option value="">Select a month</option>
+                {getAvailableMonths(q).map(month => (
+                  <option key={month} value={month}>{month}</option>
+                ))}
+              </select>
             </div>
-            <select
-              onChange={e => handleMonthAdd(q, e.target.value)}
-              value=""
-              className="month-dropdown"
-            >
-              <option value="">Select a month</option>
-              {getAvailableMonths(q).map(month => (
-                <option key={month} value={month}>{month}</option>
-              ))}
-            </select>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
