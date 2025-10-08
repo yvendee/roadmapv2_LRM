@@ -1,154 +1,98 @@
-import React, { useEffect, useState } from 'react';
-import useCompanyStore from '../../../../store/admin-panel/companies/companyStore';
+import React, { useState } from 'react';
+import './EditCompany.css';
 
 const allMonths = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January', 'February', 'March',
+  'April', 'May', 'June',
+  'July', 'August', 'September',
+  'October', 'November', 'December',
 ];
 
-const quarterLabels = ['Q1', 'Q2', 'Q3', 'Q4'];
+const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 export default function EditCompany() {
-  const { selectedCompany, updateCompany } = useCompanyStore();
-  const [formData, setFormData] = useState({
-    id: null,
-    name: '',
-    code: '',
+  const [company, setCompany] = useState({
+    name: 'eDoc Innovations',
+    code: 'EDOC008Z',
     quarters: {
-      Q1: [],
-      Q2: [],
-      Q3: [],
-      Q4: [],
-    },
+      Q1: ['January', 'February'],
+      Q2: ['April', 'May', 'June'],
+      Q3: ['July', 'August'],
+      Q4: ['October', 'November'],
+    }
   });
 
-  useEffect(() => {
-    if (selectedCompany) {
-      setFormData({
-        ...selectedCompany,
-        quarters: selectedCompany.quarters || {
-          Q1: [],
-          Q2: [],
-          Q3: [],
-          Q4: [],
-        },
-      });
-    }
-  }, [selectedCompany]);
-
-  const getUsedMonths = (excludeQuarter) => {
-    return Object.entries(formData.quarters)
-      .filter(([q]) => q !== excludeQuarter)
+  const getAvailableMonths = (currentQuarter) => {
+    const selected = Object.entries(company.quarters)
+      .filter(([q]) => q !== currentQuarter)
       .flatMap(([, months]) => months);
+    return allMonths.filter(month => !selected.includes(month));
   };
 
-  const handleMonthChange = (quarter, event) => {
-    const selectedOptions = Array.from(event.target.selectedOptions).map((opt) => opt.value);
-
-    setFormData((prev) => ({
+  const handleMonthAdd = (quarter, month) => {
+    setCompany(prev => ({
       ...prev,
       quarters: {
         ...prev.quarters,
-        [quarter]: selectedOptions,
-      },
+        [quarter]: [...prev.quarters[quarter], month]
+      }
     }));
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
+  const handleMonthRemove = (quarter, month) => {
+    setCompany(prev => ({
       ...prev,
-      [name]: value,
+      quarters: {
+        ...prev.quarters,
+        [quarter]: prev.quarters[quarter].filter(m => m !== month)
+      }
     }));
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    updateCompany(formData);
-  };
-
-  if (!selectedCompany) return null;
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded shadow border dark:border-gray-700">
-      <div className="text-sm text-gray-500 mb-1">Companies &gt; Edit</div>
-      <h2 className="text-2xl font-semibold mb-6">Edit Company</h2>
+    <div className="edit-company-container">
+      <div className="edit-header">
+        <h2>Edit Company</h2>
+        <button className="delete-btn">Delete</button>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name & Code */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-medium">Name<span className="text-red-500">*</span></label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:text-white"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">Company Code<span className="text-red-500">*</span></label>
-            <input
-              type="text"
-              name="code"
-              value={formData.code}
-              onChange={handleInputChange}
-              className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:text-white"
-              required
-            />
-          </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Name<span className="required">*</span></label>
+          <input value={company.name} className="form-input" />
         </div>
+        <div className="form-group">
+          <label>Company Code<span className="required">*</span></label>
+          <input value={company.code} className="form-input" />
+        </div>
+      </div>
 
-        {/* Quarters */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Quarters</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {quarterLabels.map((quarter) => {
-              const usedMonths = getUsedMonths(quarter);
-
-              return (
-                <div key={quarter} className="p-4 border rounded-md dark:border-gray-600 dark:bg-gray-700">
-                  <div className="font-semibold mb-2">
-                    Quarter: <span className="text-orange-500">{quarter}</span>
-                  </div>
-
-                  <label className="block mb-1 font-medium">
-                    Month<span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    multiple
-                    value={formData.quarters[quarter]}
-                    onChange={(e) => handleMonthChange(quarter, e)}
-                    className="w-full border rounded px-2 py-1 dark:bg-gray-800 dark:text-white"
-                  >
-                    {allMonths.map((month) => (
-                      <option
-                        key={month}
-                        value={month}
-                        disabled={usedMonths.includes(month)}
-                      >
-                        {month}
-                      </option>
-                    ))}
-                  </select>
+      <div className="quarters-container">
+        <h3>Quarters</h3>
+        {quarters.map(q => (
+          <div key={q} className="quarter-box">
+            <div className="quarter-header">{q}</div>
+            <div className="selected-months">
+              {company.quarters[q].map(month => (
+                <div key={month} className="month-pill">
+                  {month}
+                  <span onClick={() => handleMonthRemove(q, month)}>&times;</span>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+            <select
+              onChange={e => handleMonthAdd(q, e.target.value)}
+              value=""
+              className="month-dropdown"
+            >
+              <option value="">Select a month</option>
+              {getAvailableMonths(q).map(month => (
+                <option key={month} value={month}>{month}</option>
+              ))}
+            </select>
           </div>
-        </div>
-
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-medium"
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
+        ))}
+      </div>
     </div>
   );
 }

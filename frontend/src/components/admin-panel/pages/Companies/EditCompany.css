@@ -1,0 +1,96 @@
+.edit-company-container {
+    padding: 24px;
+    max-width: 1000px;
+    margin: auto;
+}
+  
+.edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+  
+.edit-header h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+  
+.delete-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.required {
+    color: red;
+}
+
+.quarters-container h3 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+}
+
+.quarter-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: white;
+}
+
+.quarter-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.selected-months {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.month-pill {
+    background-color: #f97316; /* orange-500 */
+    color: white;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.month-pill span {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.month-dropdown {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+  
