@@ -7,6 +7,14 @@ import EditCompany from './EditCompany';
 export default function Companies() {
   const { companies, setSelectedCompany, selectedCompany } = useCompanyStore();
 
+
+
+  const handleEditCompany = (company) => {
+    console.log('✏️ Editing Company:', company);
+    setSelectedCompany(company);
+  };
+
+
   return (
     <div className="p-6">
       {/* Header - Companies List */}
@@ -37,7 +45,15 @@ export default function Companies() {
             <h2 className="text-2xl font-semibold">Edit Company</h2>
           </div>
 
-          <button className="delete-btn">Delete</button>
+          <button
+            className="delete-btn"
+            onClick={() => {
+              console.log('🗑️ Delete clicked');
+              console.log('Selected Company:', selectedCompany);
+            }}
+          >
+            Delete
+          </button>
         </div>
       )}
 
@@ -66,7 +82,7 @@ export default function Companies() {
                   <td className="p-3 text-right">
                     <button
                       className="text-orange-500 hover:text-orange-600"
-                      onClick={() => setSelectedCompany(company)}
+                      onClick={() => handleEditCompany(company)}
                     >
                       <FaEdit />
                     </button>
