@@ -24,7 +24,6 @@ export default function EditCompany() {
 
   const handleMonthAdd = (quarter, month) => {
     if (!month) return;
-
     const updated = {
       ...quarters,
       [quarter]: [...quarters[quarter], month],
@@ -40,6 +39,17 @@ export default function EditCompany() {
     setQuarters(updated);
   };
 
+  const handleSaveChanges = () => {
+    console.log('✅ Save Changes clicked');
+    console.log('Company Name:', name);
+    console.log('Quarters:', quarters);
+  };
+
+  const handleDiscard = () => {
+    console.log('❌ Discard clicked');
+    // Optional: reset form or navigate back
+  };
+
   return (
     <div className="edit-company-container">
       <div className="form-row">
@@ -53,17 +63,10 @@ export default function EditCompany() {
             className="form-input"
           />
         </div>
-        {/* <div className="form-group">
-          <label>
-            Company Code<span className="required">*</span>
-          </label>
-          <input value={company.code} className="form-input" />
-        </div> */}
       </div>
 
       <div className="quarters-container">
         <h3>Quarters</h3>
-
         <div className="quarters-grid">
           {quartersList.map((q) => (
             <div key={q} className="quarter-box">
@@ -93,6 +96,16 @@ export default function EditCompany() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Save & Discard Buttons */}
+      <div className="action-buttons">
+        <button className="save-btn" onClick={handleSaveChanges}>
+          Save Changes
+        </button>
+        <button className="discard-btn" onClick={handleDiscard}>
+          Discard
+        </button>
       </div>
     </div>
   );
