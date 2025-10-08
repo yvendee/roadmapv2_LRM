@@ -1,4 +1,3 @@
-// frontend\src\components\admin-panel\pages\Companies\Companies.jsx
 import React from 'react';
 import './Companies.css';
 import { FaEdit } from 'react-icons/fa';
@@ -10,15 +9,40 @@ export default function Companies() {
 
   return (
     <div className="p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Companies</div>
-          <h2 className="text-2xl font-semibold">Companies</h2>
+      {/* Header - Companies List */}
+      {!selectedCompany && (
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Companies</div>
+            <h2 className="text-2xl font-semibold">Companies</h2>
+          </div>
+          <button className="new-company-btn">New company</button>
         </div>
-        <button className="new-company-btn">New company</button>
-      </div>
+      )}
 
+      {/* Header - Edit Company */}
+      {selectedCompany && (
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">
+              Maintenance &gt;{' '}
+              <span
+                className="text-blue-600 hover:underline cursor-pointer"
+                onClick={() => setSelectedCompany(null)}
+              >
+                Companies
+              </span>{' '}
+              &gt; Edit
+            </div>
+            <h2 className="text-2xl font-semibold">Edit Company</h2>
+          </div>
+
+          <button className="delete-btn">Delete</button>
+        </div>
+      )}
+
+
+      {/* Content */}
       {!selectedCompany ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
           <table className="min-w-full table-auto">
@@ -32,7 +56,10 @@ export default function Companies() {
             </thead>
             <tbody>
               {companies.map((company) => (
-                <tr key={company.id} className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr
+                  key={company.id}
+                  className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
                   <td className="p-3"><input type="checkbox" /></td>
                   <td className="p-3">{company.name}</td>
                   <td className="p-3">{company.code}</td>

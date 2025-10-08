@@ -50,10 +50,7 @@ export default function EditCompany() {
 
   return (
     <div className="edit-company-container">
-      <div className="edit-header">
-        <h2>Edit Company</h2>
-        <button className="delete-btn">Delete</button>
-      </div>
+
 
       <div className="form-row">
         <div className="form-group">
