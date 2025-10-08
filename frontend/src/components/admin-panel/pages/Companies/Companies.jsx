@@ -8,7 +8,7 @@ import { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 
 export default function Companies() {
-  const { companies, setSelectedCompany, selectedCompany } = useCompanyStore();
+  const { companies, setCompanies, selectedCompany, setSelectedCompany } = useCompanyStore();
 
 
   useEffect(() => {
