@@ -26,6 +26,12 @@ export default function EditCompany() {
             className="form-input"
           />
         </div>
+        {/* <div className="form-group">
+          <label>
+            Company Code<span className="required">*</span>
+          </label>
+          <input value={company.code} className="form-input" />
+        </div> */}
       </div>
 
       <div className="quarters-container">
@@ -51,7 +57,7 @@ export default function EditCompany() {
                 className="month-dropdown"
               >
                 <option value="">Select a month</option>
-                {getAvailableMonths(q).map((month) => (
+                {getAvailableMonths().map((month) => (
                   <option key={month} value={month}>
                     {month}
                   </option>

@@ -20,40 +20,47 @@ export const useEditCompanyStore = create((set, get) => ({
 
   setCompanyName: (name) =>
     set((state) => ({
-      company: { ...state.company, name },
+      company: {
+        ...state.company,
+        name,
+      },
     })),
 
   handleMonthAdd: (quarter, month) => {
     if (!month) return;
-    set((state) => ({
+
+    const { company } = get();
+    const updatedQuarter = [...company.quarters[quarter], month];
+
+    set({
       company: {
-        ...state.company,
+        ...company,
         quarters: {
-          ...state.company.quarters,
-          [quarter]: [...state.company.quarters[quarter], month],
+          ...company.quarters,
+          [quarter]: updatedQuarter,
         },
       },
-    }));
+    });
   },
 
   handleMonthRemove: (quarter, month) => {
-    set((state) => ({
+    const { company } = get();
+    const updatedQuarter = company.quarters[quarter].filter((m) => m !== month);
+
+    set({
       company: {
-        ...state.company,
+        ...company,
         quarters: {
-          ...state.company.quarters,
-          [quarter]: state.company.quarters[quarter].filter((m) => m !== month),
+          ...company.quarters,
+          [quarter]: updatedQuarter,
         },
       },
-    }));
+    });
   },
 
-  getAvailableMonths: (currentQuarter) => {
+  getAvailableMonths: () => {
     const { company } = get();
-    const selectedInOtherQuarters = Object.entries(company.quarters)
-      .filter(([q]) => q !== currentQuarter)
-      .flatMap(([, months]) => months);
-
-    return allMonths.filter((month) => !selectedInOtherQuarters.includes(month));
+    const selected = Object.values(company.quarters).flat();
+    return allMonths.filter((m) => !selected.includes(m));
   },
 }));
