@@ -100,3 +100,9 @@
     width: 100%;
   }
   
+  .quarters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns: Q1-Q2 top, Q3-Q4 bottom */
+    gap: 16px;
+  }
+  
