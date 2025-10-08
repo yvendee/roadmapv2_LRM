@@ -1,22 +1,21 @@
 .quarters-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Q1 & Q2, Q3 & Q4 in rows */
-    gap: 1rem;
-  }
-  
-  .month-pill {
-    background-color: #f97316; /* orange-500 */
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    display: inline-flex;
-    align-items: center;
-    margin: 0.25rem;
-    font-size: 0.875rem;
-  }
-  
-  .month-pill span {
-    margin-left: 0.5rem;
-    cursor: pointer;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Q1 & Q2, Q3 & Q4 in rows */
+  gap: 1rem;
+}
+
+.month-pill {
+  background-color: #f97316; /* orange-500 */
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  margin: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.month-pill span {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}

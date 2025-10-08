@@ -19,7 +19,7 @@ export default function EditCompany() {
       Q2: ['April', 'June', 'July', 'August'],
       Q3: ['September', 'October', 'November'],
       Q4: ['December'],
-    },
+    }
   });
 
   const getAvailableMonths = (currentQuarter) => {
@@ -30,25 +30,25 @@ export default function EditCompany() {
       (month) => !selectedMonths.includes(month)
     );
   };
-
+  
   const handleMonthAdd = (quarter, month) => {
     if (!month) return;
-    setCompany((prev) => ({
+    setCompany(prev => ({
       ...prev,
       quarters: {
         ...prev.quarters,
-        [quarter]: [...prev.quarters[quarter], month],
-      },
+        [quarter]: [...prev.quarters[quarter], month]
+      }
     }));
   };
 
   const handleMonthRemove = (quarter, month) => {
-    setCompany((prev) => ({
+    setCompany(prev => ({
       ...prev,
       quarters: {
         ...prev.quarters,
-        [quarter]: prev.quarters[quarter].filter((m) => m !== month),
-      },
+        [quarter]: prev.quarters[quarter].filter(m => m !== month)
+      }
     }));
   };
 
@@ -61,15 +61,11 @@ export default function EditCompany() {
 
       <div className="form-row">
         <div className="form-group">
-          <label>
-            Name<span className="required">*</span>
-          </label>
+          <label>Name<span className="required">*</span></label>
           <input value={company.name} className="form-input" />
         </div>
         <div className="form-group">
-          <label>
-            Company Code<span className="required">*</span>
-          </label>
+          <label>Company Code<span className="required">*</span></label>
           <input value={company.code} className="form-input" />
         </div>
       </div>
@@ -77,31 +73,25 @@ export default function EditCompany() {
       <div className="quarters-container">
         <h3>Quarters</h3>
         <div className="quarters-grid">
-          {quarters.map((q, index) => (
+          {quarters.map(q => (
             <div key={q} className="quarter-box">
               <div className="quarter-header">{q}</div>
-
               <div className="selected-months">
-                {company.quarters[q].map((month) => (
+                {company.quarters[q].map(month => (
                   <div key={month} className="month-pill">
                     {month}
-                    <span onClick={() => handleMonthRemove(q, month)}>
-                      &times;
-                    </span>
+                    <span onClick={() => handleMonthRemove(q, month)}>&times;</span>
                   </div>
                 ))}
               </div>
-
               <select
-                onChange={(e) => handleMonthAdd(q, e.target.value)}
+                onChange={e => handleMonthAdd(q, e.target.value)}
                 value=""
                 className="month-dropdown"
               >
                 <option value="">Select a month</option>
-                {getAvailableMonths(q).map((month) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
+                {getAvailableMonths(q).map(month => (
+                  <option key={month} value={month}>{month}</option>
                 ))}
               </select>
             </div>
