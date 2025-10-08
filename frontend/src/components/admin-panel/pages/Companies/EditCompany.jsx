@@ -23,10 +23,12 @@ export default function EditCompany() {
   });
 
   const getAvailableMonths = (currentQuarter) => {
-    const selected = Object.entries(company.quarters)
-      .filter(([q]) => q !== currentQuarter)
-      .flatMap(([, months]) => months);
-    return allMonths.filter(month => !selected.includes(month));
+    const selectedMonths = Object.entries(company.quarters)
+      .flatMap(([quarter, months]) => months);
+
+    return allMonths.filter(
+      (month) => !selectedMonths.includes(month)
+    );
   };
 
   const handleMonthAdd = (quarter, month) => {
