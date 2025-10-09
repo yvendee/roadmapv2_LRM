@@ -108,7 +108,7 @@ export default function Companies() {
       const { csrf_token } = await csrfRes.json();
   
       // Fetch quarters by organizationName (company.name)
-      const res = await fetch(`${API_URL}/quarters`, {
+      const res = await fetch(`${API_URL}/v1/admin-panel/quarters`, {
         method: 'POST',
         credentials: 'include',
         headers: {
