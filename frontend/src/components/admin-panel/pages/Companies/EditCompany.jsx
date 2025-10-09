@@ -50,50 +50,46 @@ export default function EditCompany() {
 
 
     const handleSaveChanges = async () => {
-    const name = useEditCompanyStore.getState().name;
-    const quarters = useEditCompanyStore.getState().quarters;
+        const name = useEditCompanyStore.getState().name;
+        const quarters = useEditCompanyStore.getState().quarters;
 
-    ENABLE_CONSOLE_LOGS && console.log('✅ Save Changes clicked');
-    ENABLE_CONSOLE_LOGS && console.log('Company Name:', name);
-    ENABLE_CONSOLE_LOGS && console.log('Quarters:', quarters);
+        ENABLE_CONSOLE_LOGS && console.log('✅ Save Changes clicked');
+        ENABLE_CONSOLE_LOGS && console.log('Company Name:', name);
+        ENABLE_CONSOLE_LOGS && console.log('Quarters:', quarters);
 
-    try {
-        // Fetch CSRF token
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-        credentials: 'include',
-        });
-        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
-        const { csrf_token } = await csrfRes.json();
+        try {
+            // Fetch CSRF token
+            const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+            credentials: 'include',
+            });
+            if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+            const { csrf_token } = await csrfRes.json();
 
-        // Send update request
-        const res = await fetch(`${API_URL}/v1/admin-panel/quarters/update`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-            Accept: 'application/json',
-        },
-        body: JSON.stringify({
-            organizationName: name,
-            quarters: quarters,
-        }),
-        });
+            // Send update request
+            const res = await fetch(`${API_URL}/v1/admin-panel/quarters/update`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf_token,
+                Accept: 'application/json',
+            },
+            body: JSON.stringify({
+                organizationName: name,
+                quarters: quarters,
+            }),
+            });
 
-        const data = await res.json();
-        if (!res.ok) {
-        throw new Error(data.error || 'Failed to update quarters');
+            const data = await res.json();
+            if (!res.ok) {
+            throw new Error(data.error || 'Failed to update quarters');
+            }
+
+            ENABLE_CONSOLE_LOGS && console.log('✅ Update response:', data);
+            
+        } catch (error) {
+            console.error('❌ Error saving changes:', error.message);
         }
-
-        ENABLE_CONSOLE_LOGS && console.log('✅ Update response:', data);
-        // Optionally, you can reload or refresh the store from returned data
-        useEditCompanyStore.setState({
-        name: data.name,
-        quarters: data.quarters,
-        });
-    } catch (error) {
-        console.error('❌ Error saving changes:', error.message);
-    }
     };
 
 
