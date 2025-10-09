@@ -1,5 +1,5 @@
 // frontend\src\components\admin-panel\pages\Companies\EditCompany.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import './EditCompany.css';
 import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
 import ToastNotification from '../../../../components/toast-notification/ToastNotification'; 
