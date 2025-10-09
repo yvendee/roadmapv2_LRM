@@ -1,3 +1,5 @@
+
+// frontend\src\store\admin-panel\companies\editCompanyStore.js
 import { create } from 'zustand';
 
 export const useEditCompanyStore = create((set) => ({

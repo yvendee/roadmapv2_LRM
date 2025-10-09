@@ -17,6 +17,8 @@ export default function EditCompany() {
   const setName = useEditCompanyStore((state) => state.setName);
   const setQuarters = useEditCompanyStore((state) => state.setQuarters);
 
+  const isLoading = !name?.trim(); // loading state if name is empty/null
+
   const getAvailableMonths = () => {
     const selectedMonths = Object.values(quarters).flat();
     return allMonths.filter((month) => !selectedMonths.includes(month));
@@ -47,24 +49,29 @@ export default function EditCompany() {
 
   const handleDiscard = () => {
     console.log('❌ Discard clicked');
-    // Optional: reset form or navigate back
   };
 
   return (
     <div className="edit-company-container">
+      {/* Name Input */}
       <div className="form-row">
         <div className="form-group">
           <label>
             Name<span className="required">*</span>
           </label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="form-input"
-          />
+          {isLoading ? (
+            <div className="skeleton h-9 rounded w-full" />
+          ) : (
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="form-input"
+            />
+          )}
         </div>
       </div>
 
+      {/* Quarters Section */}
       <div className="quarters-container">
         <h3>Quarters</h3>
         <div className="quarters-grid">
@@ -81,31 +88,44 @@ export default function EditCompany() {
                 ))}
               </div>
 
-              <select
-                onChange={(e) => handleMonthAdd(q, e.target.value)}
-                value=""
-                className="month-dropdown"
-              >
-                <option value="">Select a month</option>
-                {getAvailableMonths().map((month) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
-                ))}
-              </select>
+              {isLoading ? (
+                <div className="skeleton h-10 w-full rounded" />
+              ) : (
+                <select
+                  onChange={(e) => handleMonthAdd(q, e.target.value)}
+                  value=""
+                  className="month-dropdown"
+                >
+                  <option value="">Select a month</option>
+                  {getAvailableMonths().map((month) => (
+                    <option key={month} value={month}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Save & Discard Buttons */}
+      {/* Action Buttons */}
       <div className="action-buttons">
-        <button className="save-btn" onClick={handleSaveChanges}>
-          Save Changes
-        </button>
-        <button className="discard-btn" onClick={handleDiscard}>
-          Discard
-        </button>
+        {isLoading ? (
+          <>
+            <div className="skeleton h-10 w-40 rounded mr-2" />
+            <div className="skeleton h-10 w-32 rounded" />
+          </>
+        ) : (
+          <>
+            <button className="save-btn" onClick={handleSaveChanges}>
+              Save Changes
+            </button>
+            <button className="discard-btn" onClick={handleDiscard}>
+              Discard
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
