@@ -127,12 +127,15 @@ export default function Companies() {
       const data = await res.json();
   
       ENABLE_CONSOLE_LOGS && console.log('✅ Quarters response:', data);
-  
-      // Update your store with the response data
+
+      const companyData = Array.isArray(data) ? data[0] : data;
+
       useEditCompanyStore.setState({
-        name: data.name,
-        quarters: data.quarters,
+        name: companyData?.name || '',
+        quarters: companyData?.quarters || { Q1: [], Q2: [], Q3: [], Q4: [] },
       });
+
+
     } catch (error) {
       console.error('❌ Error loading quarters:', error.message);
     }
