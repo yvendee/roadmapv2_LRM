@@ -8290,7 +8290,7 @@ Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
     }
 
     // Optional: Validate or customize based on specific organization
-    if ($organizationName !== 'eDoc Innovations') {
+    if ($organizationName !== 'eDoc Innovation') {
         return response()->json(['error' => 'Unauthorized organization'], 403);
     }
 

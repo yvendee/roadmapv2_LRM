@@ -48,46 +48,46 @@ export default function Companies() {
 
 
   // fetch Quarter status by Organization
-  useEffect(() => {
-    (async () => {
-      try {
-        // ✅ Step 1: Fetch CSRF token
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-          credentials: 'include',
-        });
-        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       // ✅ Step 1: Fetch CSRF token
+  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //         credentials: 'include',
+  //       });
+  //       if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
 
-        const { csrf_token } = await csrfRes.json();
+  //       const { csrf_token } = await csrfRes.json();
 
-        // ✅ Step 2: Send POST request with organizationName
-        const res = await fetch(`${API_URL}/v1/admin-panel/quarters`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({ organizationName: name }),
-        });
+  //       // ✅ Step 2: Send POST request with organizationName
+  //       const res = await fetch(`${API_URL}/v1/admin-panel/quarters`, {
+  //         method: 'POST',
+  //         credentials: 'include',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'X-CSRF-TOKEN': csrf_token,
+  //           Accept: 'application/json',
+  //         },
+  //         body: JSON.stringify({ organizationName: name }),
+  //       });
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData?.error || 'Failed to fetch quarters');
-        }
+  //       if (!res.ok) {
+  //         const errorData = await res.json();
+  //         throw new Error(errorData?.error || 'Failed to fetch quarters');
+  //       }
 
-        const data = await res.json();
+  //       const data = await res.json();
 
-        ENABLE_CONSOLE_LOGS && console.log('✅ Quarters response:', data);
+  //       ENABLE_CONSOLE_LOGS && console.log('✅ Quarters response:', data);
 
-        // ✅ Update store with both name and quarters
-        setName(data.name);
-        setQuarters(data.quarters);
-      } catch (error) {
-        console.error('❌ Error loading quarters:', error.message);
-      }
-    })();
-  }, [name, setName, setQuarters]);
+  //       // ✅ Update store with both name and quarters
+  //       setName(data.name);
+  //       setQuarters(data.quarters);
+  //     } catch (error) {
+  //       console.error('❌ Error loading quarters:', error.message);
+  //     }
+  //   })();
+  // }, [name, setName, setQuarters]);
 
 
   // const handleEditCompany = (company) => {
