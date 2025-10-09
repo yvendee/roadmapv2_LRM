@@ -1,6 +1,7 @@
 import React from 'react';
 import './EditCompany.css';
 import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
+import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 const allMonths = [
   'January', 'February', 'March',
@@ -41,11 +42,60 @@ export default function EditCompany() {
     setQuarters(updated);
   };
 
-  const handleSaveChanges = () => {
-    console.log('✅ Save Changes clicked');
-    console.log('Company Name:', name);
-    console.log('Quarters:', quarters);
-  };
+//   const handleSaveChanges = () => {
+//     console.log('✅ Save Changes clicked');
+//     console.log('Company Name:', name);
+//     console.log('Quarters:', quarters);
+//   };
+
+
+    const handleSaveChanges = async () => {
+    const name = useEditCompanyStore.getState().name;
+    const quarters = useEditCompanyStore.getState().quarters;
+
+    ENABLE_CONSOLE_LOGS && console.log('✅ Save Changes clicked');
+    ENABLE_CONSOLE_LOGS && console.log('Company Name:', name);
+    ENABLE_CONSOLE_LOGS && console.log('Quarters:', quarters);
+
+    try {
+        // Fetch CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+        });
+        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+        const { csrf_token } = await csrfRes.json();
+
+        // Send update request
+        const res = await fetch(`${API_URL}/v1/admin-panel/quarters/update`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+            Accept: 'application/json',
+        },
+        body: JSON.stringify({
+            organizationName: name,
+            quarters: quarters,
+        }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+        throw new Error(data.error || 'Failed to update quarters');
+        }
+
+        ENABLE_CONSOLE_LOGS && console.log('✅ Update response:', data);
+        // Optionally, you can reload or refresh the store from returned data
+        useEditCompanyStore.setState({
+        name: data.name,
+        quarters: data.quarters,
+        });
+    } catch (error) {
+        console.error('❌ Error saving changes:', error.message);
+    }
+    };
+
 
   const handleDiscard = () => {
     console.log('❌ Discard clicked');
@@ -121,9 +171,9 @@ export default function EditCompany() {
             <button className="save-btn" onClick={handleSaveChanges}>
               Save Changes
             </button>
-            <button className="discard-btn" onClick={handleDiscard}>
+            {/* <button className="discard-btn" onClick={handleDiscard}>
               Discard
-            </button>
+            </button> */}
           </>
         )}
       </div>

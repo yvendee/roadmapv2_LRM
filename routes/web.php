@@ -8258,7 +8258,7 @@ Route::post('/api/v1/update-layout-toggles', function (Request $request) use ($A
 });
 
 
-// ref:
+// ref: frontend\src\components\admin-panel\pages\Companies\Companies.jsx
 Route::get('/api/v1/admin-panel/companies', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -8306,7 +8306,7 @@ Route::get('/api/v1/admin-panel/companies', function (Request $request) use ($AP
 //     ]);
 // });
 
-// ref:
+// ref: frontend\src\components\admin-panel\pages\Companies\Companies.jsx
 Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
     $organizationName = $request->input('organizationName');
 
@@ -8348,5 +8348,31 @@ Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
 
 
 
+// ref: frontend\src\components\admin-panel\pages\Companies\EditCompany.jsx
+Route::post('/api/v1/admin-panel/quarters/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organizationName = $request->input('organizationName');
+    $quarters = $request->input('quarters', []); // default to empty array
+
+    if (!$organizationName) {
+        return response()->json(['status' => 'error', 'message' => 'Missing required organizationName field'], 400);
+    }
+
+    $record = AdminPanelCompany::where('organizationName', $organizationName)->first();
+
+    if (!$record) {
+        return response()->json(['status' => 'error', 'message' => 'Organization not found'], 404);
+    }
+
+    $record->companiesData = ['quarters' => $quarters];
+    $record->save();
+
+    return response()->json(['status' => 'success', 'message' => 'Companies data updated successfully']);
+});
 
 
