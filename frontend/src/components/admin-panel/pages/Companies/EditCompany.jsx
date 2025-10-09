@@ -26,6 +26,8 @@ export default function EditCompany() {
   const quarters = useEditCompanyStore((state) => state.quarters);
   const setName = useEditCompanyStore((state) => state.setName);
   const setQuarters = useEditCompanyStore((state) => state.setQuarters);
+  const [isSaving, setIsSaving] = useState(false);
+
 
   const isLoading = !name?.trim(); // loading state if name is empty/null
 
@@ -65,6 +67,8 @@ export default function EditCompany() {
         ENABLE_CONSOLE_LOGS && console.log('✅ Save Changes clicked');
         ENABLE_CONSOLE_LOGS && console.log('Company Name:', name);
         ENABLE_CONSOLE_LOGS && console.log('Quarters:', quarters);
+
+        setIsSaving(true); // Show spinner
 
         try {
             // Fetch CSRF token
@@ -113,6 +117,10 @@ export default function EditCompany() {
                 isVisible: true,
             });
 
+        } finally {
+            setTimeout(() => {
+            setIsSaving(false); // Hide spinner after 3 seconds
+            }, 3000);
         }
     };
 
@@ -188,9 +196,19 @@ export default function EditCompany() {
           </>
         ) : (
           <>
-            <button className="save-btn" onClick={handleSaveChanges}>
+            {/* <button className="save-btn" onClick={handleSaveChanges}>
               Save Changes
+            </button> */}
+
+            <button className="save-btn" onClick={handleSaveChanges} disabled={isSaving}>
+            {isSaving ? (
+                <div className="spinner"></div>
+            ) : (
+                'Save Changes'
+            )}
             </button>
+
+
             {/* <button className="discard-btn" onClick={handleDiscard}>
               Discard
             </button> */}
