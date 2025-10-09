@@ -1,6 +1,8 @@
+// frontend\src\components\admin-panel\pages\Companies\EditCompany.jsx
 import React from 'react';
 import './EditCompany.css';
 import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
+import ToastNotification from '../../../../components/toast-notification/ToastNotification'; 
 import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 const allMonths = [
@@ -9,6 +11,13 @@ const allMonths = [
   'July', 'August', 'September',
   'October', 'November', 'December',
 ];
+
+// Toast State
+const [toast, setToast] = useState({
+message: '',
+status: '', // 'success' or 'error'
+isVisible: false,
+});
 
 const quartersList = ['Q1', 'Q2', 'Q3', 'Q4'];
 
@@ -86,9 +95,24 @@ export default function EditCompany() {
             }
 
             ENABLE_CONSOLE_LOGS && console.log('✅ Update response:', data);
-            
+
+            // ✅ Show success toast
+            setToast({
+                message: 'Changes saved successfully!',
+                status: 'success',
+                isVisible: true,
+            });
+
         } catch (error) {
             console.error('❌ Error saving changes:', error.message);
+
+            // ❌ Show error toast
+            setToast({
+                message: `Failed to save changes: ${error.message}`,
+                status: 'error',
+                isVisible: true,
+            });
+
         }
     };
 
@@ -173,6 +197,14 @@ export default function EditCompany() {
           </>
         )}
       </div>
+
+        {/* Toast Notification */}
+        <ToastNotification
+            message={toast.message}
+            status={toast.status}
+            isVisible={toast.isVisible}
+            onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
+        />
     </div>
   );
 }
