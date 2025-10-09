@@ -58,6 +58,7 @@ use App\Models\MembersDirectory;
 use App\Models\Notification;
 use App\Models\MessagingMessage;
 use App\Models\MessagingLeftConversation;
+use App\Models\AdminPanelCompany;
 
 
 
@@ -8282,6 +8283,30 @@ Route::get('/api/v1/admin-panel/companies', function (Request $request) use ($AP
 
 
 // ref:
+// Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
+//     $organizationName = $request->input('organizationName');
+
+//     if (!$organizationName) {
+//         return response()->json(['error' => 'organizationName is required'], 422);
+//     }
+
+//     // Optional: Validate or customize based on specific organization
+//     if ($organizationName !== 'eDoc Innovation') {
+//         return response()->json(['error' => 'Unauthorized organization'], 403);
+//     }
+
+//     return response()->json([
+//         'name' => $organizationName,
+//         'quarters' => [
+//             'Q1' => ['January', 'February'],
+//             'Q2' => [''],
+//             'Q3' => [''],
+//             'Q4' => [''],
+//         ],
+//     ]);
+// });
+
+// ref:
 Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
     $organizationName = $request->input('organizationName');
 
@@ -8289,21 +8314,38 @@ Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
         return response()->json(['error' => 'organizationName is required'], 422);
     }
 
-    // Optional: Validate or customize based on specific organization
-    if ($organizationName !== 'eDoc Innovation') {
-        return response()->json(['error' => 'Unauthorized organization'], 403);
+    $company = AdminPanelCompany::where('organizationName', $organizationName)->first();
+
+    if (!$company) {
+        return response()->json([
+            [
+                'name' => $organizationName,
+                'quarters' => [
+                    'Q1' => [],
+                    'Q2' => [],
+                    'Q3' => [],
+                    'Q4' => [],
+                ],
+            ]
+        ]);
     }
 
+    // companiesData might be null, so fall back to empty quarters if needed
+    $quarters = $company->companiesData['quarters'] ?? [
+        'Q1' => [],
+        'Q2' => [],
+        'Q3' => [],
+        'Q4' => [],
+    ];
+
     return response()->json([
-        'name' => $organizationName,
-        'quarters' => [
-            'Q1' => ['January', 'February'],
-            'Q2' => [''],
-            'Q3' => [''],
-            'Q4' => [''],
-        ],
+        [
+            'name' => $company->organizationName,
+            'quarters' => $quarters,
+        ]
     ]);
 });
+
 
 
 
