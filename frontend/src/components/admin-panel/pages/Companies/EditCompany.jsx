@@ -14,10 +14,10 @@ const allMonths = [
 
 // Toast State
 const [toast, setToast] = useState({
-message: '',
-status: '', // 'success' or 'error'
-isVisible: false,
-});
+    message: '',
+    status: '', // 'success' or 'error'
+    isVisible: false,
+  });
 
 const quartersList = ['Q1', 'Q2', 'Q3', 'Q4'];
 
