@@ -8297,7 +8297,7 @@ Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
     return response()->json([
         'name' => $organizationName,
         'quarters' => [
-            'Q1' => [''],
+            'Q1' => ['January', 'February'],
             'Q2' => [''],
             'Q3' => [''],
             'Q4' => [''],
