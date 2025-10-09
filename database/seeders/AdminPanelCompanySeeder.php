@@ -12,7 +12,7 @@ class AdminPanelCompanySeeder extends Seeder
     {
         AdminPanelCompany::create([
             'u_id' => Str::uuid(),
-            'organizationName' => 'Chuck Gulledge Advisors, LLC',
+            'organizationName' => 'eDoc Innovation',
             'companiesData' => [
                 'quarters' => [
                     'Q1' => ['January', 'February'],
