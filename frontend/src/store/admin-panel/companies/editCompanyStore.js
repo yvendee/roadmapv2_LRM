@@ -18,10 +18,10 @@ import { create } from 'zustand';
 export const useEditCompanyStore = create((set) => ({
   name: '',
   quarters: {
-    Q1: ['January', 'February'],
-    Q2: ['April', 'May', 'June'],
-    Q3: ['July', 'August'],
-    Q4: ['October', 'November'],
+    Q1: [''],
+    Q2: [''],
+    Q3: [''],
+    Q4: [''],
   },
   setName: (name) => set({ name }),
   setQuarters: (quarters) => set({ quarters }),
