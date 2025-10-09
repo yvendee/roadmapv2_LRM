@@ -8281,4 +8281,30 @@ Route::get('/api/v1/admin-panel/companies', function (Request $request) use ($AP
 });
 
 
+// ref:
+Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
+    $organizationName = $request->input('organizationName');
+
+    if (!$organizationName) {
+        return response()->json(['error' => 'organizationName is required'], 422);
+    }
+
+    // Optional: Validate or customize based on specific organization
+    if ($organizationName !== 'eDoc Innovations') {
+        return response()->json(['error' => 'Unauthorized organization'], 403);
+    }
+
+    return response()->json([
+        'name' => $organizationName,
+        'quarters' => [
+            'Q1' => [''],
+            'Q2' => [''],
+            'Q3' => [''],
+            'Q4' => [''],
+        ],
+    ]);
+});
+
+
+
 

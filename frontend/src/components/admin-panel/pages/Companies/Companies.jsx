@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import './Companies.css';
 import { FaEdit } from 'react-icons/fa';
 import useCompanyStore from '../../../../store/admin-panel/companies/companyStore';
+import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
 import EditCompany from './EditCompany';
 import API_URL from '../../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
@@ -9,8 +10,10 @@ import { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 export default function Companies() {
   const { companies, setCompanies, selectedCompany, setSelectedCompany } = useCompanyStore();
+  const { name, setName, setQuarters } = useEditCompanyStore();
+  
 
-
+  // fetch Company / Organization List
   useEffect(() => {
     (async () => {
       try {
@@ -44,10 +47,97 @@ export default function Companies() {
   }, [setCompanies]);
 
 
-  const handleEditCompany = (company) => {
-    ENABLE_CONSOLE_LOGS &&  console.log('✏️ Editing Company:', company);
+  // fetch Quarter status by Organization
+  useEffect(() => {
+    (async () => {
+      try {
+        // ✅ Step 1: Fetch CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+
+        const { csrf_token } = await csrfRes.json();
+
+        // ✅ Step 2: Send POST request with organizationName
+        const res = await fetch(`${API_URL}/v1/admin-panel/quarters`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({ organizationName: name }),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData?.error || 'Failed to fetch quarters');
+        }
+
+        const data = await res.json();
+
+        ENABLE_CONSOLE_LOGS && console.log('✅ Quarters response:', data);
+
+        // ✅ Update store with both name and quarters
+        setName(data.name);
+        setQuarters(data.quarters);
+      } catch (error) {
+        console.error('❌ Error loading quarters:', error.message);
+      }
+    })();
+  }, [name, setName, setQuarters]);
+
+
+  // const handleEditCompany = (company) => {
+  //   ENABLE_CONSOLE_LOGS &&  console.log('✏️ Editing Company:', company);
+  //   setSelectedCompany(company);
+  // };
+
+  const handleEditCompany = async (company) => {
+    ENABLE_CONSOLE_LOGS && console.log('✏️ Editing Company:', company);
     setSelectedCompany(company);
+  
+    try {
+      // Fetch CSRF token first
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+      const { csrf_token } = await csrfRes.json();
+  
+      // Fetch quarters by organizationName (company.name)
+      const res = await fetch(`${API_URL}/quarters`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ organizationName: company.name }),
+      });
+  
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData?.error || 'Failed to fetch quarters');
+      }
+  
+      const data = await res.json();
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ Quarters response:', data);
+  
+      // Update your store with the response data
+      useEditCompanyStore.setState({
+        name: data.name,
+        quarters: data.quarters,
+      });
+    } catch (error) {
+      console.error('❌ Error loading quarters:', error.message);
+    }
   };
+  
 
 
   return (
