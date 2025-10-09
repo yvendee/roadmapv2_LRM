@@ -1,8 +1,9 @@
-// frontend\src\components\admin-panel\pages\Companies\EditCompany.jsx
+// frontend/src/components/admin-panel/pages/Companies/EditCompany.jsx
+
 import React, { useState } from 'react';
 import './EditCompany.css';
 import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
-import ToastNotification from '../../../../components/toast-notification/ToastNotification'; 
+import ToastNotification from '../../../../components/toast-notification/ToastNotification';
 import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 const allMonths = [
@@ -12,13 +13,6 @@ const allMonths = [
   'October', 'November', 'December',
 ];
 
-// Toast State
-const [toast, setToast] = useState({
-    message: '',
-    status: '', // 'success' or 'error'
-    isVisible: false,
-  });
-
 const quartersList = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 export default function EditCompany() {
@@ -26,11 +20,27 @@ export default function EditCompany() {
   const quarters = useEditCompanyStore((state) => state.quarters);
   const setName = useEditCompanyStore((state) => state.setName);
   const setQuarters = useEditCompanyStore((state) => state.setQuarters);
+
+  const isLoading = !name?.trim();
   const [isSaving, setIsSaving] = useState(false);
 
+  // ✅ Toast state
+  const [toast, setToast] = useState({
+    message: '',
+    status: '',
+    isVisible: false,
+  });
 
-  const isLoading = !name?.trim(); // loading state if name is empty/null
+  // ✅ Toast helpers
+  const showToast = (message, status) => {
+    setToast({ message, status, isVisible: true });
+  };
 
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
+
+  // 🔁 Available months logic
   const getAvailableMonths = () => {
     const selectedMonths = Object.values(quarters).flat();
     return allMonths.filter((month) => !selectedMonths.includes(month));
@@ -53,80 +63,53 @@ export default function EditCompany() {
     setQuarters(updated);
   };
 
-//   const handleSaveChanges = () => {
-//     console.log('✅ Save Changes clicked');
-//     console.log('Company Name:', name);
-//     console.log('Quarters:', quarters);
-//   };
+  // ✅ Save Changes
+  const handleSaveChanges = async () => {
+    const organizationName = useEditCompanyStore.getState().name;
+    const quarters = useEditCompanyStore.getState().quarters;
 
+    ENABLE_CONSOLE_LOGS && console.log('✅ Save Changes clicked');
+    ENABLE_CONSOLE_LOGS && console.log('Company Name:', organizationName);
+    ENABLE_CONSOLE_LOGS && console.log('Quarters:', quarters);
 
-    const handleSaveChanges = async () => {
-        const name = useEditCompanyStore.getState().name;
-        const quarters = useEditCompanyStore.getState().quarters;
+    setIsSaving(true);
 
-        ENABLE_CONSOLE_LOGS && console.log('✅ Save Changes clicked');
-        ENABLE_CONSOLE_LOGS && console.log('Company Name:', name);
-        ENABLE_CONSOLE_LOGS && console.log('Quarters:', quarters);
+    try {
+      // Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
 
-        setIsSaving(true); // Show spinner
+      // Send update request
+      const res = await fetch(`${API_URL}/v1/admin-panel/quarters/update`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          organizationName,
+          quarters,
+        }),
+      });
 
-        try {
-            // Fetch CSRF token
-            const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-            credentials: 'include',
-            });
-            if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
-            const { csrf_token } = await csrfRes.json();
+      const data = await res.json();
 
-            // Send update request
-            const res = await fetch(`${API_URL}/v1/admin-panel/quarters/update`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrf_token,
-                Accept: 'application/json',
-            },
-            body: JSON.stringify({
-                organizationName: name,
-                quarters: quarters,
-            }),
-            });
+      if (!res.ok || data.status !== 'success') {
+        throw new Error(data.message || 'Failed to update data.');
+      }
 
-            const data = await res.json();
-            if (!res.ok) {
-            throw new Error(data.error || 'Failed to update quarters');
-            }
-
-            ENABLE_CONSOLE_LOGS && console.log('✅ Update response:', data);
-
-            // ✅ Show success toast
-            setToast({
-                message: 'Changes saved successfully!',
-                status: 'success',
-                isVisible: true,
-            });
-
-        } catch (error) {
-            console.error('❌ Error saving changes:', error.message);
-
-            // ❌ Show error toast
-            setToast({
-                message: `Failed to save changes: ${error.message}`,
-                status: 'error',
-                isVisible: true,
-            });
-
-        } finally {
-            setTimeout(() => {
-            setIsSaving(false); // Hide spinner after 3 seconds
-            }, 3000);
-        }
-    };
-
-
-  const handleDiscard = () => {
-    console.log('❌ Discard clicked');
+      ENABLE_CONSOLE_LOGS && console.log('✅ Update successful:', data);
+      showToast('Changes saved successfully!', 'success');
+    } catch (error) {
+      console.error('❌ Save error:', error);
+      showToast(`Error saving changes: ${error.message}`, 'error');
+    } finally {
+      setTimeout(() => setIsSaving(false), 3000);
+    }
   };
 
   return (
@@ -195,34 +178,28 @@ export default function EditCompany() {
             <div className="skeleton h-10 w-32 rounded" />
           </>
         ) : (
-          <>
-            {/* <button className="save-btn" onClick={handleSaveChanges}>
-              Save Changes
-            </button> */}
+          <button
+            className="save-btn"
+            onClick={handleSaveChanges}
+            disabled={isSaving}
+          >
+            {isSaving ? <div className="spinner"></div> : 'Save Changes'}
+          </button>
 
-            <button className="save-btn" onClick={handleSaveChanges} disabled={isSaving}>
-            {isSaving ? (
-                <div className="spinner"></div>
-            ) : (
-                'Save Changes'
-            )}
-            </button>
-
-
-            {/* <button className="discard-btn" onClick={handleDiscard}>
-              Discard
-            </button> */}
-          </>
+            // {/* <button className="discard-btn" onClick={handleDiscard}>
+            //   Discard
+            // </button> */}
+            
         )}
       </div>
 
-        {/* Toast Notification */}
-        <ToastNotification
-            message={toast.message}
-            status={toast.status}
-            isVisible={toast.isVisible}
-            onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
-        />
+      {/* ✅ Toast Notification */}
+      <ToastNotification
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+        status={toast.status}
+      />
     </div>
   );
 }
