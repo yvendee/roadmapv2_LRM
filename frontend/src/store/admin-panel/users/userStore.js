@@ -3,9 +3,9 @@ import { create } from 'zustand';
 
 const useUserStore = create((set) => ({
   users: [
-    { id: 1, company: 'ABC Corp', name: '', email: '', emailVerifiedAt: '' },
-    { id: 2, company: 'XYZ Ltd', name: '', email: '', emailVerifiedAt: '' },
-    { id: 3, company: 'Example Inc', name: '', email: '', emailVerifiedAt: '' },
+    { id: 1, company: '', name: '', email: '', emailVerifiedAt: '' },
+    { id: 2, company: '', name: '', email: '', emailVerifiedAt: '' },
+    { id: 3, company: '', name: '', email: '', emailVerifiedAt: '' },
   ],
   selectedUser: null,
 
