@@ -157,6 +157,7 @@ export default function Companies() {
             className="new-company-btn"
             onClick={() => setShowCreateCompany(true)} // ✅ Switch to create mode
           >
+            New Company
           </button>
         </div>
       )}
@@ -189,6 +190,26 @@ export default function Companies() {
           </button>
         </div>
       )}
+
+      {/* Header - New Company */}
+      {showCreateCompany && !selectedCompany && (
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">
+              Maintenance &gt;{' '}
+              <span
+                className="text-blue-600 hover:underline cursor-pointer"
+                onClick={() => setShowCreateCompany(false)}
+              >
+                Companies
+              </span>{' '}
+              &gt; New
+            </div>
+            <h2 className="text-2xl font-semibold">New Company</h2>
+          </div>
+        </div>
+      )}
+
 
       {/* Content */}
       {!selectedCompany && !showCreateCompany && (
