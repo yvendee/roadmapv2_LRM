@@ -151,13 +151,13 @@ export default function CreateCompany({ onCancel, onSuccess }) {
             >
               {loading ? 'Creating...' : 'Create'}
             </button>
-            <button
+            {/* <button
               className="create-company-btn create-company-btn-red"
               onClick={onCancel}
               disabled={loading}
             >
               Cancel
-            </button>
+            </button> */}
           </div>
   
           {feedback.message && (
