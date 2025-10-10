@@ -4,13 +4,17 @@ import API_URL from '../../../../configs/config';
 import ToastNotification from '../../../../components/toast-notification/ToastNotification';
 import './CreateCompany.css';
 
-export default function CreateCompany() {
+export default function CreateCompany({ onCancel, onSuccess }) {
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [size, setSize] = useState('');
+  const [location, setLocation] = useState('');
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
   const [toast, setToast] = useState({ message: '', isVisible: false, status: '' });
 
   const showToast = (message, status) => {
@@ -22,6 +26,9 @@ export default function CreateCompany() {
 
   const resetForm = () => {
     setName('');
+    setIndustry('');
+    setSize('');
+    setLocation('');
     setFeedback({ type: '', message: '' });
     setErrors({});
   };
@@ -29,6 +36,7 @@ export default function CreateCompany() {
   const handleCreate = async () => {
     const newErrors = {};
     if (!name.trim()) newErrors.name = 'Company name is required';
+    // you can add other field validations similarly if needed
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -37,7 +45,6 @@ export default function CreateCompany() {
     }
 
     setLoading(true);
-
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
@@ -45,7 +52,7 @@ export default function CreateCompany() {
       if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
       const { csrf_token } = await csrfRes.json();
 
-      const body = { name };
+      const payload = { name, industry, size, location };
 
       const response = await fetch(`${API_URL}/api/v1/companies`, {
         method: 'POST',
@@ -54,24 +61,26 @@ export default function CreateCompany() {
           'X-CSRF-TOKEN': csrf_token,
         },
         credentials: 'include',
-        body: JSON.stringify(body),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
 
       if (response.ok && data.status === 'success') {
-        showToast('Company has been created!', 'success');
-        setFeedback({ type: 'success', message: 'Company has been created!' });
+        showToast('Company created successfully!', 'success');
+        setFeedback({ type: 'success', message: 'Company created successfully!' });
         resetForm();
-        // Optionally navigate or refresh companies list
+        if (onSuccess) {
+          onSuccess(data); // callback to parent to refresh list
+        }
       } else {
         const msg = data.message || 'Failed to create company.';
         showToast(msg, 'error');
         setFeedback({ type: 'error', message: msg });
         if (data.errors) setErrors(data.errors);
       }
-    } catch (err) {
-      console.error('Create company error:', err);
+    } catch (error) {
+      console.error('Create company error:', error);
       showToast('Server error. Please try again later.', 'error');
       setFeedback({ type: 'error', message: 'Server error. Please try again later.' });
     } finally {
@@ -84,19 +93,26 @@ export default function CreateCompany() {
       <h2 className="create-company-title">Create Company</h2>
 
       <div className="create-company-form">
-        <div className="create-company-floating-input">
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="create-company-floating-input-field"
-            placeholder=" "
-            required
-          />
-          <label htmlFor="name">Company Name</label>
-          {errors.name && <p className="create-company-error">{errors.name}</p>}
-        </div>
+        {[
+          { id: 'name', label: 'Company Name', value: name, setter: setName },
+          { id: 'industry', label: 'Industry', value: industry, setter: setIndustry },
+          { id: 'size', label: 'Size', value: size, setter: setSize },
+          { id: 'location', label: 'Location', value: location, setter: setLocation },
+        ].map(({ id, label, value, setter }) => (
+          <div key={id} className="create-company-floating-input">
+            <input
+              id={id}
+              type="text"
+              value={value}
+              onChange={(e) => setter(e.target.value)}
+              className="create-company-floating-input-field"
+              placeholder=" "
+              required
+            />
+            <label htmlFor={id}>{label}</label>
+            {errors[id] && <p className="create-company-error">{errors[id]}</p>}
+          </div>
+        ))}
 
         <div className="create-company-buttons">
           <button
@@ -104,11 +120,17 @@ export default function CreateCompany() {
             onClick={handleCreate}
             disabled={loading}
           >
-            Create
+            {loading ? 'Creating...' : 'Create'}
           </button>
           <button
             className="create-company-btn create-company-btn-red"
-            onClick={() => navigate('/admin/companies')}
+            onClick={() => {
+              if (onCancel) {
+                onCancel();
+              } else {
+                navigate(-1);
+              }
+            }}
             disabled={loading}
           >
             Cancel
