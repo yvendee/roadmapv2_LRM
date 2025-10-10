@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Companies.css';
 import { FaEdit } from 'react-icons/fa';
 import useCompanyStore from '../../../../store/admin-panel/companies/companyStore';
 import { useEditCompanyStore } from '../../../../store/admin-panel/companies/editCompanyStore';
 import EditCompany from './EditCompany';
+import CreateCompany from './CreateCompany'; 
 import API_URL from '../../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
@@ -11,6 +12,7 @@ import { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 export default function Companies() {
   const { companies, setCompanies, selectedCompany, setSelectedCompany } = useCompanyStore();
   const { name, setName, setQuarters } = useEditCompanyStore();
+  const [showCreateCompany, setShowCreateCompany] = useState(false);
   
 
   // fetch Company / Organization List
@@ -47,7 +49,6 @@ export default function Companies() {
   }, [setCompanies]);
 
 
-  // fetch Quarter status by Organization
   // useEffect(() => {
   //   (async () => {
   //     try {
@@ -146,13 +147,17 @@ export default function Companies() {
   return (
     <div className="p-6">
       {/* Header - Companies List */}
-      {!selectedCompany && (
+      {!selectedCompany && !showCreateCompany && (
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Companies</div>
             <h2 className="text-2xl font-semibold">Companies</h2>
           </div>
-          <button className="new-company-btn">New company</button>
+          <button
+            className="new-company-btn"
+            onClick={() => setShowCreateCompany(true)} // ✅ Switch to create mode
+          >
+          </button>
         </div>
       )}
 
@@ -185,54 +190,48 @@ export default function Companies() {
         </div>
       )}
 
-
       {/* Content */}
-      {!selectedCompany ? (
+      {!selectedCompany && !showCreateCompany && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
           <table className="min-w-full table-auto">
             <thead className="bg-gray-100 dark:bg-gray-700 text-left">
               <tr>
                 <th className="p-3"><input type="checkbox" /></th>
                 <th className="p-3">Name</th>
-                {/* <th className="p-3">Company Code</th> */}
                 <th className="p-3"></th>
               </tr>
             </thead>
             <tbody>
-            {companies.map((company) => {
-              const isLoading = !company.name?.trim(); // Check if name is empty, null, or only whitespace
-
-              return (
-                <tr
-                  key={company.id}
-                  className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <td className="p-3"><input type="checkbox" /></td>
-
-                  <td className="p-3">
-                    {isLoading ? (
-                      <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
-                    ) : (
-                      company.name
-                    )}
-                  </td>
-
-                  <td className="p-3 text-right">
-                    {isLoading ? (
-                      <div className="h-4 w-6 bg-gray-200 rounded-full animate-pulse inline-block" />
-                    ) : (
-                      <button
-                        className="text-orange-500 hover:text-orange-600"
-                        onClick={() => handleEditCompany(company)}
-                      >
-                        <FaEdit />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-
+              {companies.map((company) => {
+                const isLoading = !company.name?.trim();
+                return (
+                  <tr
+                    key={company.id}
+                    className="border-t border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
+                    <td className="p-3"><input type="checkbox" /></td>
+                    <td className="p-3">
+                      {isLoading ? (
+                        <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+                      ) : (
+                        company.name
+                      )}
+                    </td>
+                    <td className="p-3 text-right">
+                      {isLoading ? (
+                        <div className="h-4 w-6 bg-gray-200 rounded-full animate-pulse inline-block" />
+                      ) : (
+                        <button
+                          className="text-orange-500 hover:text-orange-600"
+                          onClick={() => handleEditCompany(company)}
+                        >
+                          <FaEdit />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 
@@ -247,9 +246,15 @@ export default function Companies() {
             </div>
           </div>
         </div>
-      ) : (
-        <EditCompany />
       )}
+
+      {/* ✏️ Edit Mode */}
+      {selectedCompany && <EditCompany />}
+
+      {/* ➕ Create Mode */}
+      {showCreateCompany && !selectedCompany && <CreateCompany />}
+
+
     </div>
   );
 }
