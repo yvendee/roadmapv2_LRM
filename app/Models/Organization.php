@@ -332,6 +332,15 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
+            // 🆕 Admin Panel Company
+            \App\Models\AdminPanelCompany::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'companiesData' => [],
+                'statusFlag' => null,
+            ]);
+
+
         });
     }
 }
