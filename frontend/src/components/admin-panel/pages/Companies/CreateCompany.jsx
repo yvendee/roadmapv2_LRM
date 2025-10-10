@@ -33,52 +33,60 @@ export default function CreateCompany({ onCancel, onSuccess }) {
     };
   
     const handleCreate = async () => {
-      const newErrors = {};
-      if (!name.trim()) newErrors.name = 'Company name is required';
-  
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        setFeedback({ type: '', message: '' });
-        return;
-      }
-  
-      setLoading(true);
-      try {
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
-        const { csrf_token } = await csrfRes.json();
-  
-        const payload = { name, industry, size, location };
-  
-        const response = await fetch(`${API_URL}/api/v1/companies`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-          },
-          credentials: 'include',
-          body: JSON.stringify(payload),
-        });
-  
-        const data = await response.json();
-  
-        if (response.ok && data.status === 'success') {
-          showToast('Company created successfully!', 'success');
-          setFeedback({ type: 'success', message: 'Company created successfully!' });
-          resetForm();
-          if (onSuccess) onSuccess(data);
-        } else {
-          const msg = data.message || 'Failed to create company.';
-          showToast(msg, 'error');
-          setFeedback({ type: 'error', message: msg });
-          if (data.errors) setErrors(data.errors);
+        const newErrors = {};
+      
+        if (!name.trim()) newErrors.name = 'Company name is required';
+      
+        if (Object.keys(newErrors).length > 0) {
+          setErrors(newErrors);
+          setFeedback({ type: '', message: '' });
+          return;
         }
-      } catch (error) {
-        console.error('Create company error:', error);
-        showToast('Server error. Please try again later.', 'error');
-      } finally {
-        setLoading(false);
-      }
+      
+        setLoading(true);
+      
+        try {
+          // 🔒 Get CSRF token
+          const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+            credentials: 'include',
+          });
+          const { csrf_token } = await csrfRes.json();
+      
+          const formData = { name, industry, size, location };
+      
+          // 📡 Send POST request to create organization
+          const response = await fetch(`${API_URL}/api/create-organization`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': csrf_token,
+            },
+            credentials: 'include',
+            body: JSON.stringify(formData),
+          });
+      
+          const data = await response.json();
+      
+          if (response.ok && data.status === 'success') {
+            showToast('Company has been created!', 'success'); // ✅ show green toast
+            setFeedback({ type: 'success', message: 'Company has been created!' });
+            resetForm();
+            if (onSuccess) onSuccess(data);
+          } else {
+            const errMsg = data.message || 'Failed to create company.';
+            showToast(errMsg, 'error'); // ❌ show red toast
+            setFeedback({ type: 'error', message: errMsg });
+            if (data.errors) setErrors(data.errors);
+          }
+        } catch (error) {
+          console.error('Create company error:', error);
+          showToast('Server error. Please try again later.', 'error'); // ❌ show red toast
+          setFeedback({ type: 'error', message: 'Server error. Please try again later.' });
+        } finally {
+          setLoading(false);
+        }
     };
+      
   
     return (
       <div className="create-company-container">

@@ -4,27 +4,27 @@
     padding: 2rem;
     background-color: #ffffff;
     border-radius: 8px;
-  }
+}
   
-  .create-company-title {
+.create-company-title {
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
     margin-bottom: 1.5rem;
-  }
-  
-  .create-company-form {
+}
+
+.create-company-form {
     display: flex;
     flex-direction: column;
     width: 100%; /* ✅ add this */
-  }
+}
 
-  .create-company-floating-input {
+.create-company-floating-input {
     position: relative;
     margin-bottom: 1.5rem;
-  }
-  
-  .create-company-floating-input-field {
+}
+
+.create-company-floating-input-field {
     width: 100%;
     padding: 1.5rem 0.5rem 0.5rem;
     border: 1px solid #d1d5db;
@@ -33,9 +33,9 @@
     background-color: white;
     height: 3.25rem;
     box-sizing: border-box;
-  }
-  
-  .create-company-floating-input label {
+}
+
+.create-company-floating-input label {
     position: absolute;
     left: 0.5rem;
     top: 1rem;
@@ -45,78 +45,79 @@
     font-size: 1rem;
     pointer-events: none;
     transition: all 0.2s ease-out;
-  }
-  
-  .create-company-floating-input-field:focus + label,
-  .create-company-floating-input-field:not(:placeholder-shown) + label {
+}
+
+.create-company-floating-input-field:focus + label,
+.create-company-floating-input-field:not(:placeholder-shown) + label {
     top: -0.5rem;
     left: 0.4rem;
     font-size: 0.75rem;
     color: #2563eb;
-  }
-  
-  .create-company-buttons {
+}
+
+.create-company-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-  }
-  
-  .create-company-btn {
+}
+
+.create-company-btn {
     padding: 0.5rem 1rem;
     font-weight: bold;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .create-company-btn-green {
+}
+
+.create-company-btn-green {
     background-color: #10b981;
     color: white;
-  }
-  .create-company-btn-green:hover {
+}
+.create-company-btn-green:hover {
     background-color: #059669;
-  }
-  
-  .create-company-btn-red {
+}
+
+.create-company-btn-red {
     background-color: #ef4444;
     color: white;
-  }
-  .create-company-btn-red:hover {
+}
+.create-company-btn-red:hover {
     background-color: #dc2626;
-  }
-  
-  .create-company-feedback {
+}
+
+.create-company-feedback {
     margin-top: 1.5rem;
     text-align: center;
     font-weight: 600;
-  }
-  .create-company-feedback.success {
+}
+.create-company-feedback.success {
     color: #10b981;
-  }
-  .create-company-feedback.error {
+}
+.create-company-feedback.error {
     color: #ef4444;
-  }
-  
-  .create-company-error {
+}
+
+.create-company-error {
     color: #ef4444;
     font-size: 0.85rem;
     margin-left: 0.25rem;
-  }
-  
-  .create-company-btn:disabled {
+}
+
+.create-company-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-  }
+}
   
 .create-company-row {
-  display: flex;
-  gap: 2rem;             /* Optional: more spacing */
-  margin-bottom: 1.5rem;
-  width: 100%;           /* ✅ full row width */
+    display: flex;
+    gap: 2rem;             /* Optional: more spacing */
+    margin-bottom: 1.5rem;
+    width: 100%;           /* ✅ full row width */
 }
-  .create-company-floating-input.half {
+
+.create-company-floating-input.half {
     flex: 1;
-  }
+}
   
 
 
