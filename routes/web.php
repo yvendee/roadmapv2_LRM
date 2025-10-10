@@ -8374,7 +8374,8 @@ Route::post('/api/v1/admin-panel/quarters/update', function (Request $request) u
     return response()->json(['status' => 'success', 'message' => 'Companies data updated successfully']);
 });
 
-// ref: 
+// ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
+// ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
 Route::post('/api/v1/company-traction/get-current-quarter', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
