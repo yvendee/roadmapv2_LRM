@@ -117,3 +117,14 @@
     flex: 1;
   }
   
+
+
+.form-input {
+width: 300%;           /* ✅ 3x wider */
+max-width: 1000px;     /* Optional: cap max width */
+padding: 0.5rem 0.75rem;
+font-size: 1rem;
+border: 1px solid #ccc;
+border-radius: 4px;
+}
+  
