@@ -55,7 +55,7 @@ export default function CreateCompany({ onCancel, onSuccess }) {
           const formData = { name, industry, size, location };
       
           // 📡 Send POST request to create organization
-          const response = await fetch(`${API_URL}/api/create-organization`, {
+          const response = await fetch(`${API_URL}/create-organization`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
