@@ -1,5 +1,5 @@
 .create-company-container {
-    max-width: 400px;
+    max-width: 1200px; /* ✅ increased from 400px */
     margin: 3rem auto;
     padding: 2rem;
     background-color: #ffffff;
@@ -16,8 +16,9 @@
   .create-company-form {
     display: flex;
     flex-direction: column;
+    width: 100%; /* ✅ add this */
   }
-  
+
   .create-company-floating-input {
     position: relative;
     margin-bottom: 1.5rem;
@@ -107,24 +108,16 @@
     cursor: not-allowed;
   }
   
-  .create-company-row {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
+.create-company-row {
+  display: flex;
+  gap: 2rem;             /* Optional: more spacing */
+  margin-bottom: 1.5rem;
+  width: 100%;           /* ✅ full row width */
+}
   .create-company-floating-input.half {
     flex: 1;
   }
   
 
 
-.form-input {
-width: 300%;           /* ✅ 3x wider */
-max-width: 1000px;     /* Optional: cap max width */
-padding: 0.5rem 0.75rem;
-font-size: 1rem;
-border: 1px solid #ccc;
-border-radius: 4px;
-}
   
