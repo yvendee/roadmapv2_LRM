@@ -8347,7 +8347,6 @@ Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
 });
 
 
-
 // ref: frontend\src\components\admin-panel\pages\Companies\EditCompany.jsx
 Route::post('/api/v1/admin-panel/quarters/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -8374,5 +8373,39 @@ Route::post('/api/v1/admin-panel/quarters/update', function (Request $request) u
 
     return response()->json(['status' => 'success', 'message' => 'Companies data updated successfully']);
 });
+
+// ref: 
+Route::post('/api/v1/company-traction/get-current-quarter', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organizationName = $request->input('organizationName');
+
+    if (!$organizationName) {
+        return response()->json(['error' => 'organizationName is required'], 422);
+    }
+
+    $company = AdminPanelCompany::where('organizationName', $organizationName)->first();
+
+    if (!$company || !isset($company->companiesData['quarters'])) {
+        return response()->json(['quarter' => 'Q1']);
+    }
+
+    $monthName = Carbon::now()->format('F'); // e.g., "October"
+    $quarters = $company->companiesData['quarters'];
+
+    foreach ($quarters as $quarter => $months) {
+        if (in_array($monthName, $months, true)) {
+            return response()->json(['quarter' => $quarter]);
+        }
+    }
+
+    return response()->json(['quarter' => 'Q1']);
+});
+
+
 
 

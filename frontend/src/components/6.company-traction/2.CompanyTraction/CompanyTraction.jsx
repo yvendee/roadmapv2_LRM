@@ -56,18 +56,56 @@ const CompanyTraction = () => {
     return localStorage.getItem('activeQuarter') || 'Q1';
   });
 
-  useEffect(() => {
-    localStorage.setItem('activeQuarter', activeQuarter);
-  }, [activeQuarter]);
+  // useEffect(() => {
+  //   localStorage.setItem('activeQuarter', activeQuarter);
+  // }, [activeQuarter]);
 
+
+  useEffect(() => {
+    async function fetchQuarterFromServer() {
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
   
+        const res = await fetch(`${API_URL}/v1/company-traction/get-current-quarter`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({ organizationName: organization }),
+        });
+  
+        const data = await res.json();
+  
+        if (res.ok && data.quarter) {
+          setActiveQuarter(data.quarter);
+          localStorage.setItem('activeQuarter', data.quarter);
+        } else {
+          console.warn('Fallback to Q1 due to missing/invalid quarter');
+          setActiveQuarter('Q1');
+          localStorage.setItem('activeQuarter', 'Q1');
+        }
+      } catch (error) {
+        console.error('Failed to fetch current quarter:', error);
+        setActiveQuarter('Q1');
+        localStorage.setItem('activeQuarter', 'Q1');
+      }
+    }
+  
+    // Only fetch if no activeQuarter is saved yet
+    if (!localStorage.getItem('activeQuarter')) {
+      fetchQuarterFromServer();
+    }
+  }, [organization]);
+  
+
   const [showCompleted, setShowCompleted] = useState(true);
   
-  // const [companyTraction, setCompanyTraction, updateComment] = useState(() => {
-  //   // Load company traction from localStorage if available, otherwise use initial data
-  //   const storedData = localStorage.getItem('companyTractionData');
-  //   return storedData ? JSON.parse(storedData) : initialCompanyTraction;
-  // });
 
   // Generate progress options from 0% to 100% with increments of 5%
   const progressOptions = [];
