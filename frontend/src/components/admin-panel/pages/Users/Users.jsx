@@ -33,8 +33,17 @@ export default function Users() {
 
   const handleEditClick = (user) => {
     setSelectedUser(user);
+  
+    console.log('📌 Selected User Data:');
+    console.log('Company:', user.company || '(empty)');
+    console.log('Name:', user.name || '(empty)');
+    console.log('Email:', user.email || '(empty)');
+    console.log('Email Verified At:', user.emailVerifiedAt || '-');
+  
     // Navigate to edit page or open modal as needed
+    // e.g. navigate(`/admin-panel/users/edit/${user.id}`)
   };
+  
 
   return (
     <div className="p-6">
