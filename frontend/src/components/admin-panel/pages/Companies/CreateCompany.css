@@ -107,3 +107,13 @@
     cursor: not-allowed;
   }
   
+  .create-company-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .create-company-floating-input.half {
+    flex: 1;
+  }
+  
