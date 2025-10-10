@@ -1,0 +1,87 @@
+/* frontend/src/components/admin-panel/pages/Users/EditUser.css */
+
+.edit-user-container {
+    background-color: var(--bg-white, #fff);
+    border: 1px solid var(--border-gray, #ccc);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: var(--text-gray, #333);
+  }
+  
+  h2 {
+    margin-bottom: 1rem;
+    color: var(--text-gray-dark, #222);
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-gray-dark, #222);
+  }
+  
+  .form-group .required {
+    color: #e53e3e; /* red */
+    margin-left: 0.2rem;
+  }
+  
+  .form-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-gray, #ccc);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .form-input:focus {
+    border-color: #3182ce; /* blue */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.3);
+  }
+  
+  .save-btn {
+    margin-top: 1.5rem;
+    background-color: #ed8936; /* orange */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .save-btn:hover:not(:disabled) {
+    background-color: #dd6b20; /* darker orange */
+  }
+  
+  .save-btn:disabled {
+    background-color: #fbd38d; /* light orange */
+    cursor: not-allowed;
+  }
+  
+  .spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #ed8936;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  

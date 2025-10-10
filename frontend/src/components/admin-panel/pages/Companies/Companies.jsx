@@ -49,53 +49,6 @@ export default function Companies() {
   }, [setCompanies]);
 
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       // ✅ Step 1: Fetch CSRF token
-  //       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-  //         credentials: 'include',
-  //       });
-  //       if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
-
-  //       const { csrf_token } = await csrfRes.json();
-
-  //       // ✅ Step 2: Send POST request with organizationName
-  //       const res = await fetch(`${API_URL}/v1/admin-panel/quarters`, {
-  //         method: 'POST',
-  //         credentials: 'include',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'X-CSRF-TOKEN': csrf_token,
-  //           Accept: 'application/json',
-  //         },
-  //         body: JSON.stringify({ organizationName: name }),
-  //       });
-
-  //       if (!res.ok) {
-  //         const errorData = await res.json();
-  //         throw new Error(errorData?.error || 'Failed to fetch quarters');
-  //       }
-
-  //       const data = await res.json();
-
-  //       ENABLE_CONSOLE_LOGS && console.log('✅ Quarters response:', data);
-
-  //       // ✅ Update store with both name and quarters
-  //       setName(data.name);
-  //       setQuarters(data.quarters);
-  //     } catch (error) {
-  //       console.error('❌ Error loading quarters:', error.message);
-  //     }
-  //   })();
-  // }, [name, setName, setQuarters]);
-
-
-  // const handleEditCompany = (company) => {
-  //   ENABLE_CONSOLE_LOGS &&  console.log('✏️ Editing Company:', company);
-  //   setSelectedCompany(company);
-  // };
-
   const handleEditCompany = async (company) => {
     ENABLE_CONSOLE_LOGS && console.log('✏️ Editing Company:', company);
     setSelectedCompany(company);
