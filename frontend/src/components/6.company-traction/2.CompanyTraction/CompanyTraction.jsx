@@ -97,10 +97,9 @@ const CompanyTraction = () => {
       }
     }
   
-    // Only fetch if no activeQuarter is saved yet
-    if (!localStorage.getItem('activeQuarter')) {
-      fetchQuarterFromServer();
-    }
+    // ✅ Always fetch, no conditional check
+    fetchQuarterFromServer();
+  
   }, [organization]);
   
 
