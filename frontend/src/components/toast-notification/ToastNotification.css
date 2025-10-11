@@ -1,7 +1,5 @@
-/* frontend\src\components\toast-notification\ToastNotification.css */
-
 .toast {
-  color: #fff;               /* White text */
+  color: #fff;
   padding: 10px 20px;
   margin: 10px auto;
   border-radius: 5px;
@@ -9,25 +7,26 @@
   max-width: 350px;
   text-align: center;
   opacity: 0;
-  transform: translateY(-20px);
-  animation: toastIn 0.5s forwards, toastOut 0.5s forwards 3.5s; /* In and Out animation */
   position: fixed;
   top: 20px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -20px); /* ✅ Combine X and Y */
   z-index: 9999;
+  animation: toastIn 0.5s forwards, toastOut 0.5s forwards 3.5s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes toastIn {
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0); /* ✅ Combined */
   }
 }
 
 @keyframes toastOut {
   to {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translate(-50%, -20px); /* ✅ Combined */
   }
 }
