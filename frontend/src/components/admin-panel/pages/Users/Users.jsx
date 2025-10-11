@@ -18,12 +18,7 @@ export default function Users() {
   });
 
   const showToast = (message, status) => {
-    setToast({ message, status, isVisible: true });
-  
-    // Auto-hide after 3 seconds
-    setTimeout(() => {
-      hideToast();
-    }, 3000);
+    setToast({ message, isVisible: true, status });
   };
 
   const hideToast = () => {
@@ -268,6 +263,7 @@ export default function Users() {
         <ToastNotification
           message={toast.message}
           status={toast.status}
+          isVisible={toast.isVisible} // ✅ Critical fix
           onClose={hideToast}
         />
       )}
