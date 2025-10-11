@@ -110,11 +110,6 @@ export default function NewUser({ onCancel }) {
 
   return (
     <div className="new-user-container p-6 max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="new-user-header mb-4">
-        <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Users &gt; New</div>
-        <h2 className="text-2xl font-semibold">New User</h2>
-      </div>
 
       <div className="new-user-form">
         <div className="row-two">
