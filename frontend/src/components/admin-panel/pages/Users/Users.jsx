@@ -54,11 +54,47 @@ export default function Users() {
     setShowDeleteModal(true); // show modal
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     ENABLE_CONSOLE_LOGS && console.log('✅ Confirmed delete:', selectedUser);
     setShowDeleteModal(false);
-    // optionally trigger API delete here
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      const res = await fetch(`${API_URL}/v1/admin-panel/users/delete`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          u_id: selectedUser.u_id,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok || data.status !== 'success') {
+        throw new Error(data.message || 'Failed to delete user.');
+      }
+  
+      setUsers((prevUsers) =>
+        prevUsers.filter((user) => user.u_id !== selectedUser.u_id)
+      );
+  
+      showToast('User deleted successfully.', 'success');
+      ENABLE_CONSOLE_LOGS && console.log('Deleted user:', selectedUser);
+    } catch (error) {
+      console.error('Delete error:', error);
+      showToast(`Error deleting user: ${error.message}`, 'error');
+    }
   };
+  
 
   const handleCancelDelete = () => {
     setShowDeleteModal(false);

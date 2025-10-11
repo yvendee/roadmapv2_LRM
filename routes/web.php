@@ -8529,3 +8529,34 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
 });
 
 
+// ref:
+Route::delete('/api/v1/admin-panel/users/delete', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'u_id' => 'required|string|exists:auth,u_id',
+    ]);
+
+    $user = AuthUser::where('u_id', $validated['u_id'])->first();
+
+    if (!$user) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not found.',
+        ], 404);
+    }
+
+    $user->delete();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'User deleted successfully.',
+    ]);
+});
+
+
+
