@@ -23,6 +23,10 @@ const useUserStore = create((set) => ({
       ),
       selectedUser: null,
     })),
+  removeUser: (u_id) =>
+        set((state) => ({
+          users: state.users.filter((user) => user.u_id !== u_id),
+        })),
 }));
 
 export default useUserStore;

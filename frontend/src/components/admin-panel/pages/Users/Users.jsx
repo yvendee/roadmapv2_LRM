@@ -99,9 +99,7 @@ export default function Users() {
         throw new Error(data.message || 'Failed to delete user.');
       }
   
-      setUsers((prevUsers) =>
-        prevUsers.filter((user) => user.u_id !== selectedUser.u_id)
-      );
+      removeUser(selectedUser.u_id);
   
       showToast('User deleted successfully.', 'success');
       ENABLE_CONSOLE_LOGS && console.log('Deleted user:', selectedUser);
