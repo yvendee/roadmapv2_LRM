@@ -3,6 +3,7 @@ import './Users.css';
 import { FaEdit } from 'react-icons/fa';
 import useUserStore from '../../../../store/admin-panel/users/userStore';
 import EditUser from './EditUser';
+import NewUser from './NewUser';
 import ToastNotification from '../../../../components/toast-notification/ToastNotification';
 import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
@@ -10,6 +11,7 @@ export default function Users() {
   const { users, setUsers, selectedUser, setSelectedUser, removeUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isCreatingNewUser, setIsCreatingNewUser] = useState(false);
 
   const [toast, setToast] = useState({
     message: '',
@@ -124,9 +126,31 @@ export default function Users() {
             <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Users</div>
             <h2 className="text-2xl font-semibold">Users</h2>
           </div>
-          <button className="new-user-btn">New user</button>
+          <button className="new-user-btn" onClick={() => setIsCreatingNewUser(true)}>
+            New user
+          </button>
         </div>
       )}
+
+      {/* Header - New User */}
+      {isCreatingNewUser && !selectedUser && (
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">
+              Maintenance &gt;{' '}
+              <span
+                className="text-blue-600 hover:underline cursor-pointer"
+                onClick={() => setIsCreatingNewUser(false)}
+              >
+                Users
+              </span>{' '}
+              &gt; New
+            </div>
+            <h2 className="text-2xl font-semibold">New User</h2>
+          </div>
+        </div>
+      )}
+
 
       {/* Header - Edit User */}
       {selectedUser && (
@@ -155,7 +179,7 @@ export default function Users() {
       {selectedUser && <EditUser />}
 
       {/* Users List Table */}
-      {!selectedUser && (
+      {!selectedUser && !isCreatingNewUser && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
           <table className="min-w-full table-auto">
             <thead className="bg-gray-100 dark:bg-gray-700 text-left">
@@ -257,6 +281,11 @@ export default function Users() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* 🆕 Create Mode */}
+      {isCreatingNewUser && (
+        <NewUser onCancel={() => setIsCreatingNewUser(false)} />
       )}
 
       {toast.isVisible && (
