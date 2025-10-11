@@ -1,4 +1,3 @@
-// frontend/src/components/admin-panel/pages/Users/EditUser.jsx
 import React, { useState } from 'react';
 import './EditUser.css';
 import useUserStore from '../../../../store/admin-panel/users/userStore';
@@ -16,7 +15,6 @@ export default function EditUser() {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  // Toast state
   const [toast, setToast] = useState({
     message: '',
     status: '',
@@ -40,13 +38,11 @@ export default function EditUser() {
     setIsSaving(true);
 
     try {
-      // Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
 
-      // Send update request
       const res = await fetch(`${API_URL}/v1/admin-panel/users/update`, {
         method: 'POST',
         credentials: 'include',
@@ -87,9 +83,8 @@ export default function EditUser() {
   }
 
   return (
-    <div className="edit-user-container p-6 max-w-xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4">Edit User</h2>
-
+    <div className="p-6 max-w-xl mx-auto">
+      {/* Form fields */}
       <div className="form-group mb-4">
         <label>
           Company<span className="required">*</span>
