@@ -67,8 +67,15 @@ export default function EditUser() {
         throw new Error(data.message || 'Failed to update user.');
       }
   
-      // updateUser uses u_id now as identifier
-      updateUser({ u_id: selectedUser.u_id, name, email, company, emailVerifiedAt });
+      // Pass the full updated user object, including id, to updateUser so store updates correctly
+      updateUser({
+        id: selectedUser.id,
+        u_id: selectedUser.u_id,
+        name,
+        email,
+        company,
+        emailVerifiedAt,
+      });
   
       ENABLE_CONSOLE_LOGS && console.log('User updated:', data);
       showToast('User updated successfully!', 'success');
@@ -79,9 +86,7 @@ export default function EditUser() {
       setTimeout(() => setIsSaving(false), 2000);
     }
   };
-
   
-
   if (!selectedUser) {
     return <div className="p-6">No user selected for editing.</div>;
   }
