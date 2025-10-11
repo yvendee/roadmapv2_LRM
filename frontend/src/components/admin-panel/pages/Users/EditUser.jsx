@@ -29,20 +29,21 @@ export default function EditUser() {
     setToast((prev) => ({ ...prev, isVisible: false }));
   };
 
+
   const handleSaveChanges = async () => {
     if (!name.trim() || !email.trim() || !company.trim()) {
       showToast('Please fill in all required fields.', 'error');
       return;
     }
-
+  
     setIsSaving(true);
-
+  
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
-
+  
       const res = await fetch(`${API_URL}/v1/admin-panel/users/update`, {
         method: 'POST',
         credentials: 'include',
@@ -52,22 +53,23 @@ export default function EditUser() {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          id: selectedUser.id,
+          u_id: selectedUser.u_id,  // send u_id instead of id
           name,
           email,
           company,
           emailVerifiedAt,
         }),
       });
-
+  
       const data = await res.json();
-
+  
       if (!res.ok || data.status !== 'success') {
         throw new Error(data.message || 'Failed to update user.');
       }
-
-      updateUser({ id: selectedUser.id, name, email, company, emailVerifiedAt });
-
+  
+      // updateUser uses u_id now as identifier
+      updateUser({ u_id: selectedUser.u_id, name, email, company, emailVerifiedAt });
+  
       ENABLE_CONSOLE_LOGS && console.log('User updated:', data);
       showToast('User updated successfully!', 'success');
     } catch (error) {
@@ -77,6 +79,8 @@ export default function EditUser() {
       setTimeout(() => setIsSaving(false), 2000);
     }
   };
+
+  
 
   if (!selectedUser) {
     return <div className="p-6">No user selected for editing.</div>;
