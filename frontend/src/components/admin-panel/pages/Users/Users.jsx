@@ -7,7 +7,7 @@ import ToastNotification from '../../../../components/toast-notification/ToastNo
 import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 export default function Users() {
-  const { users, setUsers, selectedUser, setSelectedUser } = useUserStore();
+  const { users, setUsers, selectedUser, setSelectedUser, removeUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
