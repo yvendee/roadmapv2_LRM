@@ -19,6 +19,11 @@ export default function Users() {
 
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
+  
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      hideToast();
+    }, 3000);
   };
 
   const hideToast = () => {
@@ -100,6 +105,7 @@ export default function Users() {
       }
   
       removeUser(selectedUser.u_id);
+      setSelectedUser(null);
   
       showToast('User deleted successfully.', 'success');
       ENABLE_CONSOLE_LOGS && console.log('Deleted user:', selectedUser);
@@ -258,7 +264,7 @@ export default function Users() {
         </div>
       )}
 
-        {toast.isVisible && (
+      {toast.isVisible && (
         <ToastNotification
           message={toast.message}
           status={toast.status}
