@@ -3,12 +3,28 @@ import './Users.css';
 import { FaEdit } from 'react-icons/fa';
 import useUserStore from '../../../../store/admin-panel/users/userStore';
 import EditUser from './EditUser';
+import ToastNotification from '../../../../components/toast-notification/ToastNotification';
 import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 
 export default function Users() {
   const { users, setUsers, selectedUser, setSelectedUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [toast, setToast] = useState({
+    message: '',
+    status: '',
+    isVisible: false,
+  });
+
+  const showToast = (message, status) => {
+    setToast({ message, status, isVisible: true });
+  };
+
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
+
 
   // Fetch Users on Mount
   useEffect(() => {
@@ -242,6 +258,14 @@ export default function Users() {
             </div>
           </div>
         </div>
+      )}
+
+        {toast.isVisible && (
+        <ToastNotification
+          message={toast.message}
+          status={toast.status}
+          onClose={hideToast}
+        />
       )}
     </div>
   );
