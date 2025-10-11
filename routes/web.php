@@ -8407,6 +8407,42 @@ Route::post('/api/v1/company-traction/get-current-quarter', function (Request $r
     return response()->json(['quarter' => 'Q1']);
 });
 
+// Route::get('/api/v1/admin-panel/users/list', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $users = AuthUser::all();
+
+//     $formattedUsers = $users->map(function ($user, $index) {
+//         $fullName = trim($user->firstName . ' ' . $user->lastName);
+//         $status = $user->status;
+
+//         // Handle emailVerifiedAt based on status value
+//         $verifiedAt = '';
+
+//         if (!empty($status) && strpos($status, 'verified') !== false) {
+//             $parts = explode(',', $status, 2);
+//             $verifiedAt = isset($parts[1]) ? trim($parts[1]) : '';
+//         }
+
+//         return [
+//             'id' => $index + 1,
+//             'company' => $user->organization,
+//             'name' => $fullName,
+//             'email' => $user->email,
+//             'emailVerifiedAt' => $verifiedAt,
+//         ];
+//     });
+
+//     return response()->json([
+//         'users' => $formattedUsers,
+//     ]);
+// });
+
+// ref: 
 Route::get('/api/v1/admin-panel/users/list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -8420,16 +8456,15 @@ Route::get('/api/v1/admin-panel/users/list', function (Request $request) use ($A
         $fullName = trim($user->firstName . ' ' . $user->lastName);
         $status = $user->status;
 
-        // Handle emailVerifiedAt based on status value
         $verifiedAt = '';
-
         if (!empty($status) && strpos($status, 'verified') !== false) {
             $parts = explode(',', $status, 2);
             $verifiedAt = isset($parts[1]) ? trim($parts[1]) : '';
         }
 
         return [
-            'id' => $index + 1,
+            'id' => $index + 1,               // Auto-generated display ID
+            'u_id' => $user->u_id,            // Real user ID from DB
             'company' => $user->organization,
             'name' => $fullName,
             'email' => $user->email,
