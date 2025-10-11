@@ -8,6 +8,7 @@ import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 export default function Users() {
   const { users, setUsers, selectedUser, setSelectedUser } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Fetch Users on Mount
   useEffect(() => {
@@ -47,6 +48,22 @@ export default function Users() {
     setSelectedUser(user);
   };
 
+  const handleDeleteClick = () => {
+    ENABLE_CONSOLE_LOGS && console.log('🗑️ Delete clicked');
+    ENABLE_CONSOLE_LOGS && console.log('Selected User:', selectedUser);
+    setShowDeleteModal(true); // show modal
+  };
+
+  const handleConfirmDelete = () => {
+    ENABLE_CONSOLE_LOGS && console.log('✅ Confirmed delete:', selectedUser);
+    setShowDeleteModal(false);
+    // optionally trigger API delete here
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+
   return (
     <div className="p-6">
       {/* Header - Users List */}
@@ -77,13 +94,7 @@ export default function Users() {
             <h2 className="text-2xl font-semibold">Edit User</h2>
           </div>
 
-          <button
-            className="delete-btn"
-            onClick={() => {
-              ENABLE_CONSOLE_LOGS && console.log('🗑️ Delete clicked');
-              ENABLE_CONSOLE_LOGS && console.log('Selected User:', selectedUser);
-            }}
-          >
+          <button className="delete-btn" onClick={handleDeleteClick}>
             Delete
           </button>
         </div>
@@ -173,6 +184,25 @@ export default function Users() {
               >
                 <option value="10">10</option>
               </select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🆕 Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="delete-modal-overlay"
+          onClick={handleCancelDelete}
+        >
+          <div
+            className="delete-modal-box"
+            onClick={(e) => e.stopPropagation()} // prevent click bubbling
+          >
+            <p className="delete-modal-text">Are you sure you want to delete this user?</p>
+            <div className="delete-modal-actions">
+              <button className="delete-modal-btn yes" onClick={handleConfirmDelete}>Yes</button>
+              <button className="delete-modal-btn no" onClick={handleCancelDelete}>No</button>
             </div>
           </div>
         </div>
