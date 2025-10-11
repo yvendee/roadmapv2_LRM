@@ -120,7 +120,7 @@ export default function Users() {
   return (
     <div className="p-6">
       {/* Header - Users List */}
-      {!selectedUser && (
+      {!selectedUser && !isCreatingNewUser && (
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-sm text-gray-500 mb-1">Maintenance &gt; Users</div>
