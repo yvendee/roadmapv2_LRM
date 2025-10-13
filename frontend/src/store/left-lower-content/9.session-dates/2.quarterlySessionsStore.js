@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 const initialQuarterlySessionTrackerData = [
   {
+    id: 1,
     status: 'Done',
     quarter: 'Q1 2025',
     meetingDate: '2025-01-20',
@@ -9,6 +10,7 @@ const initialQuarterlySessionTrackerData = [
     recap: { name: 'Q1 Recap Summary.pdf', url: 'https://example.com/recap-q1.pdf' },
   },
   {
+    id: 2,
     status: 'Done',
     quarter: 'Q2 2025',
     meetingDate: '2025-04-22',
@@ -16,6 +18,7 @@ const initialQuarterlySessionTrackerData = [
     recap: { name: 'Q2 Recap Summary.pdf', url: 'https://example.com/recap-q2.pdf' },
   },
   {
+    id: 3,
     status: 'Pending',
     quarter: 'Q3 2025',
     meetingDate: '2025-07-15',
@@ -23,6 +26,7 @@ const initialQuarterlySessionTrackerData = [
     recap: { name: '-', url: '' },
   },
   {
+    id: 4,
     status: 'Pending',
     quarter: 'Q4 2025',
     meetingDate: '2025-10-17',
@@ -30,6 +34,7 @@ const initialQuarterlySessionTrackerData = [
     recap: { name: '-', url: '' },
   },
 ];
+
 
 const useQuarterlySessionsStore = create((set) => ({
   sessions: initialQuarterlySessionTrackerData,

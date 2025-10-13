@@ -4,6 +4,8 @@ import useLoginStore from '../../../store/loginStore';
 import useQuarterlySessionsStore from '../../../store/left-lower-content/9.session-dates/2.quarterlySessionsStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTrashAlt, faCheck, faTimes  } from '@fortawesome/free-solid-svg-icons';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import API_URL from '../../../configs/config';
 import './QuarterlySessions.css';
 
 const STATUS_OPTIONS = ['Pending', 'Done'];
@@ -43,11 +45,13 @@ const QuarterlySessions = () => {
     // push localSessions to store
     setQuarterlySessions(localSessions);
     setIsEditing(false);
+    ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
   };
 
   const handleDiscardChanges = () => {
     setLocalSessions([...sessions]);
     setIsEditing(false);
+    ENABLE_CONSOLE_LOGS && console.log('Discarded changes, restored sessions from store:', sessions);
   };
 
   const handleFieldChange = (idx, field, value) => {
@@ -74,6 +78,20 @@ const QuarterlySessions = () => {
       </a>
     );
   };
+
+
+  function confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
+    ENABLE_CONSOLE_LOGS && console.log(session);
+    updateQuarterlySessionField(idx, 'agenda', { name: '-', url: '' });
+    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
+    
+  }
+  
+  function confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
+    ENABLE_CONSOLE_LOGS && console.log(session);
+    updateQuarterlySessionField(idx, 'recap', { name: '-', url: '' });
+    setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }));
+  }
   
 
   const isSuper = loggedUser?.role === 'superadmin';
@@ -165,68 +183,64 @@ const QuarterlySessions = () => {
                 </td>
 
                 <td className="border px-4 py-3">
-  <div className="flex items-center gap-2">
-    {renderLink(session.agenda)}
+                  <div className="flex items-center gap-2">
+                    {renderLink(session.agenda)}
 
-    {isSuper && (
-      <>
-        {/* Upload Button */}
-        <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
-          <input
-            type="file"
-            onChange={(e) => handleFileUpload(idx, 'agenda', e.target.files[0])}
-            className="opacity-0 absolute w-full h-full cursor-pointer"
-          />
-          <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
-        </button>
+                    {isSuper && (
+                      <>
+                        {/* Upload Button */}
+                        <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
+                          <input
+                            type="file"
+                            onChange={(e) => handleFileUpload(idx, 'agenda', e.target.files[0])}
+                            className="opacity-0 absolute w-full h-full cursor-pointer"
+                          />
+                          <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                        </button>
 
-        {/* Delete confirmation flow */}
-        {session.agenda?.name && session.agenda.name !== '-' && (
-          <>
-            {confirmDelete[`agenda-${idx}`] ? (
-              <>
-                {/* Confirm (check) */}
-                <button
-                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                  onClick={() => {
-                    updateQuarterlySessionField(idx, 'agenda', { name: '-', url: '' });
-                    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
-                    setIsEditing(true);
-                  }}
-                  title="Confirm Remove"
-                >
-                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
-                </button>
+                        {/* Delete confirmation flow */}
+                        {session.agenda?.name && session.agenda.name !== '-' && (
+                          <>
+                            {confirmDelete[`agenda-${idx}`] ? (
+                              <>
+                                {/* Confirm (check) */}
+                                <button
+                                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
+                                  onClick={() => confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
+                                  title="Confirm Remove"
+                                >
+                                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
+                                </button>
 
-                {/* Cancel (X) */}
-                <button
-                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
-                  onClick={() =>
-                    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))
-                  }
-                  title="Cancel"
-                >
-                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
-                </button>
-              </>
-            ) : (
-              // Trash icon (default)
-              <button
-                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                onClick={() =>
-                  setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))
-                }
-                title="Remove Agenda"
-              >
-                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-              </button>
-            )}
-          </>
-        )}
-      </>
-    )}
-  </div>
-</td>
+                                {/* Cancel (X) */}
+                                <button
+                                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
+                                  onClick={() =>
+                                    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))
+                                  }
+                                  title="Cancel"
+                                >
+                                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
+                                </button>
+                              </>
+                            ) : (
+                              // Trash icon (default)
+                              <button
+                                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
+                                onClick={() =>
+                                  setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))
+                                }
+                                title="Remove Agenda"
+                              >
+                                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </td>
 
                 <td className="border px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -244,21 +258,43 @@ const QuarterlySessions = () => {
                           <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
                         </button>
 
-                        {/* Delete Button – only if value exists */}
+                        {/* Delete Confirmation Logic */}
                         {session.recap?.name && session.recap.name !== '-' && (
-                          <button
-                            className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                            onClick={() => {
-                              // Clear the recap value
-                              updateQuarterlySessionField(idx, 'recap', { name: '-', url: '' });
+                          <>
+                            {confirmDelete[`recap-${idx}`] ? (
+                              <>
+                                {/* Confirm (check) */}
+                                <button
+                                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
+                                  onClick={() => confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
+                                  title="Confirm Remove"
+                                >
+                                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
+                                </button>
 
-                            }}
-                            title="Remove Recap"
-                          >
-                            <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                          </button>
+                                {/* Cancel (X) */}
+                                <button
+                                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
+                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }))}
+                                  title="Cancel"
+                                >
+                                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
+                                </button>
+                              </>
+                            ) : (
+                              // Trash icon (default)
+                              <button
+                                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
+                                onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: true }))}
+                                title="Remove Recap"
+                              >
+                                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
+                              </button>
+                            )}
+                          </>
                         )}
                       </>
+
                     )}
                   </div>
                 </td>

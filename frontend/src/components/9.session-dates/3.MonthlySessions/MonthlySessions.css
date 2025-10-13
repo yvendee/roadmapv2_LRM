@@ -1,47 +1,82 @@
 /* frontend\src\components\9.session-dates\3.MonthlySessions\MonthlySessions.css */
-.monthly-sessions-container {
+.always-black {
+    color: black !important;
+}
+
+.qs-container {
+    margin-top: 24px;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     padding: 16px;
-    margin-top: 20px; /* Top margin as requested */
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
 }
   
-.section-title {
-    font-weight: 600;
+.qs-title {
     margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
 }
   
-.monthly-sessions-table {
+.qs-table-wrapper {
+    overflow-x: auto;
+}
+  
+.qs-table {
     width: 100%;
     border-collapse: collapse;
-    text-align: left;
-}
-  
-.monthly-sessions-table th,
-.monthly-sessions-table td {
-    padding: 12px;
-    border: 1px solid #e2e8f0;
     font-size: 14px;
 }
-
-.skeleton {
-    background-color: #e5e7eb; /* Tailwind gray-200 */
-    border-radius: 4px;
-    height: 1rem;
-    animation: pulse 1.5s infinite;
+  
+.qs-table thead {
+    background-color: #f9fbfd;
+    border-bottom: 1px solid #e1e7ef;
 }
   
-@keyframes pulse {
-0% {
-    opacity: 1;
+.qs-table th,
+.qs-table td {
+    padding: 12px 8px;
+    text-align: left;
+    color: #333;
+    white-space: nowrap;
 }
-50% {
-    opacity: 0.4;
+  
+.qs-table th {
+    color: #2c3e50;
+    font-weight: 500;
 }
-100% {
-    opacity: 1;
-}
+  
+.qs-table tr:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
 }
 
+
+.qs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .qs-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .qs-actions button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .qs-save {
+    background-color: #2ecc71;
+  }
+  
+  .qs-discard {
+    background-color: #e74c3c;
+  }
   
