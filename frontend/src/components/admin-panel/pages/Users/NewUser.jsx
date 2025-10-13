@@ -123,8 +123,12 @@ export default function NewUser({ onCancel }) {
         throw new Error(data.message || 'Create user failed');
       }
 
-      // Optionally: add the newly created user to the store
-      setUsers([...users, data.user]);
+      // // Optionally: add the newly created user to the store
+      // setUsers([...users, data.user]);
+      // showToast('User created successfully!', 'success');
+
+          // 5. Update UI store with new user
+      setUsers(prevUsers => [...prevUsers, data.user]);
       showToast('User created successfully!', 'success');
 
       // Reset form (or optionally call onCancel)
