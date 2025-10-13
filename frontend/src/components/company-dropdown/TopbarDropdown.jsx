@@ -28,6 +28,44 @@ const TopbarDropdown = () => {
   // if (loggedUser?.role !== 'superadmin') return null;
   if (loggedUser?.role !== 'superadmin') return <span>&nbsp;</span>;
 
+   // Fetch Company Traction User
+   useEffect( async() => {
+
+    const stored = localStorage.getItem('annualPrioritiesData');
+    if (!stored) {
+      const encodedOrg = encodeURIComponent(organization);
+    
+        // ✅ Step 2: Fetch Company Traction Users
+        try {
+          const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(option)}`,
+            {
+              credentials: 'include',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+
+          const tractionUsers = await tractionUserRes.json();
+          ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
+
+          const firstUser = tractionUsers[0] || null;
+
+          useCompanyTractionUserStore.setState({
+            users: tractionUsers,
+            selectedUser: firstUser,
+          });
+        } catch (tractionErr) {
+          console.error('Error fetching traction users:', tractionErr);
+        }
+
+    }
+  }, [organization]);
+  
+
   const handleSelect = async (option) => {
     ENABLE_CONSOLE_LOGS && console.log('Selected company filter:', option);
     setSelected(option);
