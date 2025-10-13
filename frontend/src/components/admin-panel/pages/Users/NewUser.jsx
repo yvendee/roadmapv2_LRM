@@ -123,9 +123,22 @@ export default function NewUser({ onCancel }) {
         throw new Error(data.message || 'Create user failed');
       }
 
+      // Format the new user for the store shape
+      const newUser = {
+        id: Date.now(), // temporary ID (replace with server-provided ID if available)
+        u_id: data.user?.u_id || '', // use server value if returned
+        company: payload.organization,
+        name: `${payload.firstName} ${payload.lastName}`,
+        email: payload.email,
+        emailVerifiedAt: data.user?.emailVerifiedAt || '',
+        role: payload.role,
+        position: payload.position,
+        group: payload.group,
+      };
+
       // Optionally: add the newly created user to the store
       // setUsers([...users, data.user]);
-      setUsers([...users, payload]);
+      setUsers([...users, newUser]);
       showToast('User created successfully!', 'success');
 
       // Reset form (or optionally call onCancel)
