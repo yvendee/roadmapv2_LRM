@@ -1,12 +1,15 @@
 // frontend/src/components/admin-panel/pages/Users/NewUser.jsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NewUser.css';
 import useUserStore  from '../../../../store/admin-panel/users/userStore';
+import { useCompanyFilterStore } from '../../../../store/layout/companyFilterStore';
 import API_URL, { ENABLE_CONSOLE_LOGS } from '../../../../configs/config';
 import ToastNotification from '../../../../components/toast-notification/ToastNotification';
+
 export default function NewUser({ onCancel }) {
   const { setUsers, users } = useUserStore();
+  const { options, setSelected } = useCompanyFilterStore();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -108,6 +111,45 @@ export default function NewUser({ onCancel }) {
     }
   };
 
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        const { csrf_token } = await csrfRes.json();
+  
+        const res = await fetch(`${API_URL}/v1/company-options`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+        });
+  
+        if (!res.ok) throw new Error('Failed to fetch organizations');
+  
+        const data = await res.json();
+  
+        if (Array.isArray(data) && data.length > 0) {
+          useCompanyFilterStore.setState({
+            options: data,
+            selected: data[0],
+          });
+          setOrganization(data[0]); // Default selected
+        } else {
+          console.warn('No organizations found');
+        }
+      } catch (error) {
+        console.error('Error fetching organization options:', error);
+      }
+    };
+  
+    fetchOrganizations();
+  }, []);
+
   return (
     <div className="new-user-container p-6 max-w-2xl mx-auto">
 
@@ -169,7 +211,7 @@ export default function NewUser({ onCancel }) {
             />
             {errors.confirmPassword && <div className="error-text">{errors.confirmPassword}</div>}
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>Organization<span className="required">*</span></label>
             <input
               type="text"
@@ -178,7 +220,31 @@ export default function NewUser({ onCancel }) {
               onChange={(e) => setOrganization(e.target.value)}
             />
             {errors.organization && <div className="error-text">{errors.organization}</div>}
+          </div> */}
+
+          <div className="form-group">
+            <label>
+              Organization <span className="required">*</span>
+            </label>
+            <select
+              className="form-input"
+              value={organization}
+              onChange={(e) => {
+                setOrganization(e.target.value);
+                setSelected(e.target.value); // update Zustand store
+              }}
+            >
+              {options.map((org, index) => (
+                <option key={index} value={org}>
+                  {org}
+                </option>
+              ))}
+            </select>
+            {errors.organization && (
+              <div className="error-text">{errors.organization}</div>
+            )}
           </div>
+
         </div>
 
         <div className="row-two">
