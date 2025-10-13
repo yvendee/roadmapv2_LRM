@@ -20,6 +20,7 @@ const TopbarDropdown = () => {
 
   const setToggles = useLayoutSettingsStore((state) => state.setToggles);
   const setOrganization = useLayoutSettingsStore((state) => state.setOrganization);
+  const organization = useLayoutSettingsStore((state) => state.organization);
   const setUniqueId = useLayoutSettingsStore((state) => state.setUniqueId);
 
   const loggedUser = useLoginStore((state) => state.user); 
@@ -35,7 +36,7 @@ const TopbarDropdown = () => {
     if (!stored) {
       const encodedOrg = encodeURIComponent(organization);
     
-        // ✅ Step 2: Fetch Company Traction Users
+        // ✅ Fetch Company Traction Users
         try {
           const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(option)}`,
             {
