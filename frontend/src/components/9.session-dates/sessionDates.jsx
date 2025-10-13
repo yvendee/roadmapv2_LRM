@@ -28,40 +28,40 @@ const SessionDates = () => {
   const navigate = useNavigate();
 
   
-  // Fetch QuarterlySessions Data
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  // // Fetch QuarterlySessions Data
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/session-dates/monthly-sessions-tracker?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Monthly Session Tracker data:', json);
+  //   fetch(`${API_URL}/v1/session-dates/monthly-sessions-tracker?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Monthly Session Tracker data:', json);
 
-          const sessions = json[organization];
+  //         const sessions = json[organization];
 
-          if (Array.isArray(sessions)) {
-            setAllSessions(sessions);
-          } else {
-            console.error(`⚠️ No sessions found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-  }, [organization, setAllSessions, navigate]);
+  //         if (Array.isArray(sessions)) {
+  //           setAllSessions(sessions);
+  //         } else {
+  //           console.error(`⚠️ No sessions found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization, setAllSessions, navigate]);
 
   // // Fetch QuarterlySessions Data
   // useEffect(() => {
@@ -98,40 +98,40 @@ const SessionDates = () => {
   //     });
   // }, [organization, setQuarterlySessions, navigate]);
 
-  // Fetch MonthlySessions Data
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  // // Fetch MonthlySessions Data
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/session-dates/monthly-sessions?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Monthly Sessions data:', json);
+  //   fetch(`${API_URL}/v1/session-dates/monthly-sessions?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Monthly Sessions data:', json);
 
-          const monthlySessionArr = json[organization];
+  //         const monthlySessionArr = json[organization];
 
-          if (Array.isArray(monthlySessionArr)) {
-            setMonthlySessions(monthlySessionArr);
-          } else {
-            console.error(`⚠️ No monthly sessions found for organization: ${organization}`);
-          }
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('Error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-  }, [organization, setMonthlySessions, navigate]);
+  //         if (Array.isArray(monthlySessionArr)) {
+  //           setMonthlySessions(monthlySessionArr);
+  //         } else {
+  //           console.error(`⚠️ No monthly sessions found for organization: ${organization}`);
+  //         }
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('Error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  // }, [organization, setMonthlySessions, navigate]);
 
 
   // useEffect(() => {

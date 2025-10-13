@@ -49,4 +49,35 @@
 .qs-table tr:not(:last-child) {
     border-bottom: 1px solid #f0f0f0;
 }
+
+
+.qs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .qs-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .qs-actions button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .qs-save {
+    background-color: #2ecc71;
+  }
+  
+  .qs-discard {
+    background-color: #e74c3c;
+  }
   
