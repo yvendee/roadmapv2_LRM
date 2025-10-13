@@ -25,6 +25,41 @@ export default function NewUser({ onCancel }) {
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState({ message: '', status: '', isVisible: false });
 
+  const roleOptions = ['User', 'Testuser', 'Superadmin'];
+
+  const positionOptions = [
+    'Other',
+    'Admin',
+    'CEO',
+    'Internal',
+    'Manager',
+    'HR',
+    'Finance',
+    'Accounting',
+    'Sales',
+    'Marketing',
+    'Support',
+    'CustomerService',
+    'Developer',
+    'Engineer',
+    'Designer',
+    'QA',
+    'ProductManager',
+    'ProjectManager',
+    'BusinessAnalyst',
+    'IT',
+    'Security',
+    'Legal',
+    'Operations',
+    'Consultant',
+    'Intern',
+    'Trainer',
+    'Recruiter',
+    'ExecutiveAssistant',
+    'DataAnalyst',
+    'SystemAdmin',
+  ];
+  
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
   };
@@ -247,7 +282,7 @@ export default function NewUser({ onCancel }) {
 
         </div>
 
-        <div className="row-two">
+        {/* <div className="row-two">
           <div className="form-group">
             <label>Role<span className="required">*</span></label>
             <input
@@ -268,9 +303,50 @@ export default function NewUser({ onCancel }) {
             />
             {errors.position && <div className="error-text">{errors.position}</div>}
           </div>
+        </div> */}
+
+        <div className="row-two">
+          <div className="form-group">
+            <label>
+              Role <span className="required">*</span>
+            </label>
+            <select
+              className="form-input"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="">-- Select Role --</option>
+              {roleOptions.map((option, idx) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            {errors.role && <div className="error-text">{errors.role}</div>}
+          </div>
+
+          <div className="form-group">
+            <label>
+              Position <span className="required">*</span>
+            </label>
+            <select
+              className="form-input"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            >
+              <option value="">-- Select Position --</option>
+              {positionOptions.map((option, idx) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            {errors.position && <div className="error-text">{errors.position}</div>}
+          </div>
         </div>
 
-        <div className="row-single">
+
+        {/* <div className="row-single">
           <div className="form-group">
             <label>Group<span className="required">*</span></label>
             <input
@@ -281,7 +357,29 @@ export default function NewUser({ onCancel }) {
             />
             {errors.group && <div className="error-text">{errors.group}</div>}
           </div>
+        </div> */}
+
+        <div className="row-single">
+          <div className="form-group">
+            <label>
+              Group <span className="required">*</span>
+            </label>
+            <select
+              className="form-input"
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
+            >
+              <option value="">-- Select Group --</option>
+              {options.map((org, idx) => (
+                <option key={idx} value={org}>
+                  {org}
+                </option>
+              ))}
+            </select>
+            {errors.group && <div className="error-text">{errors.group}</div>}
+          </div>
         </div>
+
 
         <div className="action-buttons mt-6">
           <button
