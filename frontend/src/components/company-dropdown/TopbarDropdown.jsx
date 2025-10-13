@@ -64,7 +64,7 @@ const TopbarDropdown = () => {
         }
 
     }
-  }, [organization]);
+  }, []);
   
 
   const handleSelect = async (option) => {
