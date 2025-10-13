@@ -370,6 +370,7 @@ export default function NewUser({ onCancel }) {
               onChange={(e) => setGroup(e.target.value)}
             >
               <option value="">-- Select Group --</option>
+              <option value="No group">No group</option>
               {options.map((org, idx) => (
                 <option key={idx} value={org}>
                   {org}
