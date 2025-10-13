@@ -8282,7 +8282,7 @@ Route::get('/api/v1/admin-panel/companies', function (Request $request) use ($AP
 });
 
 
-// ref:
+// ref: frontend\src\components\admin-panel\pages\Companies\Companies.jsx
 // Route::post('/api/v1/admin-panel/quarters', function (Request $request) {
 //     $organizationName = $request->input('organizationName');
 
@@ -8442,7 +8442,7 @@ Route::post('/api/v1/company-traction/get-current-quarter', function (Request $r
 //     ]);
 // });
 
-// ref: 
+// ref: frontend\src\components\admin-panel\pages\Users\Users.jsx
 Route::get('/api/v1/admin-panel/users/list', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -8477,7 +8477,36 @@ Route::get('/api/v1/admin-panel/users/list', function (Request $request) use ($A
     ]);
 });
 
-// ref:
+// ref: frontend\src\components\admin-panel\pages\Users\Users.jsx
+Route::delete('/api/v1/admin-panel/users/delete', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $validated = $request->validate([
+        'u_id' => 'required|string|exists:auth,u_id',
+    ]);
+
+    $user = AuthUser::where('u_id', $validated['u_id'])->first();
+
+    if (!$user) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not found.',
+        ], 404);
+    }
+
+    $user->delete();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'User deleted successfully.',
+    ]);
+});
+
+// ref: frontend\src\components\admin-panel\pages\Users\EditUser.jsx
 Route::post('/api/v1/admin-panel/users/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -8529,34 +8558,54 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
 });
 
 
-// ref:
-Route::delete('/api/v1/admin-panel/users/delete', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
+// ref: frontend\src\components\admin-panel\pages\Users\NewUser.jsx
+Route::post('/api/v1/admin-panel/users/create', function (Request $request) {
+    // ✅ Check if email already exists in the auth table
+    $existingUser = AuthUser::where('email', $request->input('email'))->first();
 
-    $validated = $request->validate([
-        'u_id' => 'required|string|exists:auth,u_id',
-    ]);
-
-    $user = AuthUser::where('u_id', $validated['u_id'])->first();
-
-    if (!$user) {
+    if ($existingUser) {
         return response()->json([
             'status' => 'error',
-            'message' => 'User not found.',
-        ], 404);
+            'message' => 'Email already exists',
+        ], 409); // 409 Conflict
     }
 
-    $user->delete();
+    // ✅ Validate other fields (no need to check for unique email again)
+    $validator = Validator::make($request->all(), [
+        'firstName' => 'required|string',
+        'lastName' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'required|string|min:6',
+        'role' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    // ✅ Generate u_id (UUID or custom string)
+    $u_id = (string) Str::uuid();
+
+    // ✅ Create the user
+    $user = AuthUser::create([
+        'u_id' => $u_id,
+        'firstName' => $request->input('firstName'),
+        'lastName' => $request->input('lastName'),
+        'email' => $request->input('email'),
+        'organization' => $request->input('organization'),
+        'passwordHash' => Hash::make($request->input('password')),
+        'role' => $request->input('role'),
+        'group' => $request->input('group'),
+        'position' => $request->input('position'),
+        'status' => 'inactive',
+    ]);
 
     return response()->json([
         'status' => 'success',
-        'message' => 'User deleted successfully.',
+        'message' => 'User created successfully',
+        'user' => $user,
     ]);
 });
-
-
-
