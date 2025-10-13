@@ -394,13 +394,13 @@ export default function NewUser({ onCancel }) {
         </div>
       </div>
 
-      {toast.isVisible && (
-        <ToastNotification
-          message={toast.message}
-          status={toast.status}
-          onClose={hideToast}
-        />
-      )}
+      <ToastNotification
+        message={toast.message}
+        status={toast.status}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
+
     </div>
   );
 }
