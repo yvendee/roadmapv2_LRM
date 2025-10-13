@@ -32,37 +32,53 @@ const TopbarDropdown = () => {
    // Fetch Company Traction User
    useEffect( async() => {
 
-    const stored = localStorage.getItem('annualPrioritiesData');
-    if (!stored) {
-      const encodedOrg = encodeURIComponent(organization);
-    
-        // ✅ Fetch Company Traction Users
-        try {
-          const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(option)}`,
-            {
-              credentials: 'include',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-            }
-          );
+    const encodedOrg = encodeURIComponent(organization);
 
-          if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+    // ✅ Step 1: Fetch Layout Toggles
+    const response = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(option)}`);
+    const result = await response.json();
 
-          const tractionUsers = await tractionUserRes.json();
-          ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
+    if (response.ok) {
+      if (result.status === 'success') {
+        setToggles(result.toggles);
+        setOrganization(result.organization);
+        setUniqueId(result.unique_id);
+        ENABLE_CONSOLE_LOGS && console.log('Fetched toggles:', result.toggles);
+      } else {
+        console.error('Error fetching toggles:', result.message);
+      }
+    } else if (response.status === 401) {
+      navigate('/', { state: { loginError: 'Session Expired' } });
+    } else {
+      console.error('Server error:', result.message);
+    }
 
-          const firstUser = tractionUsers[0] || null;
 
-          useCompanyTractionUserStore.setState({
-            users: tractionUsers,
-            selectedUser: firstUser,
-          });
-        } catch (tractionErr) {
-          console.error('Error fetching traction users:', tractionErr);
+    // ✅ Fetch Company Traction Users
+    try {
+      const tractionUserRes = await fetch(`${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(option)}`,
+        {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
         }
+      );
 
+      if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+
+      const tractionUsers = await tractionUserRes.json();
+      ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
+
+      const firstUser = tractionUsers[0] || null;
+
+      useCompanyTractionUserStore.setState({
+        users: tractionUsers,
+        selectedUser: firstUser,
+      });
+    } catch (tractionErr) {
+      console.error('Error fetching traction users:', tractionErr);
     }
   }, []);
   
