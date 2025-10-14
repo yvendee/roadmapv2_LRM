@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\SessionDatesQuarterlySession;
 use Illuminate\Support\Str;
 
-class SessionDatesQuarterlySessionSeeder extends Seeder
+class SessionDatesQuarterlySessionsSeeder extends Seeder
 {
     public function run(): void
     {
