@@ -3,53 +3,77 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\SessionDatesQuarterlySessions;
+use App\Models\SessionDatesQuarterlySession;
 use Illuminate\Support\Str;
 
-class SessionDatesQuarterlySessionsSeeder extends Seeder
+class SessionDatesQuarterlySessionSeeder extends Seeder
 {
     public function run(): void
     {
         $data = [
-            'Chuck Gulledge Advisors, LLC' => [
-                [
-                    'status' => 'Completed',
-                    'quarter' => 'Q1 2025',
-                    'meetingDate' => 'January 20, 2025',
-                    'agenda' => 'Strategic Planning & KPIs',
-                    'recap' => 'Shared Q1 goals and budget updates',
+            [
+                'id' => 1,
+                'status' => 'Pending',
+                'quarter' => 'Q1 2025',
+                'meetingDate' => '2025-01-20',
+                'agenda' => [
+                    'name' => 'Strategic Planning & KPIs.pdf',
+                    'url' => 'https://example.com/agenda-q1.pdf',
                 ],
-                [
-                    'status' => 'Scheduled',
-                    'quarter' => 'Q2 2025',
-                    'meetingDate' => 'April 22, 2025',
-                    'agenda' => 'Customer Retention Plans',
-                    'recap' => 'To be added after session',
+                'recap' => [
+                    'name' => 'Q1 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q1.pdf',
                 ],
-                [
-                    'status' => 'Pending',
-                    'quarter' => 'Q3 2025',
-                    'meetingDate' => 'July 15, 2025',
-                    'agenda' => 'New Product Launch Discussion',
-                    'recap' => 'To be added',
+            ],
+            [
+                'id' => 2,
+                'status' => 'Pending',
+                'quarter' => 'Q2 2025',
+                'meetingDate' => '2025-04-22',
+                'agenda' => [
+                    'name' => 'Customer Retention Plans.pdf',
+                    'url' => 'https://example.com/agenda-q2.pdf',
                 ],
-                [
-                    'status' => 'Upcoming',
-                    'quarter' => 'Q4 2025',
-                    'meetingDate' => 'October 17, 2025',
-                    'agenda' => 'Annual Review & Strategy 2026',
-                    'recap' => 'To be added',
+                'recap' => [
+                    'name' => 'Q2 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q2.pdf',
+                ],
+            ],
+            [
+                'id' => 3,
+                'status' => 'Pending',
+                'quarter' => 'Q3 2025',
+                'meetingDate' => '2025-07-15',
+                'agenda' => [
+                    'name' => 'New Product Launch Discussion.pdf',
+                    'url' => 'https://example.com/agenda-q3.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
+                ],
+            ],
+            [
+                'id' => 4,
+                'status' => 'Pending',
+                'quarter' => 'Q4 2025',
+                'meetingDate' => '2025-10-17',
+                'agenda' => [
+                    'name' => 'Annual Review & Strategy 2026.pdf',
+                    'url' => 'https://example.com/agenda-q4.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
                 ],
             ],
         ];
 
-        foreach ($data as $organizationName => $sessionData) {
-            SessionDatesQuarterlySessions::create([
-                'u_id' => Str::uuid(),
-                'organizationName' => $organizationName,
-                'sessionDatesQuarterlySessionsData' => $sessionData,
-                'statusFlag' => null,
-            ]);
-        }
+        SessionDatesQuarterlySession::create([
+            'u_id' => Str::uuid(),
+            'organizationName' => 'Chuck Gulledge Advisors, LLC',
+            'sessionDatesQuarterlySessionsData' => $data,
+            'statusFlag' => null,
+        ]);
     }
 }

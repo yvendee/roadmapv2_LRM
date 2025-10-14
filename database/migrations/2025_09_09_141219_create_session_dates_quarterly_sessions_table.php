@@ -12,9 +12,9 @@ class CreateSessionDatesQuarterlySessionsTable extends Migration
             $table->id();
             $table->string('u_id');
             $table->string('organizationName');
-            $table->json('sessionDatesQuarterlySessionsData')->nullable();
+            $table->json('sessionDatesQuarterlySessionsData')->nullable(); // can store large structured data
             $table->string('statusFlag')->nullable();
-            $table->timestamps();
+            $table->timestamps(); // creates created_at and updated_at
         });
     }
 
@@ -23,3 +23,4 @@ class CreateSessionDatesQuarterlySessionsTable extends Migration
         Schema::dropIfExists('session_dates_quarterly_sessions');
     }
 }
+

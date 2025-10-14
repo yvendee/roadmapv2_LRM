@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(WhoWhatWhenSeeder::class);
         // $this->call(ThirteenWeekSprintSeeder::class);
         // $this->call(SessionDatesMonthlySessionsTrackerSeeder::class);
-        // $this->call(SessionDatesQuarterlySessionsSeeder::class);
+        $this->call(SessionDatesQuarterlySessionsSeeder::class);
         // $this->call(SessionDatesMonthlySessionsSeeder::class);
         // $this->call(CoachingChecklistPanelSeeder::class);
         // $this->call(CoachingAlignmentCurrentFocusSeeder::class);
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(NotificationsTableSeeder::class);
         // $this->call(MessagingMessageSeeder::class);
         // $this->call(MessagingLeftConversationsSeeder::class);
-        $this->call(AdminPanelCompanySeeder::class);
+        // $this->call(AdminPanelCompanySeeder::class);
         // $this->call(MessagingLeftConversationsSeeder::class);
         
     }
