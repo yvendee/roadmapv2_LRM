@@ -152,16 +152,14 @@ const QuarterlySessions = () => {
     const formData = new FormData();
     formData.append('file', file);
   
-    const sessionId = sessions?.[idx]?.id;
+    const sessionId = localSessions?.[idx]?.id; // use localSessions!
   
     try {
-      // Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
   
-      // Build URL with parameters
       const uploadUrl = `${API_URL}/v1/session-dates/quarterly-sessions/upload-file/${encodeURIComponent(
         organization
       )}/${field}/${sessionId}`;
@@ -183,10 +181,17 @@ const QuarterlySessions = () => {
         return;
       }
   
-      // Update the agenda with filename and link
+      // Update localSessions state
       handleFieldChange(idx, field, {
         name: result.filename,
         link: result.path,
+      });
+  
+      // Also update global store to keep in sync
+      setQuarterlySessions((prevSessions) => {
+        const updated = [...prevSessions];
+        updated[idx] = { ...updated[idx], [field]: { name: result.filename, link: result.path } };
+        return updated;
       });
   
       ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', result);
@@ -195,6 +200,7 @@ const QuarterlySessions = () => {
       alert('Upload failed due to network or server error.');
     }
   };
+  
   
 
 
