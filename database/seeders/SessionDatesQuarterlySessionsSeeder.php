@@ -3,13 +3,14 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\SessionDatesQuarterlySession;
+use App\Models\SessionDatesQuarterlySessions;
 use Illuminate\Support\Str;
 
 class SessionDatesQuarterlySessionsSeeder extends Seeder
 {
     public function run(): void
     {
+
         $data = [
             [
                 'id' => 1,
@@ -69,11 +70,14 @@ class SessionDatesQuarterlySessionsSeeder extends Seeder
             ],
         ];
 
-        SessionDatesQuarterlySession::create([
-            'u_id' => Str::uuid(),
-            'organizationName' => 'Chuck Gulledge Advisors, LLC',
-            'sessionDatesQuarterlySessionsData' => $data,
-            'statusFlag' => null,
-        ]);
+        foreach ($data as $organizationName => $sessionData) {
+            SessionDatesQuarterlySessions::create([
+                'u_id' => Str::uuid(),
+                'organizationName' => $organizationName,
+                'sessionDatesQuarterlySessionsData' => $sessionData,
+                'statusFlag' => null,
+            ]);
+        }
     }
 }
+
