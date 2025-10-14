@@ -70,14 +70,13 @@ class SessionDatesQuarterlySessionsSeeder extends Seeder
             ],
         ];
 
-        foreach ($data as $organizationName => $sessionData) {
-            SessionDatesQuarterlySessions::create([
-                'u_id' => Str::uuid(),
-                'organizationName' => $organizationName,
-                'sessionDatesQuarterlySessionsData' => $sessionData,
-                'statusFlag' => null,
-            ]);
-        }
+        SessionDatesQuarterlySession::create([
+            'u_id' => Str::uuid(),
+            'organizationName' => 'Chuck Gulledge Advisors, LLC',
+            'sessionDatesQuarterlySessionsData' => $data,
+            'statusFlag' => null,
+        ]);
     }
 }
+
 
