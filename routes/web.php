@@ -4399,25 +4399,25 @@ Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $
 // });
 
 // ref: 
-Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
+// Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
 
-    $organization = $request->query('organization');
+//     $organization = $request->query('organization');
 
-    if (!$organization) {
-        return response()->json(['message' => 'Organization is required'], 400);
-    }
+//     if (!$organization) {
+//         return response()->json(['message' => 'Organization is required'], 400);
+//     }
 
-    $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
+//     $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
 
-    return response()->json([
-        $organization => $record->sessionDatesQuarterlySessionsData ?? [],
-    ]);
-});
+//     return response()->json([
+//         $organization => $record->sessionDatesQuarterlySessionsData ?? [],
+//     ]);
+// });
 
 // ref: 
 Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
@@ -4435,7 +4435,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
         'Chuck Gulledge Advisors, LLC' => [
             [
                 'id' => 1,
-                'status' => 'Done',
+                'status' => 'Pending',
                 'quarter' => 'Q1 2025',
                 'meetingDate' => '2025-01-20',
                 'agenda' => [
@@ -4449,7 +4449,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
             ],
             [
                 'id' => 2,
-                'status' => 'Done',
+                'status' => 'Pending',
                 'quarter' => 'Q2 2025',
                 'meetingDate' => '2025-04-22',
                 'agenda' => [
