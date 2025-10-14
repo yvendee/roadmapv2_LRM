@@ -869,42 +869,28 @@ Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', functio
 
 
 // ref:
-Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationName}/{field}', function (Request $request, $organizationName, $field) use ($API_secure) {
+Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationName}/{field}/{sessionId}', function (
+    Request $request,
+    $organizationName,
+    $field,
+    $sessionId
+) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
-    // 🔒 Sanitize and normalize organizationName
-    $safeOrganizationName = trim(strip_tags($organizationName));
-
-    // 🔒 Sanitize field
-    $safeField = Str::slug($field, '-');
-    $safeField = preg_replace('/[^a-z0-9-]+/', '-', $safeField);
-    $safeField = trim($safeField, '-');
-
-    if (!in_array($safeField, ['agenda', 'recap'])) {
-        return response()->json(['message' => 'Invalid field type'], 400);
-    }
-
-    // 🔍 Look up the organization record
-    $record = SessionDatesQuarterlySessions::where('organizationName', $safeOrganizationName)->first();
-
-    if (!$record) {
-        return response()->json(['message' => 'Organization not found'], 404);
-    }
-
-    $u_id = $record->u_id;
-
-    // 📎 Ensure file is present
     if (!$request->hasFile('file')) {
         return response()->json(['message' => 'No file uploaded'], 400);
     }
 
-    $file = $request->file('file');
+    // 🔐 Sanitize inputs
+    $safeOrgName = Str::slug($organizationName, '-');
+    $field = preg_replace('/[^a-zA-Z0-9_-]/', '', $field);
+    $sessionId = intval($sessionId);
 
-    // ✅ Validate file extension
+    $file = $request->file('file');
     $allowed = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
     $ext = strtolower($file->getClientOriginalExtension());
 
@@ -912,31 +898,54 @@ Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationN
         return response()->json(['message' => 'Invalid file type'], 400);
     }
 
-    // 🔀 Random subdir
-    $randomDir = Str::lower(Str::random(6));
-    $fileName = $file->getClientOriginalName();
+    // 🔍 Get record by organization name
+    $record = SessionDatesQuarterlySessions::where('organizationName', 'like', "%{$organizationName}%")->first();
 
-    // 📁 Path
-    $relativePath = "session-dates/quarterly-sessions/{$u_id}/{$safeField}/{$randomDir}";
-    $fullStoragePath = storage_path("app/public/{$relativePath}");
-
-    if (!File::exists($fullStoragePath)) {
-        File::makeDirectory($fullStoragePath, 0755, true);
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
     }
 
-    // 📤 Save file
-    Storage::disk('public')->putFileAs($relativePath, $file, $fileName);
+    $u_id = $record->u_id;
+    $randomDir = Str::random(6);
+    $relativePath = "session-dates/quarterly-sessions/{$u_id}/agenda/{$randomDir}";
+    $storagePath = storage_path("app/public/{$relativePath}");
 
-    // 🔗 Build public file path
-    $publicPath = "/storage/{$relativePath}/{$fileName}";
+    if (!File::exists($storagePath)) {
+        File::makeDirectory($storagePath, 0755, true);
+    }
+
+    $filename = $file->getClientOriginalName();
+    Storage::disk('public')->putFileAs($relativePath, $file, $filename);
+    $filePath = "/api/storage/{$relativePath}/{$filename}";
+
+    // 🔄 Update session record's agenda or recap
+    $data = $record->sessionDatesQuarterlySessionsData;
+    $updated = false;
+
+    foreach ($data as &$session) {
+        if ((int) $session['id'] === $sessionId) {
+            $session[$field] = [
+                'name' => $filename,
+                'url' => $filePath,
+            ];
+            $updated = true;
+            break;
+        }
+    }
+
+    if ($updated) {
+        $record->sessionDatesQuarterlySessionsData = $data;
+        $record->save();
+    }
 
     return response()->json([
         'status' => 'success',
         'message' => 'File uploaded successfully',
-        'path' => $publicPath,
-        'filename' => $fileName,
+        'filename' => $filename,
+        'path' => $filePath,
     ]);
 });
+
 
 
 

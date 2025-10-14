@@ -144,7 +144,6 @@ const QuarterlySessions = () => {
   
     const fileExt = file.name.split('.').pop().toLowerCase();
   
-    // ❌ Validate extension
     if (!allowedExtensions.includes(fileExt)) {
       alert('Invalid file type. Allowed: PDF, DOCX, DOC, XLSX, XLS, TXT.');
       return;
@@ -153,26 +152,28 @@ const QuarterlySessions = () => {
     const formData = new FormData();
     formData.append('file', file);
   
+    const sessionId = sessions?.[idx]?.id; // replace this based on your actual data structure
+  
     try {
-      // Step 1: Fetch CSRF token
+      // Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
-  
       const { csrf_token } = await csrfRes.json();
   
-      // Step 2: Upload file with CSRF token
-      const response = await fetch(
-        `${API_URL}/v1/session-dates/quarterly-sessions/upload-file/${encodeURIComponent(organization)}/${field}`,
-        {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': csrf_token,
-          },
-          credentials: 'include',
-          body: formData,
-        }
-      );
+      // Build URL with parameters
+      const uploadUrl = `${API_URL}/v1/session-dates/quarterly-sessions/upload-file/${encodeURIComponent(
+        organization
+      )}/${field}/${sessionId}`;
+  
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: formData,
+      });
   
       const result = await response.json();
   
@@ -182,14 +183,13 @@ const QuarterlySessions = () => {
         return;
       }
   
-      // ✅ Update the UI with uploaded file info
+      // ✅ Update the UI
       handleFieldChange(idx, field, {
         name: result.filename,
         link: result.path,
       });
   
       ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', result);
-  
     } catch (error) {
       console.error('❌ Upload error:', error);
       alert('Upload failed due to network or server error.');
