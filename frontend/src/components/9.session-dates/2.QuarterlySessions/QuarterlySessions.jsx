@@ -188,24 +188,6 @@ const QuarterlySessions = () => {
           <tbody>
             {localSessions.map((session, idx) => (
               <tr key={idx} className="hover:bg-gray-50">
-                {/* <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <select
-                      value={session.status}
-                      onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    >
-                      {STATUS_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    session.status || '-'
-                  )}
-                </td> */}
-
                 <td className="border px-4 py-3">
                   {isSuper ? (
                     <select
@@ -228,7 +210,6 @@ const QuarterlySessions = () => {
                   )}
                 </td>
 
-                {/* 
                 <td className="border px-4 py-3">
                   {isSuper ? (
                     <select
@@ -243,46 +224,14 @@ const QuarterlySessions = () => {
                       ))}
                     </select>
                   ) : (
-                    session.quarter || '-'
-                  )}
-                </td> */}
-
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <select
-                      value={session.quarter}
-                      onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    >
-                      {getQuarterOptions().map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    !session.quarter || session.quarter === '-' ? (
+                    !session.status || session.status === '-' ? (
                       <div className="skeleton"></div>
                     ) : (
-                      session.quarter
+                      session.quarter || '-'
                     )
                   )}
                 </td>
 
-
-                {/* <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <input
-                      type="date"
-                      value={session.meetingDate}
-                      onChange={(e) => handleFieldChange(idx, 'meetingDate', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    />
-                  ) : (
-                    session.meetingDate || '-'
-                  )}
-                </td> */}
-
                 <td className="border px-4 py-3">
                   {isSuper ? (
                     <input
@@ -292,10 +241,10 @@ const QuarterlySessions = () => {
                       className="w-full px-2 py-1 border rounded"
                     />
                   ) : (
-                    !session.meetingDate || session.meetingDate === '-' ? (
+                    !session.status || session.status === '-' ? (
                       <div className="skeleton"></div>
                     ) : (
-                      session.meetingDate
+                      session.meetingDate || '-'
                     )
                   )}
                 </td>
@@ -303,7 +252,7 @@ const QuarterlySessions = () => {
 
                 <td className="border px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {!session.agenda || !session.agenda.name || session.agenda.name === '-' ? (
+                    {!session.status || session.status === '-' ? (
                       <div className="skeleton"></div>
                     ) : (
                       renderLink(session.agenda)
@@ -358,7 +307,7 @@ const QuarterlySessions = () => {
 
                 <td className="border px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {!session.recap || !session.recap.name || session.recap.name === '-' ? (
+                    {!session.status || session.status === '-' ? (
                       <div className="skeleton"></div>
                     ) : (
                       renderLink(session.recap)
@@ -409,6 +358,7 @@ const QuarterlySessions = () => {
                     )}
                   </div>
                 </td>
+
 
 
               </tr>
