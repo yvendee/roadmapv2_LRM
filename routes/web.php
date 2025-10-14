@@ -4440,7 +4440,7 @@ Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request
         $session['id'] = $index + 1;
     }
 
-    $record = SessionDatesQuarterlySession::where('organizationName', $organization)->first();
+    $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
 
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
