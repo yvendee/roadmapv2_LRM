@@ -131,10 +131,59 @@ const QuarterlySessions = () => {
     setIsEditing(true);
   };
 
-  const handleFileUpload = (idx, field, file) => {
-    const url = URL.createObjectURL(file);
-    handleFieldChange(idx, field, { name: file.name, link: url });
+  // const handleFileUpload = (idx, field, file) => {
+  //   const url = URL.createObjectURL(file);
+  //   handleFieldChange(idx, field, { name: file.name, link: url });
+  // };
+
+
+  const allowedExtensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
+
+  const handleFileUpload = async (idx, field, file) => {
+    if (!file) return;
+
+    const fileExt = file.name.split('.').pop().toLowerCase();
+
+    // ❌ Validate extension
+    if (!allowedExtensions.includes(fileExt)) {
+      alert('Invalid file type. Allowed: PDF, DOCX, DOC, XLSX, XLS, TXT.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/v1/session-dates/quarterly-sessions/upload-file/${encodeURIComponent(organization)}/${field}`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('Upload failed:', result);
+        alert(result.message || 'Upload failed.');
+        return;
+      }
+
+      // ✅ Update field with real server path
+      handleFieldChange(idx, field, {
+        name: result.filename,
+        link: result.path,
+      });
+
+      ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', result);
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+      alert('Upload failed due to network or server error.');
+    }
   };
+
 
   const renderLink = (fileObj) => {
     if (!fileObj || !fileObj.url) {

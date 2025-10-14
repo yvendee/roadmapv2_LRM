@@ -865,6 +865,81 @@ Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', functio
     ]);
 });
 
+
+
+
+// ref:
+Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationName}/{field}', function (Request $request, $organizationName, $field) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // 🔒 Sanitize and normalize organizationName
+    $safeOrganizationName = trim(strip_tags($organizationName));
+
+    // 🔒 Sanitize field
+    $safeField = Str::slug($field, '-');
+    $safeField = preg_replace('/[^a-z0-9-]+/', '-', $safeField);
+    $safeField = trim($safeField, '-');
+
+    if (!in_array($safeField, ['agenda', 'recap'])) {
+        return response()->json(['message' => 'Invalid field type'], 400);
+    }
+
+    // 🔍 Look up the organization record
+    $record = SessionDatesQuarterlySessions::where('organizationName', $safeOrganizationName)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $u_id = $record->u_id;
+
+    // 📎 Ensure file is present
+    if (!$request->hasFile('file')) {
+        return response()->json(['message' => 'No file uploaded'], 400);
+    }
+
+    $file = $request->file('file');
+
+    // ✅ Validate file extension
+    $allowed = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
+    $ext = strtolower($file->getClientOriginalExtension());
+
+    if (!in_array($ext, $allowed)) {
+        return response()->json(['message' => 'Invalid file type'], 400);
+    }
+
+    // 🔀 Random subdir
+    $randomDir = Str::lower(Str::random(6));
+    $fileName = $file->getClientOriginalName();
+
+    // 📁 Path
+    $relativePath = "session-dates/quarterly-sessions/{$u_id}/{$safeField}/{$randomDir}";
+    $fullStoragePath = storage_path("app/public/{$relativePath}");
+
+    if (!File::exists($fullStoragePath)) {
+        File::makeDirectory($fullStoragePath, 0755, true);
+    }
+
+    // 📤 Save file
+    Storage::disk('public')->putFileAs($relativePath, $file, $fileName);
+
+    // 🔗 Build public file path
+    $publicPath = "/storage/{$relativePath}/{$fileName}";
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'File uploaded successfully',
+        'path' => $publicPath,
+        'filename' => $fileName,
+    ]);
+});
+
+
+
 // Your API route(s)
 Route::get('/api/mock-response1', function () {
     return response()->json([
