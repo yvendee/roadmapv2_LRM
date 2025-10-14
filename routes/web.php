@@ -4420,7 +4420,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
 });
 
 
-// ref:
+// ref: 
 Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
