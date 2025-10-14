@@ -51,66 +51,66 @@ const QuarterlySessions = () => {
     }, 1000);
   };
 
-  const handleSaveChanges = () => {
-    setLoadingSave(true);
-    setTimeout(async () => {
-      setLoadingSave(false);
-      setQuarterlySessions(localSessions);
-      setIsEditing(false);
-      ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
-    }, 1000);
-  };
-
-  // const handleSaveChanges = async () => {
+  // const handleSaveChanges = () => {
   //   setLoadingSave(true);
-  
-  //   // Step 1: Reindex session IDs
-  //   const reordered = localSessions.map((session, index) => ({
-  //     ...session,
-  //     id: index + 1,
-  //   }));
-  
-  //   ENABLE_CONSOLE_LOGS && console.log('📤 Reindexed sessions for update:', reordered);
-  
-  //   try {
-  //     // Step 2: Fetch CSRF token
-  //     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-  //       credentials: 'include',
-  //     });
-  //     const { csrf_token } = await csrfRes.json();
-  
-  //     // Step 3: Make POST request to Laravel API
-  //     const response = await fetch(`${API_URL}/v1/session-dates/quarterly-sessions/update`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'X-CSRF-TOKEN': csrf_token,
-  //       },
-  //       credentials: 'include',
-  //       body: JSON.stringify({
-  //         organizationName: organization,
-  //         sessionDatesQuarterlySessionsData: reordered,
-  //       }),
-  //     });
-  
-  //     const result = await response.json();
-  //     ENABLE_CONSOLE_LOGS && console.log('✅ Server Response:', result);
-  
-  //     if (response.ok) {
-  //       setQuarterlySessions(reordered); // Update Zustand store
-  //       setIsEditing(false);
-  //     } else if (response.status === 401) {
-  //       navigate('/', { state: { loginError: 'Session Expired' } });
-  //     } else {
-  //       console.error('❌ Failed to update sessions:', result.message);
-  //     }
-  
-  //   } catch (err) {
-  //     console.error('❌ Network/API error:', err);
-  //   }
-  
-  //   setLoadingSave(false);
+  //   setTimeout(async () => {
+  //     setLoadingSave(false);
+  //     setQuarterlySessions(localSessions);
+  //     setIsEditing(false);
+  //     ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
+  //   }, 1000);
   // };
+
+  const handleSaveChanges = async () => {
+    setLoadingSave(true);
+  
+    // Step 1: Reindex session IDs
+    const reordered = localSessions.map((session, index) => ({
+      ...session,
+      id: index + 1,
+    }));
+  
+    ENABLE_CONSOLE_LOGS && console.log('📤 Reindexed sessions for update:', reordered);
+  
+    try {
+      // Step 2: Fetch CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 3: Make POST request to Laravel API
+      const response = await fetch(`${API_URL}/v1/session-dates/quarterly-sessions/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          sessionDatesQuarterlySessionsData: reordered,
+        }),
+      });
+  
+      const result = await response.json();
+      ENABLE_CONSOLE_LOGS && console.log('✅ Server Response:', result);
+  
+      if (response.ok) {
+        setQuarterlySessions(reordered); // Update Zustand store
+        setIsEditing(false);
+      } else if (response.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('❌ Failed to update sessions:', result.message);
+      }
+  
+    } catch (err) {
+      console.error('❌ Network/API error:', err);
+    }
+  
+    setLoadingSave(false);
+  };
 
   const handleDiscardChanges = () => {
     setLoadingDischarge(true);
