@@ -4435,7 +4435,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
         'Chuck Gulledge Advisors, LLC' => [
             [
                 'id' => 1,
-                'status' => 'Pending',
+                'status' => 'Done',
                 'quarter' => 'Q1 2025',
                 'meetingDate' => '2025-01-20',
                 'agenda' => [
@@ -4449,7 +4449,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
             ],
             [
                 'id' => 2,
-                'status' => 'Pending',
+                'status' => 'Done',
                 'quarter' => 'Q2 2025',
                 'meetingDate' => '2025-04-22',
                 'agenda' => [
@@ -4463,7 +4463,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
             ],
             [
                 'id' => 3,
-                'status' => 'Pending',
+                'status' => 'Done',
                 'quarter' => 'Q3 2025',
                 'meetingDate' => '2025-07-15',
                 'agenda' => [
@@ -4477,7 +4477,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
             ],
             [
                 'id' => 4,
-                'status' => 'Pending',
+                'status' => 'Done',
                 'quarter' => 'Q4 2025',
                 'meetingDate' => '2025-10-17',
                 'agenda' => [
