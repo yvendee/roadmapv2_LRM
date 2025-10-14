@@ -152,7 +152,7 @@ const QuarterlySessions = () => {
     const formData = new FormData();
     formData.append('file', file);
   
-    const sessionId = sessions?.[idx]?.id; // replace this based on your actual data structure
+    const sessionId = sessions?.[idx]?.id;
   
     try {
       // Get CSRF token
@@ -183,7 +183,7 @@ const QuarterlySessions = () => {
         return;
       }
   
-      // ✅ Update the UI
+      // Update the agenda with filename and link
       handleFieldChange(idx, field, {
         name: result.filename,
         link: result.path,
