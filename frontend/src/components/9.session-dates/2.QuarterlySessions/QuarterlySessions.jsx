@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import useLoginStore from '../../../store/loginStore';
 import useQuarterlySessionsStore from '../../../store/left-lower-content/9.session-dates/2.quarterlySessionsStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload, faTrashAlt, faCheck, faTimes  } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faTrashAlt, faCheck, faTimes, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import API_URL from '../../../configs/config';
 import './QuarterlySessions.css';
@@ -25,33 +25,54 @@ const QuarterlySessions = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState({}); // Structure: { 'agenda-0': true }
 
+  const [loading, setLoading] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDischarge, setLoadingDischarge] = useState(false);
+
   useEffect(() => {
     setLocalSessions([...sessions]);
   }, [sessions]);
 
   const handleAddQuarter = () => {
-    const newItem = {
-      status: 'Pending',
-      quarter: `Q1 ${new Date().getFullYear()}`,
-      meetingDate: '',
-      agenda: { name: '-', link: '' },
-      recap: { name: '-', link: '' },
-    };
-    setLocalSessions((prev) => [...prev, newItem]);
-    setIsEditing(true);
+    setLoading(true);
+    setTimeout(() => {
+      const newItem = {
+        status: 'Pending',
+        quarter: `Q1 ${new Date().getFullYear()}`,
+        meetingDate: '',
+        agenda: { name: '-', link: '' },
+        recap: { name: '-', link: '' },
+      };
+      setLocalSessions((prev) => [...prev, newItem]);
+      setIsEditing(true);
+    }, 1000);
   };
 
   const handleSaveChanges = () => {
-    // push localSessions to store
-    setQuarterlySessions(localSessions);
-    setIsEditing(false);
-    ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
+
+    setLoadingSave(true);
+  
+    setTimeout(async () => {
+      setLoadingSave(false);
+      // push localSessions to store
+      setQuarterlySessions(localSessions);
+      setIsEditing(false);
+      ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
+
+    }, 1000);
+
+
   };
 
   const handleDiscardChanges = () => {
-    setLocalSessions([...sessions]);
-    setIsEditing(false);
-    ENABLE_CONSOLE_LOGS && console.log('Discarded changes, restored sessions from store:', sessions);
+
+    setLoadingDischarge(true);
+    setTimeout(() => {
+      setLocalSessions([...sessions]);
+      setIsEditing(false);
+      ENABLE_CONSOLE_LOGS && console.log('Discarded changes, restored sessions from store:', sessions);  
+    }, 1000);
+
   };
 
   const handleFieldChange = (idx, field, value) => {
@@ -105,15 +126,42 @@ const QuarterlySessions = () => {
             {isEditing && (
               <>
                 <button className="pure-green-btn" onClick={handleSaveChanges}>
-                  Save Changes
+                  {loadingSave ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    ) : (
+                      'Save Changes'
+                  )}
                 </button>
                 <button className="pure-red-btn" onClick={handleDiscardChanges}>
-                  Discard
+                  {loadingDischarge ? (
+                      <div className="loader-bars">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      ) : (
+                        'Discard'
+                    )}
                 </button>
               </>
             )}
             <button className="pure-blue-btn ml-2" onClick={handleAddQuarter}>
-              Add Quarter
+              {loading ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    <>
+                    <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                    Add
+                    </>
+                )}
             </button>
           </div>
         )}
