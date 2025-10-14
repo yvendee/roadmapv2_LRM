@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\SessionDatesQuarterlySessions;
+use App\Models\SessionDatesQuarterlySession;
 use Illuminate\Support\Str;
 
 class SessionDatesQuarterlySessionsSeeder extends Seeder
