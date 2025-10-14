@@ -7,6 +7,8 @@ import {
   faSyncAlt,
   faCommentDots,
   faTrashAlt,
+  faSave, 
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
@@ -637,7 +639,10 @@ const CompanyTraction = () => {
                   <div></div>
                 </div>
                 ) : (
-                  'Save Changes'
+                  <>
+                  <FontAwesomeIcon icon={faSave} className="mr-1" />
+                  Save Changes
+                  </>
               )}
 
             </div>
@@ -650,7 +655,10 @@ const CompanyTraction = () => {
                   <div></div>
                 </div>
                 ) : (
-                  'Discard'
+                  <>
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                  Discard
+                  </>
               )}
 
             </div>

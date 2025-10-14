@@ -134,7 +134,10 @@ const QuarterlySessions = () => {
                       <div></div>
                     </div>
                     ) : (
-                      'Save Changes'
+                      <>
+                      <FontAwesomeIcon icon={faSave} className="mr-1" />
+                      Save Changes
+                      </>
                   )}
                 </button>
                 <button className="pure-red-btn" onClick={handleDiscardChanges}>
@@ -145,7 +148,10 @@ const QuarterlySessions = () => {
                         <div></div>
                       </div>
                       ) : (
-                        'Discard'
+                        <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard
+                        </>
                     )}
                 </button>
               </>
