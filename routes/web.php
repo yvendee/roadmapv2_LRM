@@ -4419,6 +4419,43 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
     ]);
 });
 
+
+// ref:
+Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $sessions = $request->input('sessionDatesQuarterlySessionsData');
+
+    if (!$organization || !is_array($sessions)) {
+        return response()->json(['message' => 'Invalid data'], 422);
+    }
+
+    // Reorder session IDs sequentially
+    foreach ($sessions as $index => &$session) {
+        $session['id'] = $index + 1;
+    }
+
+    $record = SessionDatesQuarterlySession::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $record->sessionDatesQuarterlySessionsData = $sessions;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Session data updated successfully.',
+        'data' => $record
+    ]);
+});
+
+
 // ref: 
 // Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
