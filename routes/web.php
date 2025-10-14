@@ -4398,7 +4398,7 @@ Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $
 //     ]);
 // });
 
-// ref: 
+// ref: frontend\src\components\9.session-dates\sessionDates.jsx
 Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4420,7 +4420,7 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
 });
 
 
-// // ref: 
+// // ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
 Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4452,6 +4452,46 @@ Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request
     return response()->json([
         'message' => 'Session data updated successfully.',
         'data' => $record
+    ]);
+});
+
+
+
+// ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
+Route::post('/api/v1/session-dates/quarterly-sessions/reset-agenda', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $updatedRecord = $request->input('updatedRecord'); // must include 'id'
+
+    if (!$organization || !is_array($updatedRecord) || !isset($updatedRecord['id'])) {
+        return response()->json(['message' => 'Invalid data'], 422);
+    }
+
+    $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $sessions = $record->sessionDatesQuarterlySessionsData;
+
+    // Replace session with updated agenda by matching ID
+    $sessions = array_map(function ($item) use ($updatedRecord) {
+        return $item['id'] === $updatedRecord['id'] ? $updatedRecord : $item;
+    }, $sessions);
+
+    $record->sessionDatesQuarterlySessionsData = $sessions;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Agenda reset successfully.',
+        'data' => $updatedRecord
     ]);
 });
 

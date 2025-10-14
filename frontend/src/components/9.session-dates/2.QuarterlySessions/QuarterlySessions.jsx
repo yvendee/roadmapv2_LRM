@@ -147,11 +147,72 @@ const QuarterlySessions = () => {
     );
   };
 
-  function confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
-    ENABLE_CONSOLE_LOGS && console.log(session);
+  // function confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
+  //   ENABLE_CONSOLE_LOGS && console.log(session);
+  //   updateQuarterlySessionField(idx, 'agenda', { name: '-', link: '' });
+  //   setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
+  // }
+
+  async function confirmDeleteAgenda(
+    idx,
+    session,
+    updateQuarterlySessionField,
+    setConfirmDelete,
+    setIsEditing,
+    localSessions,
+    setQuarterlySessions
+  ) {
+    ENABLE_CONSOLE_LOGS && console.log('🧨 Deleting agenda for session:', session);
+
+    const updatedSession = {
+      ...session,
+      agenda: { name: '-', link: '' },
+    };
+
+    // Immediate UI + store update
     updateQuarterlySessionField(idx, 'agenda', { name: '-', link: '' });
     setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
+    setIsEditing(true);
+
+    const organization = useLayoutSettingsStore.getState().organization;
+
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+
+      const { csrf_token } = await csrfRes.json();
+
+      const response = await fetch(`${API_URL}/v1/session-dates/quarterly-sessions/reset-agenda`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          updatedRecord: updatedSession,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Agenda reset successfully:', result.data);
+
+        const updatedSessions = localSessions.map((item, i) =>
+          i === idx ? updatedSession : item
+        );
+        setQuarterlySessions(updatedSessions);
+      } else {
+        console.error('❌ Failed to reset agenda:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ Error resetting agenda:', error);
+    }
   }
+
   
   function confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
     ENABLE_CONSOLE_LOGS && console.log(session);
