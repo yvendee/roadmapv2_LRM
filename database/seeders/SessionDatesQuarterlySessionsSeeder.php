@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\SessionDatesQuarterlySession;
+use App\Models\SessionDatesQuarterlySessions;
 use Illuminate\Support\Str;
 
 class SessionDatesQuarterlySessionsSeeder extends Seeder
@@ -70,7 +70,7 @@ class SessionDatesQuarterlySessionsSeeder extends Seeder
             ],
         ];
 
-        SessionDatesQuarterlySession::create([
+        SessionDatesQuarterlySessions::create([
             'u_id' => Str::uuid(),
             'organizationName' => 'Chuck Gulledge Advisors, LLC',
             'sessionDatesQuarterlySessionsData' => $data,
@@ -78,5 +78,4 @@ class SessionDatesQuarterlySessionsSeeder extends Seeder
         ]);
     }
 }
-
 
