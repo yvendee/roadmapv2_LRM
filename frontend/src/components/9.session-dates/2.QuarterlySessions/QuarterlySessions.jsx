@@ -172,7 +172,6 @@ const QuarterlySessions = () => {
     // Immediate UI + store update
     updateQuarterlySessionField(idx, 'agenda', { name: '-', link: '' });
     setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
-    setIsEditing(true);
 
     const organization = useLayoutSettingsStore.getState().organization;
 
