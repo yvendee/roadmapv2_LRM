@@ -188,7 +188,7 @@ const QuarterlySessions = () => {
           <tbody>
             {localSessions.map((session, idx) => (
               <tr key={idx} className="hover:bg-gray-50">
-                <td className="border px-4 py-3">
+                {/* <td className="border px-4 py-3">
                   {isSuper ? (
                     <select
                       value={session.status}
@@ -204,8 +204,31 @@ const QuarterlySessions = () => {
                   ) : (
                     session.status || '-'
                   )}
+                </td> */}
+
+                <td className="border px-4 py-3">
+                  {isSuper ? (
+                    <select
+                      value={session.status}
+                      onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
+                      className="w-full px-2 py-1 border rounded"
+                    >
+                      {STATUS_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    !session.status || session.status === '-' ? (
+                      <div className="skeleton"></div>
+                    ) : (
+                      session.status
+                    )
+                  )}
                 </td>
 
+                {/* 
                 <td className="border px-4 py-3">
                   {isSuper ? (
                     <select
@@ -222,9 +245,32 @@ const QuarterlySessions = () => {
                   ) : (
                     session.quarter || '-'
                   )}
-                </td>
+                </td> */}
 
                 <td className="border px-4 py-3">
+                  {isSuper ? (
+                    <select
+                      value={session.quarter}
+                      onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
+                      className="w-full px-2 py-1 border rounded"
+                    >
+                      {getQuarterOptions().map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    !session.quarter || session.quarter === '-' ? (
+                      <div className="skeleton"></div>
+                    ) : (
+                      session.quarter
+                    )
+                  )}
+                </td>
+
+
+                {/* <td className="border px-4 py-3">
                   {isSuper ? (
                     <input
                       type="date"
@@ -235,15 +281,36 @@ const QuarterlySessions = () => {
                   ) : (
                     session.meetingDate || '-'
                   )}
+                </td> */}
+
+                <td className="border px-4 py-3">
+                  {isSuper ? (
+                    <input
+                      type="date"
+                      value={session.meetingDate}
+                      onChange={(e) => handleFieldChange(idx, 'meetingDate', e.target.value)}
+                      className="w-full px-2 py-1 border rounded"
+                    />
+                  ) : (
+                    !session.meetingDate || session.meetingDate === '-' ? (
+                      <div className="skeleton"></div>
+                    ) : (
+                      session.meetingDate
+                    )
+                  )}
                 </td>
+
 
                 <td className="border px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {renderLink(session.agenda)}
+                    {!session.agenda || !session.agenda.name || session.agenda.name === '-' ? (
+                      <div className="skeleton"></div>
+                    ) : (
+                      renderLink(session.agenda)
+                    )}
 
                     {isSuper && (
                       <>
-                        {/* Upload Button */}
                         <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
                           <input
                             type="file"
@@ -253,12 +320,10 @@ const QuarterlySessions = () => {
                           <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
                         </button>
 
-                        {/* Delete confirmation flow */}
                         {session.agenda?.name && session.agenda.name !== '-' && (
                           <>
                             {confirmDelete[`agenda-${idx}`] ? (
                               <>
-                                {/* Confirm (check) */}
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
                                   onClick={() => confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
@@ -266,25 +331,18 @@ const QuarterlySessions = () => {
                                 >
                                   <FontAwesomeIcon icon={faCheck} className="text-green-600" />
                                 </button>
-
-                                {/* Cancel (X) */}
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
-                                  onClick={() =>
-                                    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))
-                                  }
+                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))}
                                   title="Cancel"
                                 >
                                   <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
                                 </button>
                               </>
                             ) : (
-                              // Trash icon (default)
                               <button
                                 className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                                onClick={() =>
-                                  setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))
-                                }
+                                onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))}
                                 title="Remove Agenda"
                               >
                                 <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
@@ -297,13 +355,17 @@ const QuarterlySessions = () => {
                   </div>
                 </td>
 
+
                 <td className="border px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {renderLink(session.recap)}
+                    {!session.recap || !session.recap.name || session.recap.name === '-' ? (
+                      <div className="skeleton"></div>
+                    ) : (
+                      renderLink(session.recap)
+                    )}
 
                     {isSuper && (
                       <>
-                        {/* Upload Button */}
                         <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
                           <input
                             type="file"
@@ -313,12 +375,10 @@ const QuarterlySessions = () => {
                           <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
                         </button>
 
-                        {/* Delete Confirmation Logic */}
                         {session.recap?.name && session.recap.name !== '-' && (
                           <>
                             {confirmDelete[`recap-${idx}`] ? (
                               <>
-                                {/* Confirm (check) */}
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
                                   onClick={() => confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
@@ -326,8 +386,6 @@ const QuarterlySessions = () => {
                                 >
                                   <FontAwesomeIcon icon={faCheck} className="text-green-600" />
                                 </button>
-
-                                {/* Cancel (X) */}
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
                                   onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }))}
@@ -337,7 +395,6 @@ const QuarterlySessions = () => {
                                 </button>
                               </>
                             ) : (
-                              // Trash icon (default)
                               <button
                                 className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
                                 onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: true }))}
@@ -349,10 +406,10 @@ const QuarterlySessions = () => {
                           </>
                         )}
                       </>
-
                     )}
                   </div>
                 </td>
+
 
               </tr>
             ))}

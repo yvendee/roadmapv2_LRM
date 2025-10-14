@@ -4419,6 +4419,85 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
     ]);
 });
 
+// ref: 
+Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'status' => 'Done',
+                'quarter' => 'Q1 2025',
+                'meetingDate' => '2025-01-20',
+                'agenda' => [
+                    'name' => 'Strategic Planning & KPIs.pdf',
+                    'url' => 'https://example.com/agenda-q1.pdf',
+                ],
+                'recap' => [
+                    'name' => 'Q1 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q1.pdf',
+                ],
+            ],
+            [
+                'id' => 2,
+                'status' => 'Done',
+                'quarter' => 'Q2 2025',
+                'meetingDate' => '2025-04-22',
+                'agenda' => [
+                    'name' => 'Customer Retention Plans.pdf',
+                    'url' => 'https://example.com/agenda-q2.pdf',
+                ],
+                'recap' => [
+                    'name' => 'Q2 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q2.pdf',
+                ],
+            ],
+            [
+                'id' => 3,
+                'status' => 'Pending',
+                'quarter' => 'Q3 2025',
+                'meetingDate' => '2025-07-15',
+                'agenda' => [
+                    'name' => 'New Product Launch Discussion.pdf',
+                    'url' => 'https://example.com/agenda-q3.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
+                ],
+            ],
+            [
+                'id' => 4,
+                'status' => 'Pending',
+                'quarter' => 'Q4 2025',
+                'meetingDate' => '2025-10-17',
+                'agenda' => [
+                    'name' => 'Annual Review & Strategy 2026.pdf',
+                    'url' => 'https://example.com/agenda-q4.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
+                ],
+            ],
+        ],
+    ];
+
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
+});
+
+
 // // ref: frontend\src\components\9.session-dates\sessionDates.jsx
 // Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
@@ -7618,7 +7697,7 @@ Route::post('/api/v1/left-conversations/add', function (Request $request) use ($
 });
 
 
-// routes/web.php or routes/api.php
+
 // Route::post('/api/v1/send-message', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
 //         if (!$request->session()->get('logged_in')) {
