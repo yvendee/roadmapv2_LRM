@@ -44,7 +44,7 @@ const QuarterlySessions = () => {
         recap: { name: '-', link: '' },
       };
       setLocalSessions((prev) => [...prev, newItem]);
-      setIsEditing(true);
+      setLoading(false);
     }, 1000);
   };
 
@@ -71,6 +71,7 @@ const QuarterlySessions = () => {
       setLocalSessions([...sessions]);
       setIsEditing(false);
       ENABLE_CONSOLE_LOGS && console.log('Discarded changes, restored sessions from store:', sessions);  
+      setLoadingDischarge(false);
     }, 1000);
 
   };
