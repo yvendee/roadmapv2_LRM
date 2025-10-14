@@ -118,46 +118,21 @@ const MonthlySessions = () => {
 
   const isSuper = loggedUser?.role === 'superadmin';
 
+  // Helper function to check if session.status is empty, null, or '-'
+  const isStatusEmpty = (status) => {
+    return status === '' || status === null || status === '-';
+  };
+
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container flex justify-between items-center">
-        <h5 className="text-lg font-semibold always-black">Monthly Sessions</h5>
-        {loggedUser?.role === 'superadmin' && (
+        <h5 className="text-lg font-semibold always-black">Quarterly Sessions</h5>
+        {isSuper && !localSessions.some(session => !session.status || session.status === "-") && (
           <div className="flex gap-2">
             {isEditing && (
               <>
-                <button className="pure-green-btn" onClick={handleSaveChanges}>
+                <button className="pure-green-btn" onClick={handleSaveChanges} disabled={loadingSave}>
                   {loadingSave ? (
-                    <div className="loader-bars">
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                    </div>
-                    ) : (
-                      <>
-                      <FontAwesomeIcon icon={faSave} className="mr-1" />
-                      Save Changes
-                      </>
-                  )}
-                </button>
-                <button className="pure-red-btn" onClick={handleDiscardChanges}>
-                  {loadingDischarge ? (
-                      <div className="loader-bars">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                      </div>
-                      ) : (
-                        <>
-                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
-                        Discard
-                        </>
-                    )}
-                </button>
-              </>
-            )}
-            <button className="pure-blue-btn ml-2" onClick={handleAddQuarter}>
-              {loading ? (
                     <div className="loader-bars">
                       <div></div>
                       <div></div>
@@ -165,10 +140,40 @@ const MonthlySessions = () => {
                     </div>
                   ) : (
                     <>
-                    <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                    Add
+                      <FontAwesomeIcon icon={faSave} className="mr-1" />
+                      Save Changes
                     </>
-                )}
+                  )}
+                </button>
+                <button className="pure-red-btn" onClick={handleDiscardChanges} disabled={loadingDischarge}>
+                  {loadingDischarge ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                      Discard
+                    </>
+                  )}
+                </button>
+              </>
+            )}
+            <button className="pure-blue-btn ml-2" onClick={handleAddQuarter} disabled={loading}>
+              {loading ? (
+                <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                  Add
+                </>
+              )}
             </button>
           </div>
         )}
@@ -186,180 +191,206 @@ const MonthlySessions = () => {
             </tr>
           </thead>
           <tbody>
-            {localSessions.map((session, idx) => (
-              <tr key={idx} className="hover:bg-gray-50">
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <select
-                      value={session.status}
-                      onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    >
-                      {STATUS_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    session.status || '-'
-                  )}
-                </td>
-
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <select
-                      value={session.quarter}
-                      onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    >
-                      {getQuarterOptions().map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    session.quarter || '-'
-                  )}
-                </td>
-
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <input
-                      type="date"
-                      value={session.meetingDate}
-                      onChange={(e) => handleFieldChange(idx, 'meetingDate', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    />
-                  ) : (
-                    session.meetingDate || '-'
-                  )}
-                </td>
-
-                <td className="border px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    {renderLink(session.agenda)}
-
-                    {isSuper && (
-                      <>
-                        {/* Upload Button */}
-                        <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
-                          <input
-                            type="file"
-                            onChange={(e) => handleFileUpload(idx, 'agenda', e.target.files[0])}
-                            className="opacity-0 absolute w-full h-full cursor-pointer"
-                          />
-                          <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
-                        </button>
-
-                        {/* Delete confirmation flow */}
-                        {session.agenda?.name && session.agenda.name !== '-' && (
-                          <>
-                            {confirmDelete[`agenda-${idx}`] ? (
-                              <>
-                                {/* Confirm (check) */}
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                  onClick={() => confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
-                                  title="Confirm Remove"
-                                >
-                                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
-                                </button>
-
-                                {/* Cancel (X) */}
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
-                                  onClick={() =>
-                                    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))
-                                  }
-                                  title="Cancel"
-                                >
-                                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
-                                </button>
-                              </>
-                            ) : (
-                              // Trash icon (default)
-                              <button
-                                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                                onClick={() =>
-                                  setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))
-                                }
-                                title="Remove Agenda"
-                              >
-                                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                              </button>
-                            )}
-                          </>
-                        )}
-                      </>
+            {localSessions.map((session, idx) => {
+              const disabled = isStatusEmpty(session.status);
+              if (disabled) {
+                // Render skeleton loaders for the whole row
+                return (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="border px-4 py-3"><div className="skeleton"></div></td>
+                    <td className="border px-4 py-3"><div className="skeleton"></div></td>
+                    <td className="border px-4 py-3"><div className="skeleton"></div></td>
+                    <td className="border px-4 py-3"><div className="skeleton"></div></td>
+                    <td className="border px-4 py-3"><div className="skeleton"></div></td>
+                  </tr>
+                );
+              }
+              // Else render normally with inputs/selects enabled
+              return (
+                <tr key={idx} className="hover:bg-gray-50">
+                  <td className="border px-4 py-3">
+                    {isSuper ? (
+                      <select
+                        value={session.status}
+                        onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
+                        className="w-full px-2 py-1 border rounded"
+                        disabled={disabled}
+                      >
+                        {STATUS_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      session.status || '-'
                     )}
-                  </div>
-                </td>
+                  </td>
 
-                <td className="border px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    {renderLink(session.recap)}
-
-                    {isSuper && (
-                      <>
-                        {/* Upload Button */}
-                        <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
-                          <input
-                            type="file"
-                            onChange={(e) => handleFileUpload(idx, 'recap', e.target.files[0])}
-                            className="opacity-0 absolute w-full h-full cursor-pointer"
-                          />
-                          <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
-                        </button>
-
-                        {/* Delete Confirmation Logic */}
-                        {session.recap?.name && session.recap.name !== '-' && (
-                          <>
-                            {confirmDelete[`recap-${idx}`] ? (
-                              <>
-                                {/* Confirm (check) */}
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                  onClick={() => confirmDeleteRecap(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
-                                  title="Confirm Remove"
-                                >
-                                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
-                                </button>
-
-                                {/* Cancel (X) */}
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
-                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }))}
-                                  title="Cancel"
-                                >
-                                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
-                                </button>
-                              </>
-                            ) : (
-                              // Trash icon (default)
-                              <button
-                                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                                onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: true }))}
-                                title="Remove Recap"
-                              >
-                                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                              </button>
-                            )}
-                          </>
-                        )}
-                      </>
-
+                  <td className="border px-4 py-3">
+                    {isSuper ? (
+                      <select
+                        value={session.quarter}
+                        onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
+                        className="w-full px-2 py-1 border rounded"
+                        disabled={disabled}
+                      >
+                        {getQuarterOptions().map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      session.quarter || '-'
                     )}
-                  </div>
-                </td>
+                  </td>
 
-              </tr>
-            ))}
+                  <td className="border px-4 py-3">
+                    {isSuper ? (
+                      <input
+                        type="date"
+                        value={session.meetingDate}
+                        onChange={(e) => handleFieldChange(idx, 'meetingDate', e.target.value)}
+                        className="w-full px-2 py-1 border rounded"
+                        disabled={disabled}
+                      />
+                    ) : (
+                      session.meetingDate || '-'
+                    )}
+                  </td>
+
+                  <td className="border px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      {renderLink(session.agenda)}
+
+                      {isSuper && (
+                        <>
+                          {/* Upload Button */}
+                          <button 
+                            className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded"
+                            disabled={disabled}
+                            title={disabled ? 'Disabled due to empty status' : 'Upload Agenda'}
+                          >
+                            {!disabled && (
+                              <input
+                                type="file"
+                                onChange={(e) => handleFileUpload(idx, 'agenda', e.target.files[0])}
+                                className="opacity-0 absolute w-full h-full cursor-pointer"
+                              />
+                            )}
+                            <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                          </button>
+
+                          {/* Delete confirmation flow */}
+                          {session.agenda?.name && session.agenda.name !== '-' && (
+                            <>
+                              {confirmDelete[`agenda-${idx}`] ? (
+                                <>
+                                  {/* Confirm (check) */}
+                                  <button
+                                    className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
+                                    onClick={() => confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
+                                    title="Confirm Remove"
+                                    disabled={disabled}
+                                  >
+                                    <FontAwesomeIcon icon={faCheck} className="text-green-700" />
+                                  </button>
+                                  {/* Cancel (times) */}
+                                  <button
+                                    className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
+                                    onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))}
+                                    title="Cancel"
+                                    disabled={disabled}
+                                  >
+                                    <FontAwesomeIcon icon={faTimes} className="text-red-700" />
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  className="w-10 h-10 flex items-center justify-center bg-red-200 hover:bg-red-300 rounded"
+                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))}
+                                  title="Remove Agenda"
+                                  disabled={disabled}
+                                >
+                                  <FontAwesomeIcon icon={faTrashAlt} className="text-red-700" />
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </td>
+
+                  <td className="border px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      {renderLink(session.recap)}
+
+                      {isSuper && (
+                        <>
+                          {/* Upload Button */}
+                          <button 
+                            className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded"
+                            disabled={disabled}
+                            title={disabled ? 'Disabled due to empty status' : 'Upload Recap'}
+                          >
+                            {!disabled && (
+                              <input
+                                type="file"
+                                onChange={(e) => handleFileUpload(idx, 'recap', e.target.files[0])}
+                                className="opacity-0 absolute w-full h-full cursor-pointer"
+                              />
+                            )}
+                            <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                          </button>
+
+                          {/* Delete confirmation flow */}
+                          {session.recap?.name && session.recap.name !== '-' && (
+                            <>
+                              {confirmDelete[`recap-${idx}`] ? (
+                                <>
+                                  {/* Confirm (check) */}
+                                  <button
+                                    className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
+                                    onClick={() => confirmDeleteRecap(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
+                                    title="Confirm Remove"
+                                    disabled={disabled}
+                                  >
+                                    <FontAwesomeIcon icon={faCheck} className="text-green-700" />
+                                  </button>
+                                  {/* Cancel (times) */}
+                                  <button
+                                    className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
+                                    onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }))}
+                                    title="Cancel"
+                                    disabled={disabled}
+                                  >
+                                    <FontAwesomeIcon icon={faTimes} className="text-red-700" />
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  className="w-10 h-10 flex items-center justify-center bg-red-200 hover:bg-red-300 rounded"
+                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: true }))}
+                                  title="Remove Recap"
+                                  disabled={disabled}
+                                >
+                                  <FontAwesomeIcon icon={faTrashAlt} className="text-red-700" />
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

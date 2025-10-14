@@ -39,7 +39,7 @@ import { create } from 'zustand';
 const initialQuarterlySessionTrackerData = [
   {
     id: 1,
-    status: '',
+    status: 'Done',
     quarter: 'Q1 2025',
     meetingDate: '2025-01-20',
     agenda: { name: 'Strategic Planning & KPIs.pdf', url: 'https://example.com/agenda-q1.pdf' },
@@ -47,7 +47,7 @@ const initialQuarterlySessionTrackerData = [
   },
   {
     id: 2,
-    status: '',
+    status: 'Done',
     quarter: 'Q2 2025',
     meetingDate: '2025-04-22',
     agenda: { name: 'Customer Retention Plans.pdf', url: 'https://example.com/agenda-q2.pdf' },
@@ -55,7 +55,7 @@ const initialQuarterlySessionTrackerData = [
   },
   {
     id: 3,
-    status: '',
+    status: 'Pending',
     quarter: 'Q3 2025',
     meetingDate: '2025-07-15',
     agenda: { name: 'New Product Launch Discussion.pdf', url: 'https://example.com/agenda-q3.pdf' },
@@ -63,7 +63,7 @@ const initialQuarterlySessionTrackerData = [
   },
   {
     id: 4,
-    status: '',
+    status: 'Pending',
     quarter: 'Q4 2025',
     meetingDate: '2025-10-17',
     agenda: { name: 'Annual Review & Strategy 2026.pdf', url: 'https://example.com/agenda-q4.pdf' },
