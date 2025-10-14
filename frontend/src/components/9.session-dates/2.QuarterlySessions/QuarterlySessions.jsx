@@ -186,184 +186,193 @@ const QuarterlySessions = () => {
             </tr>
           </thead>
           <tbody>
-            {localSessions.map((session, idx) => (
-              <tr key={idx} className="hover:bg-gray-50">
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <select
-                      value={session.status}
-                      onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    >
-                      {STATUS_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    !session.status || session.status === '-' ? (
-                      <div className="skeleton"></div>
-                    ) : (
-                      session.status
-                    )
-                  )}
-                </td>
+  {localSessions.map((session, idx) => {
+    const isStatusEmpty = !session.status || session.status.trim() === '' || session.status === '-';
 
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <select
-                      value={session.quarter}
-                      onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    >
-                      {getQuarterOptions().map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    !session.status || session.status === '-' ? (
-                      <div className="skeleton"></div>
-                    ) : (
-                      session.quarter || '-'
-                    )
-                  )}
-                </td>
+    return (
+      <tr key={idx} className="hover:bg-gray-50">
+        {/* STATUS */}
+        <td className="border px-4 py-3">
+          {isSuper ? (
+            <select
+              value={session.status}
+              onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
+              className="w-full px-2 py-1 border rounded"
+            >
+              {STATUS_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          ) : (
+            isStatusEmpty ? (
+              <div className="w-full h-4 bg-gray-200 animate-pulse rounded"></div>
+            ) : (
+              session.status
+            )
+          )}
+        </td>
 
-                <td className="border px-4 py-3">
-                  {isSuper ? (
-                    <input
-                      type="date"
-                      value={session.meetingDate}
-                      onChange={(e) => handleFieldChange(idx, 'meetingDate', e.target.value)}
-                      className="w-full px-2 py-1 border rounded"
-                    />
-                  ) : (
-                    !session.status || session.status === '-' ? (
-                      <div className="skeleton"></div>
-                    ) : (
-                      session.meetingDate || '-'
-                    )
-                  )}
-                </td>
+        {/* QUARTER */}
+        <td className="border px-4 py-3">
+          {isSuper ? (
+            <select
+              value={session.quarter}
+              onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
+              className="w-full px-2 py-1 border rounded"
+            >
+              {getQuarterOptions().map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          ) : (
+            isStatusEmpty ? (
+              <div className="w-full h-4 bg-gray-200 animate-pulse rounded"></div>
+            ) : (
+              session.quarter || '-'
+            )
+          )}
+        </td>
 
+        {/* MEETING DATE */}
+        <td className="border px-4 py-3">
+          {isSuper ? (
+            <input
+              type="date"
+              value={session.meetingDate}
+              onChange={(e) => handleFieldChange(idx, 'meetingDate', e.target.value)}
+              className="w-full px-2 py-1 border rounded"
+            />
+          ) : (
+            isStatusEmpty ? (
+              <div className="w-full h-4 bg-gray-200 animate-pulse rounded"></div>
+            ) : (
+              session.meetingDate || '-'
+            )
+          )}
+        </td>
 
-                <td className="border px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    {!session.status || session.status === '-' ? (
-                      <div className="skeleton"></div>
-                    ) : (
-                      renderLink(session.agenda)
-                    )}
+        {/* AGENDA */}
+        <td className="border px-4 py-3">
+          <div className="flex items-center gap-2">
+            {isStatusEmpty ? (
+              <div className="w-full h-4 bg-gray-200 animate-pulse rounded"></div>
+            ) : (
+              renderLink(session.agenda)
+            )}
 
-                    {isSuper && (
+            {isSuper && (
+              <>
+                <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileUpload(idx, 'agenda', e.target.files[0])}
+                    className="opacity-0 absolute w-full h-full cursor-pointer"
+                  />
+                  <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                </button>
+
+                {session.agenda?.name && session.agenda.name !== '-' && (
+                  <>
+                    {confirmDelete[`agenda-${idx}`] ? (
                       <>
-                        <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
-                          <input
-                            type="file"
-                            onChange={(e) => handleFileUpload(idx, 'agenda', e.target.files[0])}
-                            className="opacity-0 absolute w-full h-full cursor-pointer"
-                          />
-                          <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                        <button
+                          className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
+                          onClick={() =>
+                            confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)
+                          }
+                          title="Confirm Remove"
+                        >
+                          <FontAwesomeIcon icon={faCheck} className="text-green-600" />
                         </button>
-
-                        {session.agenda?.name && session.agenda.name !== '-' && (
-                          <>
-                            {confirmDelete[`agenda-${idx}`] ? (
-                              <>
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                  onClick={() => confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
-                                  title="Confirm Remove"
-                                >
-                                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
-                                </button>
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
-                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))}
-                                  title="Cancel"
-                                >
-                                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                                onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))}
-                                title="Remove Agenda"
-                              >
-                                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                              </button>
-                            )}
-                          </>
-                        )}
+                        <button
+                          className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
+                          onClick={() => setConfirmDelete((prev) => ({ ...prev, [`agenda-${idx}`]: false }))}
+                          title="Cancel"
+                        >
+                          <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
+                        </button>
                       </>
-                    )}
-                  </div>
-                </td>
-
-
-                <td className="border px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    {!session.status || session.status === '-' ? (
-                      <div className="skeleton"></div>
                     ) : (
-                      renderLink(session.recap)
+                      <button
+                        className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
+                        onClick={() => setConfirmDelete((prev) => ({ ...prev, [`agenda-${idx}`]: true }))}
+                        title="Remove Agenda"
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
+                      </button>
                     )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </td>
 
-                    {isSuper && (
+        {/* POST SESSION RECAP */}
+        <td className="border px-4 py-3">
+          <div className="flex items-center gap-2">
+            {isStatusEmpty ? (
+              <div className="w-full h-4 bg-gray-200 animate-pulse rounded"></div>
+            ) : (
+              renderLink(session.recap)
+            )}
+
+            {isSuper && (
+              <>
+                <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileUpload(idx, 'recap', e.target.files[0])}
+                    className="opacity-0 absolute w-full h-full cursor-pointer"
+                  />
+                  <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                </button>
+
+                {session.recap?.name && session.recap.name !== '-' && (
+                  <>
+                    {confirmDelete[`recap-${idx}`] ? (
                       <>
-                        <button className="relative inline-flex items-center justify-center w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded">
-                          <input
-                            type="file"
-                            onChange={(e) => handleFileUpload(idx, 'recap', e.target.files[0])}
-                            className="opacity-0 absolute w-full h-full cursor-pointer"
-                          />
-                          <FontAwesomeIcon icon={faUpload} className="text-gray-700" />
+                        <button
+                          className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
+                          onClick={() =>
+                            confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)
+                          }
+                          title="Confirm Remove"
+                        >
+                          <FontAwesomeIcon icon={faCheck} className="text-green-600" />
                         </button>
-
-                        {session.recap?.name && session.recap.name !== '-' && (
-                          <>
-                            {confirmDelete[`recap-${idx}`] ? (
-                              <>
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                  onClick={() => confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
-                                  title="Confirm Remove"
-                                >
-                                  <FontAwesomeIcon icon={faCheck} className="text-green-600" />
-                                </button>
-                                <button
-                                  className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
-                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }))}
-                                  title="Cancel"
-                                >
-                                  <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                                onClick={() => setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: true }))}
-                                title="Remove Recap"
-                              >
-                                <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                              </button>
-                            )}
-                          </>
-                        )}
+                        <button
+                          className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded"
+                          onClick={() => setConfirmDelete((prev) => ({ ...prev, [`recap-${idx}`]: false }))}
+                          title="Cancel"
+                        >
+                          <FontAwesomeIcon icon={faTimes} className="text-gray-600" />
+                        </button>
                       </>
+                    ) : (
+                      <button
+                        className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
+                        onClick={() => setConfirmDelete((prev) => ({ ...prev, [`recap-${idx}`]: true }))}
+                        title="Remove Recap"
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
+                      </button>
                     )}
-                  </div>
-                </td>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
 
-
-
-              </tr>
-            ))}
-          </tbody>
         </table>
       </div>
 
