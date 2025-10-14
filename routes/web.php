@@ -4420,119 +4420,119 @@ Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $reques
 });
 
 
-// ref: 
-Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
-
-    $organization = $request->input('organizationName');
-    $sessions = $request->input('sessionDatesQuarterlySessionsData');
-
-    if (!$organization || !is_array($sessions)) {
-        return response()->json(['message' => 'Invalid data'], 422);
-    }
-
-    // Reorder session IDs sequentially
-    foreach ($sessions as $index => &$session) {
-        $session['id'] = $index + 1;
-    }
-
-    $record = SessionDatesQuarterlySession::where('organizationName', $organization)->first();
-
-    if (!$record) {
-        return response()->json(['message' => 'Organization not found'], 404);
-    }
-
-    $record->sessionDatesQuarterlySessionsData = $sessions;
-    $record->save();
-
-    return response()->json([
-        'message' => 'Session data updated successfully.',
-        'data' => $record
-    ]);
-});
-
-
-// ref: 
-// Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
+// // ref: 
+// Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
 //         if (!$request->session()->get('logged_in')) {
 //             return response()->json(['message' => 'Unauthorized'], 401);
 //         }
-
-//         $user = $request->session()->get('user');
 //     }
 
-//     $organization = $request->query('organization');
+//     $organization = $request->input('organizationName');
+//     $sessions = $request->input('sessionDatesQuarterlySessionsData');
 
-//     $data = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             [
-//                 'id' => 1,
-//                 'status' => 'Done',
-//                 'quarter' => 'Q1 2025',
-//                 'meetingDate' => '2025-01-20',
-//                 'agenda' => [
-//                     'name' => 'Strategic Planning & KPIs.pdf',
-//                     'url' => 'https://example.com/agenda-q1.pdf',
-//                 ],
-//                 'recap' => [
-//                     'name' => 'Q1 Recap Summary.pdf',
-//                     'url' => 'https://example.com/recap-q1.pdf',
-//                 ],
-//             ],
-//             [
-//                 'id' => 2,
-//                 'status' => 'Done',
-//                 'quarter' => 'Q2 2025',
-//                 'meetingDate' => '2025-04-22',
-//                 'agenda' => [
-//                     'name' => 'Customer Retention Plans.pdf',
-//                     'url' => 'https://example.com/agenda-q2.pdf',
-//                 ],
-//                 'recap' => [
-//                     'name' => 'Q2 Recap Summary.pdf',
-//                     'url' => 'https://example.com/recap-q2.pdf',
-//                 ],
-//             ],
-//             [
-//                 'id' => 3,
-//                 'status' => 'Done',
-//                 'quarter' => 'Q3 2025',
-//                 'meetingDate' => '2025-07-15',
-//                 'agenda' => [
-//                     'name' => 'New Product Launch Discussion.pdf',
-//                     'url' => 'https://example.com/agenda-q3.pdf',
-//                 ],
-//                 'recap' => [
-//                     'name' => '-',
-//                     'url' => '',
-//                 ],
-//             ],
-//             [
-//                 'id' => 4,
-//                 'status' => 'Done',
-//                 'quarter' => 'Q4 2025',
-//                 'meetingDate' => '2025-10-17',
-//                 'agenda' => [
-//                     'name' => 'Annual Review & Strategy 2026.pdf',
-//                     'url' => 'https://example.com/agenda-q4.pdf',
-//                 ],
-//                 'recap' => [
-//                     'name' => '-',
-//                     'url' => '',
-//                 ],
-//             ],
-//         ],
-//     ];
+//     if (!$organization || !is_array($sessions)) {
+//         return response()->json(['message' => 'Invalid data'], 422);
+//     }
+
+//     // Reorder session IDs sequentially
+//     foreach ($sessions as $index => &$session) {
+//         $session['id'] = $index + 1;
+//     }
+
+//     $record = SessionDatesQuarterlySession::where('organizationName', $organization)->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Organization not found'], 404);
+//     }
+
+//     $record->sessionDatesQuarterlySessionsData = $sessions;
+//     $record->save();
 
 //     return response()->json([
-//         $organization => $data[$organization] ?? [],
+//         'message' => 'Session data updated successfully.',
+//         'data' => $record
 //     ]);
 // });
+
+
+//ref: 
+Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    $data = [
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'status' => 'Done',
+                'quarter' => 'Q1 2025',
+                'meetingDate' => '2025-01-20',
+                'agenda' => [
+                    'name' => 'Strategic Planning & KPIs.pdf',
+                    'url' => 'https://example.com/agenda-q1.pdf',
+                ],
+                'recap' => [
+                    'name' => 'Q1 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q1.pdf',
+                ],
+            ],
+            [
+                'id' => 2,
+                'status' => 'Done',
+                'quarter' => 'Q2 2025',
+                'meetingDate' => '2025-04-22',
+                'agenda' => [
+                    'name' => 'Customer Retention Plans.pdf',
+                    'url' => 'https://example.com/agenda-q2.pdf',
+                ],
+                'recap' => [
+                    'name' => 'Q2 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q2.pdf',
+                ],
+            ],
+            [
+                'id' => 3,
+                'status' => 'Done',
+                'quarter' => 'Q3 2025',
+                'meetingDate' => '2025-07-15',
+                'agenda' => [
+                    'name' => 'New Product Launch Discussion.pdf',
+                    'url' => 'https://example.com/agenda-q3.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
+                ],
+            ],
+            [
+                'id' => 4,
+                'status' => 'Done',
+                'quarter' => 'Q4 2025',
+                'meetingDate' => '2025-10-17',
+                'agenda' => [
+                    'name' => 'Annual Review & Strategy 2026.pdf',
+                    'url' => 'https://example.com/agenda-q4.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
+                ],
+            ],
+        ],
+    ];
+
+    return response()->json([
+        $organization => $data[$organization] ?? [],
+    ]);
+});
 
 
 // // ref: frontend\src\components\9.session-dates\sessionDates.jsx
