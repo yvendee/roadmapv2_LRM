@@ -141,48 +141,61 @@ const QuarterlySessions = () => {
 
   const handleFileUpload = async (idx, field, file) => {
     if (!file) return;
-
+  
     const fileExt = file.name.split('.').pop().toLowerCase();
-
+  
     // ❌ Validate extension
     if (!allowedExtensions.includes(fileExt)) {
       alert('Invalid file type. Allowed: PDF, DOCX, DOC, XLSX, XLS, TXT.');
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('file', file);
-
+  
     try {
+      // Step 1: Fetch CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 2: Upload file with CSRF token
       const response = await fetch(
         `${API_URL}/v1/session-dates/quarterly-sessions/upload-file/${encodeURIComponent(organization)}/${field}`,
         {
           method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': csrf_token,
+          },
           credentials: 'include',
           body: formData,
         }
       );
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         console.error('Upload failed:', result);
         alert(result.message || 'Upload failed.');
         return;
       }
-
-      // ✅ Update field with real server path
+  
+      // ✅ Update the UI with uploaded file info
       handleFieldChange(idx, field, {
         name: result.filename,
         link: result.path,
       });
-
+  
       ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded:', result);
+  
     } catch (error) {
       console.error('❌ Upload error:', error);
       alert('Upload failed due to network or server error.');
     }
   };
+  
 
 
   const renderLink = (fileObj) => {
