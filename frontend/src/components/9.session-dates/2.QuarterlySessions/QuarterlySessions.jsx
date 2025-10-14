@@ -23,7 +23,7 @@ const QuarterlySessions = () => {
 
   const [localSessions, setLocalSessions] = useState([...sessions]);
   const [isEditing, setIsEditing] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState({}); // Structure: { 'agenda-0': true }
+  const [confirmDelete, setConfirmDelete] = useState({}); 
 
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);

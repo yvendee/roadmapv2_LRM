@@ -1,9 +1,9 @@
 // frontend\src\components\9.session-dates\3.MonthlySessions\MonthlySessions.jsx
 import React, { useState, useEffect } from 'react';
 import useLoginStore from '../../../store/loginStore';
-import useQuarterlySessionsStore from '../../../store/left-lower-content/9.session-dates/2.quarterlySessionsStore';
+import useMonthlySessionsStore from '../../../store/left-lower-content/9.session-dates/3.monthlySessionsStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload, faTrashAlt, faCheck, faTimes  } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faTrashAlt, faCheck, faTimes, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import API_URL from '../../../configs/config';
 import './MonthlySessions.css';
@@ -16,42 +16,64 @@ const getQuarterOptions = () => {
 
 const MonthlySessions = () => {
   const loggedUser = useLoginStore((state) => state.user);
-  const sessions = useQuarterlySessionsStore((state) => state.sessions);
-  const setQuarterlySessions = useQuarterlySessionsStore((state) => state.setQuarterlySessions);
-  const updateQuarterlySessionField = useQuarterlySessionsStore((state) => state.updateQuarterlySessionField);
-  const addQuarterlySession = useQuarterlySessionsStore((state) => state.addQuarterlySession);
+  const sessions = useMonthlySessionsStore((state) => state.sessions);
+  const setMonthlySessions = useMonthlySessionsStore((state) => state.setMonthlySessions);
+  const updateMonthlySessionField = useMonthlySessionsStore((state) => state.updateMonthlySessionField);
+  const addMonthlySession = useMonthlySessionsStore((state) => state.addMonthlySession);
 
   const [localSessions, setLocalSessions] = useState([...sessions]);
   const [isEditing, setIsEditing] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState({}); // Structure: { 'agenda-0': true }
+  const [confirmDelete, setConfirmDelete] = useState({}); 
+
+  const [loading, setLoading] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDischarge, setLoadingDischarge] = useState(false);
 
   useEffect(() => {
     setLocalSessions([...sessions]);
   }, [sessions]);
 
   const handleAddQuarter = () => {
-    const newItem = {
-      status: 'Pending',
-      quarter: `Q1 ${new Date().getFullYear()}`,
-      meetingDate: '',
-      agenda: { name: '-', link: '' },
-      recap: { name: '-', link: '' },
-    };
-    setLocalSessions((prev) => [...prev, newItem]);
-    setIsEditing(true);
+    setLoading(true);
+    setTimeout(() => {
+      const newItem = {
+        status: 'Pending',
+        quarter: `Q1 ${new Date().getFullYear()}`,
+        meetingDate: '',
+        agenda: { name: '-', link: '' },
+        recap: { name: '-', link: '' },
+      };
+      setLocalSessions((prev) => [...prev, newItem]);
+      setLoading(false);
+    }, 1000);
   };
 
   const handleSaveChanges = () => {
-    // push localSessions to store
-    setQuarterlySessions(localSessions);
-    setIsEditing(false);
-    ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
+
+    setLoadingSave(true);
+  
+    setTimeout(async () => {
+      setLoadingSave(false);
+      // push localSessions to store
+      setMonthlySessions(localSessions);
+      setIsEditing(false);
+      ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
+
+    }, 1000);
+
+
   };
 
   const handleDiscardChanges = () => {
-    setLocalSessions([...sessions]);
-    setIsEditing(false);
-    ENABLE_CONSOLE_LOGS && console.log('Discarded changes, restored sessions from store:', sessions);
+
+    setLoadingDischarge(true);
+    setTimeout(() => {
+      setLocalSessions([...sessions]);
+      setIsEditing(false);
+      ENABLE_CONSOLE_LOGS && console.log('Discarded changes, restored sessions from store:', sessions);  
+      setLoadingDischarge(false);
+    }, 1000);
+
   };
 
   const handleFieldChange = (idx, field, value) => {
@@ -80,16 +102,16 @@ const MonthlySessions = () => {
   };
 
 
-  function confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
+  function confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
     ENABLE_CONSOLE_LOGS && console.log(session);
-    updateQuarterlySessionField(idx, 'agenda', { name: '-', url: '' });
+    updateMonthlySessionField(idx, 'agenda', { name: '-', url: '' });
     setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
     
   }
   
-  function confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
+  function confirmDeleteRecap(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
     ENABLE_CONSOLE_LOGS && console.log(session);
-    updateQuarterlySessionField(idx, 'recap', { name: '-', url: '' });
+    updateMonthlySessionField(idx, 'recap', { name: '-', url: '' });
     setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }));
   }
   
@@ -105,15 +127,48 @@ const MonthlySessions = () => {
             {isEditing && (
               <>
                 <button className="pure-green-btn" onClick={handleSaveChanges}>
-                  Save Changes
+                  {loadingSave ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    ) : (
+                      <>
+                      <FontAwesomeIcon icon={faSave} className="mr-1" />
+                      Save Changes
+                      </>
+                  )}
                 </button>
                 <button className="pure-red-btn" onClick={handleDiscardChanges}>
-                  Discard
+                  {loadingDischarge ? (
+                      <div className="loader-bars">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      ) : (
+                        <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard
+                        </>
+                    )}
                 </button>
               </>
             )}
             <button className="pure-blue-btn ml-2" onClick={handleAddQuarter}>
-              Add Quarter
+              {loading ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    <>
+                    <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                    Add
+                    </>
+                )}
             </button>
           </div>
         )}
@@ -206,7 +261,7 @@ const MonthlySessions = () => {
                                 {/* Confirm (check) */}
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                  onClick={() => confirmDeleteAgenda(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
+                                  onClick={() => confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
                                   title="Confirm Remove"
                                 >
                                   <FontAwesomeIcon icon={faCheck} className="text-green-600" />
@@ -266,7 +321,7 @@ const MonthlySessions = () => {
                                 {/* Confirm (check) */}
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                  onClick={() => confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing)}
+                                  onClick={() => confirmDeleteRecap(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
                                   title="Confirm Remove"
                                 >
                                   <FontAwesomeIcon icon={faCheck} className="text-green-600" />
