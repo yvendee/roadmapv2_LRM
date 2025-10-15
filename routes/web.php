@@ -4973,8 +4973,8 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
         return response()->json(['message' => 'Invalid data'], 422);
     }
 
+    // 🔍 Find record
     $record = SessionDatesQuarterlySessions::where('organizationName', 'like', "%{$organization}%")->first();
-
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
     }
@@ -4987,11 +4987,13 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
 
             // 🗑️ Delete recap file & folder if exists
             if (!empty($session['recap']['url'])) {
-                $url = $session['recap']['url']; // e.g., /api/storage/session-dates/quarterly-sessions/uuid/recap/ABCDEF/filename.pdf
-                $parts = explode('/', $url);
-                if (count($parts) >= 9) {
-                    $randomDir = $parts[8]; // ABCDEF
-                    $uid = $record->u_id;
+                $url = $session['recap']['url'];
+
+                // Match: /api/storage/session-dates/quarterly-sessions/{uid}/recap/{random6}/filename
+                $pattern = "/session-dates\/quarterly-sessions\/([^\/]+)\/recap\/([^\/]+)/";
+                if (preg_match($pattern, $url, $matches)) {
+                    $uid = $matches[1];
+                    $randomDir = $matches[2];
                     $relativeDir = "session-dates/quarterly-sessions/{$uid}/recap/{$randomDir}";
                     $fullPath = storage_path("app/public/{$relativeDir}");
 
@@ -5016,9 +5018,10 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
     return response()->json([
         'status' => 'success',
         'message' => 'Recap deleted and reset successfully.',
-        'data' => $updatedRecord
+        'data' => $updatedRecord,
     ]);
 });
+
 
  
 // ref: 
