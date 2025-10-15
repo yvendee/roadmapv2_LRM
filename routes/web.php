@@ -1191,7 +1191,7 @@ Route::post('/api/v1/session-dates/monthly-sessions/upload-file/{organizationNam
 
     $u_id = $record->u_id;
     $randomDir = Str::random(6);
-    $relativePath = "session-dates/monthly-sessions/{$u_id}/post-recap/{$randomDir}";
+    $relativePath = "session-dates/monthly-sessions/{$u_id}/{$field}/{$randomDir}";
     $storagePath = storage_path("app/public/{$relativePath}");
 
     if (!File::exists($storagePath)) {
