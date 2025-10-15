@@ -1100,7 +1100,7 @@ Route::post('/api/v1/session-dates/monthly-sessions/upload-file/{organizationNam
 
                 if (count($parts) >= 9) {
                     $randomDir = $parts[8]; // 6-letter random directory
-                    $relativeOldDir = "session-dates/monthly-sessions/{$u_id}/post-recap/{$randomDir}";
+                    $relativeOldDir = "session-dates/monthly-sessions/{$u_id}/recap/{$randomDir}";
                     $fullOldDir = storage_path("app/public/{$relativeOldDir}");
 
                     if (File::exists($fullOldDir)) {
@@ -1114,7 +1114,7 @@ Route::post('/api/v1/session-dates/monthly-sessions/upload-file/{organizationNam
 
     // 📁 Save new file
     $randomDir = Str::random(6);
-    $relativePath = "session-dates/monthly-sessions/{$u_id}/post-recap/{$randomDir}";
+    $relativePath = "session-dates/monthly-sessions/{$u_id}/recap/{$randomDir}";
     $storagePath = storage_path("app/public/{$relativePath}");
 
     if (!File::exists($storagePath)) {
