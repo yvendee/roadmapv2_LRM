@@ -4859,7 +4859,7 @@ Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request
 //     ]);
 // });
 
-// ref: 
+// ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
 Route::post('/api/v1/session-dates/quarterly-sessions/reset-agenda', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -4967,31 +4967,30 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
     }
 
     $organization = $request->input('organizationName');
-    $updatedRecord = $request->input('updatedRecord'); // Must include ID
+    $updatedRecord = $request->input('updatedRecord'); // Must include 'id'
 
     if (!$organization || !is_array($updatedRecord) || !isset($updatedRecord['id'])) {
         return response()->json(['message' => 'Invalid data'], 422);
     }
 
-    $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
+    $record = SessionDatesQuarterlySessions::where('organizationName', 'like', "%{$organization}%")->first();
 
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
     }
 
-    $sessions = $record->sessionDatesQuarterlySessionsData;
+    $data = $record->sessionDatesQuarterlySessionsData;
     $updated = false;
 
-    foreach ($sessions as &$session) {
-        if ((int)$session['id'] === (int)$updatedRecord['id']) {
+    foreach ($data as &$session) {
+        if ((int) $session['id'] === (int) $updatedRecord['id']) {
 
-            // 🗑️ Delete recap file and 6-char folder
+            // 🗑️ Delete recap file & folder if exists
             if (!empty($session['recap']['url'])) {
-                $url = $session['recap']['url'];
-                $parts = explode('/', $url); // e.g., /api/storage/session-dates/quarterly-sessions/{u_id}/recap/ABC123/filename.pdf
-
+                $url = $session['recap']['url']; // e.g., /api/storage/session-dates/quarterly-sessions/uuid/recap/ABCDEF/filename.pdf
+                $parts = explode('/', $url);
                 if (count($parts) >= 9) {
-                    $randomDir = $parts[8];
+                    $randomDir = $parts[8]; // ABCDEF
                     $uid = $record->u_id;
                     $relativeDir = "session-dates/quarterly-sessions/{$uid}/recap/{$randomDir}";
                     $fullPath = storage_path("app/public/{$relativeDir}");
@@ -5002,28 +5001,25 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
                 }
             }
 
-            // ✅ Reset recap field
-            $session['recap'] = [
-                'name' => '-',
-                'url' => '',
-            ];
-
+            // 🔄 Reset recap field
+            $session['recap'] = ['name' => '-', 'url' => ''];
             $updated = true;
             break;
         }
     }
 
     if ($updated) {
-        $record->sessionDatesQuarterlySessionsData = $sessions;
+        $record->sessionDatesQuarterlySessionsData = $data;
         $record->save();
     }
 
     return response()->json([
         'status' => 'success',
-        'message' => 'Recap file deleted and field reset.',
+        'message' => 'Recap deleted and reset successfully.',
         'data' => $updatedRecord
     ]);
 });
+
  
 // ref: 
 // Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
