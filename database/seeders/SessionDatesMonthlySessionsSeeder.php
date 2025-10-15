@@ -10,39 +10,73 @@ class SessionDatesMonthlySessionsSeeder extends Seeder
 {
     public function run(): void
     {
+
         $data = [
-            'Chuck Gulledge Advisors, LLC' => [
-                [
-                    'status' => 'Done',
-                    'month' => 'January',
-                    'date' => '2025-01-10',
-                    'agenda' => 'Review January goals and targets',
-                    'recap' => 'All targets met. Positive team performance.',
+            [
+                'id' => 1,
+                'status' => 'Pending',
+                'quarter' => 'Q1 2025',
+                'meetingDate' => '2025-01-20',
+                'agenda' => [
+                    'name' => 'Strategic Planning & KPIs.pdf',
+                    'url' => 'https://example.com/agenda-q1.pdf',
                 ],
-                [
-                    'status' => 'Pending',
-                    'month' => 'February',
-                    'date' => '2025-02-14',
-                    'agenda' => 'Mid-Q1 Alignment & Budget Discussion',
-                    'recap' => 'To be conducted.',
+                'recap' => [
+                    'name' => 'Q1 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q1.pdf',
                 ],
-                [
-                    'status' => 'New',
-                    'month' => 'March',
-                    'date' => '2025-03-20',
-                    'agenda' => 'Client Feedback Analysis',
-                    'recap' => 'Preparation ongoing.',
+            ],
+            [
+                'id' => 2,
+                'status' => 'Pending',
+                'quarter' => 'Q2 2025',
+                'meetingDate' => '2025-04-22',
+                'agenda' => [
+                    'name' => 'Customer Retention Plans.pdf',
+                    'url' => 'https://example.com/agenda-q2.pdf',
+                ],
+                'recap' => [
+                    'name' => 'Q2 Recap Summary.pdf',
+                    'url' => 'https://example.com/recap-q2.pdf',
+                ],
+            ],
+            [
+                'id' => 3,
+                'status' => 'Pending',
+                'quarter' => 'Q3 2025',
+                'meetingDate' => '2025-07-15',
+                'agenda' => [
+                    'name' => 'New Product Launch Discussion.pdf',
+                    'url' => 'https://example.com/agenda-q3.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
+                ],
+            ],
+            [
+                'id' => 4,
+                'status' => 'Pending',
+                'quarter' => 'Q4 2025',
+                'meetingDate' => '2025-10-17',
+                'agenda' => [
+                    'name' => 'Annual Review & Strategy 2026.pdf',
+                    'url' => 'https://example.com/agenda-q4.pdf',
+                ],
+                'recap' => [
+                    'name' => '-',
+                    'url' => '',
                 ],
             ],
         ];
 
-        foreach ($data as $organization => $sessionData) {
-            SessionDatesMonthlySessions::create([
-                'u_id' => Str::uuid(),
-                'organizationName' => $organization,
-                'sessionDatesMonthlySessionsData' => $sessionData,
-                'statusFlag' => null,
-            ]);
-        }
+        SessionDatesMonthlySessions::create([
+            'u_id' => Str::uuid(),
+            'organizationName' => 'Chuck Gulledge Advisors, LLC',
+            'sessionDatesMonthlySessionsData' => $data,
+            'statusFlag' => null,
+        ]);
     }
 }
+
+
