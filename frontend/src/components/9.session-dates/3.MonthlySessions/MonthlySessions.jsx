@@ -284,7 +284,7 @@ const MonthlySessions = () => {
         const updatedSessions = localSessions.map((item, i) =>
           i === idx ? updatedSession : item
         );
-        setSessions(updatedSessions);
+        setMonthlySessions(updatedSessions);
       } else {
         console.error('❌ Failed to reset agenda:', result.message);
       }
