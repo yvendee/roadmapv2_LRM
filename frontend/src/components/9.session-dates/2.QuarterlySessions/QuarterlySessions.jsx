@@ -338,14 +338,29 @@ const QuarterlySessions = () => {
   
       const result = await response.json();
   
+      // if (response.ok && result.status === 'success') {
+      //   ENABLE_CONSOLE_LOGS && console.log('✅ Recap reset successfully:', result.data);
+  
+      //   const updatedSessions = localSessions.map((item, i) =>
+      //     i === idx ? updatedSession : item
+      //   );
+      //   setQuarterlySessions(updatedSessions);
+      // }
+
       if (response.ok && result.status === 'success') {
         ENABLE_CONSOLE_LOGS && console.log('✅ Recap reset successfully:', result.data);
-  
-        const updatedSessions = localSessions.map((item, i) =>
-          i === idx ? updatedSession : item
-        );
-        setQuarterlySessions(updatedSessions);
-      } else {
+      
+        if (Array.isArray(localSessions)) {
+          const updatedSessions = localSessions.map((item, i) =>
+            i === idx ? updatedSession : item
+          );
+          setQuarterlySessions(updatedSessions);
+        } else {
+          console.warn('⚠️ localSessions is not an array. Skipping update.');
+        }
+      }
+    
+      else {
         console.error('❌ Failed to reset recap:', result.message);
       }
     } catch (error) {
