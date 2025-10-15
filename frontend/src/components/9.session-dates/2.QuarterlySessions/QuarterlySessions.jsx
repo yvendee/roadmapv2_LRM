@@ -258,7 +258,7 @@ const QuarterlySessions = () => {
       const { csrf_token } = await csrfRes.json();
 
       const response = await fetch(`${API_URL}/v1/session-dates/quarterly-sessions/reset-agenda`, {
-        method: 'POST',
+      method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-TOKEN': csrf_token,
