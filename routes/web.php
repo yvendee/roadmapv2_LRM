@@ -868,7 +868,7 @@ Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', functio
 
 
 
-// ref:
+// ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
 Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationName}/{field}/{sessionId}', function (
     Request $request,
     $organizationName,
@@ -947,7 +947,83 @@ Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationN
 });
 
 
+// ref: frontend\src\components\9.session-dates\3.MonthlySessions\MonthlySessions.jsx
+Route::post('/api/v1/session-dates/monthly-sessions/upload-file/{organizationName}/{field}/{sessionId}', function (
+    Request $request,
+    $organizationName,
+    $field,
+    $sessionId
+) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
 
+    if (!$request->hasFile('file')) {
+        return response()->json(['message' => 'No file uploaded'], 400);
+    }
+
+    // 🔐 Sanitize inputs
+    $safeOrgName = Str::slug($organizationName, '-');
+    $field = preg_replace('/[^a-zA-Z0-9_-]/', '', $field);
+    $sessionId = intval($sessionId);
+
+    $file = $request->file('file');
+    $allowed = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
+    $ext = strtolower($file->getClientOriginalExtension());
+
+    if (!in_array($ext, $allowed)) {
+        return response()->json(['message' => 'Invalid file type'], 400);
+    }
+
+    // 🔍 Get record by organization name
+    $record = SessionDatesMonthlySessions::where('organizationName', 'like', "%{$organizationName}%")->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $u_id = $record->u_id;
+    $randomDir = Str::random(6);
+    $relativePath = "session-dates/monthly-sessions/{$u_id}/post-recap/{$randomDir}";
+    $storagePath = storage_path("app/public/{$relativePath}");
+
+    if (!File::exists($storagePath)) {
+        File::makeDirectory($storagePath, 0755, true);
+    }
+
+    $filename = $file->getClientOriginalName();
+    Storage::disk('public')->putFileAs($relativePath, $file, $filename);
+    $filePath = "/api/storage/{$relativePath}/{$filename}";
+
+    // 🔄 Update session record's agenda or recap
+    $data = $record->sessionDatesMonthlySessionsData;
+    $updated = false;
+
+    foreach ($data as &$session) {
+        if ((int) $session['id'] === $sessionId) {
+            $session[$field] = [
+                'name' => $filename,
+                'url' => $filePath,
+            ];
+            $updated = true;
+            break;
+        }
+    }
+
+    if ($updated) {
+        $record->sessionDatesMonthlySessionsData = $data;
+        $record->save();
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'File uploaded successfully',
+        'filename' => $filename,
+        'path' => $filePath,
+    ]);
+});
 
 // Your API route(s)
 Route::get('/api/mock-response1', function () {
@@ -4540,7 +4616,6 @@ Route::post('/api/v1/session-dates/quarterly-sessions/update', function (Request
 });
 
 
-
 // ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
 Route::post('/api/v1/session-dates/quarterly-sessions/reset-agenda', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -4786,7 +4861,7 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
 //     ]);
 // });
 
-// ref:
+// ref: frontend\src\components\9.session-dates\sessionDates.jsx
 Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4806,6 +4881,122 @@ Route::get('/api/v1/session-dates/monthly-sessions', function (Request $request)
         $organization => $record->sessionDatesMonthlySessionsData ?? [],
     ]);
 });
+
+
+// ref: 
+Route::post('/api/v1/session-dates/monthly-sessions/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $sessions = $request->input('sessionDatesMonthlySessionsData');
+
+    if (!$organization || !is_array($sessions)) {
+        return response()->json(['message' => 'Invalid data'], 422);
+    }
+
+    // Reorder session IDs sequentially
+    foreach ($sessions as $index => &$session) {
+        $session['id'] = $index + 1;
+    }
+
+    $record = SessionDatesMonthlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $record->sessionDatesMonthlySessionsData = $sessions;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Session data updated successfully.',
+        'data' => $record
+    ]);
+});
+
+
+
+// ref: 
+Route::post('/api/v1/session-dates/monthly-sessions/reset-agenda', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $updatedRecord = $request->input('updatedRecord'); // must include 'id'
+
+    if (!$organization || !is_array($updatedRecord) || !isset($updatedRecord['id'])) {
+        return response()->json(['message' => 'Invalid data'], 422);
+    }
+
+    $record = SessionDatesMonthlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $sessions = $record->sessionDatesMonthlySessionsData;
+
+    // Replace session with updated agenda by matching ID
+    $sessions = array_map(function ($item) use ($updatedRecord) {
+        return $item['id'] === $updatedRecord['id'] ? $updatedRecord : $item;
+    }, $sessions);
+
+    $record->sessionDatesMonthlySessionsData = $sessions;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Agenda reset successfully.',
+        'data' => $updatedRecord
+    ]);
+});
+
+
+// ref: 
+Route::post('/api/v1/session-dates/monthly-sessions/reset-recap', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $updatedRecord = $request->input('updatedRecord'); // must include 'id'
+
+    if (!$organization || !is_array($updatedRecord) || !isset($updatedRecord['id'])) {
+        return response()->json(['message' => 'Invalid data'], 422);
+    }
+
+    $record = SessionDatesMonthlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $sessions = $record->sessionDatesMonthlySessionsData;
+
+    // Replace session with updated recap by matching ID
+    $sessions = array_map(function ($item) use ($updatedRecord) {
+        return $item['id'] === $updatedRecord['id'] ? $updatedRecord : $item;
+    }, $sessions);
+
+    $record->sessionDatesMonthlySessionsData = $sessions;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Recap reset successfully.',
+        'data' => $updatedRecord
+    ]);
+});
+
 
 // ref: frontend\src\components\11.coaching-checklist\coachingChecklist.jsx
 Route::get('/api/v1/coaching-checklist/project-progress', function (Request $request) use ($API_secure) {

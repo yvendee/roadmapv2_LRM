@@ -5,6 +5,7 @@ import useMonthlySessionsStore from '../../../store/left-lower-content/9.session
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTrashAlt, faCheck, faTimes, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import API_URL from '../../../configs/config';
 import './MonthlySessions.css';
 
@@ -15,6 +16,7 @@ const getQuarterOptions = () => {
 };
 
 const MonthlySessions = () => {
+  const organization = useLayoutSettingsStore((state) => state.organization);
   const loggedUser = useLoginStore((state) => state.user);
   const sessions = useMonthlySessionsStore((state) => state.sessions);
   const setMonthlySessions = useMonthlySessionsStore((state) => state.setMonthlySessions);
@@ -48,20 +50,70 @@ const MonthlySessions = () => {
     }, 1000);
   };
 
-  const handleSaveChanges = () => {
+  // const handleSaveChanges = () => {
 
+  //   setLoadingSave(true);
+  
+  //   setTimeout(async () => {
+  //     setLoadingSave(false);
+  //     // push localSessions to store
+  //     setMonthlySessions(localSessions);
+  //     setIsEditing(false);
+  //     ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
+
+  //   }, 1000);
+
+  // };
+
+  const handleSaveChanges = async () => {
     setLoadingSave(true);
   
-    setTimeout(async () => {
-      setLoadingSave(false);
-      // push localSessions to store
-      setMonthlySessions(localSessions);
-      setIsEditing(false);
-      ENABLE_CONSOLE_LOGS && console.log('Saved sessions to store:', localSessions);
-
-    }, 1000);
-
-
+    // Step 1: Reindex session IDs
+    const reordered = localSessions.map((session, index) => ({
+      ...session,
+      id: index + 1,
+    }));
+  
+    ENABLE_CONSOLE_LOGS && console.log('📤 Reindexed sessions for update:', reordered);
+  
+    try {
+      // Step 2: Fetch CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 3: Make POST request to Laravel API
+      const response = await fetch(`${API_URL}/v1/session-dates/monthly-sessions/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          sessionDatesMonthlySessionsData: reordered,
+        }),
+      });
+  
+      const result = await response.json();
+      ENABLE_CONSOLE_LOGS && console.log('✅ Server Response:', result);
+  
+      if (response.ok) {
+        setMonthlySessions(reordered); // Update Zustand store
+        setIsEditing(false);
+      } else if (response.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('❌ Failed to update sessions:', result.message);
+      }
+  
+    } catch (err) {
+      console.error('❌ Network/API error:', err);
+    }
+  
+    setLoadingSave(false);
   };
 
   const handleDiscardChanges = () => {
@@ -85,9 +137,82 @@ const MonthlySessions = () => {
     setIsEditing(true);
   };
 
-  const handleFileUpload = (idx, field, file) => {
-    const url = URL.createObjectURL(file);
-    handleFieldChange(idx, field, { name: file.name, link: url });
+  // const handleFileUpload = (idx, field, file) => {
+  //   const url = URL.createObjectURL(file);
+  //   handleFieldChange(idx, field, { name: file.name, link: url });
+  // };
+
+  const allowedExtensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
+
+  const handleFileUpload = async (idx, field, file) => {
+    if (!file) return;
+  
+    const fileExt = file.name.split('.').pop().toLowerCase();
+  
+    if (!allowedExtensions.includes(fileExt)) {
+      alert('Invalid file type. Allowed: PDF, DOCX, DOC, XLSX, XLS, TXT.');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    // Use localSessions (UI state) instead of sessions from store to get sessionId
+    const sessionId = localSessions?.[idx]?.id;
+  
+    try {
+      // Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // Build URL with parameters
+      const uploadUrl = `${API_URL}/v1/session-dates/monthly-sessions/upload-file/${encodeURIComponent(
+        organization
+      )}/${field}/${sessionId}`;
+  
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: formData,
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        console.error('Upload failed:', result);
+        alert(result.message || 'Upload failed.');
+        return;
+      }
+  
+      // Update local UI state first
+      setLocalSessions((prev) => {
+        const updated = [...prev];
+        updated[idx] = {
+          ...updated[idx],
+          [field]: {
+            name: result.filename,
+            url: result.path, // Use "url" to be consistent with your store
+          },
+        };
+        return updated;
+      });
+  
+      // Also update the Zustand store
+      useMonthlySessionsStore.getState().updateMonthlySessionField(idx, field, {
+        name: result.filename,
+        url: result.path,
+      });
+  
+      ENABLE_CONSOLE_LOGS && console.log('✅ File uploaded and state updated:', result);
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+      alert('Upload failed due to network or server error.');
+    }
   };
 
   const renderLink = (fileObj) => {
@@ -102,17 +227,135 @@ const MonthlySessions = () => {
   };
 
 
-  function confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
-    ENABLE_CONSOLE_LOGS && console.log(session);
-    updateMonthlySessionField(idx, 'agenda', { name: '-', url: '' });
-    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
+  // function confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
+  //   ENABLE_CONSOLE_LOGS && console.log(session);
+  //   updateMonthlySessionField(idx, 'agenda', { name: '-', url: '' });
+  //   setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
     
+  // }
+
+  async function confirmDeleteAgenda(
+    idx,
+    session,
+    updateMonthlySessionField,
+    setConfirmDelete,
+    setIsEditing,
+    localSessions,
+    setMonthlySessions
+  ) {
+    ENABLE_CONSOLE_LOGS && console.log('🧨 Deleting agenda for session:', session);
+
+    const updatedSession = {
+      ...session,
+      agenda: { name: '-', link: '' },
+    };
+
+    // Immediate UI + store update
+    updateMonthlySessionField(idx, 'agenda', { name: '-', link: '' });
+    setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
+
+    const organization = useLayoutSettingsStore.getState().organization;
+
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+
+      const { csrf_token } = await csrfRes.json();
+
+      const response = await fetch(`${API_URL}/v1/session-dates/monthly-sessions/reset-agenda`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          updatedRecord: updatedSession,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Agenda reset successfully:', result.data);
+
+        const updatedSessions = localSessions.map((item, i) =>
+          i === idx ? updatedSession : item
+        );
+        setSessions(updatedSessions);
+      } else {
+        console.error('❌ Failed to reset agenda:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ Error resetting agenda:', error);
+    }
   }
   
-  function confirmDeleteRecap(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
-    ENABLE_CONSOLE_LOGS && console.log(session);
-    updateMonthlySessionField(idx, 'recap', { name: '-', url: '' });
-    setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }));
+  // function confirmDeleteRecap(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
+  //   ENABLE_CONSOLE_LOGS && console.log(session);
+  //   updateMonthlySessionField(idx, 'recap', { name: '-', url: '' });
+  //   setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }));
+  // }
+
+  async function confirmDeleteRecap(
+    idx,
+    session,
+    updateMonthlySessionField,
+    setConfirmDelete,
+    setIsEditing,
+    localSessions,
+    setMonthlySessions
+  ) {
+    ENABLE_CONSOLE_LOGS && console.log('🧨 Deleting recap for session:', session);
+  
+    const updatedSession = {
+      ...session,
+      recap: { name: '-', link: '' },
+    };
+  
+    // Immediate UI + store update
+    updateMonthlySessionField(idx, 'recap', { name: '-', link: '' });
+    setConfirmDelete((prev) => ({ ...prev, [`recap-${idx}`]: false }));
+  
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/session-dates/monthly-sessions/reset-recap`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          updatedRecord: updatedSession,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok && result.status === 'success') {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Recap reset successfully:', result.data);
+  
+        const updatedSessions = localSessions.map((item, i) =>
+          i === idx ? updatedSession : item
+        );
+        setMonthlySessions(updatedSessions);
+      } else {
+        console.error('❌ Failed to reset recap:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ Error resetting recap:', error);
+    }
   }
   
 

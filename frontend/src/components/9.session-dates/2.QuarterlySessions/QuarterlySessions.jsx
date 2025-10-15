@@ -210,9 +210,6 @@ const QuarterlySessions = () => {
     }
   };
   
-  
-  
-
 
   const renderLink = (fileObj) => {
     if (!fileObj || !fileObj.url) {
