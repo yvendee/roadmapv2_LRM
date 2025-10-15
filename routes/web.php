@@ -4886,11 +4886,13 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-agenda', function (R
 
             // 🗑️ Delete agenda file & folder if exists
             if (!empty($session['agenda']['url'])) {
-                $url = $session['agenda']['url']; // e.g., /api/storage/session-dates/quarterly-sessions/uuid/agenda/ABCDEF/filename.pdf
-                $parts = explode('/', $url);
-                if (count($parts) >= 9) {
-                    $randomDir = $parts[8];
-                    $uid = $record->u_id;
+                $url = $session['agenda']['url'];
+
+                // Match: /api/storage/session-dates/quarterly-sessions/{uid}/agenda/{random6}/filename
+                $pattern = "/session-dates\/quarterly-sessions\/([^\/]+)\/agenda\/([^\/]+)/";
+                if (preg_match($pattern, $url, $matches)) {
+                    $uid = $matches[1];
+                    $randomDir = $matches[2];
                     $relativeDir = "session-dates/quarterly-sessions/{$uid}/agenda/{$randomDir}";
                     $fullPath = storage_path("app/public/{$relativeDir}");
 
