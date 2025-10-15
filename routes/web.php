@@ -868,87 +868,7 @@ Route::post('/api/file-upload/coaching-checklist/{uid}/{formattedText}', functio
 
 
 
-// ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
-// Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationName}/{field}/{sessionId}', function (
-//     Request $request,
-//     $organizationName,
-//     $field,
-//     $sessionId
-// ) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//     }
-
-//     if (!$request->hasFile('file')) {
-//         return response()->json(['message' => 'No file uploaded'], 400);
-//     }
-
-//     // 🔐 Sanitize inputs
-//     $safeOrgName = Str::slug($organizationName, '-');
-//     $field = preg_replace('/[^a-zA-Z0-9_-]/', '', $field);
-//     $sessionId = intval($sessionId);
-
-//     $file = $request->file('file');
-//     $allowed = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
-//     $ext = strtolower($file->getClientOriginalExtension());
-
-//     if (!in_array($ext, $allowed)) {
-//         return response()->json(['message' => 'Invalid file type'], 400);
-//     }
-
-//     // 🔍 Get record by organization name
-//     $record = SessionDatesQuarterlySessions::where('organizationName', 'like', "%{$organizationName}%")->first();
-
-//     if (!$record) {
-//         return response()->json(['message' => 'Organization not found'], 404);
-//     }
-
-//     $u_id = $record->u_id;
-//     $randomDir = Str::random(6);
-//     $relativePath = "session-dates/quarterly-sessions/{$u_id}/agenda/{$randomDir}";
-//     $storagePath = storage_path("app/public/{$relativePath}");
-
-//     if (!File::exists($storagePath)) {
-//         File::makeDirectory($storagePath, 0755, true);
-//     }
-
-//     $filename = $file->getClientOriginalName();
-//     Storage::disk('public')->putFileAs($relativePath, $file, $filename);
-//     $filePath = "/api/storage/{$relativePath}/{$filename}";
-
-//     // 🔄 Update session record's agenda or recap
-//     $data = $record->sessionDatesQuarterlySessionsData;
-//     $updated = false;
-
-//     foreach ($data as &$session) {
-//         if ((int) $session['id'] === $sessionId) {
-//             $session[$field] = [
-//                 'name' => $filename,
-//                 'url' => $filePath,
-//             ];
-//             $updated = true;
-//             break;
-//         }
-//     }
-
-//     if ($updated) {
-//         $record->sessionDatesQuarterlySessionsData = $data;
-//         $record->save();
-//     }
-
-//     return response()->json([
-//         'status' => 'success',
-//         'message' => 'File uploaded successfully',
-//         'filename' => $filename,
-//         'path' => $filePath,
-//     ]);
-// });
-
-
-
-// ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
+//  ref: frontend\src\components\9.session-dates\2.QuarterlySessions\QuarterlySessions.jsx
 Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationName}/{field}/{sessionId}', function (
     Request $request,
     $organizationName,
@@ -986,32 +906,6 @@ Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationN
     }
 
     $u_id = $record->u_id;
-    $data = $record->sessionDatesQuarterlySessionsData;
-
-    // 🔄 Find session and delete existing file + folder
-    $existingPath = null;
-    foreach ($data as &$session) {
-        if ((int) $session['id'] === $sessionId) {
-            if (isset($session[$field]['url']) && $session[$field]['url']) {
-                $url = $session[$field]['url']; // e.g., /api/storage/session-dates/quarterly-sessions/abc123/agenda/ABCDEF/filename.pdf
-                $parts = explode('/', $url);
-
-                // Expect folder structure: /api/storage/session-dates/quarterly-sessions/{u_id}/{field}/{random}/filename
-                if (count($parts) >= 9) {
-                    $randomDir = $parts[8]; // Extract 6-letter random folder
-                    $relativeOldDir = "session-dates/quarterly-sessions/{$u_id}/{$field}/{$randomDir}";
-                    $fullOldDir = storage_path("app/public/{$relativeOldDir}");
-
-                    if (File::exists($fullOldDir)) {
-                        File::deleteDirectory($fullOldDir);
-                    }
-                }
-            }
-            break;
-        }
-    }
-
-    // 📁 Save new file
     $randomDir = Str::random(6);
     $relativePath = "session-dates/quarterly-sessions/{$u_id}/{$field}/{$randomDir}";
     $storagePath = storage_path("app/public/{$relativePath}");
@@ -1024,8 +918,10 @@ Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationN
     Storage::disk('public')->putFileAs($relativePath, $file, $filename);
     $filePath = "/api/storage/{$relativePath}/{$filename}";
 
-    // 🔁 Update the data record
+    // 🔄 Update session record's agenda or recap
+    $data = $record->sessionDatesQuarterlySessionsData;
     $updated = false;
+
     foreach ($data as &$session) {
         if ((int) $session['id'] === $sessionId) {
             $session[$field] = [
@@ -1050,106 +946,6 @@ Route::post('/api/v1/session-dates/quarterly-sessions/upload-file/{organizationN
     ]);
 });
 
-
-// // ref: 
-// Route::post('/api/v1/session-dates/monthly-sessions/upload-file/{organizationName}/{field}/{sessionId}', function (
-//     Request $request,
-//     $organizationName,
-//     $field,
-//     $sessionId
-// ) use ($API_secure) {
-//     if ($API_secure) {
-//         if (!$request->session()->get('logged_in')) {
-//             return response()->json(['message' => 'Unauthorized'], 401);
-//         }
-//     }
-
-//     if (!$request->hasFile('file')) {
-//         return response()->json(['message' => 'No file uploaded'], 400);
-//     }
-
-//     // 🔐 Sanitize inputs
-//     $safeOrgName = Str::slug($organizationName, '-');
-//     $field = preg_replace('/[^a-zA-Z0-9_-]/', '', $field);
-//     $sessionId = intval($sessionId);
-
-//     $file = $request->file('file');
-//     $allowed = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'txt'];
-//     $ext = strtolower($file->getClientOriginalExtension());
-
-//     if (!in_array($ext, $allowed)) {
-//         return response()->json(['message' => 'Invalid file type'], 400);
-//     }
-
-//     // 🔍 Get record by organization name
-//     $record = SessionDatesMonthlySessions::where('organizationName', 'like', "%{$organizationName}%")->first();
-
-//     if (!$record) {
-//         return response()->json(['message' => 'Organization not found'], 404);
-//     }
-
-//     $u_id = $record->u_id;
-//     $data = $record->sessionDatesMonthlySessionsData;
-
-//     // 🔄 Find session and delete existing file + folder
-//     foreach ($data as &$session) {
-//         if ((int) $session['id'] === $sessionId) {
-//             if (isset($session[$field]['url']) && $session[$field]['url']) {
-//                 $url = $session[$field]['url']; // e.g., /api/storage/session-dates/monthly-sessions/u123/post-recap/ABCDEF/filename.pdf
-//                 $parts = explode('/', $url);
-
-//                 if (count($parts) >= 9) {
-//                     $randomDir = $parts[8]; // 6-letter random directory
-//                     $relativeOldDir = "session-dates/monthly-sessions/{$u_id}/recap/{$randomDir}";
-//                     $fullOldDir = storage_path("app/public/{$relativeOldDir}");
-
-//                     if (File::exists($fullOldDir)) {
-//                         File::deleteDirectory($fullOldDir);
-//                     }
-//                 }
-//             }
-//             break;
-//         }
-//     }
-
-//     // 📁 Save new file
-//     $randomDir = Str::random(6);
-//     $relativePath = "session-dates/monthly-sessions/{$u_id}/recap/{$randomDir}";
-//     $storagePath = storage_path("app/public/{$relativePath}");
-
-//     if (!File::exists($storagePath)) {
-//         File::makeDirectory($storagePath, 0755, true);
-//     }
-
-//     $filename = $file->getClientOriginalName();
-//     Storage::disk('public')->putFileAs($relativePath, $file, $filename);
-//     $filePath = "/api/storage/{$relativePath}/{$filename}";
-
-//     // 🔁 Update the session record with the new file info
-//     $updated = false;
-//     foreach ($data as &$session) {
-//         if ((int) $session['id'] === $sessionId) {
-//             $session[$field] = [
-//                 'name' => $filename,
-//                 'url' => $filePath,
-//             ];
-//             $updated = true;
-//             break;
-//         }
-//     }
-
-//     if ($updated) {
-//         $record->sessionDatesMonthlySessionsData = $data;
-//         $record->save();
-//     }
-
-//     return response()->json([
-//         'status' => 'success',
-//         'message' => 'File uploaded successfully',
-//         'filename' => $filename,
-//         'path' => $filePath,
-//     ]);
-// });
 
 
 // ref: frontend\src\components\9.session-dates\3.MonthlySessions\MonthlySessions.jsx
