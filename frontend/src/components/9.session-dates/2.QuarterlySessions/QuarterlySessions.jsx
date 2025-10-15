@@ -291,11 +291,71 @@ const QuarterlySessions = () => {
   }
 
   
-  function confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
-    ENABLE_CONSOLE_LOGS && console.log(session);
+  // function confirmDeleteRecap(idx, session, updateQuarterlySessionField, setConfirmDelete, setIsEditing) {
+  //   ENABLE_CONSOLE_LOGS && console.log(session);
+  //   updateQuarterlySessionField(idx, 'recap', { name: '-', link: '' });
+  //   setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }));
+  // }
+
+  async function confirmDeleteRecap(
+    idx,
+    session,
+    updateQuarterlySessionField,
+    setConfirmDelete,
+    setIsEditing,
+    localSessions,
+    setQuarterlySessions
+  ) {
+    ENABLE_CONSOLE_LOGS && console.log('🧨 Deleting recap for session:', session);
+  
+    const updatedSession = {
+      ...session,
+      recap: { name: '-', link: '' },
+    };
+  
+    // Immediate UI + store update
     updateQuarterlySessionField(idx, 'recap', { name: '-', link: '' });
-    setConfirmDelete(prev => ({ ...prev, [`recap-${idx}`]: false }));
+    setConfirmDelete((prev) => ({ ...prev, [`recap-${idx}`]: false }));
+  
+    const organization = useLayoutSettingsStore.getState().organization;
+  
+    try {
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+  
+      const { csrf_token } = await csrfRes.json();
+  
+      const response = await fetch(`${API_URL}/v1/session-dates/quarterly-sessions/reset-recap`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          updatedRecord: updatedSession,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok && result.status === 'success') {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Recap reset successfully:', result.data);
+  
+        const updatedSessions = localSessions.map((item, i) =>
+          i === idx ? updatedSession : item
+        );
+        setQuarterlySessions(updatedSessions);
+      } else {
+        console.error('❌ Failed to reset recap:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ Error resetting recap:', error);
+    }
   }
+  
 
   const isSuper = loggedUser?.role === 'superadmin';
 

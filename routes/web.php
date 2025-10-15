@@ -4580,6 +4580,45 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-agenda', function (R
 });
 
 
+// ref: 
+Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $updatedRecord = $request->input('updatedRecord'); // must include 'id'
+
+    if (!$organization || !is_array($updatedRecord) || !isset($updatedRecord['id'])) {
+        return response()->json(['message' => 'Invalid data'], 422);
+    }
+
+    $record = SessionDatesQuarterlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Organization not found'], 404);
+    }
+
+    $sessions = $record->sessionDatesQuarterlySessionsData;
+
+    // Replace session with updated recap by matching ID
+    $sessions = array_map(function ($item) use ($updatedRecord) {
+        return $item['id'] === $updatedRecord['id'] ? $updatedRecord : $item;
+    }, $sessions);
+
+    $record->sessionDatesQuarterlySessionsData = $sessions;
+    $record->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Recap reset successfully.',
+        'data' => $updatedRecord
+    ]);
+});
+
+
 // //ref: 
 // Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
