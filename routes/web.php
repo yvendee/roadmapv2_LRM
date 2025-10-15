@@ -4619,7 +4619,7 @@ Route::post('/api/v1/session-dates/quarterly-sessions/reset-recap', function (Re
 });
 
 
-// //ref: 
+// ref: 
 // Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
 //     if ($API_secure) {
 //         if (!$request->session()->get('logged_in')) {
