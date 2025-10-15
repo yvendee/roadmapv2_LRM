@@ -5396,7 +5396,7 @@ Route::post('/api/v1/session-dates/monthly-sessions/reset-recap', function (Requ
     }
 
     $organization = $request->input('organizationName');
-    $updatedRecord = $request->input('updatedRecord'); // must include 'id'
+    $updatedRecord = $request->input('updatedRecord'); // Must include 'id'
 
     if (!$organization || !is_array($updatedRecord) || !isset($updatedRecord['id'])) {
         return response()->json(['message' => 'Invalid data'], 422);
@@ -5404,7 +5404,6 @@ Route::post('/api/v1/session-dates/monthly-sessions/reset-recap', function (Requ
 
     // 🔍 Find record
     $record = SessionDatesMonthlySessions::where('organizationName', 'like', "%{$organization}%")->first();
-
     if (!$record) {
         return response()->json(['message' => 'Organization not found'], 404);
     }
@@ -5451,6 +5450,7 @@ Route::post('/api/v1/session-dates/monthly-sessions/reset-recap', function (Requ
         'data' => $updatedRecord,
     ]);
 });
+
 
 
 
