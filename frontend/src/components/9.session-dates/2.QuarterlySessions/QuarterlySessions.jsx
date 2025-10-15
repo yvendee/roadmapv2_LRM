@@ -549,7 +549,18 @@ const QuarterlySessions = () => {
                                   {/* Cancel (times) */}
                                   <button
                                     className="w-10 h-10 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded"
-                                    onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))}
+                                    // onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }))}
+                                    onClick={() =>
+                                      confirmDeleteRecap(
+                                        idx,
+                                        session,
+                                        updateQuarterlySessionField,
+                                        setConfirmDelete,
+                                        setIsEditing,
+                                        localSessions,           
+                                        setQuarterlySessions     
+                                      )
+                                    } 
                                     title="Cancel"
                                     disabled={disabled}
                                   >

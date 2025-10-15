@@ -533,7 +533,18 @@ const MonthlySessions = () => {
                                   {/* Confirm (check) */}
                                   <button
                                     className="w-10 h-10 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded"
-                                    onClick={() => confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
+                                    // onClick={() => confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing)}
+                                    onClick={() =>
+                                      confirmDeleteAgenda(
+                                        idx,
+                                        session,
+                                        updateMonthlySessionField,
+                                        setConfirmDelete,
+                                        setIsEditing,
+                                        localSessions,           
+                                        setMonthlySessions     
+                                      )
+                                    } 
                                     title="Confirm Remove"
                                     disabled={disabled}
                                   >
@@ -552,7 +563,18 @@ const MonthlySessions = () => {
                               ) : (
                                 <button
                                   className="w-10 h-10 flex items-center justify-center bg-red-200 hover:bg-red-300 rounded"
-                                  onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))}
+                                  // onClick={() => setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: true }))}
+                                  onClick={() =>
+                                    confirmDeleteRecap(
+                                      idx,
+                                      session,
+                                      updateMonthlySessionField,
+                                      setConfirmDelete,
+                                      setIsEditing,
+                                      localSessions,           
+                                      setMonthlySessions     
+                                    )
+                                  } 
                                   title="Remove Agenda"
                                   disabled={disabled}
                                 >
