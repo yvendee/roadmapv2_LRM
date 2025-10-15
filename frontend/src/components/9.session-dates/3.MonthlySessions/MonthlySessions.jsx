@@ -384,7 +384,7 @@ const MonthlySessions = () => {
   return (
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container flex justify-between items-center">
-        <h5 className="text-lg font-semibold always-black">Quarterly Sessions</h5>
+        <h5 className="text-lg font-semibold always-black">Monthly Sessions</h5>
         {isSuper && !localSessions.some(session => !session.status || session.status === "-") && (
           <div className="flex gap-2">
             {isEditing && (
