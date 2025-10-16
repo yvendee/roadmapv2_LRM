@@ -454,10 +454,11 @@ const MonthlySessions = () => {
           <thead>
             <tr className="bg-gray-100 text-gray-700 text-sm">
               <th className="border px-4 py-2">Status</th>
-              <th className="border px-4 py-2">Quarter</th>
+              <th className="border px-4 py-2">Month</th>
               <th className="border px-4 py-2">Meeting Date</th>
               <th className="border px-4 py-2">Agenda</th>
               <th className="border px-4 py-2">Post Session Recap</th>
+              <th className="border px-4 py-2 text-center">Delete</th> 
             </tr>
           </thead>
           <tbody>
@@ -677,6 +678,25 @@ const MonthlySessions = () => {
                       )}
                     </div>
                   </td>
+
+                  <td className="border px-4 py-3 text-center">
+                  {isSuper && (
+                    <button
+                      className="w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded"
+                      onClick={() => {
+                        const updatedSessions = [...localSessions];
+                        updatedSessions.splice(idx, 1); // remove session at idx
+                        setMonthlySessions(updatedSessions); // update global store
+                        setIsEditing(true); // show "Save Changes" buttons, etc.
+                      }}
+                      title="Delete this session"
+                      disabled={disabled}
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </button>
+                  )}
+                </td>
+
                 </tr>
               );
             })}
