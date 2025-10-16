@@ -17,16 +17,17 @@ export const initialMonthlySessionTrackerData = [
 ];
 
 
-const useMonthlySessionTrackerStore = create((set) => ({
+const useMonthlySessionTrackerStore = create((set, get) => ({
   allSessions: initialMonthlySessionTrackerData,
   currentMonth: new Date(),
   setCurrentMonth: (date) => set({ currentMonth: date }),
-  setAllSessions: (sessions) => set({ allSessions: sessions }), 
+  setAllSessions: (sessions) => set({ allSessions: sessions }),
   getSessionsForMonth: (date) =>
     get().allSessions.filter((item) =>
       item.date !== '-' && isSameMonth(new Date(item.date), date)
     ),
 }));
+
 
 
 
