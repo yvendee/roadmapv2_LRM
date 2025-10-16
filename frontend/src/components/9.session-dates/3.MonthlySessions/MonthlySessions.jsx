@@ -690,7 +690,7 @@ const MonthlySessions = () => {
                         title="Delete this session"
                         disabled={disabled}
                       >
-                        <FontAwesomeIcon icon={faTrashAlt} className="text-white" />
+                        <FontAwesomeIcon icon={faTrashAlt} className="text-red-700" />
                       </button>
 
                     )}
