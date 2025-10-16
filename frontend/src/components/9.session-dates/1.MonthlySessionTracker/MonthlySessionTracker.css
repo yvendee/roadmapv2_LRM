@@ -12,52 +12,52 @@
     padding: 20px;
     background-color: #f5f6fa;
     border-radius: 16px;
-  }
+}
   
 /* Left calendar container */
 .calendar-container {
-flex: 1;
-background-color: #ffffff;
-border-radius: 16px;
-padding: 16px;
-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* Right table container */
 .table-container {
-flex: 1;
-background-color: #ffffff;
-border-radius: 16px;
-padding: 16px;
-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-overflow-x: auto;
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
 }
 
 /* Section titles */
 .section-title {
-font-size: 16px;
-font-weight: 600;
-color: #333;
-margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
 }
 
 /* Table styles */
 .session-table {
-width: 100%;
-border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .session-table thead th {
-background-color: #f0f2f5;
-color: #333;
-text-align: left;
-padding: 10px;
-border-bottom: 1px solid #ccc;
+    background-color: #f0f2f5;
+    color: #333;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
 }
 
 .session-table tbody td {
-padding: 10px;
-border-bottom: 1px solid #eee;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
 }
 
 /* Calendar styles (override as needed for FullCalendar) */
@@ -117,7 +117,7 @@ border-bottom: 1px solid #eee;
 }
   
 .status-pending {
-    background-color: #ffeb3b;
+    background-color: #f5280d;
     color: white;
 }
   
