@@ -10,10 +10,22 @@ import API_URL from '../../../configs/config';
 import './MonthlySessions.css';
 
 const STATUS_OPTIONS = ['Pending', 'Done'];
-const getQuarterOptions = () => {
+// const getQuarterOptions = () => {
+//   const year = new Date().getFullYear();
+//   return [`Q1 ${year}`, `Q2 ${year}`, `Q3 ${year}`, `Q4 ${year}`];
+// };
+
+const getMonthOptions = () => {
   const year = new Date().getFullYear();
-  return [`Q1 ${year}`, `Q2 ${year}`, `Q3 ${year}`, `Q4 ${year}`];
+  const months = [
+    'January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December'
+  ];
+  
+  return months.map(month => `${month} ${year}`);
 };
+
 
 const MonthlySessions = () => {
   const organization = useLayoutSettingsStore((state) => state.organization);
@@ -493,7 +505,7 @@ const MonthlySessions = () => {
                         className="w-full px-2 py-1 border rounded"
                         disabled={disabled}
                       >
-                        {getQuarterOptions().map((opt) => (
+                        {getMonthOptions().map((opt) => (
                           <option key={opt} value={opt}>
                             {opt}
                           </option>
