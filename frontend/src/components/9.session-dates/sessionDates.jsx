@@ -28,40 +28,40 @@ const SessionDates = () => {
   const navigate = useNavigate();
 
   
-  // // Fetch QuarterlySessions Data
-  // useEffect(() => {
-  //   const encodedOrg = encodeURIComponent(organization);
+  // Fetch QuarterlySessions Data
+  useEffect(() => {
+    const encodedOrg = encodeURIComponent(organization);
 
-  //   fetch(`${API_URL}/v1/session-dates/monthly-sessions-tracker?organization=${encodedOrg}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials: 'include',
-  //   })
-  //     .then(async (res) => {
-  //       const json = await res.json();
-  //       if (res.ok) {
-  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Monthly Session Tracker data:', json);
+    fetch(`${API_URL}/v1/session-dates/monthly-sessions-tracker?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Monthly Session Tracker data:', json);
 
-  //         const sessions = json[organization];
+          const sessions = json[organization];
 
-  //         if (Array.isArray(sessions)) {
-  //           setAllSessions(sessions);
-  //         } else {
-  //           console.error(`⚠️ No sessions found for organization: ${organization}`);
-  //         }
-  //       } else if (res.status === 401) {
-  //         navigate('/', { state: { loginError: 'Session Expired' } });
-  //       } else {
-  //         console.error('Error:', json.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('API error:', err);
-  //     });
-  // }, [organization, setAllSessions, navigate]);
+          if (Array.isArray(sessions)) {
+            setAllSessions(sessions);
+          } else {
+            console.error(`⚠️ No sessions found for organization: ${organization}`);
+          }
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  }, [organization, setAllSessions, navigate]);
 
   // Fetch QuarterlySessions Data
   useEffect(() => {
@@ -134,46 +134,7 @@ const SessionDates = () => {
   }, [organization, setMonthlySessions, navigate]);
 
 
-  // useEffect(() => {
-  //   fetch(`${API_URL}/mock-response4`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     }
-  //   })
-  //   .then(async (res) => {
-  //     const json = await res.json();
-  //     if (res.ok) {
-  //       setUser(json.data);
-  //     } else if (res.status === 401) {
-  //       navigate('/', { state: {loginError: 'Session Expired'} });
-  //     } else {
-  //       setError(json.message || 'Failed to fetch user data');
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error('API error:', err);
-  //     setError('Something went wrong.');
-  //   });
-  // }, [setUser, navigate]);
-
   return (
-    // <div>
-    //   <h2 className="text-xl font-bold mb-4">Session Dates</h2>
-    //   {error ? (
-    //     <p className="text-red-500">{error}</p>
-    //   ) : user ? (
-    //     <table className="table-auto border-collapse border border-gray-400">
-    //       <tbody>
-    //         <tr><td className="border p-2">Name</td><td className="border p-2">{user.name}</td></tr>
-    //         <tr><td className="border p-2">Email</td><td className="border p-2">{user.email}</td></tr>
-    //       </tbody>
-    //     </table>
-    //   ) : (
-    //     <p>Loading...</p>
-    //   )}
-    // </div>
 
     
     <div className="main-content-view">

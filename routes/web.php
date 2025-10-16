@@ -4427,7 +4427,28 @@ Route::post('/api/v1/who-what-when/add', function (Request $request) use ($API_s
 //     ]);
 // });
 
-// ref: 
+// // ref: 
+// Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->query('organization');
+
+//     if (!$organization) {
+//         return response()->json(['message' => 'Organization is required'], 400);
+//     }
+
+//     $record = SessionDatesMonthlySessionsTracker::where('organizationName', $organization)->first();
+
+//     return response()->json([
+//         $organization => $record->sessionDatesMonthlySessionsTrackerData ?? [],
+//     ]);
+// });
+
+
 Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
@@ -4441,13 +4462,27 @@ Route::get('/api/v1/session-dates/monthly-sessions-tracker', function (Request $
         return response()->json(['message' => 'Organization is required'], 400);
     }
 
-    $record = SessionDatesMonthlySessionsTracker::where('organizationName', $organization)->first();
+    $record = SessionDatesMonthlySessions::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([$organization => []]);
+    }
+
+    $rawData = $record->sessionDatesMonthlySessionsData ?? [];
+
+    // Transform the data to match tracker format
+    $trackerData = collect($rawData)->map(function ($item) {
+        return [
+            'date' => $item['meetingDate'] ?? '-',
+            'status' => $item['status'] ?? '-',
+            'details' => $item['agenda']['name'] ?? '-',
+        ];
+    });
 
     return response()->json([
-        $organization => $record->sessionDatesMonthlySessionsTrackerData ?? [],
+        $organization => $trackerData,
     ]);
 });
-
 
 // // ref: frontend\src\components\9.session-dates\sessionDates.jsx
 // Route::get('/api/v1/session-dates/quarterly-sessions', function (Request $request) use ($API_secure) {
