@@ -239,12 +239,6 @@ const MonthlySessions = () => {
   };
 
 
-  // function confirmDeleteAgenda(idx, session, updateMonthlySessionField, setConfirmDelete, setIsEditing) {
-  //   ENABLE_CONSOLE_LOGS && console.log(session);
-  //   updateMonthlySessionField(idx, 'agenda', { name: '-', url: '' });
-  //   setConfirmDelete(prev => ({ ...prev, [`agenda-${idx}`]: false }));
-    
-  // }
 
   async function confirmDeleteAgenda(
     idx,
@@ -681,19 +675,26 @@ const MonthlySessions = () => {
 
                   <td className="border px-4 py-3 text-center">
                   {isSuper && (
-                    <button
-                      className="w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded"
-                      onClick={() => {
-                        const updatedSessions = [...localSessions];
-                        updatedSessions.splice(idx, 1); // remove session at idx
-                        setMonthlySessions(updatedSessions); // update global store
-                        setIsEditing(true); // show "Save Changes" buttons, etc.
-                      }}
-                      title="Delete this session"
-                      disabled={disabled}
-                    >
-                      <FontAwesomeIcon icon={faTrashAlt} />
-                    </button>
+                    <td className="border px-4 py-3 text-center">
+                    {isSuper && (
+                      <button
+                        className="w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded"
+                        onClick={() => {
+                          setLocalSessions((prev) => {
+                            const arr = [...prev];
+                            arr.splice(idx, 1); // Remove session at index
+                            return arr;
+                          });
+                          setIsEditing(true); // Trigger Save/Discard UI
+                        }}
+                        title="Delete this session"
+                        disabled={disabled}
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} className="text-white" />
+                      </button>
+                    )}
+                  </td>
+
                   )}
                 </td>
 
