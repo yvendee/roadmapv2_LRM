@@ -78,7 +78,9 @@ const MonthlySessionTracker = () => {
                 {session.status}
                 </span>
             </td>
-            <td>{format(parseISO(session.date), 'MMMM dd, yyyy')}</td>
+            {/* <td>{format(parseISO(session.date), 'MMMM dd, yyyy')}</td> */}
+            <td> {session.date && session.date !== '-' ? format(parseISO(session.date), 'MMMM dd, yyyy') : '-'} </td>
+
             </tr>
         ))}
         </tbody>

@@ -21,10 +21,10 @@ const useMonthlySessionTrackerStore = create((set) => ({
   allSessions: initialMonthlySessionTrackerData,
   currentMonth: new Date(),
   setCurrentMonth: (date) => set({ currentMonth: date }),
-  setAllSessions: (sessions) => set({ allSessions: sessions }),  // ADD THIS
+  setAllSessions: (sessions) => set({ allSessions: sessions }), 
   getSessionsForMonth: (date) =>
-    initialMonthlySessionTrackerData.filter((item) =>
-      isSameMonth(new Date(item.date), date)
+    get().allSessions.filter((item) =>
+      item.date !== '-' && isSameMonth(new Date(item.date), date)
     ),
 }));
 
