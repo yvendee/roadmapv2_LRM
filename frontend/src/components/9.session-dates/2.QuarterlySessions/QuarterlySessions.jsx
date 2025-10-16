@@ -442,6 +442,7 @@ const QuarterlySessions = () => {
               <th className="border px-4 py-2">Meeting Date</th>
               <th className="border px-4 py-2">Agenda</th>
               <th className="border px-4 py-2">Post Session Recap</th>
+              <th className="border px-4 py-2"></th>
             </tr>
           </thead>
           <tbody>
@@ -661,6 +662,33 @@ const QuarterlySessions = () => {
                       )}
                     </div>
                   </td>
+
+                  <td className="border px-4 py-3 text-center">
+                    {isSuper && (
+                      <td className="border px-4 py-3 text-center">
+                      {isSuper && (
+                        <button
+                          className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded"
+                          onClick={() => {
+                            setLocalSessions((prev) => {
+                              const arr = [...prev];
+                              arr.splice(idx, 1);
+                              return arr;
+                            });
+                            setIsEditing(true);
+                          }}
+                          title="Delete this session"
+                          disabled={disabled}
+                        >
+                          <FontAwesomeIcon icon={faTrashAlt} className="text-red-700" />
+                        </button>
+
+                    )}
+                    </td>
+                    )}
+                  </td>
+
+                  
                 </tr>
               );
             })}
