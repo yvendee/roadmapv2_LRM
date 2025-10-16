@@ -678,20 +678,21 @@ const MonthlySessions = () => {
                     <td className="border px-4 py-3 text-center">
                     {isSuper && (
                       <button
-                        className="w-10 h-10 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded"
+                        className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded"
                         onClick={() => {
                           setLocalSessions((prev) => {
                             const arr = [...prev];
-                            arr.splice(idx, 1); // Remove session at index
+                            arr.splice(idx, 1);
                             return arr;
                           });
-                          setIsEditing(true); // Trigger Save/Discard UI
+                          setIsEditing(true);
                         }}
                         title="Delete this session"
                         disabled={disabled}
                       >
                         <FontAwesomeIcon icon={faTrashAlt} className="text-white" />
                       </button>
+
                     )}
                   </td>
 
