@@ -2837,7 +2837,6 @@ Route::get('/api/v1/growth-command-center/metrics', function (Request $request) 
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $user = $request->session()->get('user');
     }
 
     $validator = Validator::make($request->all(), [
@@ -2857,7 +2856,7 @@ Route::get('/api/v1/growth-command-center/metrics', function (Request $request) 
     }
 
     return response()->json([
-        $organization => json_decode($record->metricsData, true),
+        $organization => $record->metricsData,
     ]);
 });
 
@@ -2964,7 +2963,7 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
 
 
 // ref: frontend\src\components\5.growth-command-center\1.Metrics\ThreeMetricCards.jsx
-Route::post('/api/v1/gcc-metrics/update', function (Request $request) use ($API_secure) {
+Route::post('/api/v1/growth-command-center/gcc-metrics/update', function (Request $request) use ($API_secure) {
 
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
