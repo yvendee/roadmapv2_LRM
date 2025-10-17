@@ -1,9 +1,14 @@
+// frontend\src\components\5.growth-command-center\1.Metrics\ThreeMetricCards.jsx
+
 import React, { useEffect, useState } from 'react';
-import useMetricStore, { initialMetrics } from '../../../store/left-lower-content/5.growth-command-center/1.metricsStore';
+import useMetricStore from '../../../store/left-lower-content/5.growth-command-center/1.metricsStore';
 import useLoginStore from '../../../store/loginStore';
+
 import './ThreeMetricCards.css';
 
 const SEMI_CIRCLE_LENGTH = 50.24;
+
+const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const ThreeMetricCards = () => {
   const loggedUser = useLoginStore((state) => state.user);
@@ -15,9 +20,11 @@ const ThreeMetricCards = () => {
 
   const [viewMode, setViewMode] = useState('Monthly');
   const [editedMetrics, setEditedMetrics] = useState(metrics);
+  const [hasEdits, setHasEdits] = useState(false);
 
   useEffect(() => {
     setEditedMetrics(metrics);
+    setHasEdits(false);
   }, [metrics]);
 
   const handleFieldChange = (metricIndex, fieldPath, newValue) => {
@@ -38,25 +45,28 @@ const ThreeMetricCards = () => {
         cursor[lastPart] = newValue;
         return clone;
       });
+      setHasEdits(!deepEqual(newMetrics, metrics));
       console.log('📝 On edit, local editedMetrics:', newMetrics);
       return newMetrics;
     });
   };
 
   const handleSave = () => {
-    console.log('✅ Save clicked, local edited:', editedMetrics);
+    console.log('✅ Save clicked, local editedMetrics:', editedMetrics);
     setMetrics(editedMetrics);
+    setHasEdits(false);
   };
 
   const handleDiscard = () => {
-    console.log('❌ Discard clicked, store value (truth):', metrics);
+    console.log('❌ Discard clicked, truth from store:', metrics);
     setEditedMetrics(metrics);
+    setHasEdits(false);
   };
 
   return (
     <div className="metrics-container always-black">
-      {isSuperAdmin && (
-        <div className="metrics-actions" style={{ textAlign: 'right', marginBottom: '8px' }}>
+      {isSuperAdmin && hasEdits && (
+        <div className="metrics-actions" style={{ textAlign: 'right', marginBottom: '8px', width: '100%' }}>
           <button className="pure-green-btn" onClick={handleSave}>
             Save Changes
           </button>
@@ -88,36 +98,36 @@ const ThreeMetricCards = () => {
 
           <div className="metric-inputs">
             <label>Annual Goal</label>
-            {isSuperAdmin ? (
-              <input
-                type="number"
-                value={metric.annualGoal}
-                onChange={(e) => {
-                  const v = Number(e.target.value) || 0;
-                  const newPercent = v > 0 ? Math.round((metric.current / v) * 100) : 0;
-                  handleFieldChange(idx, 'annualGoal', v);
-                  handleFieldChange(idx, 'percent', newPercent);
-                }}
-              />
-            ) : (
-              <span>{metric.annualGoal}</span>
-            )}
+            <input
+              type="number"
+              disabled={!isSuperAdmin}
+              value={metric.annualGoal}
+              onChange={(e) => {
+                const newAnnualGoal = Number(e.target.value) || 0;
+                const percent =
+                  newAnnualGoal > 0
+                    ? Math.round((metric.current / newAnnualGoal) * 100)
+                    : 0;
+                handleFieldChange(idx, 'annualGoal', newAnnualGoal);
+                handleFieldChange(idx, 'percent', percent);
+              }}
+            />
 
             <label>Current</label>
-            {isSuperAdmin ? (
-              <input
-                type="number"
-                value={metric.current}
-                onChange={(e) => {
-                  const v = Number(e.target.value) || 0;
-                  const newPercent = metric.annualGoal > 0 ? Math.round((v / metric.annualGoal) * 100) : 0;
-                  handleFieldChange(idx, 'current', v);
-                  handleFieldChange(idx, 'percent', newPercent);
-                }}
-              />
-            ) : (
-              <span>{metric.current}</span>
-            )}
+            <input
+              type="number"
+              disabled={!isSuperAdmin}
+              value={metric.current}
+              onChange={(e) => {
+                const newCurrent = Number(e.target.value) || 0;
+                const percent =
+                  metric.annualGoal > 0
+                    ? Math.round((newCurrent / metric.annualGoal) * 100)
+                    : 0;
+                handleFieldChange(idx, 'current', newCurrent);
+                handleFieldChange(idx, 'percent', percent);
+              }}
+            />
           </div>
 
           <div className="metric-table-container">
@@ -142,47 +152,42 @@ const ThreeMetricCards = () => {
                 {(viewMode === 'Monthly' ? metric.monthlyData : metric.quarterlyData).map((data, i) => (
                   <tr key={i}>
                     <td>{viewMode === 'Monthly' ? data.month : data.quarter}</td>
-
                     <td>
                       {isSuperAdmin ? (
                         <input
                           type="number"
                           value={data.current}
                           onChange={(e) => {
-                            const v = Number(e.target.value) || 0;
-                            const path = viewMode === 'Monthly' ? `monthlyData.${i}.current` : `quarterlyData.${i}.current`;
-                            handleFieldChange(idx, path, v);
-                            const goalVal = data.goal;
-                            const newProg = goalVal > 0 ? Math.round((v / goalVal) * 100) : 0;
-                            const progressPath = viewMode === 'Monthly' ? `monthlyData.${i}.progress` : `quarterlyData.${i}.progress`;
-                            handleFieldChange(idx, progressPath, newProg);
+                            const updated = Number(e.target.value) || 0;
+                            const newProgress =
+                              data.goal > 0 ? Math.round((updated / data.goal) * 100) : 0;
+                            const fieldPath = `${viewMode === 'Monthly' ? 'monthlyData' : 'quarterlyData'}.${i}.current`;
+                            handleFieldChange(idx, fieldPath, updated);
+                            handleFieldChange(idx, `${viewMode === 'Monthly' ? 'monthlyData' : 'quarterlyData'}.${i}.progress`, newProgress);
                           }}
                         />
                       ) : (
                         data.current
                       )}
                     </td>
-
                     <td>
                       {isSuperAdmin ? (
                         <input
                           type="number"
                           value={data.goal}
                           onChange={(e) => {
-                            const v = Number(e.target.value) || 0;
-                            const path = viewMode === 'Monthly' ? `monthlyData.${i}.goal` : `quarterlyData.${i}.goal`;
-                            handleFieldChange(idx, path, v);
-                            const currVal = data.current;
-                            const newProg = v > 0 ? Math.round((currVal / v) * 100) : 0;
-                            const progressPath = viewMode === 'Monthly' ? `monthlyData.${i}.progress` : `quarterlyData.${i}.progress`;
-                            handleFieldChange(idx, progressPath, newProg);
+                            const updated = Number(e.target.value) || 0;
+                            const newProgress =
+                              updated > 0 ? Math.round((data.current / updated) * 100) : 0;
+                            const fieldPath = `${viewMode === 'Monthly' ? 'monthlyData' : 'quarterlyData'}.${i}.goal`;
+                            handleFieldChange(idx, fieldPath, updated);
+                            handleFieldChange(idx, `${viewMode === 'Monthly' ? 'monthlyData' : 'quarterlyData'}.${i}.progress`, newProgress);
                           }}
                         />
                       ) : (
                         data.goal
                       )}
                     </td>
-
                     <td>
                       <div className="progress-bar">
                         <div
