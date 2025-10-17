@@ -1,6 +1,8 @@
 // frontend\src\components\5.growth-command-center\1.Metrics\ThreeMetricCards.jsx
 
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useMetricStore from '../../../store/left-lower-content/5.growth-command-center/1.metricsStore';
 import useLoginStore from '../../../store/loginStore';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -24,6 +26,9 @@ const ThreeMetricCards = () => {
   const [viewMode, setViewMode] = useState('Monthly');
   const [editedMetrics, setEditedMetrics] = useState(metrics);
   const [hasEdits, setHasEdits] = useState(false);
+
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDischarge, setLoadingDischarge] = useState(false);
 
   useEffect(() => {
     setEditedMetrics(metrics);
@@ -64,6 +69,7 @@ const ThreeMetricCards = () => {
     ENABLE_CONSOLE_LOGS && console.log('✅ Save clicked, local editedMetrics:', editedMetrics);
     setMetrics(editedMetrics);
     setHasEdits(false);
+    setLoadingSave(true);
   
     try {
       // Step 1: Get CSRF token
@@ -88,6 +94,7 @@ const ThreeMetricCards = () => {
   
       const data = await response.json();
       ENABLE_CONSOLE_LOGS && console.log('✅ Metrics update response:', data);
+      setLoadingSave(false);
   
       if (!response.ok) {
         console.error('❌ Update failed:', data.message || 'Unknown error');
@@ -99,9 +106,13 @@ const ThreeMetricCards = () => {
   
 
   const handleDiscard = () => {
-    ENABLE_CONSOLE_LOGS && console.log('❌ Discard clicked, truth from store:', metrics);
-    setEditedMetrics(metrics);
-    setHasEdits(false);
+    setLoadingDischarge(true);
+    setTimeout(() => {
+      ENABLE_CONSOLE_LOGS && console.log('❌ Discard clicked, truth from store:', metrics);
+      setEditedMetrics(metrics);
+      setHasEdits(false);
+      setLoadingDischarge(false);
+    }, 1000);
   };
 
   return (
@@ -109,10 +120,32 @@ const ThreeMetricCards = () => {
       {isSuperAdmin && hasEdits && (
         <div className="metrics-actions" style={{ textAlign: 'right', marginBottom: '8px', width: '100%' }}>
           <button className="pure-green-btn" onClick={handleSave}>
-            Save Changes
+            {loadingSave ? (
+              <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faSave} className="mr-1" />
+                  Save Changes
+                </>
+            )}
           </button>
           <button className="pure-red-btn ml-2" onClick={handleDiscard}>
-            Discard
+            {loadingDischarge ? (
+              <div className="loader-bars">
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                Discard
+              </>
+            )}
           </button>
         </div>
       )}
