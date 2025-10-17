@@ -139,11 +139,70 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
+
+            $zeroedMetrics = [
+                [
+                    'title' => 'Checks Processed',
+                    'percent' => 0,
+                    'annualGoal' => 0,
+                    'current' => 0,
+                    'monthlyData' => array_map(fn($month) => [
+                        'month' => $month,
+                        'goal' => 0,
+                        'current' => 0,
+                        'progress' => 0
+                    ], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']),
+                    'quarterlyData' => array_map(fn($q) => [
+                        'quarter' => $q,
+                        'goal' => 0,
+                        'current' => 0,
+                        'progress' => 0
+                    ], ['Q1', 'Q2', 'Q3', 'Q4']),
+                ],
+                [
+                    'title' => 'Number of Customers',
+                    'percent' => 0,
+                    'annualGoal' => 0,
+                    'current' => 0,
+                    'monthlyData' => array_map(fn($month) => [
+                        'month' => $month,
+                        'goal' => 0,
+                        'current' => 0,
+                        'progress' => 0
+                    ], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']),
+                    'quarterlyData' => array_map(fn($q) => [
+                        'quarter' => $q,
+                        'goal' => 0,
+                        'current' => 0,
+                        'progress' => 0
+                    ], ['Q1', 'Q2', 'Q3', 'Q4']),
+                ],
+                [
+                    'title' => 'Profit per X',
+                    'percent' => 0,
+                    'annualGoal' => 0,
+                    'current' => 0,
+                    'monthlyData' => array_map(fn($month) => [
+                        'month' => $month,
+                        'goal' => 0,
+                        'current' => 0,
+                        'progress' => 0
+                    ], ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']),
+                    'quarterlyData' => array_map(fn($q) => [
+                        'quarter' => $q,
+                        'goal' => 0,
+                        'current' => 0,
+                        'progress' => 0
+                    ], ['Q1', 'Q2', 'Q3', 'Q4']),
+                ],
+            ];
+
             // 🆕 GCC: Metrics
             \App\Models\GccMetric::create([
                 'u_id' => $organization->u_id,
                 'organizationName' => $organization->organizationName,
-                'metricsData' => [],
+                // 'metricsData' => [],
+                'metricsData' => $zeroedMetrics,
                 'statusFlag' => null,
             ]);
 
