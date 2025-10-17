@@ -1,129 +1,77 @@
-// frontend\src\components\5.growth-command-center\1.Metrics\ThreeMetricCards.jsx
-
 import React, { useEffect, useState } from 'react';
-import useMetricStore from '../../../store/left-lower-content/5.growth-command-center/1.metricsStore';
-
+import useMetricStore, { initialMetrics } from '../../../store/left-lower-content/5.growth-command-center/1.metricsStore';
+import useLoginStore from '../../../store/loginStore';
 import './ThreeMetricCards.css';
 
-
-const SEMI_CIRCLE_LENGTH = 50.24; // actual half-circle arc length
-
-
-// const metrics = [
-//   {
-//     title: 'Checks Processed',
-//     percent: 30,
-//     annualGoal: 20000,
-//     current: 18888,
-//     monthlyData: [
-//       { month: 'Jan', goal: 1500, current: 1300, progress: 87 },
-//       { month: 'Feb', goal: 1500, current: 1700, progress: 113 },
-//       { month: 'Mar', goal: 1800, current: 2000, progress: 111 },
-//       { month: 'Apr', goal: 1700, current: 1600, progress: 94 },
-//       { month: 'May', goal: 1600, current: 1650, progress: 103 },
-//       { month: 'Jun', goal: 1700, current: 1850, progress: 109 },
-//       { month: 'Jul', goal: 1700, current: 1700, progress: 100 },
-//       { month: 'Aug', goal: 1600, current: 1600, progress: 100 },
-//       { month: 'Sep', goal: 1800, current: 1700, progress: 94 },
-//       { month: 'Oct', goal: 1600, current: 1700, progress: 106 },
-//       { month: 'Nov', goal: 1400, current: 1388, progress: 99 },
-//       { month: 'Dec', goal: 1500, current: 1800, progress: 120 },
-//     ],
-//     quarterlyData: [
-//       { quarter: 'Q1', goal: 4800, current: 5000, progress: 104 },
-//       { quarter: 'Q2', goal: 5000, current: 5100, progress: 102 },
-//       { quarter: 'Q3', goal: 5100, current: 5000, progress: 98 },
-//       { quarter: 'Q4', goal: 4500, current: 4788, progress: 106 },
-//     ]
-//   },
-//   {
-//     title: 'Number of Customers',
-//     percent: 50,
-//     annualGoal: 1000,
-//     current: 500,
-//     monthlyData: [
-//       { month: 'Jan', goal: 80, current: 40, progress: 50 },
-//       { month: 'Feb', goal: 90, current: 50, progress: 56 },
-//       { month: 'Mar', goal: 100, current: 60, progress: 60 },
-//       { month: 'Apr', goal: 90, current: 70, progress: 78 },
-//       { month: 'May', goal: 90, current: 80, progress: 89 },
-//       { month: 'Jun', goal: 80, current: 60, progress: 75 },
-//       { month: 'Jul', goal: 90, current: 70, progress: 78 },
-//       { month: 'Aug', goal: 90, current: 70, progress: 78 },
-//       { month: 'Sep', goal: 100, current: 0, progress: 0 },
-//       { month: 'Oct', goal: 90, current: 0, progress: 0 },
-//       { month: 'Nov', goal: 60, current: 0, progress: 0 },
-//       { month: 'Dec', goal: 60, current: 0, progress: 0 },
-//     ],
-//     quarterlyData: [
-//       { quarter: 'Q1', goal: 270, current: 150, progress: 56 },
-//       { quarter: 'Q2', goal: 260, current: 210, progress: 81 },
-//       { quarter: 'Q3', goal: 280, current: 140, progress: 50 },
-//       { quarter: 'Q4', goal: 210, current: 0, progress: 0 },
-//     ]
-//   },
-//   {
-//     title: 'Profit per X',
-//     percent: 89,
-//     annualGoal: 120000,
-//     current: 106800,
-//     monthlyData: [
-//       { month: 'Jan', goal: 10000, current: 9000, progress: 90 },
-//       { month: 'Feb', goal: 10000, current: 9600, progress: 96 },
-//       { month: 'Mar', goal: 10000, current: 9700, progress: 97 },
-//       { month: 'Apr', goal: 10000, current: 8800, progress: 88 },
-//       { month: 'May', goal: 10000, current: 9200, progress: 92 },
-//       { month: 'Jun', goal: 10000, current: 9100, progress: 91 },
-//       { month: 'Jul', goal: 10000, current: 10000, progress: 100 },
-//       { month: 'Aug', goal: 10000, current: 9500, progress: 95 },
-//       { month: 'Sep', goal: 10000, current: 9500, progress: 95 },
-//       { month: 'Oct', goal: 10000, current: 10000, progress: 100 },
-//       { month: 'Nov', goal: 10000, current: 10000, progress: 100 },
-//       { month: 'Dec', goal: 10000, current: 10000, progress: 100 },
-//     ],
-//     quarterlyData: [
-//       { quarter: 'Q1', goal: 30000, current: 28300, progress: 94 },
-//       { quarter: 'Q2', goal: 30000, current: 27100, progress: 90 },
-//       { quarter: 'Q3', goal: 30000, current: 29000, progress: 97 },
-//       { quarter: 'Q4', goal: 30000, current: 22400, progress: 75 },
-//     ]
-//   }
-// ];
-
-
-// const months = [
-//   'January', 'February', 'March', 'April', 'May', 'June',
-//   'July', 'August', 'September', 'October', 'November', 'December'
-// ];
+const SEMI_CIRCLE_LENGTH = 50.24;
 
 const ThreeMetricCards = () => {
+  const loggedUser = useLoginStore((state) => state.user);
+  const isSuperAdmin = loggedUser?.role === 'superadmin';
 
-  const [viewMode, setViewMode] = useState('Monthly');
   const metrics = useMetricStore((state) => state.metrics);
   const updateMetric = useMetricStore((state) => state.updateMetric);
+  const setMetrics = useMetricStore((state) => state.setMetrics);
 
-  // const { metrics, updateMetric } = useMetricStore((state) => ({
-  //   metrics: state.metrics,
-  //   updateMetric: state.updateMetric
-  // }));
+  const [viewMode, setViewMode] = useState('Monthly');
+  const [editedMetrics, setEditedMetrics] = useState(metrics);
+
+  useEffect(() => {
+    setEditedMetrics(metrics);
+  }, [metrics]);
+
+  const handleFieldChange = (metricIndex, fieldPath, newValue) => {
+    setEditedMetrics((prev) => {
+      const newMetrics = prev.map((m, idx) => {
+        if (idx !== metricIndex) return m;
+        const clone = { ...m };
+        const pathParts = fieldPath.split('.');
+        let cursor = clone;
+        for (let i = 0; i < pathParts.length - 1; i++) {
+          const part = pathParts[i];
+          cursor[part] = Array.isArray(cursor[part])
+            ? [...cursor[part]]
+            : { ...(cursor[part] || {}) };
+          cursor = cursor[part];
+        }
+        const lastPart = pathParts[pathParts.length - 1];
+        cursor[lastPart] = newValue;
+        return clone;
+      });
+      console.log('📝 On edit, local editedMetrics:', newMetrics);
+      return newMetrics;
+    });
+  };
+
+  const handleSave = () => {
+    console.log('✅ Save clicked, local edited:', editedMetrics);
+    setMetrics(editedMetrics);
+  };
+
+  const handleDiscard = () => {
+    console.log('❌ Discard clicked, store value (truth):', metrics);
+    setEditedMetrics(metrics);
+  };
 
   return (
     <div className="metrics-container always-black">
-      {metrics.map((metric, idx) => (
+      {isSuperAdmin && (
+        <div className="metrics-actions" style={{ textAlign: 'right', marginBottom: '8px' }}>
+          <button className="pure-green-btn" onClick={handleSave}>
+            Save Changes
+          </button>
+          <button className="pure-red-btn ml-2" onClick={handleDiscard}>
+            Discard
+          </button>
+        </div>
+      )}
+
+      {editedMetrics.map((metric, idx) => (
         <div className="metric-card" key={idx}>
-          {/* Card Header */}
           <div className="metric-header">{metric.title}</div>
 
           <svg width="100" height="60" viewBox="0 0 36 18" className="semi-circle">
-            {/* Green progress background — always full */}
-            <path
-              d="M2,18 A16,16 0 0,1 34,18"
-              fill="none"
-              stroke="#ccc"
-              strokeWidth="3"
-            />
-
-            {/* Gray overlay — reverse based on percent */}
+            <path d="M2,18 A16,16 0 0,1 34,18" fill="none" stroke="#ccc" strokeWidth="3" />
             <path
               d="M2,18 A16,16 0 0,1 34,18"
               fill="none"
@@ -133,45 +81,45 @@ const ThreeMetricCards = () => {
               strokeDashoffset={(1 - metric.percent / 100) * SEMI_CIRCLE_LENGTH}
               strokeLinecap="round"
             />
-
             <text x="18" y="14" textAnchor="middle" fontSize="6" fill="#333">
               {metric.percent}%
             </text>
           </svg>
 
-          {/* Inputs */}
           <div className="metric-inputs">
-          <label>Annual Goal</label>
-          <input
-            type="number"
-            value={metric.annualGoal}
-            onChange={(e) => {
-              const newAnnualGoal = Number(e.target.value) || 0;
-              const percent =
-                newAnnualGoal > 0
-                  ? Math.round((metric.current / newAnnualGoal) * 100)
-                  : 0;
-              updateMetric(idx, { annualGoal: newAnnualGoal, percent });
-            }}
-          />
+            <label>Annual Goal</label>
+            {isSuperAdmin ? (
+              <input
+                type="number"
+                value={metric.annualGoal}
+                onChange={(e) => {
+                  const v = Number(e.target.value) || 0;
+                  const newPercent = v > 0 ? Math.round((metric.current / v) * 100) : 0;
+                  handleFieldChange(idx, 'annualGoal', v);
+                  handleFieldChange(idx, 'percent', newPercent);
+                }}
+              />
+            ) : (
+              <span>{metric.annualGoal}</span>
+            )}
 
-          <label>Current</label>
-          <input
-            type="number"
-            value={metric.current}
-            onChange={(e) => {
-              const newCurrent = Number(e.target.value) || 0;
-              const percent =
-                metric.annualGoal > 0
-                  ? Math.round((newCurrent / metric.annualGoal) * 100)
-                  : 0;
-              updateMetric(idx, { current: newCurrent, percent });
-            }}
-          />
-        </div>
+            <label>Current</label>
+            {isSuperAdmin ? (
+              <input
+                type="number"
+                value={metric.current}
+                onChange={(e) => {
+                  const v = Number(e.target.value) || 0;
+                  const newPercent = metric.annualGoal > 0 ? Math.round((v / metric.annualGoal) * 100) : 0;
+                  handleFieldChange(idx, 'current', v);
+                  handleFieldChange(idx, 'percent', newPercent);
+                }}
+              />
+            ) : (
+              <span>{metric.current}</span>
+            )}
+          </div>
 
-
-          {/* Table */}
           <div className="metric-table-container">
             <div className="table-header">
               <span>{metric.title}</span>
@@ -179,7 +127,6 @@ const ThreeMetricCards = () => {
                 <option>Monthly</option>
                 <option>Quarterly</option>
               </select>
-
             </div>
 
             <table className="metric-table">
@@ -195,8 +142,47 @@ const ThreeMetricCards = () => {
                 {(viewMode === 'Monthly' ? metric.monthlyData : metric.quarterlyData).map((data, i) => (
                   <tr key={i}>
                     <td>{viewMode === 'Monthly' ? data.month : data.quarter}</td>
-                    <td>{data.current}</td>
-                    <td>{data.goal}</td>
+
+                    <td>
+                      {isSuperAdmin ? (
+                        <input
+                          type="number"
+                          value={data.current}
+                          onChange={(e) => {
+                            const v = Number(e.target.value) || 0;
+                            const path = viewMode === 'Monthly' ? `monthlyData.${i}.current` : `quarterlyData.${i}.current`;
+                            handleFieldChange(idx, path, v);
+                            const goalVal = data.goal;
+                            const newProg = goalVal > 0 ? Math.round((v / goalVal) * 100) : 0;
+                            const progressPath = viewMode === 'Monthly' ? `monthlyData.${i}.progress` : `quarterlyData.${i}.progress`;
+                            handleFieldChange(idx, progressPath, newProg);
+                          }}
+                        />
+                      ) : (
+                        data.current
+                      )}
+                    </td>
+
+                    <td>
+                      {isSuperAdmin ? (
+                        <input
+                          type="number"
+                          value={data.goal}
+                          onChange={(e) => {
+                            const v = Number(e.target.value) || 0;
+                            const path = viewMode === 'Monthly' ? `monthlyData.${i}.goal` : `quarterlyData.${i}.goal`;
+                            handleFieldChange(idx, path, v);
+                            const currVal = data.current;
+                            const newProg = v > 0 ? Math.round((currVal / v) * 100) : 0;
+                            const progressPath = viewMode === 'Monthly' ? `monthlyData.${i}.progress` : `quarterlyData.${i}.progress`;
+                            handleFieldChange(idx, progressPath, newProg);
+                          }}
+                        />
+                      ) : (
+                        data.goal
+                      )}
+                    </td>
+
                     <td>
                       <div className="progress-bar">
                         <div
@@ -209,7 +195,6 @@ const ThreeMetricCards = () => {
                 ))}
               </tbody>
             </table>
-
           </div>
         </div>
       ))}
