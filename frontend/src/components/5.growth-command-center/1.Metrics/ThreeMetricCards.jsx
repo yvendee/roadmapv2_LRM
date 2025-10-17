@@ -73,7 +73,7 @@ const ThreeMetricCards = () => {
       const { csrf_token } = await csrfRes.json();
   
       // Step 2: Send update request
-      const response = await fetch(`${API_URL}/v1/update-gcc-metrics`, {
+      const response = await fetch(`${API_URL}/v1/gcc-metrics/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
