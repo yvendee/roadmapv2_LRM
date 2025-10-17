@@ -70,38 +70,43 @@ const ThreeMetricCards = () => {
     setMetrics(editedMetrics);
     setHasEdits(false);
     setLoadingSave(true);
-  
-    try {
-      // Step 1: Get CSRF token
-      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
-        credentials: 'include',
-      });
-      const { csrf_token } = await csrfRes.json();
-  
-      // Step 2: Send update request
-      const response = await fetch(`${API_URL}/v1/growth-command-center/gcc-metrics/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf_token,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          organizationName: organization,
-          metricsData: editedMetrics,
-        }),
-      });
-  
-      const data = await response.json();
-      ENABLE_CONSOLE_LOGS && console.log('✅ Metrics update response:', data);
-      setLoadingSave(false);
-  
-      if (!response.ok) {
-        console.error('❌ Update failed:', data.message || 'Unknown error');
+
+    setTimeout( async () => {
+      try {
+        // Step 1: Get CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+        const { csrf_token } = await csrfRes.json();
+    
+        // Step 2: Send update request
+        const response = await fetch(`${API_URL}/v1/growth-command-center/gcc-metrics/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            organizationName: organization,
+            metricsData: editedMetrics,
+          }),
+        });
+    
+        const data = await response.json();
+        ENABLE_CONSOLE_LOGS && console.log('✅ Metrics update response:', data);
+        setLoadingSave(false);
+    
+        if (!response.ok) {
+          console.error('❌ Update failed:', data.message || 'Unknown error');
+        }
+      } catch (error) {
+        console.error('❌ Request error:', error);
       }
-    } catch (error) {
-      console.error('❌ Request error:', error);
-    }
+
+    }, 1000);
+
+
   };
   
 
