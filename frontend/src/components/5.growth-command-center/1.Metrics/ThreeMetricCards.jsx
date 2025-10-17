@@ -156,6 +156,7 @@ const ThreeMetricCards = () => {
                       {isSuperAdmin ? (
                         <input
                           type="number"
+                          style={{ width: '80px' }} // 👈 max 6 digits, fixed width
                           value={data.current}
                           onChange={(e) => {
                             const updated = Number(e.target.value) || 0;
@@ -174,6 +175,7 @@ const ThreeMetricCards = () => {
                       {isSuperAdmin ? (
                         <input
                           type="number"
+                          style={{ width: '80px' }} // 👈 max 6 digits, fixed width
                           value={data.goal}
                           onChange={(e) => {
                             const updated = Number(e.target.value) || 0;
