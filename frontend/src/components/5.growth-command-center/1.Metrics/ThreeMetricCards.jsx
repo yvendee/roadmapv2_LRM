@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import useMetricStore from '../../../store/left-lower-content/5.growth-command-center/1.metricsStore';
 import useLoginStore from '../../../store/loginStore';
-
+import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+import API_URL from '../../../configs/config';
+import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './ThreeMetricCards.css';
 
 const SEMI_CIRCLE_LENGTH = 50.24;
@@ -11,6 +13,7 @@ const SEMI_CIRCLE_LENGTH = 50.24;
 const deepEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 const ThreeMetricCards = () => {
+  const organization = useLayoutSettingsStore((state) => state.organization);
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin';
 
@@ -46,19 +49,57 @@ const ThreeMetricCards = () => {
         return clone;
       });
       setHasEdits(!deepEqual(newMetrics, metrics));
-      console.log('📝 On edit, local editedMetrics:', newMetrics);
+      ENABLE_CONSOLE_LOGS && console.log('📝 On edit, local editedMetrics:', newMetrics);
       return newMetrics;
     });
   };
 
-  const handleSave = () => {
-    console.log('✅ Save clicked, local editedMetrics:', editedMetrics);
+  // const handleSave = () => {
+  //   console.log('✅ Save clicked, local editedMetrics:', editedMetrics);
+  //   setMetrics(editedMetrics);
+  //   setHasEdits(false);
+  // };
+
+  const handleSave = async () => {
+    ENABLE_CONSOLE_LOGS && console.log('✅ Save clicked, local editedMetrics:', editedMetrics);
     setMetrics(editedMetrics);
     setHasEdits(false);
+  
+    try {
+      // Step 1: Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // Step 2: Send update request
+      const response = await fetch(`${API_URL}/v1/update-gcc-metrics`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          metricsData: editedMetrics,
+        }),
+      });
+  
+      const data = await response.json();
+      ENABLE_CONSOLE_LOGS && console.log('✅ Metrics update response:', data);
+  
+      if (!response.ok) {
+        console.error('❌ Update failed:', data.message || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('❌ Request error:', error);
+    }
   };
+  
 
   const handleDiscard = () => {
-    console.log('❌ Discard clicked, truth from store:', metrics);
+    ENABLE_CONSOLE_LOGS && console.log('❌ Discard clicked, truth from store:', metrics);
     setEditedMetrics(metrics);
     setHasEdits(false);
   };

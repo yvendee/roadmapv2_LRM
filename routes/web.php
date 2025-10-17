@@ -2962,6 +2962,36 @@ Route::get('/api/v1/growth-command-center/revenue-growth', function (Request $re
     return response()->json($record->financialGrowthData);
 });
 
+
+// ref: frontend\src\components\5.growth-command-center\1.Metrics\ThreeMetricCards.jsx
+Route::post('/api/v1/gcc-metrics/update', function (Request $request) use ($API_secure) {
+
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $newMetrics = $request->input('metricsData', []);
+
+    $record = GccMetric::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([
+            'message' => 'No record found for the given organization.',
+            'data' => [],
+        ]);
+    }
+
+    $record->metricsData = $newMetrics;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Metrics updated successfully',
+        'data' => $record->metricsData,
+    ]);
+});
+
+
 //
 // // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 // Route::get('/api/v1/company-traction/annual-priorities', function (Request $request) use ($API_secure) {
