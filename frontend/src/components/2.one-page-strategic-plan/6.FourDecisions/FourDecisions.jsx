@@ -335,7 +335,7 @@ const FourDecisions = () => {
 
         <thead className="bg-gray-50 text-green-700 text-sm">
           <tr>
-            {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((headerKey, index) => (
+            {['header1', 'header2', 'header3', 'header4', 'header5', 'header6'].map((headerKey, index) => (
               <th key={headerKey} className="border px-3 py-2">
                 {user?.role === 'superadmin' ? (
                   <input
