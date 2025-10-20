@@ -84,12 +84,39 @@ class Organization extends Model
             ]);
 
             // 🆕 Core Capabilities
+            // \App\Models\OpspCoreCapability::create([
+            //     'u_id' => $organization->u_id,
+            //     'organizationName' => $organization->organizationName,
+            //     'coreCapabilitiesData' => [],
+            //     'statusFlag' => null,
+            // ]);
+
+            // 🆕 Core Capabilities
             \App\Models\OpspCoreCapability::create([
                 'u_id' => $organization->u_id,
                 'organizationName' => $organization->organizationName,
-                'coreCapabilitiesData' => [],
+                'coreCapabilitiesData' => [
+                    [
+                        'header1' => 'description',
+                        'header2' => 'text',
+                        'header3' => 'text',
+                        'header4' => 'text',
+                        'header5' => 'text',
+                        'header6' => 'text',
+                    ],
+                    [
+                        'description' => '-',
+                        'orig' => '-',
+                        'q1' => '-',
+                        'q2' => '-',
+                        'q3' => '-',
+                        'q4' => '-',
+                        'id' => 1,
+                    ],
+                ],
                 'statusFlag' => null,
             ]);
+
 
             // 🆕 Four Decisions
             \App\Models\OpspFourDecision::create([
