@@ -227,40 +227,40 @@ const OnePageStrategicPlan = () => {
     }
   }, [organization]);
 
-  // Four-Decisions
-  useEffect(() => {
-    const localData = localStorage.getItem('FourDecisions');
-    if (!localData) {
-      const encodedOrg = encodeURIComponent(organization);
-      fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions?organization=${encodedOrg}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
-        .then(async (res) => {
-          const json = await res.json();
-          if (res.ok) {
-            const decisionsArr = json[organization];
-            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Four-Decisions data:', decisionsArr);
-            if (Array.isArray(decisionsArr)) {
-              loadFourDesicionsFromAPI(decisionsArr); 
-            } else {
-              console.error(`⚠️ No Four-Decisions found for organization: ${organization}`);
-            }
-          } else if (res.status === 401) {
-            navigate('/', { state: { loginError: 'Session Expired' } });
-          } else {
-            console.error('Error:', json.message);
-          }
-        })
-      .catch((err) => {
-        console.error('API error:', err);
-      });
-    }
-  }, [organization]);
+  // // Four-Decisions
+  // useEffect(() => {
+  //   const localData = localStorage.getItem('FourDecisions');
+  //   if (!localData) {
+  //     const encodedOrg = encodeURIComponent(organization);
+  //     fetch(`${API_URL}/v1/one-page-strategic-plan/four-decisions?organization=${encodedOrg}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       credentials: 'include',
+  //     })
+  //       .then(async (res) => {
+  //         const json = await res.json();
+  //         if (res.ok) {
+  //           const decisionsArr = json[organization];
+  //           ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Four-Decisions data:', decisionsArr);
+  //           if (Array.isArray(decisionsArr)) {
+  //             loadFourDesicionsFromAPI(decisionsArr); 
+  //           } else {
+  //             console.error(`⚠️ No Four-Decisions found for organization: ${organization}`);
+  //           }
+  //         } else if (res.status === 401) {
+  //           navigate('/', { state: { loginError: 'Session Expired' } });
+  //         } else {
+  //           console.error('Error:', json.message);
+  //         }
+  //       })
+  //     .catch((err) => {
+  //       console.error('API error:', err);
+  //     });
+  //   }
+  // }, [organization]);
   
   // Constraints-Tracker
   useEffect(() => {
