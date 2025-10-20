@@ -14,6 +14,8 @@ import { create } from 'zustand';
 // ];
 
 export const initialFourDecisions = [
+  { header1: 'description', header2: 'orig', header3: 'q1', header4: 'q2', header5: 'q3', header6: 'q4' },
+  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 1 },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 1 },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 2 },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 3 },
@@ -30,6 +32,12 @@ const useFourDecisions = create((set) => ({
   pushFourDecisions: (item) =>
     set((state) => ({
       fourDecisions: [...state.fourDecisions, item],
+    })),
+  removeFourDecisions: (id) =>
+    set((state) => ({
+      fourDecisions: state.fourDecisions.filter(
+        (item, index) => index === 0 || item.id !== id // preserve header row
+      ),
     })),
 }));
 

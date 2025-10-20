@@ -27,7 +27,7 @@ const CoreCapabilities = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const organization = useLayoutSettingsStore((state) => state.organization);
-  const [headerEdited, setHeaderEdited] = useState(false);
+ 
 
   const hasRealData = coreCapabilities.some(item => item.value === '-');
 

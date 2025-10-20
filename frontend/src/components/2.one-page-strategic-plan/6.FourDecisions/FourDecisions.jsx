@@ -60,13 +60,37 @@ const FourDecisions = () => {
     }
   }, [setFourDecisions]);
 
+  // const handleBlur = (id, field, value) => {
+  //   const updated = fourDecisions.map((item) =>
+  //     item.id === id ? { ...item, [field]: value } : item
+  //   );
+  //   setFourDecisions(updated);
+  //   localStorage.setItem('FourDecisions', JSON.stringify(updated));
+  //   if (!edited.includes(id)) setEdited([...edited, id]);
+  //   setEditing({ rowId: null, field: null });
+  // };
+
+
+  // Updated handleBlur to handle header edits with id = 'header'
   const handleBlur = (id, field, value) => {
-    const updated = fourDecisions.map((item) =>
-      item.id === id ? { ...item, [field]: value } : item
-    );
+    let updated;
+    if (id === 'header') {
+      // Update the first item (header) only
+      updated = fourDecisions.map((item, index) =>
+        index === 0 ? { ...item, [field]: value } : item
+      );
+    } else {
+      updated = fourDecisions.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item
+      );
+    }
+
     setFourDecisions(updated);
     localStorage.setItem('FourDecisions', JSON.stringify(updated));
-    if (!edited.includes(id)) setEdited([...edited, id]);
+
+    if (!edited.includes(id)) {
+      setEdited([...edited, id]);
+    }
     setEditing({ rowId: null, field: null });
   };
 
@@ -223,7 +247,7 @@ const FourDecisions = () => {
         <h5 className="text-md font-semibold text-green-700">4 Decisions</h5>
         {user?.role === 'superadmin' && (
           <div className="flex gap-2">
-            {edited.length > 0 && (
+             {(edited.length > 0 || editing.rowId === 'header') && (
               <>
                 <button className="pure-green-btn print:hidden" onClick={handleSave}>
                   {loadingSave ? (
@@ -280,10 +304,10 @@ const FourDecisions = () => {
           </tr>
         </thead> */}
 
-        <thead className="bg-gray-50 text-green-700 text-sm">
+        {/* <thead className="bg-gray-50 text-green-700 text-sm">
           <tr>
             <th className="border px-3 py-2">
-              <div className="text-left">Description</div> {/* Left aligned */}
+              <div className="text-left">Description</div> 
             </th>
             <th className="border px-3 py-2">
               <div className="flex justify-center items-center">Orig</div>
@@ -307,11 +331,46 @@ const FourDecisions = () => {
             )}
 
           </tr>
+        </thead> */}
+
+        <thead className="bg-gray-50 text-green-700 text-sm">
+          <tr>
+            {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field, index) => (
+              <th key={field} className="border px-3 py-2">
+                {user?.role === 'superadmin' ? (
+                  <input
+                    className="w-full border rounded p-1 text-sm"
+                    value={fourDecisions[0]?.[field] || field.toUpperCase()}
+                    onFocus={() => setEditing({ rowId: 'header', field })}
+                    onChange={(e) => {
+                      const newHeaderValue = e.target.value;
+                      // Update the first row (header) in fourDecisions array with new header label
+                      const updatedHeaders = { ...fourDecisions[0], [field]: newHeaderValue };
+                      const updatedState = [updatedHeaders, ...fourDecisions.slice(1)];
+
+                      setFourDecisions(updatedState);
+                      // If you want to sync with global store:
+                      useFourDecisions.getState().pushFourDecisions(updatedHeaders);
+                      localStorage.setItem('FourDecisions', JSON.stringify(updatedState));
+                    }}
+                    onBlur={(e) => handleBlur('header', field, e.target.value)}
+                  />
+                ) : (
+                  <div className={index === 0 ? 'text-left' : 'text-center'}>
+                    {fourDecisions[0]?.[field] || field.toUpperCase()}
+                  </div>
+                )}
+              </th>
+            ))}
+
+            {user?.role === 'superadmin' && !hasRealData && (
+              <th className="border px-3 py-2 print:hidden"></th>
+            )}
+          </tr>
         </thead>
 
-
         <tbody>
-          {fourDecisions.map((item) => (
+          {fourDecisions.slice(1).map((item) => (
             <tr key={item.id} className="hover:bg-gray-50">
               {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field) => (
                 <td
