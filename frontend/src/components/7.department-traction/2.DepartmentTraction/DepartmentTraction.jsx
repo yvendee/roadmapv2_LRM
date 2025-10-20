@@ -848,9 +848,10 @@ const DepartmentTractionTable = () => {
                         disabled={!isSuperAdmin}
                       >
                         <option value="">Please select</option>
-                        <option value="1">1 (Top Priority)</option>
+                        <option value=""> </option>
+                        <option value="1">1 </option>
                         <option value="2">2</option>
-                        <option value="3">3 (Low Priority)</option>
+                        <option value="3">3</option>
                       </select>
                     ) : (
                       <div
@@ -1082,9 +1083,10 @@ const DepartmentTractionTable = () => {
                       onChange={(e) => setForm({ ...form, rank: e.target.value })}
                     >
                       <option value="">Please select</option>
-                      <option value="1">1 (Top Priority)</option>
+                      <option value=""> </option>
+                      <option value="1">1 </option>
                       <option value="2">2</option>
-                      <option value="3">3 (Low Priority)</option>
+                      <option value="3">3</option>
                     </select>
                   </div>
                 </div>
