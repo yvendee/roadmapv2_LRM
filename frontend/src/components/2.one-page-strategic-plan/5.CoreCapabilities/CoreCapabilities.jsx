@@ -324,36 +324,21 @@ const CoreCapabilities = () => {
               ['header1', 'header2', 'header3', 'header4', 'header5', 'header6'].map((headerKey, index) => (
                 <th key={headerKey} className="border px-3 py-2">
                   {user?.role === 'superadmin' ? (
-                    // <input
-                    //   className="w-full border rounded p-1 text-sm"
-                    //   value={coreCapabilities[0][headerKey] || ''}
-                    //   onChange={(e) => {
-                    //     const newHeaderValue = e.target.value;
-                    //     const updatedHeaders = { ...coreCapabilities[0], [headerKey]: newHeaderValue };
-                    //     const updatedState = [updatedHeaders, ...coreCapabilities.slice(1)];
-
-                    //     setCoreCapabilities(updatedState);
-                    //     useCoreCapabilitiesStore.getState().setCoreCapabilities(updatedState);
-                    //     localStorage.setItem('CoreCapabilities', JSON.stringify(updatedState));
-                    //   }}
-                    // />
-
                     <input
-                        className="w-full border rounded p-1 text-sm"
-                        value={coreCapabilities[0][headerKey] || ''}
-                        onFocus={() => setEditing({ rowId: 'header', field: headerKey })}
-                        onChange={(e) => {
-                          const newHeaderValue = e.target.value;
-                          const updatedHeaders = { ...coreCapabilities[0], [headerKey]: newHeaderValue };
-                          const updatedState = [updatedHeaders, ...coreCapabilities.slice(1)];
+                      className={`w-full border rounded p-1 text-sm ${index === 0 ? 'text-left' : 'text-center'}`}
+                      value={coreCapabilities[0][headerKey] || ''}
+                      onFocus={() => setEditing({ rowId: 'header', field: headerKey })}
+                      onChange={(e) => {
+                        const newHeaderValue = e.target.value;
+                        const updatedHeaders = { ...coreCapabilities[0], [headerKey]: newHeaderValue };
+                        const updatedState = [updatedHeaders, ...coreCapabilities.slice(1)];
 
-                          setCoreCapabilities(updatedState);
-                          useCoreCapabilitiesStore.getState().setCoreCapabilities(updatedState);
-                          localStorage.setItem('CoreCapabilities', JSON.stringify(updatedState));
-                        }}
-                        onBlur={(e) => handleBlur('header', headerKey, e.target.value)}
-                      />
-
+                        setCoreCapabilities(updatedState);
+                        useCoreCapabilitiesStore.getState().setCoreCapabilities(updatedState);
+                        localStorage.setItem('CoreCapabilities', JSON.stringify(updatedState));
+                      }}
+                      onBlur={(e) => handleBlur('header', headerKey, e.target.value)}
+                    />
                   ) : (
                     <div className={index === 0 ? 'text-left' : 'text-center'}>
                       {coreCapabilities[0][headerKey]}
@@ -366,6 +351,7 @@ const CoreCapabilities = () => {
             )}
           </tr>
         </thead>
+
 
         <tbody>
           {coreCapabilities.slice(1).map((item) => (
