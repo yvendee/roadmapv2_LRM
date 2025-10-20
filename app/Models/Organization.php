@@ -83,13 +83,6 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
-            // 🆕 Core Capabilities
-            // \App\Models\OpspCoreCapability::create([
-            //     'u_id' => $organization->u_id,
-            //     'organizationName' => $organization->organizationName,
-            //     'coreCapabilitiesData' => [],
-            //     'statusFlag' => null,
-            // ]);
 
             // 🆕 Core Capabilities
             \App\Models\OpspCoreCapability::create([
@@ -122,7 +115,25 @@ class Organization extends Model
             \App\Models\OpspFourDecision::create([
                 'u_id' => $organization->u_id,
                 'organizationName' => $organization->organizationName,
-                'fourDecisionsData' => [],
+                'fourDecisionsData' => [
+                    [
+                        'header1' => 'description',
+                        'header2' => 'text',
+                        'header3' => 'text',
+                        'header4' => 'text',
+                        'header5' => 'text',
+                        'header6' => 'text',
+                    ],
+                    [
+                        'description' => '-',
+                        'orig' => '-',
+                        'q1' => '-',
+                        'q2' => '-',
+                        'q3' => '-',
+                        'q4' => '-',
+                        'id' => 1,
+                    ],
+                ],
                 'statusFlag' => null,
             ]);
 
