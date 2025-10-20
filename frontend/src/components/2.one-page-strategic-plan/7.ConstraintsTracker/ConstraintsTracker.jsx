@@ -60,15 +60,31 @@ const ConstraintsTracker = () => {
     }
   }, [setConstraintsTracker]);
 
+  // const handleBlur = (id, field, value) => {
+  //   const updated = constraintsTracker.map((item) =>
+  //     item.id === id ? { ...item, [field]: value } : item
+  //   );
+  //   setConstraintsTracker(updated);
+  //   localStorage.setItem('ConstraintsTracker', JSON.stringify(updated));
+  //   if (!edited.includes(id)) setEdited([...edited, id]);
+  //   setEditing({ rowId: null, field: null });
+  // };
+
   const handleBlur = (id, field, value) => {
     const updated = constraintsTracker.map((item) =>
       item.id === id ? { ...item, [field]: value } : item
     );
     setConstraintsTracker(updated);
     localStorage.setItem('ConstraintsTracker', JSON.stringify(updated));
-    if (!edited.includes(id)) setEdited([...edited, id]);
+  
+    // Check if the edited item is already in the edited array
+    if (!edited.some((e) => e.id === id)) {
+      setEdited([...edited, { id }]);
+    }
+  
     setEditing({ rowId: null, field: null });
   };
+  
 
   // const handleAdd = () => {
 
