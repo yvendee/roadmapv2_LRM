@@ -335,29 +335,31 @@ const FourDecisions = () => {
 
         <thead className="bg-gray-50 text-green-700 text-sm">
           <tr>
-            {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field, index) => (
-              <th key={field} className="border px-3 py-2">
+            {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((headerKey, index) => (
+              <th key={headerKey} className="border px-3 py-2">
                 {user?.role === 'superadmin' ? (
                   <input
                     className="w-full border rounded p-1 text-sm"
-                    value={fourDecisions[0]?.[field] || field.toUpperCase()}
-                    onFocus={() => setEditing({ rowId: 'header', field })}
+                    value={fourDecisions[0]?.[headerKey] ?? ''}
+                    onFocus={() => setEditing({ rowId: 'header', field: headerKey })}
                     onChange={(e) => {
                       const newHeaderValue = e.target.value;
-                      // Update the first row (header) in fourDecisions array with new header label
-                      const updatedHeaders = { ...fourDecisions[0], [field]: newHeaderValue };
+
+                      // Update the first row with the new header label
+                      const updatedHeaders = { ...fourDecisions[0], [headerKey]: newHeaderValue };
                       const updatedState = [updatedHeaders, ...fourDecisions.slice(1)];
 
                       setFourDecisions(updatedState);
-                      // If you want to sync with global store:
-                      useFourDecisions.getState().pushFourDecisions(updatedHeaders);
+
+                      // Correctly sync full state to global store
+                      useFourDecisions.getState().setFourDecisions(updatedState);
                       localStorage.setItem('FourDecisions', JSON.stringify(updatedState));
                     }}
-                    onBlur={(e) => handleBlur('header', field, e.target.value)}
+                    onBlur={(e) => handleBlur('header', headerKey, e.target.value)}
                   />
                 ) : (
                   <div className={index === 0 ? 'text-left' : 'text-center'}>
-                    {fourDecisions[0]?.[field] || field.toUpperCase()}
+                    {fourDecisions[0]?.[headerKey] ?? ''}
                   </div>
                 )}
               </th>
@@ -368,6 +370,7 @@ const FourDecisions = () => {
             )}
           </tr>
         </thead>
+
 
         <tbody>
           {fourDecisions.slice(1).map((item) => (

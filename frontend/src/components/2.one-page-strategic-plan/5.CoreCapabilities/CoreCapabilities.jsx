@@ -354,7 +354,6 @@ const CoreCapabilities = () => {
                         onBlur={(e) => handleBlur('header', headerKey, e.target.value)}
                       />
 
-
                   ) : (
                     <div className={index === 0 ? 'text-left' : 'text-center'}>
                       {coreCapabilities[0][headerKey]}
