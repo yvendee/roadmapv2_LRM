@@ -72,12 +72,10 @@ const CoreCapabilities = () => {
   const handleBlur = (id, field, value) => {
     let updated;
     if (id === 'header') {
-      // Update header object (first item)
       updated = coreCapabilities.map((item, idx) =>
         idx === 0 ? { ...item, [field]: value } : item
       );
     } else {
-      // Update normal rows by id
       updated = coreCapabilities.map((item) =>
         item.id === id ? { ...item, [field]: value } : item
       );
@@ -86,11 +84,12 @@ const CoreCapabilities = () => {
     setCoreCapabilities(updated);
     localStorage.setItem('CoreCapabilities', JSON.stringify(updated));
   
-    if (id !== 'header' && !edited.includes(id)) {
+    if (!edited.includes(id)) {
       setEdited([...edited, id]);
     }
     setEditing({ rowId: null, field: null });
   };
+  
   
 
   // const handleAdd = () => {
@@ -248,7 +247,7 @@ const CoreCapabilities = () => {
         <h5 className="text-md font-semibold text-green-700">Core Capabilities / Strengths</h5>
         {user?.role === 'superadmin' && (
           <div className="flex gap-2">
-            {edited.length > 0 && (
+            {(edited.length > 0 || editing.rowId === 'header') && (
               <>
                 <button className="pure-green-btn print:hidden" onClick={handleSave}>
                   {loadingSave ? (
