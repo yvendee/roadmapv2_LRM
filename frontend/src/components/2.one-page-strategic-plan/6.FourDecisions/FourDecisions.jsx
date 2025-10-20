@@ -339,7 +339,7 @@ const FourDecisions = () => {
               <th key={headerKey} className="border px-3 py-2">
                 {user?.role === 'superadmin' ? (
                   <input
-                    className="w-full border rounded p-1 text-sm"
+                    className={`w-full border rounded p-1 text-sm ${index === 0 ? 'text-left' : 'text-center'}`}
                     value={fourDecisions[0]?.[headerKey] ?? ''}
                     onFocus={() => setEditing({ rowId: 'header', field: headerKey })}
                     onChange={(e) => {

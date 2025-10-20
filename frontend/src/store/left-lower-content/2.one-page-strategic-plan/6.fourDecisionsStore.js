@@ -15,15 +15,7 @@ import { create } from 'zustand';
 
 export const initialFourDecisions = [
   { header1: 'description', header2: 'orig', header3: 'q1', header4: 'q2', header5: 'q3', header6: 'q4' },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 1 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 1 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 2 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 3 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 4 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 5 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 6 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 7 },
-  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 8 }
+  { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 1 }
 ];
 
 const useFourDecisions = create((set) => ({
