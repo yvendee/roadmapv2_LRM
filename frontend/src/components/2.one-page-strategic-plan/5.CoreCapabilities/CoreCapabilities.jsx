@@ -141,13 +141,7 @@ const CoreCapabilities = () => {
     }, 1000);
   };
 
-  // const handleDelete = (id) => {
-  //   const updated = coreCapabilities.filter((item) => item.id !== id);
-  //   setCoreCapabilities(updated);
-  //   localStorage.setItem('CoreCapabilities', JSON.stringify(updated));
-  //   if (!edited.includes(id)) setEdited([...edited, id]);
-  //   ENABLE_CONSOLE_LOGS && console.log(`🗑️ CoreCapability with ID ${id} deleted.`);
-  // };
+
 
   const handleDelete = (id) => {
     const updated = coreCapabilities.filter((item) => item.id !== id);
@@ -159,18 +153,6 @@ const CoreCapabilities = () => {
     // ❌ Don't update the global store
     // useCoreCapabilitiesStore.getState().removeCoreCapability(id); // <--- leave this out
   };
-
-
-  // const handleSave = () => {
-  //   setLoadingSave(true);
-  //   setTimeout(() => {
-  //     setLoadingSave(false);
-  //     console.log('📤 Saving CoreCapabilities:', coreCapabilities);
-  //     setEdited([]);
-  //     localStorage.removeItem('CoreCapabilities');
-  //   }, 1000);
-  // };
-
 
   const handleSave = async () => {
     setLoadingSave(true);
@@ -282,26 +264,11 @@ const CoreCapabilities = () => {
       </div>
 
       <table className="min-w-full border border-gray-200 text-sm">
-        {/* <thead className="bg-gray-50 text-green-700">
-          <tr>
-            <th className="border px-3 py-2 text-left">Description</th>
-            <th className="border px-3 py-2 text-center">Orig</th>
-            <th className="border px-3 py-2 text-center">Q1</th>
-            <th className="border px-3 py-2 text-center">Q2</th>
-            <th className="border px-3 py-2 text-center">Q3</th>
-            <th className="border px-3 py-2 text-center">Q4</th>
-
-            {user?.role === 'superadmin' && hasRealData && (
-              <th className="border px-3 py-2 print:hidden"></th>
-            )}
-
-          </tr>
-        </thead> */}
-
-        <thead className="bg-gray-50 text-green-700 text-sm">
+ 
+        {/* <thead className="bg-gray-50 text-green-700 text-sm">
           <tr>
             <th className="border px-3 py-2">
-              <div className="text-left">Description</div> {/* Left aligned */}
+              <div className="text-left">Description</div>
             </th>
             <th className="border px-3 py-2">
               <div className="flex justify-center items-center">Orig</div>
@@ -325,31 +292,44 @@ const CoreCapabilities = () => {
             )}
 
           </tr>
-        </thead>
-        <tbody>
-          {coreCapabilities.map((item) => (
-            <tr key={item.id} className="hover:bg-gray-50">
-              {/* {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field) => (
-                <td key={field} className="border px-3 py-2">
-                  {editing.rowId === item.id && editing.field === field ? (
+        </thead> */}
+
+        <thead className="bg-gray-50 text-green-700 text-sm">
+          <tr>
+            {coreCapabilities.length > 0 &&
+              ['header1', 'header2', 'header3', 'header4', 'header5', 'header6'].map((headerKey, index) => (
+                <th key={headerKey} className="border px-3 py-2">
+                  {user?.role === 'superadmin' ? (
                     <input
-                      autoFocus
-                      defaultValue={item[field]}
-                      onBlur={(e) => handleBlur(item.id, field, e.target.value)}
                       className="w-full border rounded p-1 text-sm"
+                      value={coreCapabilities[0][headerKey] || ''}
+                      onChange={(e) => {
+                        const newHeaderValue = e.target.value;
+                        const updatedHeaders = { ...coreCapabilities[0], [headerKey]: newHeaderValue };
+                        const updatedState = [updatedHeaders, ...coreCapabilities.slice(1)];
+
+                        setCoreCapabilities(updatedState);
+                        useCoreCapabilitiesStore.getState().setCoreCapabilities(updatedState);
+                        localStorage.setItem('CoreCapabilities', JSON.stringify(updatedState));
+                      }}
                     />
                   ) : (
-                    <span
-                      className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
-                      onClick={() =>
-                        user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
-                      }
-                    >
-                      {item[field] || '-'}
-                    </span>
+                    <div className={index === 0 ? 'text-left' : 'text-center'}>
+                      {coreCapabilities[0][headerKey]}
+                    </div>
                   )}
-                </td>
-              ))} */}
+                </th>
+              ))}
+            {user?.role === 'superadmin' && !hasRealData && (
+              <th className="border px-3 py-2 print:hidden"></th>
+            )}
+          </tr>
+        </thead>
+
+        <tbody>
+          {coreCapabilities.slice(1).map((item) => (
+
+            <tr key={item.id} className="hover:bg-gray-50">
 
               {['description', 'orig', 'q1', 'q2', 'q3', 'q4'].map((field) => (
                 <td
@@ -380,17 +360,6 @@ const CoreCapabilities = () => {
                 </td>
               ))}
 
-
-
-              {/* <td className="border px-3 py-2 text-center">
-                {user?.role === 'superadmin' && (
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    className="text-red-500 hover:text-red-700 cursor-pointer"
-                    onClick={() => handleDelete(item.id)}
-                  />
-                )}
-              </td> */}
 
               {user?.role === 'superadmin' && !hasRealData && (
                 <td className="border px-3 py-2 text-center print:hidden">

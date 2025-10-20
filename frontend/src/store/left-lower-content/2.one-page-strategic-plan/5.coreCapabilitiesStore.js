@@ -6,22 +6,13 @@ import { create } from 'zustand';
 //   { description: 'Leadership Training', orig: '✓', q1: 'x', q2: '✓', q3: 'x', q4: '✓', id: 1 },
 //   { description: 'Technology Stack', orig: 'x', q1: '✓', q2: 'x', q3: '✓', q4: 'x', id: 2 },
 // ];
-
 export const initialCoreCapabilities = [
+  { header1: 'description', header2: 'orig', header3: 'q1', header4: 'q2', header5: 'q3', header6: 'q4' },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 1 },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 2 },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 3 },
   { description: '-', orig: '-', q1: '-', q2: '-', q3: '-', q4: '-', id: 4 },
 ];
-
-// const useCoreCapabilitiesStore = create((set) => ({
-//   coreCapabilities: initialCoreCapabilities,
-//   setCoreCapabilities: (data) => set({ coreCapabilities: data }),
-//   pushCoreCapability: (item) =>
-//     set((state) => ({
-//       coreCapabilities: [...state.coreCapabilities, item],
-//     })),
-// }));
 
 const useCoreCapabilitiesStore = create((set) => ({
   coreCapabilities: initialCoreCapabilities,
@@ -32,9 +23,10 @@ const useCoreCapabilitiesStore = create((set) => ({
     })),
   removeCoreCapability: (id) =>
     set((state) => ({
-      coreCapabilities: state.coreCapabilities.filter((item) => item.id !== id),
+      coreCapabilities: state.coreCapabilities.filter(
+        (item, index) => index === 0 || item.id !== id // preserve header row
+      ),
     })),
 }));
-
 
 export default useCoreCapabilitiesStore;
