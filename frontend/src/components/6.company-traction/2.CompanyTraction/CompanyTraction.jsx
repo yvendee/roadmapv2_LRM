@@ -1153,7 +1153,7 @@ const CompanyTraction = () => {
       {/* Activity Log Panel */}
       <div className={`activity-log-panel ${showLogs ? 'show' : ''}`}>
         <div className="header">
-          <h2 style={{ fontWeight: 'bold' }}>Activity Logs History</h2>
+          <h2 className="activity-log-title">Activity Logs History</h2>
           <button
             className="close-btn"
             onClick={() => setShowLogs(false)}
@@ -1165,7 +1165,7 @@ const CompanyTraction = () => {
         <ul>
           {activityLogs.map((log) => (
             <li key={log.id}>
-              <strong>{log.author}</strong> {log.message}
+              <span className="activity-log-author">{log.author}</span> {log.message}
               <span>{log.timestamp}</span>
             </li>
           ))}

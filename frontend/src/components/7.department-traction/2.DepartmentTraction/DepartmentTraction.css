@@ -467,6 +467,19 @@
   margin-top: 0.2rem;
 }
 
+.activity-log-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #1f2937; /* Tailwind gray-800 */
+}
+
+.activity-log-author {
+  font-weight: 700;
+  color: #111827; /* Tailwind gray-900 for stronger contrast */
+  margin-right: 4px;
+  display: inline-block;
+}
+
 
   
   
