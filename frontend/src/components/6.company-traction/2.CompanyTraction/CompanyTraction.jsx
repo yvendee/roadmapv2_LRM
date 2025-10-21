@@ -1149,8 +1149,19 @@ const CompanyTraction = () => {
         </div>
       )}
 
+
+      {/* Activity Log Panel */}
       <div className={`activity-log-panel ${showLogs ? 'show' : ''}`}>
-        <h2>Activity Logs History</h2>
+        <div className="header">
+          <h2>Activity Logs History</h2>
+          <button
+            className="close-btn"
+            onClick={() => setShowLogs(false)}
+            aria-label="Close Activity Logs"
+          >
+            ×
+          </button>
+        </div>
         <ul>
           {activityLogs.map((log) => (
             <li key={log.id}>
