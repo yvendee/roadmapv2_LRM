@@ -509,6 +509,7 @@
   color: #000000; /* Pure black for maximum contrast */
   margin-right: 6px;
   display: inline-block;
+  font-size: 1.1rem; /* Increased font size */
 }
 
 
