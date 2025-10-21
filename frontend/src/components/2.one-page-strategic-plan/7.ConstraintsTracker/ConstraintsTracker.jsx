@@ -350,25 +350,26 @@ const ConstraintsTracker = () => {
                     //   ))}
                     // </select>
                     <select
-                      autoFocus
-                      value={item.owner || ''}
-                      onChange={(e) => handleBlur(item.id, field, e.target.value)}
-                      className="w-full px-2 py-1 border rounded text-xs text-center"
-                    >
-                      <option value="" disabled>Select Owner</option>
-
-                      {/* Current owner as the first option (if not empty) */}
-                      {item.owner && !users.includes(item.owner) && (
-                        <option value={item.owner}>{item.owner}</option>
-                      )}
-
-                      {/* Render users, excluding current owner to avoid duplicates */}
-                      {users
-                        .filter((u) => u !== item.owner)
-                        .map((u) => (
-                          <option key={u} value={u}>{u}</option>
-                        ))}
-                    </select>
+                    autoFocus
+                    value={item.owner || ''}
+                    onBlur={(e) => handleBlur(item.id, field, e.target.value)}
+                    onChange={(e) => handleBlur(item.id, field, e.target.value)}
+                    className="w-full px-2 py-1 border rounded text-xs text-center"
+                  >
+                    <option value="" disabled>Select Owner</option>
+    
+                    {/* Current owner if not in users */}
+                    {item.owner && !users.includes(item.owner) && (
+                      <option value={item.owner}>{item.owner}</option>
+                    )}
+    
+                    {/* Users list without current owner to avoid duplicate */}
+                    {users
+                      .filter((u) => u !== item.owner)
+                      .map((u) => (
+                        <option key={u} value={u}>{u}</option>
+                      ))}
+                  </select>
 
                   ) : (
                     <textarea
