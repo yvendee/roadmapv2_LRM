@@ -722,6 +722,11 @@ const CompanyTraction = () => {
           ENABLE_CONSOLE_LOGS && console.log('✅ Company Traction data updated:', json);
           localStorage.removeItem('companyTractionData');
           setIsEditing(false);
+
+          // Log all activity logs
+          const activityLogData = useActivityLogStore.getState().activityLog;
+          console.log('Activity Log Data:', activityLogData);
+
         } else if (res.status === 401) {
           navigate('/', { state: { loginError: 'Session Expired' } });
         } else {
