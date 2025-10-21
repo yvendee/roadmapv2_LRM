@@ -224,14 +224,88 @@ const CompanyTraction = () => {
   };
 
   
+  // const handleAddComment = () => {
+  //   setIsEditing(true); // Mark as edited
+  //   if (newComment && selectedItem) {
+  //     const updatedCompanyTraction = { ...companyTraction };
+  
+  //     const newCommentData = {
+  //       author: loggedUser?.fullname || 'Anonymous',
+  //       message: newComment,
+  //       posted: new Date().toISOString(), // Save full timestamp
+  //     };
+  
+  //     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
+  //       item.id === selectedItem.id
+  //         ? { ...item, comment: [...item.comment, newCommentData] }
+  //         : item
+  //     );
+
+  //     addActivityLog(`Comment added to Company Traction: ${selectedItem.description}`);
+
+  
+  //     setCompanyTraction(updatedCompanyTraction);
+  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+  //     setNewComment('');
+  //     setCommentModalOpen(false);
+  //   }
+  // };
+  
+
+  // const handleDeleteComment = (itemId, commentIndex) => {
+  //   setIsEditing(true); // Mark as edited
+  //   const updatedCompanyTraction = { ...companyTraction };
+  //   updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
+  //     item.id === itemId
+  //       ? {
+  //           ...item,
+  //           comment: item.comment.filter((_, index) => index !== commentIndex),
+  //         }
+  //       : item
+  //   );
+  
+  //   setCompanyTraction(updatedCompanyTraction);
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+  
+  //   // Also update the selectedItem to reflect the changes in the modal
+  //   const updatedSelectedItem = {
+  //     ...selectedItem,
+  //     comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
+  //   };
+
+  //   addActivityLog(`Comment delete to Company Traction: ${selectedItem.description}`);
+
+  //   setSelectedItem(updatedSelectedItem);
+  // };
+  
+  // const handleDeleteRow = (rowId) => {
+
+  //   setIsEditing(true); // Mark as edited
+
+  //   // Create a copy of the current company traction data
+  //   const updatedCompanyTraction = { ...companyTraction };
+    
+  //   // Remove the row with the matching rowId from the active quarter
+  //   updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].filter(item => item.id !== rowId);
+    
+  //   // Update the state with the new company traction data
+  //   setCompanyTraction(updatedCompanyTraction);
+    
+  //   // Update localStorage to persist changes
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+
+  //   addActivityLog(`Company traction deleted with description: ${row.description}`);
+
+  // };
+  
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
-    if (newComment && selectedItem) {
+    if (newComment?.trim() && selectedItem) {
       const updatedCompanyTraction = { ...companyTraction };
   
       const newCommentData = {
         author: loggedUser?.fullname || 'Anonymous',
-        message: newComment,
+        message: newComment.trim(),
         posted: new Date().toISOString(), // Save full timestamp
       };
   
@@ -243,15 +317,21 @@ const CompanyTraction = () => {
   
       setCompanyTraction(updatedCompanyTraction);
       localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+      
+      addActivityLog(`Comment added to Company Traction: "${selectedItem.description || 'No Description'}"`);
+  
       setNewComment('');
       setCommentModalOpen(false);
     }
   };
   
 
+
   const handleDeleteComment = (itemId, commentIndex) => {
     setIsEditing(true); // Mark as edited
+  
     const updatedCompanyTraction = { ...companyTraction };
+  
     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
       item.id === itemId
         ? {
@@ -264,29 +344,38 @@ const CompanyTraction = () => {
     setCompanyTraction(updatedCompanyTraction);
     localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
   
-    // Also update the selectedItem to reflect the changes in the modal
-    const updatedSelectedItem = {
-      ...selectedItem,
-      comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
-    };
-    setSelectedItem(updatedSelectedItem);
+    if (selectedItem) {
+      // Also update the selectedItem to reflect the changes in the modal
+      const updatedSelectedItem = {
+        ...selectedItem,
+        comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
+      };
+      setSelectedItem(updatedSelectedItem);
+  
+      // Activity log
+      addActivityLog(`Deleted a comment from Company Traction: "${selectedItem.description || 'No Description'}"`);
+    }
   };
+
   
   const handleDeleteRow = (rowId) => {
-
     setIsEditing(true); // Mark as edited
-
-    // Create a copy of the current company traction data
+  
+    // Get the row being deleted (for logging)
+    const row = companyTraction[activeQuarter]?.find(item => item.id === rowId);
+  
+    // Create a copy and remove the row
     const updatedCompanyTraction = { ...companyTraction };
-    
-    // Remove the row with the matching rowId from the active quarter
     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].filter(item => item.id !== rowId);
-    
-    // Update the state with the new company traction data
+  
+    // Update the state and persist
     setCompanyTraction(updatedCompanyTraction);
-    
-    // Update localStorage to persist changes
     localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
+  
+    // Log deletion if row existed
+    if (row) {
+      addActivityLog(`Deleted company traction: "${row.description || 'No Description'}"`);
+    }
   };
   
 
@@ -414,48 +503,149 @@ const CompanyTraction = () => {
   };
 
 
+  // const handleDueDateChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   updateCompanyTractionField(activeQuarter, rowId, 'dueDate', value);
+  
+  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+
   const handleDueDateChange = (e, rowId) => {
-    const value = e.target.value;
-    updateCompanyTractionField(activeQuarter, rowId, 'dueDate', value);
+    const newValue = e.target.value;
+    setIsEditing(true);
   
+    // Get current row before update
+    const { companyTraction } = useCompanyTractionStore.getState();
+    const currentRow = companyTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.dueDate || '';
+  
+    // Update store
+    updateCompanyTractionField(activeQuarter, rowId, 'dueDate', newValue);
+  
+    // Persist to localStorage
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true);
+    // Only log change if different
+    if (oldValue !== newValue) {
+      const message = `Due Date updated from "${oldValue}" to "${newValue}" for Company Traction.`;
+      addActivityLog(message);
+    }
   };
   
+  
+  // const handleDescriptionChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setDescription(value); // keep UI controlled
+  //   updateCompanyTractionField(activeQuarter, rowId, 'description', value);
+  
+  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+
   const handleDescriptionChange = (e, rowId) => {
-    const value = e.target.value;
-    setDescription(value); // keep UI controlled
-    updateCompanyTractionField(activeQuarter, rowId, 'description', value);
+    const newValue = e.target.value;
+    setDescription(newValue); // keep UI controlled
+    setIsEditing(true);
   
+    // Get the current row before updating
+    const { companyTraction } = useCompanyTractionStore.getState();
+    const currentRow = companyTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.description || '';
+  
+    // Update the store
+    updateCompanyTractionField(activeQuarter, rowId, 'description', newValue);
+  
+    // Save updated data
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true);
+    // Log only if the description changed
+    if (oldValue !== newValue) {
+      const message = `Description updated from "${oldValue}" to "${newValue}" for Company Traction.`;
+      addActivityLog(message);
+    }
   };
   
+  
+  // const handleAnnualPriorityChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setAnnualPriority(value); // keep UI controlled
+  //   updateCompanyTractionField(activeQuarter, rowId, 'annualPriority', value);
+  
+  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+
   const handleAnnualPriorityChange = (e, rowId) => {
-    const value = e.target.value;
-    setAnnualPriority(value); // keep UI controlled
-    updateCompanyTractionField(activeQuarter, rowId, 'annualPriority', value);
+    const newValue = e.target.value;
+    setAnnualPriority(newValue); // for controlled input
   
+    setIsEditing(true);
+  
+    // Get the current value before updating
+    const { companyTraction } = useCompanyTractionStore.getState();
+    const currentRow = companyTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.annualPriority || '';
+  
+    // Update the store
+    updateCompanyTractionField(activeQuarter, rowId, 'annualPriority', newValue);
+  
+    // Save to localStorage
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true);
+    // Only log if value actually changed
+    if (oldValue !== newValue) {
+      const message = `Annual Priority updated from "${oldValue}" to "${newValue}" for Company Traction.`;
+      addActivityLog(message);
+    }
   };
   
+  
+  // const handleRankChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setRank(value); // keep UI controlled
+  //   updateCompanyTractionField(activeQuarter, rowId, 'rank', value);
+  
+  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+
   const handleRankChange = (e, rowId) => {
-    const value = e.target.value;
-    setRank(value); // keep UI controlled
-    updateCompanyTractionField(activeQuarter, rowId, 'rank', value);
+    const newValue = e.target.value;
+    setRank(newValue); // for controlled input
   
+    setIsEditing(true);
+  
+    // Get the current value before updating
+    const { companyTraction } = useCompanyTractionStore.getState();
+    const currentRow = companyTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.rank || '';
+  
+    // Update the store
+    updateCompanyTractionField(activeQuarter, rowId, 'rank', newValue);
+  
+    // Save to localStorage
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true);
+    // Only log if rank actually changed
+    if (oldValue !== newValue) {
+      const message = `Rank updated from "${oldValue}" to "${newValue}" for Company Traction.`;
+      addActivityLog(message);
+    }
   };
+  
 
   
 
@@ -641,6 +831,9 @@ const CompanyTraction = () => {
   
       if (response.ok) {
         console.log('✅ New traction item added on server:', result.data);
+
+        addActivityLog(`Company traction created with description: ${form.description}`);
+
   
         // Update local state with server-generated ID
         const serverNewItem = result.data;
