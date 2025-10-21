@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import useActivityLogStore from '../../../store/left-lower-content/6.company-traction/3.activityLogStore';
 import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -23,6 +24,9 @@ const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 const CompanyTraction = () => {
 
   const organization = useLayoutSettingsStore((state) => state.organization);
+  const activityLogs = useActivityLogStore((state) => state.activityLogs);
+  const [showLogs, setShowLogs] = useState(false);
+  const toggleActivityLog = () => setShowLogs(prev => !prev);
 
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
@@ -618,7 +622,10 @@ const CompanyTraction = () => {
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
             </div>
-            <div className="pure-gray-btn cursor-pointer">
+            {/* <div className="pure-gray-btn cursor-pointer">
+              <FontAwesomeIcon icon={faSyncAlt} />
+            </div> */}
+            <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
               <FontAwesomeIcon icon={faSyncAlt} />
             </div>
           </div>
@@ -761,19 +768,6 @@ const CompanyTraction = () => {
                       ))}
                     </select>
                   </td>
-
-
-                  {/* Editable Description Column */}
-                  {/* <td className="border px-4 py-2">
-                    <input
-                      type="text"
-                      className="w-full text-xs"
-                      value={row.description}
-                      onChange={(e) => handleDescriptionChange(e, row.id)}
-                      disabled={!isSuperAdmin} // Disable for non-superadmins
-                    />
-                  </td> */}
-
                   {/* Editable Description Column */}
                   <td className="border px-4 py-2">
                     <textarea
@@ -814,18 +808,6 @@ const CompanyTraction = () => {
                       </div>
                     )}
                   </td>
-
-
-                  {/* Editable Annual Priority Column */}
-                  {/* <td className="border px-4 py-2">
-                    <input
-                      type="text"
-                      className="w-full text-xs"
-                      value={row.annualPriority}
-                      onChange={(e) => handleAnnualPriorityChange(e, row.id)}
-                      disabled={!isSuperAdmin} // Disable if user is not superadmin
-                    />
-                  </td> */}
 
                   {/* Editable Annual Priority Column */}
                   <td className="border px-4 py-2">
@@ -875,18 +857,6 @@ const CompanyTraction = () => {
                       <div className="text-xs">{row.dueDate}</div>
                     )}
                   </td>
-
-                  {/* Editable Rank Column with Circle and Conditional Colors */}
-                  {/* <td className="border px-4 py-2">
-                    <input
-                      type="text"
-                      className={`w-8 h-8 flex items-center justify-center rounded-full text-xs text-center ${getRankColor(row.rank)}`}
-                      value={row.rank}
-                      onChange={(e) => handleRankChange(e, row.id)}
-                      disabled={!isSuperAdmin} // Disable if user is not superadmin
-                    />
-                  </td> */}
-
                   {/* Editable Rank Column with Oblong and Conditional Colors */}
                   <td className="border px-4 py-2">
                     {editingRank === row.id ? (
@@ -913,9 +883,6 @@ const CompanyTraction = () => {
                       </div>
                     )}
                   </td>
-
-
-
 
                 <td className="border px-4 py-2 text-center">
                   <FontAwesomeIcon
@@ -1181,6 +1148,19 @@ const CompanyTraction = () => {
           </div>
         </div>
       )}
+
+      <div className={`activity-log-panel ${showLogs ? 'show' : ''}`}>
+        <h2>Activity Logs History</h2>
+        <ul>
+          {activityLogs.map((log) => (
+            <li key={log.id}>
+              <strong>{log.author}</strong> {log.message}
+              <span>{log.timestamp}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
 
     </div>
   );

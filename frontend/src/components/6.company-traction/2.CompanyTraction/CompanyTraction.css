@@ -428,7 +428,49 @@
   background-color: #F44336; /* Red for Low Priority */
 }
 
-/* Add more conditional styles as needed */
+.activity-log-panel {
+  position: fixed;
+  top: 0;
+  right: -350px; /* hidden off screen */
+  width: 300px;
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto;
+  transition: right 0.3s ease-in-out;
+  z-index: 100;
+}
+
+.activity-log-panel.show {
+  right: 0; /* slide in */
+}
+
+.activity-log-panel h2 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.activity-log-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-log-panel li {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #111827;
+  line-height: 1.25rem;
+}
+
+.activity-log-panel span {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
 
 
 
