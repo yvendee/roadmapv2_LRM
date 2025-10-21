@@ -14,6 +14,7 @@ import { useCompanyTractionUserStore } from '../../../store/layout/companyTracti
 import useAnnualPrioritiesStore from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import useActivityLogStore from '../../../store/left-lower-content/6.company-traction/3.activityLogStore';
 import useCompanyTractionStore, { initialCompanyTraction } from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import { getRelativeTimeFromDate } from '../../../utils/getRelativeTimeFromDate';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -622,12 +623,11 @@ const CompanyTraction = () => {
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
             </div>
-            {/* <div className="pure-gray-btn cursor-pointer">
-              <FontAwesomeIcon icon={faSyncAlt} />
-            </div> */}
-            <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
-              <FontAwesomeIcon icon={faSyncAlt} />
-            </div>
+            {loggedUser?.role === 'superadmin' && (
+              <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
+                <FontAwesomeIcon icon={faSyncAlt} />
+              </div>
+            )}
           </div>
         )}
 
@@ -1166,7 +1166,9 @@ const CompanyTraction = () => {
           {activityLogs.map((log) => (
             <li key={log.id}>
               <span className="activity-log-author">{log.author}</span> {log.message}
-              <span>{log.timestamp}</span>
+              <span className="activity-log-time">
+                {getRelativeTimeFromDate(log.timestamp)}
+              </span>
             </li>
           ))}
         </ul>

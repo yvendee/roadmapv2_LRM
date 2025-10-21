@@ -12,6 +12,7 @@ import useDepartmentTractionStore, { initialDepartmentTraction } from '../../../
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
 import useActivityLogStore from '../../../store/left-lower-content/7.department-traction/3.activityLogStore';
 import useDepartmentAnnualPrioritiesStore from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
+import { getRelativeTimeFromDate } from '../../../utils/getRelativeTimeFromDate';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -577,9 +578,11 @@ const DepartmentTractionTable = () => {
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
             </div>
-            <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
-              <FontAwesomeIcon icon={faSyncAlt} />
-            </div>
+            {loggedUser?.role === 'superadmin' && (
+              <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
+                <FontAwesomeIcon icon={faSyncAlt} />
+              </div>
+            )}
           </div>
         )}
 
@@ -1149,7 +1152,9 @@ const DepartmentTractionTable = () => {
           {activityLogs.map((log) => (
             <li key={log.id}>
               <span className="activity-log-author">{log.author}</span> {log.message}
-              <span>{log.timestamp}</span>
+              <span className="activity-log-time">
+                {getRelativeTimeFromDate(log.timestamp)}
+              </span>
             </li>
           ))}
         </ul>
