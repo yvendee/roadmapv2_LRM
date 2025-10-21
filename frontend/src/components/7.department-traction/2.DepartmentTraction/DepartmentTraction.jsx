@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import useDepartmentTractionStore, { initialDepartmentTraction } from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import { useCompanyTractionUserStore } from '../../../store/layout/companyTractionUserStore';
+import useActivityLogStore from '../../../store/left-lower-content/7.department-traction/3.activityLogStore';
 import useDepartmentAnnualPrioritiesStore from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -21,6 +22,10 @@ const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 const DepartmentTractionTable = () => {
 
   const organization = useLayoutSettingsStore.getState().organization;
+  const activityLogs = useActivityLogStore((state) => state.activityLogs);
+  const [showLogs, setShowLogs] = useState(false);
+  const toggleActivityLog = () => setShowLogs(prev => !prev);
+
 
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -1114,19 +1119,41 @@ const DepartmentTractionTable = () => {
       )}
 
       {showConfirmModal && (
-              <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
-                <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
-                  <div className="modal-add-title">Confirm Discard</div>
-                  <p className="text-gray-700 text-sm mb-4">
-                    Are you sure you want to discard all unsaved changes?
-                  </p>
-                  <div className="modal-add-buttons">
-                    <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discard</button>
-                    <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
-                  </div>
-                </div>
-              </div>
+        <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-add-title">Confirm Discard</div>
+            <p className="text-gray-700 text-sm mb-4">
+              Are you sure you want to discard all unsaved changes?
+            </p>
+            <div className="modal-add-buttons">
+              <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discard</button>
+              <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
       )}
+
+      {/* Activity Log Panel */}
+      <div className={`activity-log-panel ${showLogs ? 'show' : ''}`}>
+        <div className="header">
+          <h2>Activity Logs History</h2>
+          <button
+            className="close-btn"
+            onClick={() => setShowLogs(false)}
+            aria-label="Close Activity Logs"
+          >
+            ×
+          </button>
+        </div>
+        <ul>
+          {activityLogs.map((log) => (
+            <li key={log.id}>
+              <strong>{log.author}</strong> {log.message}
+              <span>{log.timestamp}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
     </div>
   );

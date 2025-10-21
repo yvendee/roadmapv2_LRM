@@ -397,6 +397,77 @@
   }
 }
 
+.activity-log-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 320px;
+  background: white;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.activity-log-panel.show {
+  transform: translateX(0);
+}
+
+/* Header styles */
+.activity-log-panel .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Close button */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+/* Scrollable list */
+.activity-log-panel ul {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 0.5rem; /* for scrollbar spacing */
+  list-style: none;
+  margin: 0;
+}
+
+.activity-log-panel ul li {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.activity-log-panel ul li strong {
+  font-weight: 600;
+}
+
+.activity-log-panel ul li span {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+
   
   
   
