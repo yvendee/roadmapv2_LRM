@@ -1153,7 +1153,7 @@ const CompanyTraction = () => {
       {/* Activity Log Panel */}
       <div className={`activity-log-panel ${showLogs ? 'show' : ''}`}>
         <div className="header">
-          <h2>Activity Logs History</h2>
+          <h2 style={{ fontWeight: 'bold' }}>Activity Logs History</h2>
           <button
             className="close-btn"
             onClick={() => setShowLogs(false)}
@@ -1171,6 +1171,7 @@ const CompanyTraction = () => {
           ))}
         </ul>
       </div>
+
 
 
     </div>

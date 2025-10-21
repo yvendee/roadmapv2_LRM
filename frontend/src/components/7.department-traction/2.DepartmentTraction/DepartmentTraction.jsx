@@ -577,7 +577,7 @@ const DepartmentTractionTable = () => {
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
             </div>
-            <div className="pure-gray-btn cursor-pointer">
+            <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
               <FontAwesomeIcon icon={faSyncAlt} />
             </div>
           </div>
@@ -1136,7 +1136,7 @@ const DepartmentTractionTable = () => {
       {/* Activity Log Panel */}
       <div className={`activity-log-panel ${showLogs ? 'show' : ''}`}>
         <div className="header">
-          <h2>Activity Logs History</h2>
+          <h2 style={{ fontWeight: 'bold' }}>Activity Logs History</h2>
           <button
             className="close-btn"
             onClick={() => setShowLogs(false)}
@@ -1154,6 +1154,7 @@ const DepartmentTractionTable = () => {
           ))}
         </ul>
       </div>
+
 
     </div>
   );
