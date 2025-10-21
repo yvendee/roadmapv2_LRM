@@ -105,14 +105,15 @@ const useActivityLogStore = create((set) => ({
     set((state) => ({
       activityLogs: [
         {
-          id: Date.now(),
+          id: log.id || Date.now(),
           author: log.author,
           message: log.message,
-          timestamp: new Date().toLocaleString(), // or your preferred format
+          timestamp: log.timestamp || new Date().toISOString(), // consistent ISO format
         },
         ...state.activityLogs,
       ],
     })),
+  
 
   clearActivityLogs: () => set({ activityLogs: [] }),
 }));

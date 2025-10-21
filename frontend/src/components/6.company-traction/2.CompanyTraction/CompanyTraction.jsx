@@ -29,6 +29,12 @@ const CompanyTraction = () => {
   const [showLogs, setShowLogs] = useState(false);
   const toggleActivityLog = () => setShowLogs(prev => !prev);
 
+  const rawAddActivityLog = useActivityLogStore((state) => state.addActivityLog);
+
+
+
+
+
 
 
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
@@ -73,15 +79,22 @@ const CompanyTraction = () => {
     };
   };
 
+
   const addActivityLog = (message) => {
     if (!loggedUser?.fullname) return;
   
-    const newLog = createActivityLog(loggedUser.fullname, message);
+    const newLog = {
+      id: Date.now(),
+      author: loggedUser.fullname,
+      message,
+      timestamp: new Date().toISOString(),
+    };
   
-    setActivityLogs((prevLogs) => [...prevLogs, newLog]);
+    rawAddActivityLog(newLog); // ✅ use store method
   
     console.log('New Activity Log:', newLog);
   };
+  
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -332,7 +345,7 @@ const CompanyTraction = () => {
         timestamp: new Date().toISOString(),
       };
   
-      setActivityLogs((prevLogs) => [...prevLogs, logEntry]);
+      addActivityLog(logEntry.message);
   
       console.log('New Activity Log:', {
         author: logEntry.author,
@@ -379,7 +392,7 @@ const CompanyTraction = () => {
       timestamp: new Date().toISOString(),
     };
   
-    setActivityLogs((prevLogs) => [...prevLogs, logEntry]);
+    addActivityLog(logEntry.message);
   
     console.log('New Activity Log:', {
       author: logEntry.author,
