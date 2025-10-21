@@ -29,6 +29,8 @@ const CompanyTraction = () => {
   const [showLogs, setShowLogs] = useState(false);
   const toggleActivityLog = () => setShowLogs(prev => !prev);
 
+
+
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -41,6 +43,10 @@ const CompanyTraction = () => {
     dueDate: '',
     rank: '',
   });
+
+
+  
+  
 
   const addCompanyTraction = useCompanyTractionStore((state) => state.addCompanyTraction);
 
@@ -57,6 +63,25 @@ const CompanyTraction = () => {
   const updateCompanyTractionField = useCompanyTractionStore(
     (state) => state.updateCompanyTractionField
   );
+
+  const createActivityLog = (author, message) => {
+    return {
+      id: Date.now(), // simple unique ID
+      author,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  };
+
+  const addActivityLog = (message) => {
+    if (!loggedUser?.fullname) return;
+  
+    const newLog = createActivityLog(loggedUser.fullname, message);
+  
+    setActivityLogs((prevLogs) => [...prevLogs, newLog]);
+  
+    console.log('New Activity Log:', newLog);
+  };
 
   // const [activeQuarter, setActiveQuarter] = useState('Q2');
   const [activeQuarter, setActiveQuarter] = useState(() => {
@@ -258,45 +283,113 @@ const CompanyTraction = () => {
   };
 
 
-  const handleEditChange = (e, rowId, field) => {
+  // const handleEditChange = (e, rowId, field) => {
 
-    setIsEditing(true); 
-    const value = e.target.value;
+  //   setIsEditing(true); 
+  //   const value = e.target.value;
+  
+  //   // Update the store
+  //   updateCompanyTractionField(activeQuarter, rowId, field, value);
+  
+  //   // Get latest store data and persist it
+  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  // };
+
+  const handleEditChange = (e, rowId, field) => {
+    const newValue = e.target.value;
+  
+    setIsEditing(true);
+  
+    // Get the current row before updating
+    const { companyTraction } = useCompanyTractionStore.getState();
+    const currentRow = companyTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.[field] || '';
   
     // Update the store
-    updateCompanyTractionField(activeQuarter, rowId, field, value);
+    updateCompanyTractionField(activeQuarter, rowId, field, newValue);
   
-    // Get latest store data and persist it
+    // Save to localStorage
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+    // Define readable field names for activity messages
+    const fieldNames = {
+      who: 'Who',
+      collaborator: 'Collaborator',
+      description: 'Description',
+      annualPriority: 'Annual Priority',
+      dueDate: 'Due Date',
+      rank: 'Rank',
+    };
+  
+    // Only log if value actually changed
+    if (oldValue !== newValue) {
+      const logEntry = {
+        id: Date.now(),
+        author: loggedUser?.fullname || 'Unknown User',
+        message: `${fieldNames[field] || field} updated from "${oldValue}" to "${newValue}" for Company Traction.`,
+        timestamp: new Date().toISOString(),
+      };
+  
+      setActivityLogs((prevLogs) => [...prevLogs, logEntry]);
+  
+      console.log('New Activity Log:', {
+        author: logEntry.author,
+        message: logEntry.message,
+        timestamp: logEntry.timestamp,
+      });
+    }
   };
+  
 
-//   const handleEditChange = (e, id, field) => {
-//   const newValue = e.target.value;
-//   setCompanyTraction((prev) => {
-//     const updated = { ...prev };
-//     for (const quarter in updated) {
-//       updated[quarter] = updated[quarter].map((item) =>
-//         item.id === id ? { ...item, [field]: newValue } : item
-//       );
-//     }
-//     return updated;
-//   });
-//   setIsEditing(true); // ✅ Show action buttons
-// };
+  // const handleProgressChange = (e, rowId) => {
+  //   const value = e.target.value;
+  
+  //   // Update the store
+  //   updateCompanyTractionField(activeQuarter, rowId, 'progress', value);
+  
+  //   // Optional: persist to localStorage
+  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
+  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true); // Mark as edited
+  // };
 
   const handleProgressChange = (e, rowId) => {
-    const value = e.target.value;
+    const newValue = e.target.value;
+  
+    const { companyTraction } = useCompanyTractionStore.getState();
+    const row = companyTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const previousValue = row?.progress || '%';
+    const description = row?.description || '';
   
     // Update the store
-    updateCompanyTractionField(activeQuarter, rowId, 'progress', value);
+    updateCompanyTractionField(activeQuarter, rowId, 'progress', newValue);
   
-    // Optional: persist to localStorage
+    // Save to localStorage
     const updatedData = useCompanyTractionStore.getState().companyTraction;
     localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
+  
+    // Logging the activity
+    const logEntry = {
+      id: Date.now(),
+      author: loggedUser?.fullname || 'Unknown User',
+      message: `Progress updated from ${previousValue} to ${newValue} for Company Traction with description: ${description}`,
+      timestamp: new Date().toISOString(),
+    };
+  
+    setActivityLogs((prevLogs) => [...prevLogs, logEntry]);
+  
+    console.log('New Activity Log:', {
+      author: logEntry.author,
+      message: logEntry.message,
+      timestamp: logEntry.timestamp,
+    });
   
     setIsEditing(true); // Mark as edited
   };
+  
   
 
   // Function to determine the color based on progress
