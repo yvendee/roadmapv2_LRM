@@ -724,7 +724,7 @@ const CompanyTraction = () => {
           setIsEditing(false);
 
           // Log all activity logs
-          const activityLogData = useActivityLogStore.getState().activityLog;
+          const activityLogData = useActivityLogStore.getState().activityLogs;
           console.log('Activity Log Data:', activityLogData);
 
         } else if (res.status === 401) {
