@@ -500,7 +500,7 @@
 
 .activity-log-title {
   font-weight: 900;
-  font-size: 1.35rem; /* Slightly larger */
+  font-size: 1.20rem; /* Slightly larger */
   color: #000000; /* Pure black */
 }
 
@@ -509,7 +509,7 @@
   color: #000000; /* Pure black for maximum contrast */
   margin-right: 6px;
   display: inline-block;
-  font-size: 1.1rem; /* Increased font size */
+  font-size: 1.12rem; /* Increased font size */
 }
 
 
