@@ -32,11 +32,6 @@ const CompanyTraction = () => {
   const rawAddActivityLog = useActivityLogStore((state) => state.addActivityLog);
 
 
-
-
-
-
-
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -835,7 +830,7 @@ const CompanyTraction = () => {
       const result = await response.json();
   
       if (response.ok) {
-        console.log('✅ New traction item added on server:', result.data);
+        ENABLE_CONSOLE_LOGS && console.log('✅ New traction item added on server:', result.data);
 
         addActivityLog(`Company traction created with description: ${form.description}`);
 

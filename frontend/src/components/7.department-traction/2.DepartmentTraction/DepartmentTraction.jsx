@@ -27,6 +27,8 @@ const DepartmentTractionTable = () => {
   const [showLogs, setShowLogs] = useState(false);
   const toggleActivityLog = () => setShowLogs(prev => !prev);
 
+  const rawAddActivityLog = useActivityLogStore((state) => state.addActivityLog);
+
 
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -52,10 +54,37 @@ const DepartmentTractionTable = () => {
 
   const { users, selectedUser, setUsers, setSelectedUser } = useCompanyTractionUserStore();
 
+
   // const storeData = useDepartmentTractionStore((state) => state.departmentTraction);
   const updateDepartmentTractionField = useDepartmentTractionStore(
     (state) => state.updateDepartmentTractionField
   );
+
+  const createActivityLog = (author, message) => {
+    return {
+      id: Date.now(), // simple unique ID
+      author,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  };
+
+
+
+  const addActivityLog = (message) => {
+    if (!loggedUser?.fullname) return;
+  
+    const newLog = {
+      id: Date.now(),
+      author: loggedUser.fullname,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  
+    rawAddActivityLog(newLog); // ✅ use store method
+  
+    console.log('New Activity Log:', newLog);
+  };
 
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
@@ -71,7 +100,8 @@ const DepartmentTractionTable = () => {
   //   localStorage.setItem('activeQuarter', activeQuarter);
   // }, [activeQuarter]);
 
-  
+
+
   useEffect(() => {
     async function fetchQuarterFromServer() {
       try {
@@ -188,35 +218,92 @@ const DepartmentTractionTable = () => {
     return 'just now';
   };
 
+  // const handleAddComment = () => {
+  //   setIsEditing(true); // Mark as edited
+  //   if (newComment && selectedItem) {
+  //     const updatedCompanyTraction = { ...departmentTraction };
+  
+  //     const newCommentData = {
+  //       author: loggedUser?.fullname || 'Anonymous',
+  //       message: newComment,
+  //       posted: new Date().toISOString(), // Save full timestamp
+  //     };
+  
+  //     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
+  //       item.id === selectedItem.id
+  //         ? { ...item, comment: [...item.comment, newCommentData] }
+  //         : item
+  //     );
+  
+  //     setDepartmentTraction(updatedCompanyTraction);
+  //     localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
+  //     setNewComment('');
+  //     setCommentModalOpen(false);
+  //   }
+  // };
+
+
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
-    if (newComment && selectedItem) {
-      const updatedCompanyTraction = { ...departmentTraction };
+    if (newComment?.trim() && selectedItem) {
+      const updatedDepartmentTraction = { ...departmentTraction };
   
       const newCommentData = {
         author: loggedUser?.fullname || 'Anonymous',
-        message: newComment,
+        message: newComment.trim(),
         posted: new Date().toISOString(), // Save full timestamp
       };
   
-      updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
+      updatedDepartmentTraction[activeQuarter] = updatedDepartmentTraction[activeQuarter].map(item =>
         item.id === selectedItem.id
           ? { ...item, comment: [...item.comment, newCommentData] }
           : item
       );
   
-      setDepartmentTraction(updatedCompanyTraction);
-      localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
+      setDepartmentTraction(updatedDepartmentTraction);
+      localStorage.setItem('departmentTractionData', JSON.stringify(updatedDepartmentTraction));
+      
+      addActivityLog(`Comment added to Department Traction: "${selectedItem.description || 'No Description'}"`);
+  
       setNewComment('');
       setCommentModalOpen(false);
     }
   };
   
+  
+
+
+
+  // const handleDeleteComment = (itemId, commentIndex) => {
+  //   setIsEditing(true); // Mark as edited
+  //   const updatedCompanyTraction = { ...departmentTraction };
+  //   updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
+  //     item.id === itemId
+  //       ? {
+  //           ...item,
+  //           comment: item.comment.filter((_, index) => index !== commentIndex),
+  //         }
+  //       : item
+  //   );
+  
+  //   setDepartmentTraction(updatedCompanyTraction);
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
+  
+  //   // Also update the selectedItem to reflect the changes in the modal
+  //   const updatedSelectedItem = {
+  //     ...selectedItem,
+  //     comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
+  //   };
+  //   setSelectedItem(updatedSelectedItem);
+  // };
+
 
   const handleDeleteComment = (itemId, commentIndex) => {
     setIsEditing(true); // Mark as edited
-    const updatedCompanyTraction = { ...departmentTraction };
-    updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
+  
+    const updatedDepartmentTraction = { ...departmentTraction };
+  
+    updatedDepartmentTraction[activeQuarter] = updatedDepartmentTraction[activeQuarter].map(item =>
       item.id === itemId
         ? {
             ...item,
@@ -225,34 +312,67 @@ const DepartmentTractionTable = () => {
         : item
     );
   
-    setDepartmentTraction(updatedCompanyTraction);
-    localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
+    setDepartmentTraction(updatedDepartmentTraction);
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedDepartmentTraction));
   
-    // Also update the selectedItem to reflect the changes in the modal
-    const updatedSelectedItem = {
-      ...selectedItem,
-      comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
-    };
-    setSelectedItem(updatedSelectedItem);
+    if (selectedItem) {
+      // Also update the selectedItem to reflect the changes in the modal
+      const updatedSelectedItem = {
+        ...selectedItem,
+        comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
+      };
+      setSelectedItem(updatedSelectedItem);
+  
+      // Activity log
+      addActivityLog(`Deleted a comment from Department Traction: "${selectedItem.description || 'No Description'}"`);
+    }
   };
   
+  
+
+
+
+
+  // const handleDeleteRow = (rowId) => {
+
+  //   setIsEditing(true); // Mark as edited
+
+  //   // Create a copy of the current department traction data
+  //   const updatedCompanyTraction = { ...departmentTraction };
+    
+  //   // Remove the row with the matching rowId from the active quarter
+  //   updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].filter(item => item.id !== rowId);
+    
+  //   // Update the state with the new Department Traction data
+  //   setDepartmentTraction(updatedCompanyTraction);
+    
+  //   // Update localStorage to persist changes
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
+  // };
+  
+
   const handleDeleteRow = (rowId) => {
-
     setIsEditing(true); // Mark as edited
-
-    // Create a copy of the current department traction data
-    const updatedCompanyTraction = { ...departmentTraction };
-    
-    // Remove the row with the matching rowId from the active quarter
-    updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].filter(item => item.id !== rowId);
-    
-    // Update the state with the new Department Traction data
-    setDepartmentTraction(updatedCompanyTraction);
-    
-    // Update localStorage to persist changes
-    localStorage.setItem('departmentTractionData', JSON.stringify(updatedCompanyTraction));
+  
+    // Get the row being deleted (for logging)
+    const row = departmentTraction[activeQuarter]?.find(item => item.id === rowId);
+  
+    // Create a copy and remove the row
+    const updatedDepartmentTraction = { ...departmentTraction };
+    updatedDepartmentTraction[activeQuarter] = updatedDepartmentTraction[activeQuarter].filter(item => item.id !== rowId);
+  
+    // Update the state and persist
+    setDepartmentTraction(updatedDepartmentTraction);
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedDepartmentTraction));
+  
+    // Log deletion if row existed
+    if (row) {
+      addActivityLog(`Deleted department traction: "${row.description || 'No Description'}"`);
+    }
   };
   
+
+
 
   const openModal = (item) => {
     setSelectedItem(item);
@@ -260,33 +380,103 @@ const DepartmentTractionTable = () => {
   };
 
 
-  const handleEditChange = (e, rowId, field) => {
-    setIsEditing(true); 
+  // const handleEditChange = (e, rowId, field) => {
+  //   setIsEditing(true); 
     
-    const value = e.target.value;
+  //   const value = e.target.value;
+  
+  //   // Update the store
+  //   updateDepartmentTractionField(activeQuarter, rowId, field, value);
+  
+  //   // Get latest store data and persist it
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  // };
+
+
+  // const handleEditChange = (e, rowId, field) => {
+  //   setIsEditing(true);
+
+  //   const value = e.target.value;
+
+  //   // Update store
+  //   updateDepartmentTractionField(activeQuarter, rowId, field, value);
+
+  //   // Get updated data from store and persist to localStorage
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+
+  //   // Optionally log activity
+  //   const addActivityLog = useActivityLogStore.getState().addActivityLog;
+  //   addActivityLog({
+  //     author: loggedUser?.fullname || 'Anonymous',
+  //     message: `Department traction updated: '${field}' changed to '${value}' for item with ID ${rowId}`,
+  //   });
+  // };
+
+  const handleEditChange = (e, rowId, field) => {
+    const newValue = e.target.value;
+  
+    setIsEditing(true);
+  
+    // Get the current row before updating
+    const { departmentTraction } = useDepartmentTractionStore.getState();
+    const currentRow = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.[field] || '';
   
     // Update the store
-    updateDepartmentTractionField(activeQuarter, rowId, field, value);
+    updateDepartmentTractionField(activeQuarter, rowId, field, newValue);
   
-    // Get latest store data and persist it
-    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
-    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-  };
-
-
-
-  const handleProgressChange = (e, rowId) => {
-    const value = e.target.value;
-  
-    // Update the store
-    updateDepartmentTractionField(activeQuarter, rowId, 'progress', value);
-  
-    // Optional: persist to localStorage
+    // Save to localStorage
     const updatedData = useDepartmentTractionStore.getState().departmentTraction;
     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true); // Mark as edited
+    // Define readable field names for activity messages
+    const fieldNames = {
+      who: 'Who',
+      collaborator: 'Collaborator',
+      description: 'Description',
+      annualPriority: 'Annual Priority',
+      dueDate: 'Due Date',
+      rank: 'Rank',
+    };
+  
+    // Only log if value actually changed
+    if (oldValue !== newValue) {
+      const logEntry = {
+        id: Date.now(),
+        author: loggedUser?.fullname || 'Unknown User',
+        message: `${fieldNames[field] || field} updated from "${oldValue}" to "${newValue}" for Department Traction.`,
+        timestamp: new Date().toISOString(),
+      };
+  
+      // Log it
+      addActivityLog(logEntry.message);
+  
+      // Console output for debugging
+      console.log('New Activity Log:', {
+        author: logEntry.author,
+        message: logEntry.message,
+        timestamp: logEntry.timestamp,
+      });
+    }
   };
+  
+
+  // const handleProgressChange = (e, rowId) => {
+  //   const value = e.target.value;
+  
+  //   // Update the store
+  //   updateDepartmentTractionField(activeQuarter, rowId, 'progress', value);
+  
+  //   // Optional: persist to localStorage
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true); // Mark as edited
+  // };
+
+
 
   // Function to determine the color based on progress
   const getProgressColor = (progress) => {
@@ -296,51 +486,250 @@ const DepartmentTractionTable = () => {
     return 'bg-green-500'; // Green for progress >= 95%
   };
 
+  // const handleProgressChange = (e, rowId) => {
+  //   const newValue = e.target.value;
+  
+  //   const { departmentTraction } = useDepartmentTractionStore.getState();
+  //   const row = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+  //   const previousValue = row?.progress || '%';
+  //   const description = row?.description || '';
+  
+  //   // Update the store
+  //   updateDepartmentTractionField(activeQuarter, rowId, 'progress', newValue);
+  
+  //   // Save to localStorage
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+  //   // Logging the activity
+  //   const logEntry = {
+  //     id: Date.now(),
+  //     author: loggedUser?.fullname || 'Unknown User',
+  //     message: `Progress updated from ${previousValue} to ${newValue} for Department Traction with description: ${description}`,
+  //     timestamp: new Date().toISOString(),
+  //   };
+  
+  //   addActivityLog(logEntry.message);
+  
+  //   console.log('New Activity Log:', {
+  //     author: logEntry.author,
+  //     message: logEntry.message,
+  //     timestamp: logEntry.timestamp,
+  //   });
+  
+  //   setIsEditing(true); // Mark as edited
+  // };
+  
+
+  const handleProgressChange = (e, rowId) => {
+    const newValue = e.target.value;
+  
+    const { departmentTraction } = useDepartmentTractionStore.getState();
+    const row = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const previousValue = row?.progress || '%';
+    const description = row?.description || '';
+  
+    // Update the store
+    updateDepartmentTractionField(activeQuarter, rowId, 'progress', newValue);
+  
+    // Save to localStorage
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    // Logging the activity
+    const logEntry = {
+      id: Date.now(),
+      author: loggedUser?.fullname || 'Unknown User',
+      message: `Progress updated from ${previousValue} to ${newValue} for Department Traction with description: ${description}`,
+      timestamp: new Date().toISOString(),
+    };
+  
+    addActivityLog(logEntry.message);
+  
+    console.log('New Activity Log:', {
+      author: logEntry.author,
+      message: logEntry.message,
+      timestamp: logEntry.timestamp,
+    });
+  
+    setIsEditing(true); // Mark as edited
+  };
+  
+
+  // const handleDueDateChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   updateDepartmentTractionField(activeQuarter, rowId, 'dueDate', value);
+  
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
 
   const handleDueDateChange = (e, rowId) => {
-    const value = e.target.value;
-    updateDepartmentTractionField(activeQuarter, rowId, 'dueDate', value);
+    const newValue = e.target.value;
+    setIsEditing(true);
   
+    // Get current row before update
+    const { departmentTraction } = useDepartmentTractionStore.getState();
+    const currentRow = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.dueDate || '';
+    const description = currentRow?.description || '';
+  
+    // Update store
+    updateDepartmentTractionField(activeQuarter, rowId, 'dueDate', newValue);
+  
+    // Persist to localStorage
     const updatedData = useDepartmentTractionStore.getState().departmentTraction;
     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true);
+    // Only log change if different
+    if (oldValue !== newValue) {
+      const message = `Due Date updated from "${oldValue}" to "${newValue}" for Department Traction with description: ${description}`;
+      addActivityLog(message);
+  
+      console.log('New Activity Log:', {
+        author: loggedUser?.fullname || 'Unknown User',
+        message,
+        timestamp: new Date().toISOString(),
+      });
+    }
   };
   
+  
+  // const handleDescriptionChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setDescription(value); 
+  //   updateDepartmentTractionField(activeQuarter, rowId, 'description', value);
+  
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+  
+
   const handleDescriptionChange = (e, rowId) => {
-    const value = e.target.value;
-    setDescription(value); 
-    updateDepartmentTractionField(activeQuarter, rowId, 'description', value);
+    const newValue = e.target.value;
+    setDescription(newValue); // keep UI controlled
+    setIsEditing(true);
   
+    // Get the current row before updating
+    const { departmentTraction } = useDepartmentTractionStore.getState();
+    const currentRow = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.description || '';
+  
+    // Update the store
+    updateDepartmentTractionField(activeQuarter, rowId, 'description', newValue);
+  
+    // Save updated data to localStorage
     const updatedData = useDepartmentTractionStore.getState().departmentTraction;
     localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
   
-    setIsEditing(true);
-  };
+    // Log only if the description changed
+    if (oldValue !== newValue) {
+      const message = `Description updated from "${oldValue}" to "${newValue}" for Department Traction.`;
+      addActivityLog(message);
   
-  const handleAnnualPriorityChange = (e, rowId) => {
-    const value = e.target.value;
-    setAnnualPriority(value); 
-    updateDepartmentTractionField(activeQuarter, rowId, 'annualPriority', value);
-  
-    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
-    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-  
-    setIsEditing(true);
-  };
-  
-  const handleRankChange = (e, rowId) => {
-    const value = e.target.value;
-    setRank(value); 
-    updateDepartmentTractionField(activeQuarter, rowId, 'rank', value);
-  
-    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
-    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
-  
-    setIsEditing(true);
+      console.log('New Activity Log:', {
+        author: loggedUser?.fullname || 'Unknown User',
+        message,
+        timestamp: new Date().toISOString(),
+      });
+    }
   };
 
+  
+  // const handleAnnualPriorityChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setAnnualPriority(value); 
+  //   updateDepartmentTractionField(activeQuarter, rowId, 'annualPriority', value);
+  
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+  
+
+  const handleAnnualPriorityChange = (e, rowId) => {
+    const newValue = e.target.value;
+    setAnnualPriority(newValue); // for controlled input
+  
+    setIsEditing(true);
+  
+    // Get the current value before updating
+    const { departmentTraction } = useDepartmentTractionStore.getState();
+    const currentRow = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.annualPriority || '';
+  
+    // Update the store
+    updateDepartmentTractionField(activeQuarter, rowId, 'annualPriority', newValue);
+  
+    // Save to localStorage
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    // Only log if value actually changed
+    if (oldValue !== newValue) {
+      const message = `Annual Priority updated from "${oldValue}" to "${newValue}" for Department Traction.`;
+      addActivityLog(message);
+  
+      console.log('New Activity Log:', {
+        author: loggedUser?.fullname || 'Unknown User',
+        message,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  };
+  
+  // const handleRankChange = (e, rowId) => {
+  //   const value = e.target.value;
+  //   setRank(value); 
+  //   updateDepartmentTractionField(activeQuarter, rowId, 'rank', value);
+  
+  //   const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+  //   localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+  //   setIsEditing(true);
+  // };
+
   // Function to determine rank color
+  
+  const handleRankChange = (e, rowId) => {
+    const newValue = e.target.value;
+    setRank(newValue); // for controlled input
+  
+    setIsEditing(true);
+  
+    // Get the current value before updating
+    const { departmentTraction } = useDepartmentTractionStore.getState();
+    const currentRow = departmentTraction[activeQuarter]?.find((item) => item.id === rowId);
+    const oldValue = currentRow?.rank || '';
+  
+    // Update the store
+    updateDepartmentTractionField(activeQuarter, rowId, 'rank', newValue);
+  
+    // Save to localStorage
+    const updatedData = useDepartmentTractionStore.getState().departmentTraction;
+    localStorage.setItem('departmentTractionData', JSON.stringify(updatedData));
+  
+    // Only log if rank actually changed
+    if (oldValue !== newValue) {
+      const message = `Rank updated from "${oldValue}" to "${newValue}" for Department Traction.`;
+      addActivityLog(message);
+  
+      console.log('New Activity Log:', {
+        author: loggedUser?.fullname || 'Unknown User',
+        message,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  };
+
+  
+  
+  
   const getRankColor = (rank) => {
     switch (rank) {
       case '1':
@@ -366,7 +755,7 @@ const DepartmentTractionTable = () => {
       ENABLE_CONSOLE_LOGS && console.log('Updated data from localStorage:', savedData);
   
       localStorage.removeItem('departmentTractionData');
-      setIsEditing(false); // Hide save/discard buttons
+      
   
       try {
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
@@ -393,6 +782,12 @@ const DepartmentTractionTable = () => {
         if (response.ok) {
           ENABLE_CONSOLE_LOGS && console.log('✅ Department TractionData Data Updated:', result);
           localStorage.removeItem('departmentTractionData');
+          setIsEditing(false); // Hide save/discard buttons
+
+          // Log all activity logs
+          const activityLogData = useActivityLogStore.getState().activityLogs;
+          console.log('Activity Log Data:', activityLogData);
+
         } else {
           console.error('❌ Failed to update department traction data:', result.message);
         }
@@ -490,7 +885,9 @@ const DepartmentTractionTable = () => {
   
       if (response.ok) {
         ENABLE_CONSOLE_LOGS && console.log('✅ Traction item saved to backend:', result.data);
-  
+        
+        addActivityLog(`Department traction created with description: ${form.description}`);
+
         const serverNewItem = result.data;
   
         // Append to local state
