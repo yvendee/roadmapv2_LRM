@@ -5,6 +5,7 @@ import AnnualPriorities from './1.AnnualPriorities/AnnualPriorities';
 import CompanyTractionTable from './2.CompanyTraction/CompanyTraction';
 import useAnnualPrioritiesStore from '../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import useCompanyTractionStore from '../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import useCompanyActivityLogStore from '../../store/left-lower-content/6.company-traction/3.activityLogStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import logo from '../../assets/images/webp/momentum-logo.webp'; 
 import { useNavigate } from 'react-router-dom';
@@ -125,6 +126,42 @@ const CompanyTraction = () => {
 
   }, [organization]);
  
+
+
+  // Fetch Company-Traction Activity logs
+  useEffect(() => {
+    const fetchCompanyActivityLogs = async () => {
+      const encodedOrg = encodeURIComponent(organization);
+
+      try {
+        const res = await fetch(`${API_URL}/v1/company-traction/activity-logs`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ organizationName: organization }),
+        });
+
+        const json = await res.json();
+
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Company Activity Logs:', json);
+          useCompanyActivityLogStore.setState({ activityLogs: json.activityLogs });
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Company traction logs fetch failed:', json.message);
+        }
+      } catch (error) {
+        console.error('Company traction logs fetch error:', error);
+      }
+    };
+
+    fetchCompanyActivityLogs();
+  }, [organization]);
+
 
   return (
 

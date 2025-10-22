@@ -6,6 +6,7 @@ import DepartmentAnnualPriorities from './1.DepartmentAnnualPriorities/Departmen
 import DepartmentTractionTable from './2.DepartmentTraction/DepartmentTraction';
 import useDepartmentAnnualPrioritiesStore from '../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import useDepartmentTractionStore from '../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
+import useDepartmentActivityLogStore from '../../store/left-lower-content/7.department-traction/3.activityLogStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
@@ -115,6 +116,39 @@ const DepartmentTraction = () => {
 
   }, [organization]);
   
+  // Fetch Department-Traction Activity logs
+  useEffect(() => {
+    const fetchDepartmentActivityLogs = async () => {
+      const encodedOrg = encodeURIComponent(organization);
+  
+      try {
+        const res = await fetch(`${API_URL}/v1/department-traction/activity-logs`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ organizationName: organization }),
+        });
+  
+        const json = await res.json();
+  
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log('📥 Department Activity Logs:', json);
+          useDepartmentActivityLogStore.setState({ activityLogs: json.activityLogs });
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Department traction logs fetch failed:', json.message);
+        }
+      } catch (error) {
+        console.error('Department traction logs fetch error:', error);
+      }
+    };
+  
+    fetchDepartmentActivityLogs();
+  }, [organization]);
 
   return (
 
