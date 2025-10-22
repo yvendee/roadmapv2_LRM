@@ -119,14 +119,22 @@ const DepartmentTraction = () => {
   // Fetch Department-Traction Activity logs
   useEffect(() => {
     const fetchDepartmentActivityLogs = async () => {
-      const encodedOrg = encodeURIComponent(organization);
-  
       try {
+        // 1. Get CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+        const { csrf_token } = await csrfRes.json();
+  
+        // 2. Make request with CSRF token
         const res = await fetch(`${API_URL}/v1/department-traction/activity-logs`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
           },
           credentials: 'include',
           body: JSON.stringify({ organizationName: organization }),
@@ -140,15 +148,16 @@ const DepartmentTraction = () => {
         } else if (res.status === 401) {
           navigate('/', { state: { loginError: 'Session Expired' } });
         } else {
-          console.error('Department traction logs fetch failed:', json.message);
+          console.error('Department activity logs fetch failed:', json.message);
         }
-      } catch (error) {
-        console.error('Department traction logs fetch error:', error);
+      } catch (err) {
+        console.error('Department activity logs fetch error:', err);
       }
     };
   
     fetchDepartmentActivityLogs();
   }, [organization]);
+  
 
   return (
 

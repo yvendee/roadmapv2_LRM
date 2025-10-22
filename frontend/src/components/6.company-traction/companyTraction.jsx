@@ -131,37 +131,45 @@ const CompanyTraction = () => {
   // Fetch Company-Traction Activity logs
   useEffect(() => {
     const fetchCompanyActivityLogs = async () => {
-      const encodedOrg = encodeURIComponent(organization);
-
       try {
+        // 1. Get CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+  
+        if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+        const { csrf_token } = await csrfRes.json();
+  
+        // 2. Make request with CSRF token
         const res = await fetch(`${API_URL}/v1/company-traction/activity-logs`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf_token,
           },
           credentials: 'include',
           body: JSON.stringify({ organizationName: organization }),
         });
-
+  
         const json = await res.json();
-
+  
         if (res.ok) {
           ENABLE_CONSOLE_LOGS && console.log('📥 Company Activity Logs:', json);
           useCompanyActivityLogStore.setState({ activityLogs: json.activityLogs });
         } else if (res.status === 401) {
           navigate('/', { state: { loginError: 'Session Expired' } });
         } else {
-          console.error('Company traction logs fetch failed:', json.message);
+          console.error('Company activity logs fetch failed:', json.message);
         }
-      } catch (error) {
-        console.error('Company traction logs fetch error:', error);
+      } catch (err) {
+        console.error('Company activity logs fetch error:', err);
       }
     };
-
+  
     fetchCompanyActivityLogs();
   }, [organization]);
-
+  
 
   return (
 
