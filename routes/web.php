@@ -3644,7 +3644,83 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 //     return response()->json($data[$organization] ?? []);
 // });
 
- // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
+// ref:
+Route::post('/api/v1/company-traction/activity-logs', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+
+    if (!$organization) {
+        return response()->json(['message' => 'organizationName is required.'], 400);
+    }
+
+    $data = [
+
+        'Chuck Gulledge Advisors, LLC' => [
+            [
+                'id' => 1,
+                'author' => 'Maricar Aquino',
+                'message' => 'Progress updated from % to 0% for Company Traction with description: Close target',
+                'timestamp' => '2025-10-21T10:59:00',
+            ],
+            [
+                'id' => 2,
+                'author' => 'Nonyameko Hibbetts',
+                'message' => 'Progress updated from 100% to 10% for Company Traction with description: 201 Evans Cnst',
+                'timestamp' => '2025-10-20T14:00:00',
+            ],
+            [
+                'id' => 3,
+                'author' => 'Chuck Gulledge',
+                'message' => 'Progress updated from % to 30% for Company Traction with description: Find the next project',
+                'timestamp' => '2025-10-20T08:00:00',
+            ],
+            [
+                'id' => 4,
+                'author' => 'Chuck Gulledge',
+                'message' => 'Company traction updated with description: Develop 2026 plan with Chuck and Team',
+                'timestamp' => '2025-10-18T10:00:00',
+            ],
+            [
+                'id' => 5,
+                'author' => 'Nonyameko Hibbetts',
+                'message' => 'Company traction created with description: Assist w/ Sale Closing Building E & O 2',
+                'timestamp' => '2025-10-14T09:00:00',
+            ],
+        ],
+
+        'Collins Credit Union' => [
+            [
+                'id' => 1,
+                'author' => 'Chuck Gulledge',
+                'message' => 'Started the Q3 financial review process.',
+                'timestamp' => '2025-10-21T11:00:00',
+            ],
+        ],
+
+        'Test Skeleton Loading' => [],
+    ];
+
+    if (!isset($data[$organization])) {
+        return response()->json([
+            'organizationName' => $organization,
+            'activityLogs' => [],
+        ]);
+    }
+
+    return response()->json([
+        'organizationName' => $organization,
+        'activityLogs' => $data[$organization],
+    ]);
+});
+
+
+// ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
