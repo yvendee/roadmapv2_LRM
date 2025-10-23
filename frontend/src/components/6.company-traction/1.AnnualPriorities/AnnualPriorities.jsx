@@ -648,6 +648,11 @@ const AnnualPriorities = () => {
               ×
             </button>
 
+            
+            {/* Add extra vertical space */}
+            <div className="mt-8"></div>
+
+
             {/* Dropdown + Set Default */}
             <div className="flex items-center justify-between gap-4 mb-4">
               <select
