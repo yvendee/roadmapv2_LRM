@@ -754,30 +754,30 @@ const handleAddNewAnnualPriority = async () => {
                 Add
               </button> */}
 
-              <button
-                className="pure-blue2-btn"
-                onClick={() => {
-                  const trimmedOption = newOption.trim();
-                  if (!trimmedOption) {
-                    showToast('Option cannot be empty', 'error');
-                    return;
-                  }
-                  const exists = switchOptions.some(
-                    (opt) => opt.toLowerCase() === trimmedOption.toLowerCase()
-                  );
+<button
+  className="pure-blue2-btn"
+  onClick={() => {
+    const trimmedOption = newOption.trim();
+    if (!trimmedOption) {
+      showToast('Option cannot be empty', 'error');
+      return;
+    }
+    const exists = switchOptions.some(
+      (opt) => opt.toLowerCase() === trimmedOption.toLowerCase()
+    );
 
-                  if (exists) {
-                    showToast(`Option "${trimmedOption}" already exists!`, 'error');
-                  } else {
-                    setSwitchOptions((prev) => [...prev, trimmedOption]);
-                    showToast(`Added: ${trimmedOption}`, 'success');
-                    setShowNewModal(false);
-                    setNewOption('');
-                  }
-                }}
-              >
-                Add
-              </button>
+    if (exists) {
+      showToast(`Option "${trimmedOption}" already exists!`, 'error');
+    } else {
+      setSwitchOptions((prev) => Array.isArray(prev) ? [...prev, trimmedOption] : [trimmedOption]);
+      showToast(`Added: ${trimmedOption}`, 'success');
+      setShowNewModal(false);
+      setNewOption('');
+    }
+  }}
+>
+  Add
+</button>
 
 
               <button
