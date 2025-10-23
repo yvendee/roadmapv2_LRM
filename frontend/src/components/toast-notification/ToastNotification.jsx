@@ -1,6 +1,6 @@
 // frontend\src\components\toast-notification\ToastNotification.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './ToastNotification.css';
 
 const ToastNotification = ({ message, isVisible, onClose, status }) => {
@@ -20,7 +20,7 @@ const ToastNotification = ({ message, isVisible, onClose, status }) => {
   const backgroundColor = status === 'success' ? '#5cb85c' : '#d9534f';  // Green for success, Red for error
 
   return (
-    <div className="toast" style={{ backgroundColor }}>
+    <div className="unique-toast" style={{ backgroundColor }}>
       <p>{message}</p>
     </div>
   );
