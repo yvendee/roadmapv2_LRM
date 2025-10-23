@@ -92,72 +92,69 @@ export default function EditUser() {
   }
 
   return (
-    <>
-      <div className="p-6 max-w-xl mx-auto">
-        {/* Form fields */}
-        <div className="form-group mb-4">
-          <label>
-            Company<span className="required">*</span>
-          </label>
-          <input
-            type="text"
-            className="form-input"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group mb-4">
-          <label>
-            Name<span className="required">*</span>
-          </label>
-          <input
-            type="text"
-            className="form-input"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group mb-4">
-          <label>
-            Email<span className="required">*</span>
-          </label>
-          <input
-            type="email"
-            className="form-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group mb-4">
-          <label>Email Verified At</label>
-          <input
-            type="date"
-            className="form-input"
-            value={emailVerifiedAt}
-            onChange={(e) => setEmailVerifiedAt(e.target.value)}
-          />
-        </div>
-
-        <button
-          className="save-btn"
-          onClick={handleSaveChanges}
-          disabled={isSaving}
-        >
-          {isSaving ? <div className="spinner"></div> : 'Save Changes'}
-        </button>
+    <div className="p-6 max-w-xl mx-auto">
+      {/* Form fields */}
+      <div className="form-group mb-4">
+        <label>
+          Company<span className="required">*</span>
+        </label>
+        <input
+          type="text"
+          className="form-input"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
       </div>
 
+      <div className="form-group mb-4">
+        <label>
+          Name<span className="required">*</span>
+        </label>
+        <input
+          type="text"
+          className="form-input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group mb-4">
+        <label>
+          Email<span className="required">*</span>
+        </label>
+        <input
+          type="email"
+          className="form-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group mb-4">
+        <label>Email Verified At</label>
+        <input
+          type="date"
+          className="form-input"
+          value={emailVerifiedAt}
+          onChange={(e) => setEmailVerifiedAt(e.target.value)}
+        />
+      </div>
+
+      <button
+        className="save-btn"
+        onClick={handleSaveChanges}
+        disabled={isSaving}
+      >
+        {isSaving ? <div className="spinner"></div> : 'Save Changes'}
+      </button>
+
       {toast.isVisible && (
-          <ToastNotification
-            message={toast.message}
-            status={toast.status}
-            onClose={hideToast}
-          />
-        )}
-        
-    </>
+        <ToastNotification
+          message={toast.message}
+          status={toast.status}
+          onClose={hideToast}
+        />
+      )}
+    </div>
   );
 }

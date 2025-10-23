@@ -27,6 +27,12 @@ const AnnualPriorities = () => {
   const pushAnnualPriorities = useAnnualPrioritiesStore((state) => state.pushAnnualPriorities);
 
   // const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
+
+  const [toast, setToast] = useState({
+    message: '',
+    status: '',
+    isVisible: false,
+  });
   
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -47,11 +53,7 @@ const AnnualPriorities = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [newOption, setNewOption] = useState("");
 
-  const [toast, setToast] = useState({
-    message: '',
-    status: '',
-    isVisible: false,
-  });
+
   
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
@@ -375,38 +377,26 @@ const AnnualPriorities = () => {
   };
 
   return (
-    <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
-      <div className="header-container">
-        <h5 className="text-lg font-semibold always-black">Annual Priorities</h5>
-        {loggedUser?.role === 'superadmin' && (
-          <div className="flex gap-2">
 
-            {/* Switch Button */}
-            <div
-              className="pure-purple-btn cursor-pointer flex items-center print:hidden"
-              onClick={() => setSwitchModalOpen(true)}
-            >
-              Switch
-            </div>
+    <>
+      <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
+        <div className="header-container">
+          <h5 className="text-lg font-semibold always-black">Annual Priorities</h5>
+          {loggedUser?.role === 'superadmin' && (
+            <div className="flex gap-2">
+
+              {/* Switch Button */}
+              <div
+                className="pure-purple-btn cursor-pointer flex items-center print:hidden"
+                onClick={() => setSwitchModalOpen(true)}
+              >
+                Switch
+              </div>
 
 
-            {isEditing && <>
-                <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
-                {loadingSave ? (
-                  <div className="loader-bars">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                  ) : (
-                    <>
-                    <FontAwesomeIcon icon={faSave} className="mr-1" />
-                    Save Changes
-                    </>
-                )}
-                </button>
-                <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
-                  {loadingDischarge ? (
+              {isEditing && <>
+                  <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
+                  {loadingSave ? (
                     <div className="loader-bars">
                       <div></div>
                       <div></div>
@@ -414,368 +404,384 @@ const AnnualPriorities = () => {
                     </div>
                     ) : (
                       <>
-                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
-                      Discard
+                      <FontAwesomeIcon icon={faSave} className="mr-1" />
+                      Save Changes
                       </>
                   )}
-                </button>
-              </>
-            }
-
-            {loggedUser?.role === 'superadmin' && !isSkeleton && (
-              <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
-                {loading ? (
-                  <div className="loader-bars">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                ) : (
-                  <>
-                  <FontAwesomeIcon icon={faPlus} className="mr-1" />
-                  Add Annual Priority
-                  </>
-                )}
-              </button>
-            )}
-
-          </div>
-        )}
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100 text-gray-700 text-sm">
-              <th className="border px-4 py-2">#</th>
-              <th className="border px-4 py-2 ">Description</th>
-              <th className="border px-4 py-2"></th>
-              {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                <th className="border px-4 py-2 text-center print:hidden"></th>
-              )}
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentOrder.map(driver => (
-              <tr key={driver.id}
-
-                draggable={
-                  loggedUser?.role === 'superadmin' &&
-                  driver.description !== '-' &&
-                  driver.status !== '-'
-                }
-                onDragStart={
-                  loggedUser?.role === 'superadmin' &&
-                  driver.description !== '-' &&
-                  driver.status !== '-'
-                    ? (e) => handleDragStart(e, driver.id)
-                    : undefined
-                }
-                onDragOver={
-                  loggedUser?.role === 'superadmin' &&
-                  driver.description !== '-' &&
-                  driver.status !== '-'
-                    ? (e) => handleDragOver(e, driver.id)
-                    : undefined
-                }
-                onDragEnd={
-                  loggedUser?.role === 'superadmin' &&
-                  driver.description !== '-' &&
-                  driver.status !== '-'
-                    ? handleDragEnd
-                    : undefined
-                }
-                className={`hover:bg-gray-50 ${
-                  loggedUser?.role === 'superadmin' &&
-                  driver.description !== '-' &&
-                  driver.status !== '-'
-                    ? 'cursor-move'
-                    : 'cursor-default'
-                }`}
-              >
-
-                {/* Implement skeleton  Loading */}
-                
-                {/* id */}
-                <td className="border px-4 py-3">{isSkeleton ? <div className="skeleton w-6"></div> : driver.id}</td>
-
-                {/* description */}
-                <td
-                  className="border px-4 py-3 cursor-pointer"
-                  onClick={() => driver.description !== '-' && handleCellClick(driver.id, 'description')}
-                >
-                  {driver.description === '-' ? (
-                    <div className="skeleton w-64 h-5"></div>
-                  ) : editingCell.id === driver.id && editingCell.field === 'description' ? (
-                    <textarea
-                      autoFocus
-                      defaultValue={driver.description}
-                      onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
-                      className="w-full px-2 py-1 border rounded resize-none"
-                      rows={3}
-                    />
-                  ) : (
-                    driver.description
-                  )}
-                </td>
-
-                {/* status */}
-                <td>
-                  <div
-                    className="mt-1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      driver.status !== '-' && handleCellClick(driver.id, 'status');
-                    }}
-                  >
-                    {driver.status === '-' ? (
-                      <div className="skeleton w-16 h-5 mx-auto"></div>
-                    ) : editingCell.id === driver.id && editingCell.field === 'status' ? (
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      pattern="^\d+(\.\d{0,2})?$"
-                      autoFocus
-                      defaultValue={driver.status.replace('%', '')}
-                      onBlur={(e) => {
-                        let rawValue = e.target.value.trim().replace('%', '');
-                        let numeric = parseFloat(rawValue);
-
-                        if (isNaN(numeric)) numeric = 0;
-
-                        const formatted = `${numeric.toFixed(2)}%`;
-                        handleInputBlur(driver.id, 'status', formatted);
-                      }}
-                      className="w-full px-2 py-1 border rounded text-xs text-center"
-                    />
-
-                    ) : (
-                      <span
-                        className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                          driver.status === '100.00%'
-                            ? 'bg-green-100 text-green-700'
-                            : driver.status === '83.33%'
-                            ? 'bg-red-100 text-red-700'
-                            : driver.status === '0.00%'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-200 text-gray-600'
-                        }`}
-                      >
-                        {driver.status}
-                      </span>
+                  </button>
+                  <button className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
+                    {loadingDischarge ? (
+                      <div className="loader-bars">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      ) : (
+                        <>
+                        <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                        Discard
+                        </>
                     )}
-                  </div>
-                </td>
-                
-                {/* delete button */}
+                  </button>
+                </>
+              }
+
+              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
+                  {loading ? (
+                    <div className="loader-bars">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  ) : (
+                    <>
+                    <FontAwesomeIcon icon={faPlus} className="mr-1" />
+                    Add Annual Priority
+                    </>
+                  )}
+                </button>
+              )}
+
+            </div>
+          )}
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100 text-gray-700 text-sm">
+                <th className="border px-4 py-2">#</th>
+                <th className="border px-4 py-2 ">Description</th>
+                <th className="border px-4 py-2"></th>
                 {loggedUser?.role === 'superadmin' && !isSkeleton && (
-                  <td className="border px-4 py-3 text-center print:hidden">
+                  <th className="border px-4 py-2 text-center print:hidden"></th>
+                )}
+              </tr>
+            </thead>
+
+            <tbody>
+              {currentOrder.map(driver => (
+                <tr key={driver.id}
+
+                  draggable={
+                    loggedUser?.role === 'superadmin' &&
+                    driver.description !== '-' &&
+                    driver.status !== '-'
+                  }
+                  onDragStart={
+                    loggedUser?.role === 'superadmin' &&
+                    driver.description !== '-' &&
+                    driver.status !== '-'
+                      ? (e) => handleDragStart(e, driver.id)
+                      : undefined
+                  }
+                  onDragOver={
+                    loggedUser?.role === 'superadmin' &&
+                    driver.description !== '-' &&
+                    driver.status !== '-'
+                      ? (e) => handleDragOver(e, driver.id)
+                      : undefined
+                  }
+                  onDragEnd={
+                    loggedUser?.role === 'superadmin' &&
+                    driver.description !== '-' &&
+                    driver.status !== '-'
+                      ? handleDragEnd
+                      : undefined
+                  }
+                  className={`hover:bg-gray-50 ${
+                    loggedUser?.role === 'superadmin' &&
+                    driver.description !== '-' &&
+                    driver.status !== '-'
+                      ? 'cursor-move'
+                      : 'cursor-default'
+                  }`}
+                >
+
+                  {/* Implement skeleton  Loading */}
+                  
+                  {/* id */}
+                  <td className="border px-4 py-3">{isSkeleton ? <div className="skeleton w-6"></div> : driver.id}</td>
+
+                  {/* description */}
+                  <td
+                    className="border px-4 py-3 cursor-pointer"
+                    onClick={() => driver.description !== '-' && handleCellClick(driver.id, 'description')}
+                  >
+                    {driver.description === '-' ? (
+                      <div className="skeleton w-64 h-5"></div>
+                    ) : editingCell.id === driver.id && editingCell.field === 'description' ? (
+                      <textarea
+                        autoFocus
+                        defaultValue={driver.description}
+                        onBlur={(e) => handleInputBlur(driver.id, 'description', e.target.value)}
+                        className="w-full px-2 py-1 border rounded resize-none"
+                        rows={3}
+                      />
+                    ) : (
+                      driver.description
+                    )}
+                  </td>
+
+                  {/* status */}
+                  <td>
                     <div
-                      onClick={() => handleDeleteDriver(driver.id)}
-                      className="text-red-600 hover:text-red-800"
-                      title="Delete"
+                      className="mt-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        driver.status !== '-' && handleCellClick(driver.id, 'status');
+                      }}
                     >
-                      <FontAwesomeIcon icon={faTrashAlt} />
+                      {driver.status === '-' ? (
+                        <div className="skeleton w-16 h-5 mx-auto"></div>
+                      ) : editingCell.id === driver.id && editingCell.field === 'status' ? (
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        pattern="^\d+(\.\d{0,2})?$"
+                        autoFocus
+                        defaultValue={driver.status.replace('%', '')}
+                        onBlur={(e) => {
+                          let rawValue = e.target.value.trim().replace('%', '');
+                          let numeric = parseFloat(rawValue);
+
+                          if (isNaN(numeric)) numeric = 0;
+
+                          const formatted = `${numeric.toFixed(2)}%`;
+                          handleInputBlur(driver.id, 'status', formatted);
+                        }}
+                        className="w-full px-2 py-1 border rounded text-xs text-center"
+                      />
+
+                      ) : (
+                        <span
+                          className={`inline-block px-2 py-0.5 text-xs rounded-full ${
+                            driver.status === '100.00%'
+                              ? 'bg-green-100 text-green-700'
+                              : driver.status === '83.33%'
+                              ? 'bg-red-100 text-red-700'
+                              : driver.status === '0.00%'
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-gray-200 text-gray-600'
+                          }`}
+                        >
+                          {driver.status}
+                        </span>
+                      )}
                     </div>
                   </td>
-                )}
-                
-              </tr>
-            ))}
-          </tbody>
+                  
+                  {/* delete button */}
+                  {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                    <td className="border px-4 py-3 text-center print:hidden">
+                      <div
+                        onClick={() => handleDeleteDriver(driver.id)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Delete"
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} />
+                      </div>
+                    </td>
+                  )}
+                  
+                </tr>
+              ))}
+            </tbody>
 
-        </table>
-      </div>
+          </table>
+        </div>
 
 
-      {showConfirmModal && (
-        <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
-          <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-add-title">Confirm Discard</div>
-            <p className="text-gray-700 text-sm mb-4">
-              Are you sure you want to discard all unsaved changes?
-            </p>
-            <div className="modal-add-buttons">
-              <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discard</button>
-              <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+        {showConfirmModal && (
+          <div className="modal-add-overlay" onClick={() => setShowConfirmModal(false)}>
+            <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-add-title">Confirm Discard</div>
+              <p className="text-gray-700 text-sm mb-4">
+                Are you sure you want to discard all unsaved changes?
+              </p>
+              <div className="modal-add-buttons">
+                <button className="btn-add" onClick={confirmDischargeChanges}>Yes, Discard</button>
+                <button className="btn-close" onClick={() => setShowConfirmModal(false)}>Cancel</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
 
-      {showAddModal && (
-        <div
-          className="modal-add-overlay"
-          onClick={() => setShowAddModal(false)}
-        >
+        {showAddModal && (
           <div
-            className="modal-add-box"
-            onClick={(e) => e.stopPropagation()}
+            className="modal-add-overlay"
+            onClick={() => setShowAddModal(false)}
           >
-            <div className="modal-add-title">Annual Priorities</div>
-
-            <label className="modal-add-label">Description</label>
-            <textarea
-              className="modal-add-input"
-              rows="3"
-              value={newAnnualPriority.description}
-              onChange={(e) => setNewAnnualPriority({ ...newAnnualPriority, description: e.target.value })}
-            />
-
-
-            <label className="modal-add-label">Status</label>
-            <select
-              className="modal-add-select"
-              value={newAnnualPriority.status}
-              onChange={(e) => setNewAnnualPriority({ ...newAnnualPriority, status: e.target.value })}
+            <div
+              className="modal-add-box"
+              onClick={(e) => e.stopPropagation()}
             >
-              <option>0.00%</option>
-              <option>50.00%</option>
-              <option>83.33%</option>
-              <option>100.00%</option>
-            
-            </select>
+              <div className="modal-add-title">Annual Priorities</div>
 
-            <div className="modal-add-buttons">
-              <button className="btn-add" onClick={handleAddNewAnnualPriority}>Add</button>
-              <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Switch Modal */}
-      {switchModalOpen && (
-        <div
-          className="transparent-overlay"
-          onClick={() => setSwitchModalOpen(false)}
-        >
-          <div
-            className="modal-content relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close button */}
-            <button
-              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
-              onClick={() => setSwitchModalOpen(false)}
-            >
-              ×
-            </button>
-
-            
-            {/* Add extra vertical space */}
-            <div className="mt-10"></div>
+              <label className="modal-add-label">Description</label>
+              <textarea
+                className="modal-add-input"
+                rows="3"
+                value={newAnnualPriority.description}
+                onChange={(e) => setNewAnnualPriority({ ...newAnnualPriority, description: e.target.value })}
+              />
 
 
-            {/* Dropdown + Set Default */}
-            <div className="flex items-center justify-between gap-4 mb-4">
+              <label className="modal-add-label">Status</label>
               <select
-                className="border rounded px-2 py-1 w-full"
-                value={selectedOption}
-                onChange={(e) => setSelectedOption(e.target.value)}
+                className="modal-add-select"
+                value={newAnnualPriority.status}
+                onChange={(e) => setNewAnnualPriority({ ...newAnnualPriority, status: e.target.value })}
               >
-                <option value="">Select Option</option>
-                {switchOptions.map((opt, i) => (
-                  <option key={i} value={opt}>
-                    {opt}
-                  </option>
-                ))}
+                <option>0.00%</option>
+                <option>50.00%</option>
+                <option>83.33%</option>
+                <option>100.00%</option>
+              
               </select>
 
-              <button
-                className="pure-blue2-btn whitespace-nowrap"
-                onClick={() => {
-                  console.log('Set Default:', selectedOption);
-                  showToast(`Set Default: ${selectedOption}`, 'success');
-                }}
-                
-              >
-                Set Default
-              </button>
-            </div>
-
-            {/* Delete & New */}
-            <div className="flex justify-between mt-4">
-              <button
-                className="pure-red2-btn w-1/2 mr-2"
-                onClick={() => {
-                  console.log('Delete:', selectedOption);
-                  showToast(`Deleted: ${selectedOption}`, 'success');
-                }}
-              >
-                Delete
-              </button>
-              <button
-                className="pure-green2-btn w-1/2 ml-2"
-                onClick={() => setShowNewModal(true)}
-              >
-                New
-              </button>
+              <div className="modal-add-buttons">
+                <button className="btn-add" onClick={handleAddNewAnnualPriority}>Add</button>
+                <button className="btn-close" onClick={() => setShowAddModal(false)}>Close</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-
-      {/* New Option Modal */}
-      {showNewModal && (
-        <div
-          className="transparent-overlay"
-          onClick={() => setShowNewModal(false)}
-        >
+        {/* Switch Modal */}
+        {switchModalOpen && (
           <div
-            className="modal-content relative"
-            onClick={(e) => e.stopPropagation()}
+            className="transparent-overlay"
+            onClick={() => setSwitchModalOpen(false)}
           >
-            {/* Close button */}
-            <button
-              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
-              onClick={() => setShowNewModal(false)}
+            <div
+              className="modal-content relative"
+              onClick={(e) => e.stopPropagation()}
             >
-              ×
-            </button>
-
-            <h3 className="text-lg font-semibold mb-4">Add New Option</h3>
-
-            <input
-              type="text"
-              className="border rounded w-full p-2 mb-4"
-              placeholder="Enter new option name"
-              value={newOption}
-              onChange={(e) => setNewOption(e.target.value)}
-            />
-
-            <div className="flex justify-end gap-2">
+              {/* Close button */}
               <button
-                className="pure-blue2-btn"
-                // onClick={() => {
-                //   console.log('Add:', newOption);
-                //   setShowNewModal(false);
-                // }}
-
-                onClick={() => {
-                  console.log('Add:', newOption);
-                  showToast(`Added: ${newOption}`, 'success');
-                  // Close the new modal after adding if needed here
-                  setNewModalOpen(false);
-                  setNewOption('');
-                }}
+                className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
+                onClick={() => setSwitchModalOpen(false)}
               >
-                Add
+                ×
               </button>
+
+              
+              {/* Add extra vertical space */}
+              <div className="mt-10"></div>
+
+
+              {/* Dropdown + Set Default */}
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <select
+                  className="border rounded px-2 py-1 w-full"
+                  value={selectedOption}
+                  onChange={(e) => setSelectedOption(e.target.value)}
+                >
+                  <option value="">Select Option</option>
+                  {switchOptions.map((opt, i) => (
+                    <option key={i} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => {
+                    console.log('Set Default:', selectedOption);
+                    showToast(`Set Default: ${selectedOption}`, 'success');
+                  }}
+                  
+                >
+                  Set Default
+                </button>
+              </div>
+
+              {/* Delete & New */}
+              <div className="flex justify-between mt-4">
+                <button
+                  className="pure-red2-btn w-1/2 mr-2"
+                  onClick={() => {
+                    console.log('Delete:', selectedOption);
+                    showToast(`Deleted: ${selectedOption}`, 'success');
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  className="pure-green2-btn w-1/2 ml-2"
+                  onClick={() => setShowNewModal(true)}
+                >
+                  New
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {/* New Option Modal */}
+        {showNewModal && (
+          <div
+            className="transparent-overlay"
+            onClick={() => setShowNewModal(false)}
+          >
+            <div
+              className="modal-content relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
               <button
-                className="pure-red2-btn"
+                className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
                 onClick={() => setShowNewModal(false)}
               >
-                Cancel
+                ×
               </button>
+
+              <h3 className="text-lg font-semibold mb-4">Add New Option</h3>
+
+              <input
+                type="text"
+                className="border rounded w-full p-2 mb-4"
+                placeholder="Enter new option name"
+                value={newOption}
+                onChange={(e) => setNewOption(e.target.value)}
+              />
+
+              <div className="flex justify-end gap-2">
+                <button
+                  className="pure-blue2-btn"
+                  // onClick={() => {
+                  //   console.log('Add:', newOption);
+                  //   setShowNewModal(false);
+                  // }}
+
+                  onClick={() => {
+                    console.log('Add:', newOption);
+                    showToast(`Added: ${newOption}`, 'success');
+                    // Close the new modal after adding if needed here
+                    setNewModalOpen(false);
+                    setNewOption('');
+                  }}
+                >
+                  Add
+                </button>
+                <button
+                  className="pure-red2-btn"
+                  onClick={() => setShowNewModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
+
+      </div>
 
       {toast.isVisible && (
         <ToastNotification
@@ -784,8 +790,7 @@ const AnnualPriorities = () => {
           onClose={hideToast}
         />
       )}
-
-    </div>
+    </>
 
   );
 };
