@@ -650,7 +650,7 @@ const AnnualPriorities = () => {
 
             
             {/* Add extra vertical space */}
-            <div className="mt-8"></div>
+            <div className="mt-10"></div>
 
 
             {/* Dropdown + Set Default */}
@@ -669,7 +669,7 @@ const AnnualPriorities = () => {
               </select>
 
               <button
-                className="pure-blue2-btn"
+                className="pure-blue2-btn whitespace-nowrap"
                 onClick={() => console.log('Set Default:', selectedOption)}
               >
                 Set Default
