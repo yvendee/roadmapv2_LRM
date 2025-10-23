@@ -4,6 +4,7 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt  } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import useSwitchOptionsStore from '../../../store/left-lower-content/6.company-traction/4.switchOptionsStore';
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -19,6 +20,8 @@ const AnnualPriorities = () => {
 
   const storeAnnualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
   const [annualPriorities, setAnnualPriorities] = useState([]);
+
+  const { switchOptions, setSwitchOptions, addSwitchOption, removeSwitchOption } = useSwitchOptionsStore();
 
   const loggedUser = useLoginStore((state) => state.user);
   // const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
@@ -43,7 +46,7 @@ const AnnualPriorities = () => {
 
   const [switchModalOpen, setSwitchModalOpen] = useState(false);
   const [showNewModal, setShowNewModal] = useState(false);
-  const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
+  // const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
   const [selectedOption, setSelectedOption] = useState("");
   const [newOption, setNewOption] = useState("");
 
@@ -53,7 +56,7 @@ const AnnualPriorities = () => {
     status: '',
     isVisible: false,
   });
-  
+
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
   };
@@ -683,7 +686,7 @@ const AnnualPriorities = () => {
                   value={selectedOption}
                   onChange={(e) => setSelectedOption(e.target.value)}
                 >
-                  <option value="">Select Option</option>
+                  {/* <option value="">Select Option</option> */}
                   {switchOptions.map((opt, i) => (
                     <option key={i} value={opt}>
                       {opt}

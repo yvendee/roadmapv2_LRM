@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import useDepartmentAnnualPrioritiesStore, { initialDepartmentAnnualPriorities } from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
+import useSwitchOptionsStore from '../../../store/left-lower-content/7.department-traction/4.switchOptionsStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -28,6 +29,7 @@ const DepartmentAnnualPriorities = () => {
   const pushDepartmentAnnualPriorities = useDepartmentAnnualPrioritiesStore((state) => state.pushDepartmentAnnualPriorities);
   // const { departmentAnnualPriorities, setDepartmentAnnualPriorities, updateAnnualPrioritiesField  } = useDepartmentAnnualPrioritiesStore();
 
+  const { switchOptions, setSwitchOptions, addSwitchOption, removeSwitchOption } = useSwitchOptionsStore();
 
 
   const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
@@ -47,7 +49,7 @@ const DepartmentAnnualPriorities = () => {
 
   const [switchModalOpen, setSwitchModalOpen] = useState(false);
   const [showNewModal, setShowNewModal] = useState(false);
-  const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
+  // const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
   const [selectedOption, setSelectedOption] = useState("");
   const [newOption, setNewOption] = useState("");
 
