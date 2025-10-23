@@ -646,8 +646,8 @@ const AnnualPriorities = () => {
         </div>
       )}
 
-            {/* Switch Modal */}
-            {switchModalOpen && (
+      {/* Switch Modal */}
+      {switchModalOpen && (
         <div
           className="transparent-overlay"
           onClick={() => setSwitchModalOpen(false)}
@@ -709,13 +709,7 @@ const AnnualPriorities = () => {
               </button>
               <button
                 className="pure-green2-btn w-1/2 ml-2"
-                onClick={() => {
-                  console.log('Add:', newOptionName);
-                  showToast(`Added: ${newOptionName}`, 'success');
-                  // Close the new modal after adding if needed here
-                  setNewModalOpen(false);
-                  setNewOptionName('');
-                }}
+                onClick={() => setShowNewModal(true)}
               >
                 New
               </button>
@@ -756,9 +750,17 @@ const AnnualPriorities = () => {
             <div className="flex justify-end gap-2">
               <button
                 className="pure-blue2-btn"
+                // onClick={() => {
+                //   console.log('Add:', newOption);
+                //   setShowNewModal(false);
+                // }}
+
                 onClick={() => {
                   console.log('Add:', newOption);
-                  setShowNewModal(false);
+                  showToast(`Added: ${newOption}`, 'success');
+                  // Close the new modal after adding if needed here
+                  setNewModalOpen(false);
+                  setNewOption('');
                 }}
               >
                 Add
