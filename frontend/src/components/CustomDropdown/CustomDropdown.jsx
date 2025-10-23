@@ -17,33 +17,48 @@ export default function CustomDropdown({ options, selectedOption, setSelectedOpt
   }, []);
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className="unik-dropdown-container relative w-full" ref={dropdownRef}>
       <button
         type="button"
-        className="w-full border rounded px-3 py-2 text-left cursor-pointer"
+        className="unik-dropdown-toggle w-full border rounded px-3 py-2 text-left cursor-pointer select-none"
         onClick={() => setIsOpen((prev) => !prev)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
       >
         {selectedOption || 'Select an option'}
-        <span className="float-right">&#9662;</span> {/* Down arrow */}
+        <span className="unik-dropdown-arrow float-right">&#9662;</span> {/* Down arrow */}
       </button>
 
       {isOpen && (
         <div
-          className="absolute z-20 w-full mt-1 bg-white border rounded shadow-lg max-h-48 overflow-y-auto"
+          className="unik-dropdown-options absolute z-20 w-full mt-1 bg-white border rounded shadow-lg max-h-48 overflow-y-auto"
           style={{ scrollbarWidth: 'thin' }}
+          role="listbox"
         >
           {options.length === 0 ? (
-            <div className="p-2 text-gray-500 text-sm">No options</div>
+            <div className="unik-dropdown-no-options p-2 text-gray-500 text-sm">No options</div>
           ) : (
             options.map((opt, idx) => (
               <div
                 key={idx}
-                className={`px-3 py-2 cursor-pointer hover:bg-blue-500 hover:text-white ${
-                  selectedOption === opt ? 'bg-blue-600 text-white' : ''
-                }`}
+                className={`unik-dropdown-option px-3 py-2 cursor-pointer select-none transition-colors duration-200
+                  ${
+                    selectedOption === opt
+                      ? 'unik-dropdown-option-selected bg-indigo-600 text-white'
+                      : 'hover:unik-dropdown-option-hover hover:bg-indigo-500 hover:text-white'
+                  }`}
                 onClick={() => {
                   setSelectedOption(opt);
                   setIsOpen(false);
+                }}
+                role="option"
+                aria-selected={selectedOption === opt}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setSelectedOption(opt);
+                    setIsOpen(false);
+                  }
                 }}
               >
                 {opt}
