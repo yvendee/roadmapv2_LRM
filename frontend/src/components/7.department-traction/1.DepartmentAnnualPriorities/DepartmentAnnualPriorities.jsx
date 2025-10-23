@@ -6,6 +6,7 @@ import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt } from '@fortaw
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import useDepartmentAnnualPrioritiesStore, { initialDepartmentAnnualPriorities } from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import useSwitchOptionsStore from '../../../store/left-lower-content/7.department-traction/4.switchOptionsStore';
+import CustomDropdown from '../../CustomDropdown/CustomDropdown';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -673,18 +674,11 @@ const handleAddNewAnnualPriority = async () => {
 
             {/* Dropdown + Set Default */}
             <div className="flex items-center justify-between gap-4 mb-4">
-              <select
-                className="border rounded px-2 py-1 w-full"
-                value={selectedOption}
-                onChange={(e) => setSelectedOption(e.target.value)}
-              >
-                {/* <option value="">Select Option</option> */}
-                {switchOptions.map((opt, i) => (
-                  <option key={i} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+              <CustomDropdown
+                options={switchOptions}
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+              />
 
               <button
                 className="pure-blue2-btn whitespace-nowrap"
