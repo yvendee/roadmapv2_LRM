@@ -31,6 +31,12 @@ const CompanyTraction = () => {
 
   const rawAddActivityLog = useActivityLogStore((state) => state.addActivityLog);
 
+  const [switchModalOpen, setSwitchModalOpen] = useState(false);
+  const [showNewModal, setShowNewModal] = useState(false);
+  const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [newOption, setNewOption] = useState("");
+
 
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
@@ -952,6 +958,15 @@ const CompanyTraction = () => {
         {/* Action Buttons */}
         {isSuperAdmin && (
           <div className="flex gap-2">
+
+            {/* Switch Button */}
+            <div
+              className="pure-purple-btn cursor-pointer flex items-center print:hidden"
+              onClick={() => setSwitchModalOpen(true)}
+            >
+              Switch
+            </div>
+
             <div className="pure-blue-btn cursor-pointer flex items-center print:hidden" onClick={handleAddCompanyTractionClick}>
 
               {loading ? (
@@ -1525,6 +1540,116 @@ const CompanyTraction = () => {
         </ul>
       </div>
 
+
+      {/* Switch Modal */}
+      {switchModalOpen && (
+        <div
+          className="transparent-overlay"
+          onClick={() => setSwitchModalOpen(false)}
+        >
+          <div
+            className="modal-content relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
+              onClick={() => setSwitchModalOpen(false)}
+            >
+              ×
+            </button>
+
+            {/* Dropdown + Set Default */}
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <select
+                className="border rounded px-2 py-1 w-full"
+                value={selectedOption}
+                onChange={(e) => setSelectedOption(e.target.value)}
+              >
+                <option value="">Select Option</option>
+                {switchOptions.map((opt, i) => (
+                  <option key={i} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                className="pure-blue2-btn"
+                onClick={() => console.log('Set Default:', selectedOption)}
+              >
+                Set Default
+              </button>
+            </div>
+
+            {/* Delete & New */}
+            <div className="flex justify-between mt-4">
+              <button
+                className="pure-red2-btn w-1/2 mr-2"
+                onClick={() => console.log('Delete:', selectedOption)}
+              >
+                Delete
+              </button>
+              <button
+                className="pure-green2-btn w-1/2 ml-2"
+                onClick={() => setShowNewModal(true)}
+              >
+                New
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* New Option Modal */}
+      {showNewModal && (
+        <div
+          className="transparent-overlay"
+          onClick={() => setShowNewModal(false)}
+        >
+          <div
+            className="modal-content relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
+              onClick={() => setShowNewModal(false)}
+            >
+              ×
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">Add New Option</h3>
+
+            <input
+              type="text"
+              className="border rounded w-full p-2 mb-4"
+              placeholder="Enter new option name"
+              value={newOption}
+              onChange={(e) => setNewOption(e.target.value)}
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                className="pure-blue2-btn"
+                onClick={() => {
+                  console.log('Add:', newOption);
+                  setShowNewModal(false);
+                }}
+              >
+                Add
+              </button>
+              <button
+                className="pure-red2-btn"
+                onClick={() => setShowNewModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
     </div>

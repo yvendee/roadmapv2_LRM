@@ -269,6 +269,14 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
+            // 🏢 Company Traction Activity Logs
+            \App\Models\CompanyTractionActivityLog::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'companyTractionActivityLogsData' => [],
+                'statusFlag' => null,
+            ]);
+
             // 🆕 Department Traction: Annual Priorities
             \App\Models\DepartmentTractionAnnualPriority::create([
                 'u_id' => $organization->u_id,
@@ -282,14 +290,6 @@ class Organization extends Model
                 'u_id' => $organization->u_id,
                 'organizationName' => $organization->organizationName,
                 'companyTractionData' => [],
-                'statusFlag' => null,
-            ]);
-
-            // 🏢 Company Traction Activity Logs
-            \App\Models\CompanyTractionActivityLog::create([
-                'u_id' => $organization->u_id,
-                'organizationName' => $organization->organizationName,
-                'companyTractionActivityLogsData' => [],
                 'statusFlag' => null,
             ]);
 
