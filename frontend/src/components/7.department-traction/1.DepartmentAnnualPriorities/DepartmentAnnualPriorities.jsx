@@ -651,68 +651,65 @@ const handleAddNewAnnualPriority = async () => {
 
       {/* Switch Modal */}
       {switchModalOpen && (
-        <div
-          className="transparent-overlay"
-          onClick={() => setSwitchModalOpen(false)}
-        >
           <div
-            className="modal-content relative"
-            onClick={(e) => e.stopPropagation()}
+            className="transparent-overlay"
+            onClick={() => setSwitchModalOpen(false)}
           >
-            {/* Close button */}
-            <button
-              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
-              onClick={() => setSwitchModalOpen(false)}
+            <div
+              className="switch-modal-container relative"
+              onClick={(e) => e.stopPropagation()}
             >
-              ×
-            </button>
-
-            
-            {/* Add extra vertical space */}
-            <div className="mt-10"></div>
-
-
-            {/* Dropdown + Set Default */}
-            <div className="flex items-center justify-between gap-4 mb-4">
-              <CustomDropdown
-                options={switchOptions}
-                selectedOption={selectedOption}
-                setSelectedOption={setSelectedOption}
-              />
-
+              {/* Close button */}
               <button
-                className="pure-blue2-btn whitespace-nowrap"
-                onClick={() => {
-                  console.log('Set Default:', selectedOption);
-                  showToast(`Set Default: ${selectedOption}`, 'success');
-                }}
-                
+                className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
+                onClick={() => setSwitchModalOpen(false)}
               >
-                Set Default
+                ×
               </button>
-            </div>
 
-            {/* Delete & New */}
-            <div className="flex justify-between mt-4">
-              <button
-                className="pure-red2-btn w-1/2 mr-2"
-                onClick={() => {
-                  console.log('Delete:', selectedOption);
-                  showToast(`Deleted: ${selectedOption}`, 'success');
-                }}
-              >
-                Delete
-              </button>
-              <button
-                className="pure-green2-btn w-1/2 ml-2"
-                onClick={() => setShowNewModal(true)}
-              >
-                New
-              </button>
+              {/* Add extra vertical space */}
+              <div className="mt-10"></div>
+
+              {/* Dropdown + Set Default */}
+              <div className="flex items-center justify-between gap-4 mb-4">
+                <CustomDropdown
+                  options={switchOptions}
+                  selectedOption={selectedOption}
+                  setSelectedOption={setSelectedOption}
+                />
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => {
+                    console.log('Set Default:', selectedOption);
+                    showToast(`Set Default: ${selectedOption}`, 'success');
+                  }}
+                >
+                  Set Default
+                </button>
+              </div>
+
+              {/* Delete & New */}
+              <div className="flex justify-between mt-4">
+                <button
+                  className="pure-red2-btn w-1/2 mr-2"
+                  onClick={() => {
+                    console.log('Delete:', selectedOption);
+                    showToast(`Deleted: ${selectedOption}`, 'success');
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  className="pure-green2-btn w-1/2 ml-2"
+                  onClick={() => setShowNewModal(true)}
+                >
+                  New
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
 
       {/* New Option Modal */}
