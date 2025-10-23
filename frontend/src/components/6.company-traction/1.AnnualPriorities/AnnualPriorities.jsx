@@ -763,7 +763,7 @@ const AnnualPriorities = () => {
                     console.log('Add:', newOption);
                     showToast(`Added: ${newOption}`, 'success');
                     // Close the new modal after adding if needed here
-                    setNewModalOpen(false);
+                    setShowNewModal(false);
                     setNewOption('');
                   }}
                 >
