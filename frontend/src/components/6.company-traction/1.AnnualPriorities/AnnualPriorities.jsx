@@ -783,13 +783,13 @@ const AnnualPriorities = () => {
 
       </div>
 
-      {toast.isVisible && (
-        <ToastNotification
-          message={toast.message}
-          status={toast.status}
-          onClose={hideToast}
-        />
-      )}
+      <ToastNotification
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+        status={toast.status}
+      />
+
     </>
 
   );

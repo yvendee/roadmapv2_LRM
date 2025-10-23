@@ -148,13 +148,13 @@ export default function EditUser() {
         {isSaving ? <div className="spinner"></div> : 'Save Changes'}
       </button>
 
-      {toast.isVisible && (
-        <ToastNotification
-          message={toast.message}
-          status={toast.status}
-          onClose={hideToast}
-        />
-      )}
+      <ToastNotification
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+        status={toast.status}
+      />
+
     </div>
   );
 }
