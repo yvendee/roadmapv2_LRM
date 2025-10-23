@@ -1,4 +1,6 @@
+// frontend\src\components\CustomDropdown\CustomDropdown.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import './CustomDropdown.css';
 
 export default function CustomDropdown({ options, selectedOption, setSelectedOption }) {
   const [isOpen, setIsOpen] = useState(false);

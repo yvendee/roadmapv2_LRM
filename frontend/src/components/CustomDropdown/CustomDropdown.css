@@ -1,0 +1,52 @@
+/* frontend\src\components\CustomDropdown\CustomDropdown.css */
+.unik-dropdown-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.unik-dropdown-toggle {
+background-color: white;
+border: 1px solid #ccc;
+outline-offset: 2px;
+}
+
+.unik-dropdown-toggle:focus {
+outline: 2px solid #4f46e5; /* Indigo focus ring */
+}
+
+.unik-dropdown-arrow {
+pointer-events: none;
+}
+
+.unik-dropdown-options {
+scrollbar-width: thin;
+scrollbar-color: #a0aec0 #edf2f7;
+}
+
+.unik-dropdown-options::-webkit-scrollbar {
+width: 6px;
+}
+
+.unik-dropdown-options::-webkit-scrollbar-thumb {
+background-color: #a0aec0;
+border-radius: 3px;
+}
+
+.unik-dropdown-option {
+user-select: none;
+}
+
+.unik-dropdown-option:hover,
+.hover\:unik-dropdown-option-hover:hover {
+background-color: #4f46e5; /* Indigo 600 */
+color: white;
+}
+
+.unik-dropdown-option-selected {
+background-color: #4338ca; /* Indigo 700 */
+color: white;
+}
+
+.unik-dropdown-no-options {
+font-style: italic;
+}
+  
