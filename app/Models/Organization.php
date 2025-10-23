@@ -285,6 +285,23 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
+            // 🏢 Company Traction Activity Logs
+            \App\Models\CompanyTractionActivityLog::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'companyTractionActivityLogsData' => [],
+                'statusFlag' => null,
+            ]);
+
+            // 🧭 Department Traction Activity Logs
+            \App\Models\DepartmentTractionActivityLog::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'departmentTractionActivityLogsData' => [],
+                'statusFlag' => null,
+            ]);
+
+
             // 🆕 Thirteen Week Sprint
             \App\Models\ThirteenWeekSprint::create([
                 'u_id' => $organization->u_id,
