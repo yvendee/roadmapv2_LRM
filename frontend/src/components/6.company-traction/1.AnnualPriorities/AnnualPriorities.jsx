@@ -51,6 +51,25 @@ const AnnualPriorities = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [newOption, setNewOption] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState('');
+  const handleAddOption = () => {
+    const trimmedOption = newOption.trim();
+    if (!trimmedOption) return; // optionally ignore empty input
+
+    // Check if option already exists (case insensitive)
+    const exists = switchOptions.some(
+      (opt) => opt.toLowerCase() === trimmedOption.toLowerCase()
+    );
+
+    if (exists) {
+      setErrorMessage(`"${trimmedOption}" already exists!`);
+      setTimeout(() => setErrorMessage(''), 5000); // clear error after 5 sec
+    } else {
+      setSwitchOptions((prev) => [...prev, trimmedOption]);
+      setNewOption(''); // clear input on success
+    }
+  };
+
 
   const [toast, setToast] = useState({
     message: '',
@@ -750,7 +769,7 @@ const AnnualPriorities = () => {
               />
 
               <div className="flex justify-end gap-2">
-                <button
+                {/* <button
                   className="pure-blue2-btn"
                   onClick={() => {
                     console.log('Add:', newOption);
@@ -761,7 +780,34 @@ const AnnualPriorities = () => {
                   }}
                 >
                   Add
+                </button> */}
+
+                
+                <button
+                  className="pure-blue2-btn"
+                  onClick={() => {
+                    const trimmedOption = newOption.trim();
+                    if (!trimmedOption) {
+                      showToast('Option cannot be empty', 'error');
+                      return;
+                    }
+                    const exists = switchOptions.some(
+                      (opt) => opt.toLowerCase() === trimmedOption.toLowerCase()
+                    );
+
+                    if (exists) {
+                      showToast(`Option "${trimmedOption}" already exists!`, 'error');
+                    } else {
+                      setSwitchOptions((prev) => [...prev, trimmedOption]);
+                      showToast(`Added: ${trimmedOption}`, 'success');
+                      setShowNewModal(false);
+                      setNewOption('');
+                    }
+                  }}
+                >
+                  Add
                 </button>
+
                 <button
                   className="pure-red2-btn"
                   onClick={() => setShowNewModal(false)}
