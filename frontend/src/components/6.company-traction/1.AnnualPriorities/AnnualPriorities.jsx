@@ -664,7 +664,7 @@ const AnnualPriorities = () => {
             onClick={() => setSwitchModalOpen(false)}
           >
             <div
-              className="modal-content relative"
+              className="switch-modal-container relative"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -675,30 +675,15 @@ const AnnualPriorities = () => {
                 ×
               </button>
 
-              
               {/* Add extra vertical space */}
               <div className="mt-10"></div>
 
-
               {/* Dropdown + Set Default */}
               <div className="flex items-center justify-between gap-4 mb-4">
-                {/* <select
-                  className="border rounded px-2 py-1 w-full"
-                  value={selectedOption}
-                  onChange={(e) => setSelectedOption(e.target.value)}
-                >
-
-                  {switchOptions.map((opt, i) => (
-                    <option key={i} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select> */}
-
                 <CustomDropdown
-                    options={switchOptions}
-                    selectedOption={selectedOption}
-                    setSelectedOption={setSelectedOption}
+                  options={switchOptions}
+                  selectedOption={selectedOption}
+                  setSelectedOption={setSelectedOption}
                 />
 
                 <button
@@ -707,7 +692,6 @@ const AnnualPriorities = () => {
                     console.log('Set Default:', selectedOption);
                     showToast(`Set Default: ${selectedOption}`, 'success');
                   }}
-                  
                 >
                   Set Default
                 </button>
@@ -734,6 +718,7 @@ const AnnualPriorities = () => {
             </div>
           </div>
         )}
+
 
 
         {/* New Option Modal */}
