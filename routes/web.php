@@ -3723,7 +3723,7 @@ Route::post('/api/v1/company-traction/traction-data/add', function (Request $req
 
 
 
-// ref:
+// ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::post('/api/v1/company-traction/activity-logs', function (Request $request) use ($API_secure) {
 
     if ($API_secure) {
@@ -3751,6 +3751,44 @@ Route::post('/api/v1/company-traction/activity-logs', function (Request $request
     return response()->json([
         'organizationName' => $organization,
         'activityLogs' => $record->companyTractionActivityLogsData ?? [],
+    ]);
+});
+
+// ref: frontend\src\components\6.company-traction\2.CompanyTraction\CompanyTraction.jsx
+Route::post('/api/v1/company-traction/activity-logs/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $activityLogs = $request->input('activityLogData');
+
+    if (!$organization) {
+        return response()->json(['message' => 'organizationName is required.'], 400);
+    }
+
+    if (!is_array($activityLogs)) {
+        return response()->json(['message' => 'activityLogData must be an array.'], 400);
+    }
+
+    // ✅ Reorder IDs sequentially before saving
+    $reordered = array_map(function ($item, $index) {
+        $item['id'] = $index + 1;
+        return $item;
+    }, $activityLogs, array_keys($activityLogs));
+
+    // ✅ Find or create record
+    $record = CompanyTractionActivityLog::firstOrNew(['organizationName' => $organization]);
+    $record->companyTractionActivityLogsData = $reordered;
+    $record->statusFlag = $record->statusFlag ?? null;
+    $record->save();
+
+    return response()->json([
+        'message' => '✅ Company Traction Activity Logs updated successfully',
+        'organizationName' => $organization,
+        'savedCount' => count($reordered),
     ]);
 });
 
@@ -4075,7 +4113,7 @@ Route::post('/api/v1/department-traction/traction-data/add', function (Request $
 });
 
 
-// ref:
+// ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::post('/api/v1/department-traction/activity-logs', function (Request $request) use ($API_secure) {
 
     if ($API_secure) {
@@ -4105,6 +4143,46 @@ Route::post('/api/v1/department-traction/activity-logs', function (Request $requ
         'activityLogs' => $record->departmentTractionActivityLogsData ?? [],
     ]);
 });
+
+// ref: frontend\src\components\7.department-traction\2.DepartmentTraction\DepartmentTraction.jsx
+Route::post('/api/v1/department-traction/activity-logs/update', function (Request $request) use ($API_secure) {
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    $organization = $request->input('organizationName');
+    $activityLogs = $request->input('activityLogData');
+
+    if (!$organization) {
+        return response()->json(['message' => 'organizationName is required.'], 400);
+    }
+
+    if (!is_array($activityLogs)) {
+        return response()->json(['message' => 'activityLogData must be an array.'], 400);
+    }
+
+    // ✅ Reorder IDs sequentially before saving
+    $reordered = array_map(function ($item, $index) {
+        $item['id'] = $index + 1;
+        return $item;
+    }, $activityLogs, array_keys($activityLogs));
+
+    // ✅ Find or create the record
+    $record = DepartmentTractionActivityLog::firstOrNew(['organizationName' => $organization]);
+    $record->departmentTractionActivityLogsData = $reordered;
+    $record->statusFlag = $record->statusFlag ?? null;
+    $record->save();
+
+    return response()->json([
+        'message' => '✅ Department Traction Activity Logs updated successfully',
+        'organizationName' => $organization,
+        'savedCount' => count($reordered),
+    ]);
+});
+
+
 
 
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx

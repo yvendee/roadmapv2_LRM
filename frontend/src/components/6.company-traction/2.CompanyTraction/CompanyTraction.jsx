@@ -668,6 +668,55 @@ const CompanyTraction = () => {
     }, 1000);
   }
 
+
+  const updateCompanyActivityLogs = async () => {
+    try {
+      // 1️⃣ Fetch CSRF token first
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+      const { csrf_token } = await csrfRes.json();
+
+      // 2️⃣ Reorder the logs before sending (id from 1..N)
+      const reorderedLogs = activityLogs.map((log, index) => ({
+        ...log,
+        id: index + 1,
+      }));
+
+      // 3️⃣ Prepare payload
+      const payload = {
+        organizationName: organization,
+        activityLogData: reorderedLogs,
+      };
+
+      // 4️⃣ Send update request
+      const res = await fetch(`${API_URL}/v1/company-traction/activity-logs/update`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include', // Laravel session cookies
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Activity Logs updated:', json);
+      } else if (res.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('⚠️ Error updating activity logs:', json.message || json);
+      }
+    } catch (err) {
+      console.error('❌ API error while updating activity logs:', err);
+    }
+  };
+
+
   const handleSaveChanges = () => {
     setLoadingSave(true);
   
@@ -721,6 +770,9 @@ const CompanyTraction = () => {
           // Log all activity logs
           const activityLogData = useActivityLogStore.getState().activityLogs;
           console.log('Activity Log Data:', activityLogData);
+
+          // ✅ After successful save, update the activity logs:
+          await updateCompanyActivityLogs();
 
         } else if (res.status === 401) {
           navigate('/', { state: { loginError: 'Session Expired' } });

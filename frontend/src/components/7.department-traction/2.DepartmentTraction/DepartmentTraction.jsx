@@ -744,6 +744,57 @@ const DepartmentTractionTable = () => {
   };
 
 
+  const updateDepartmentActivityLogs = async () => {
+    try {
+      // 1️⃣ Fetch CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+
+      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+
+      const { csrf_token } = await csrfRes.json();
+
+      // 2️⃣ Reorder logs before sending
+      const reorderedLogs = activityLogs.map((log, index) => ({
+        ...log,
+        id: index + 1,
+      }));
+
+      // 3️⃣ Prepare payload
+      const payload = {
+        organizationName: organization,
+        activityLogData: reorderedLogs,
+      };
+
+      // 4️⃣ Send update request
+      const res = await fetch(`${API_URL}/v1/department-traction/activity-logs/update`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Department Traction Activity Logs updated:', json);
+      } else if (res.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('⚠️ Error updating Department Activity Logs:', json.message || json);
+      }
+    } catch (err) {
+      console.error('❌ API error while updating Department Activity Logs:', err);
+    }
+  };
+
+
+
   const handleSaveChanges = async () => {
     setLoadingSave(true);
   
@@ -787,6 +838,9 @@ const DepartmentTractionTable = () => {
           // Log all activity logs
           const activityLogData = useActivityLogStore.getState().activityLogs;
           console.log('Activity Log Data:', activityLogData);
+
+          await updateDepartmentActivityLogs();
+
 
         } else {
           console.error('❌ Failed to update department traction data:', result.message);
