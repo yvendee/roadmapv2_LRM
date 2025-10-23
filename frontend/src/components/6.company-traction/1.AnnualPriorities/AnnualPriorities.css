@@ -276,3 +276,20 @@ td, th {
     100% { opacity: 1; }
 }
 
+.pure-purple-btn {
+    background-color: purple;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .pure-purple-btn:hover {
+    background-color: #b832fa;
+  }
+  
