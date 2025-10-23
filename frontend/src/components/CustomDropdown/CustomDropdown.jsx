@@ -4,7 +4,6 @@ export default function CustomDropdown({ options, selectedOption, setSelectedOpt
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -29,7 +28,7 @@ export default function CustomDropdown({ options, selectedOption, setSelectedOpt
       {isOpen && (
         <div
           className="absolute z-20 w-full mt-1 bg-white border rounded shadow-lg max-h-48 overflow-y-auto"
-          style={{ scrollbarWidth: 'thin' }} // Firefox thin scrollbar
+          style={{ scrollbarWidth: 'thin' }}
         >
           {options.length === 0 ? (
             <div className="p-2 text-gray-500 text-sm">No options</div>
