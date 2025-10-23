@@ -699,7 +699,7 @@ const AnnualPriorities = () => {
                     options={switchOptions}
                     selectedOption={selectedOption}
                     setSelectedOption={setSelectedOption}
-                  />
+                />
 
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
