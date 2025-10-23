@@ -4,6 +4,7 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
@@ -45,6 +46,21 @@ const AnnualPriorities = () => {
   const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
   const [selectedOption, setSelectedOption] = useState("");
   const [newOption, setNewOption] = useState("");
+
+  const [toast, setToast] = useState({
+    message: '',
+    status: '',
+    isVisible: false,
+  });
+  
+  const showToast = (message, status) => {
+    setToast({ message, status, isVisible: true });
+  };
+  
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
+  
 
 
   // const [newDriver, setNewDriver] = useState({
@@ -670,7 +686,11 @@ const AnnualPriorities = () => {
 
               <button
                 className="pure-blue2-btn whitespace-nowrap"
-                onClick={() => console.log('Set Default:', selectedOption)}
+                onClick={() => {
+                  console.log('Set Default:', selectedOption);
+                  showToast(`Set Default: ${selectedOption}`, 'success');
+                }}
+                
               >
                 Set Default
               </button>
@@ -680,13 +700,22 @@ const AnnualPriorities = () => {
             <div className="flex justify-between mt-4">
               <button
                 className="pure-red2-btn w-1/2 mr-2"
-                onClick={() => console.log('Delete:', selectedOption)}
+                onClick={() => {
+                  console.log('Delete:', selectedOption);
+                  showToast(`Deleted: ${selectedOption}`, 'success');
+                }}
               >
                 Delete
               </button>
               <button
                 className="pure-green2-btn w-1/2 ml-2"
-                onClick={() => setShowNewModal(true)}
+                onClick={() => {
+                  console.log('Add:', newOptionName);
+                  showToast(`Added: ${newOptionName}`, 'success');
+                  // Close the new modal after adding if needed here
+                  setNewModalOpen(false);
+                  setNewOptionName('');
+                }}
               >
                 New
               </button>
@@ -743,6 +772,15 @@ const AnnualPriorities = () => {
             </div>
           </div>
         </div>
+      )}
+
+
+      {toast.isVisible && (
+        <ToastNotification
+          message={toast.message}
+          status={toast.status}
+          onClose={hideToast}
+        />
       )}
 
     </div>
