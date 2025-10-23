@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 
 // Initial options (similar to your useState default)
-const initialSwitchOptions = ["Option 1", "Option 2", "Option 3"];
+const initialSwitchOptions = ["2025"];
 
 const useSwitchOptionsStore = create((set) => ({
   switchOptions: initialSwitchOptions,
