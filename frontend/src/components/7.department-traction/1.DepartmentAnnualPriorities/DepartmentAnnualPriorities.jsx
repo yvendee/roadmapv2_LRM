@@ -2,7 +2,8 @@
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
+import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import useDepartmentAnnualPrioritiesStore, { initialDepartmentAnnualPriorities } from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
@@ -43,6 +44,27 @@ const DepartmentAnnualPriorities = () => {
   const [draggedId, setDraggedId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+
+  const [switchModalOpen, setSwitchModalOpen] = useState(false);
+  const [showNewModal, setShowNewModal] = useState(false);
+  const [switchOptions, setSwitchOptions] = useState(["Option 1", "Option 2"]);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [newOption, setNewOption] = useState("");
+
+
+  const [toast, setToast] = useState({
+    message: '',
+    status: '',
+    isVisible: false,
+  });
+  
+  const showToast = (message, status) => {
+    setToast({ message, status, isVisible: true });
+  };
+  
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
 
   // Sync initial and store changes:
   useEffect(() => {
@@ -354,6 +376,19 @@ const handleAddNewAnnualPriority = async () => {
         <h5 className="text-lg font-semibold always-black">Department Annual Priorities</h5>
         {loggedUser?.role === 'superadmin' && (
           <div className="flex gap-2">
+
+            {/* Switch Button */}
+            <div
+              className="pure-purple-btn cursor-pointer flex items-center print:hidden"
+              onClick={() => setSwitchModalOpen(true)}
+            >
+              <>
+              <FontAwesomeIcon icon={faExchangeAlt} className="mr-1" />
+                Switch
+              </>
+              
+            </div>
+
             {editedAnnualPriorities.length > 0 && (
               <>
                 <button className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
@@ -610,6 +645,138 @@ const handleAddNewAnnualPriority = async () => {
           </div>
         </div>
       )}
+
+      {/* Switch Modal */}
+      {switchModalOpen && (
+        <div
+          className="transparent-overlay"
+          onClick={() => setSwitchModalOpen(false)}
+        >
+          <div
+            className="modal-content relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
+              onClick={() => setSwitchModalOpen(false)}
+            >
+              ×
+            </button>
+
+            
+            {/* Add extra vertical space */}
+            <div className="mt-10"></div>
+
+
+            {/* Dropdown + Set Default */}
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <select
+                className="border rounded px-2 py-1 w-full"
+                value={selectedOption}
+                onChange={(e) => setSelectedOption(e.target.value)}
+              >
+                <option value="">Select Option</option>
+                {switchOptions.map((opt, i) => (
+                  <option key={i} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                className="pure-blue2-btn whitespace-nowrap"
+                onClick={() => {
+                  console.log('Set Default:', selectedOption);
+                  showToast(`Set Default: ${selectedOption}`, 'success');
+                }}
+                
+              >
+                Set Default
+              </button>
+            </div>
+
+            {/* Delete & New */}
+            <div className="flex justify-between mt-4">
+              <button
+                className="pure-red2-btn w-1/2 mr-2"
+                onClick={() => {
+                  console.log('Delete:', selectedOption);
+                  showToast(`Deleted: ${selectedOption}`, 'success');
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className="pure-green2-btn w-1/2 ml-2"
+                onClick={() => setShowNewModal(true)}
+              >
+                New
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* New Option Modal */}
+      {showNewModal && (
+        <div
+          className="transparent-overlay"
+          onClick={() => setShowNewModal(false)}
+        >
+          <div
+            className="modal-content relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-3 text-gray-600 text-lg font-bold"
+              onClick={() => setShowNewModal(false)}
+            >
+              ×
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">Add New Option</h3>
+
+            <input
+              type="text"
+              className="border rounded w-full p-2 mb-4"
+              placeholder="Enter new option name"
+              value={newOption}
+              onChange={(e) => setNewOption(e.target.value)}
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                className="pure-blue2-btn"
+                onClick={() => {
+                  console.log('Add:', newOption);
+                  showToast(`Added: ${newOption}`, 'success');
+                  // Close the new modal after adding if needed here
+                  setShowNewModal(false);
+                  setNewOption('');
+                }}
+              >
+                Add
+              </button>
+              <button
+                className="pure-red2-btn"
+                onClick={() => setShowNewModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ToastNotification
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+        status={toast.status}
+      />
 
     </div>
 

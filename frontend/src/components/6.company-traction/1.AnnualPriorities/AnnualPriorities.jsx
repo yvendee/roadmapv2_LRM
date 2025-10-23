@@ -2,7 +2,7 @@
 import React, { useState, useEffect} from 'react';
 import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt  } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import API_URL from '../../../configs/config';
@@ -28,12 +28,6 @@ const AnnualPriorities = () => {
 
   // const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
 
-  const [toast, setToast] = useState({
-    message: '',
-    status: '',
-    isVisible: false,
-  });
-  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -54,6 +48,11 @@ const AnnualPriorities = () => {
   const [newOption, setNewOption] = useState("");
 
 
+  const [toast, setToast] = useState({
+    message: '',
+    status: '',
+    isVisible: false,
+  });
   
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
@@ -390,7 +389,11 @@ const AnnualPriorities = () => {
                 className="pure-purple-btn cursor-pointer flex items-center print:hidden"
                 onClick={() => setSwitchModalOpen(true)}
               >
-                Switch
+                <>
+                <FontAwesomeIcon icon={faExchangeAlt} className="mr-1" />
+                  Switch
+                </>
+                
               </div>
 
 
@@ -754,11 +757,6 @@ const AnnualPriorities = () => {
               <div className="flex justify-end gap-2">
                 <button
                   className="pure-blue2-btn"
-                  // onClick={() => {
-                  //   console.log('Add:', newOption);
-                  //   setShowNewModal(false);
-                  // }}
-
                   onClick={() => {
                     console.log('Add:', newOption);
                     showToast(`Added: ${newOption}`, 'success');
