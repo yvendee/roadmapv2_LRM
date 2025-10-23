@@ -25,7 +25,8 @@ export default function CustomDropdown({ options, selectedOption, setSelectedOpt
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        {selectedOption || 'Select an option'}
+        {/* {selectedOption || 'Select an option'} */}
+        {selectedOption}
         <span className="unik-dropdown-arrow float-right">&#9662;</span> {/* Down arrow */}
       </button>
 
