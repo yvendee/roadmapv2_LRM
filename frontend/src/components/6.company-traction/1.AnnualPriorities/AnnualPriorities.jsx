@@ -4,6 +4,7 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt  } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import CustomDropdown from '../../CustomDropdown/CustomDropdown';
 import useSwitchOptionsStore from '../../../store/left-lower-content/6.company-traction/4.switchOptionsStore';
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import API_URL from '../../../configs/config';
@@ -681,18 +682,24 @@ const AnnualPriorities = () => {
 
               {/* Dropdown + Set Default */}
               <div className="flex items-center justify-between gap-4 mb-4">
-                <select
+                {/* <select
                   className="border rounded px-2 py-1 w-full"
                   value={selectedOption}
                   onChange={(e) => setSelectedOption(e.target.value)}
                 >
-                  {/* <option value="">Select Option</option> */}
+
                   {switchOptions.map((opt, i) => (
                     <option key={i} value={opt}>
                       {opt}
                     </option>
                   ))}
-                </select>
+                </select> */}
+
+                <CustomDropdown
+                    options={switchOptions}
+                    selectedOption={selectedOption}
+                    setSelectedOption={setSelectedOption}
+                  />
 
                 <button
                   className="pure-blue2-btn whitespace-nowrap"

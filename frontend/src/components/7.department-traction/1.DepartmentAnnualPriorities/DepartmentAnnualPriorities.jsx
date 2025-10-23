@@ -678,7 +678,7 @@ const handleAddNewAnnualPriority = async () => {
                 value={selectedOption}
                 onChange={(e) => setSelectedOption(e.target.value)}
               >
-                <option value="">Select Option</option>
+                {/* <option value="">Select Option</option> */}
                 {switchOptions.map((opt, i) => (
                   <option key={i} value={opt}>
                     {opt}
