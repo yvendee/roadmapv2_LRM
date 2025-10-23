@@ -42,11 +42,8 @@ export default function CustomDropdown({ options, selectedOption, setSelectedOpt
               <div
                 key={idx}
                 className={`unik-dropdown-option px-3 py-2 cursor-pointer select-none transition-colors duration-200
-                  ${
-                    selectedOption === opt
-                      ? 'unik-dropdown-option-selected bg-indigo-600 text-white'
-                      : 'hover:unik-dropdown-option-hover hover:bg-indigo-500 hover:text-white'
-                  }`}
+                    ${selectedOption === opt ? 'unik-dropdown-option-selected' : 'unik-dropdown-option-hover'}`}
+                  
                 onClick={() => {
                   setSelectedOption(opt);
                   setIsOpen(false);
