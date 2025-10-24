@@ -39,7 +39,7 @@ class CompanyTractionAnnualPrioritiesCollectionSeeder extends Seeder
             'u_id' => Str::uuid(),
             'organizationName' => $organizationName,
             'tag' => "2025",
-            'companyTractionData' => json_encode($data),
+            'companyTractionData' => $data,
             'statusFlag' => null,
         ]);
     }
