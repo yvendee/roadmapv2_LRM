@@ -793,11 +793,21 @@ const AnnualPriorities = () => {
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
-                    console.log('Set Default:', selectedOption);
-                    showToast(`Set Default: ${selectedOption}`, 'success');
+                    console.log('Set table using:', selectedOption);
+                    showToast(`Set table using: ${selectedOption}`, 'success');
                   }}
                 >
-                  Set Default
+                  Paste
+                </button>
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => {
+                    console.log('Copy table to:', selectedOption);
+                    showToast(`Copy table to: ${selectedOption}`, 'success');
+                  }}
+                >
+                  Copy
                 </button>
               </div>
 
