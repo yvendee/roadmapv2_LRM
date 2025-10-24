@@ -398,6 +398,99 @@ const AnnualPriorities = () => {
 
   };
 
+
+  const handleAddCompanyTractionTag = async (trimmedOption, showToast, setSwitchOptions, switchOptions, setNewOption, setShowNewModal) => {
+    try {
+      // 1. Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+      const { csrf_token } = await csrfRes.json();
+
+      // 2. Make POST request to add new tag
+      const res = await fetch(`${API_URL}/v1/company-traction/switch-options/add`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ organizationName: organization, tag: trimmedOption }),
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Tag added:', json.record);
+        // Update store
+        const optionsArray = Array.isArray(switchOptions) ? switchOptions : [];
+        setSwitchOptions([...optionsArray, trimmedOption]);
+        showToast(`Added: ${trimmedOption}`, 'success');
+        setShowNewModal(false);
+        setNewOption('');
+      } else {
+        showToast(json.message || 'Failed to add tag', 'error');
+        console.error('Error adding tag:', json.message);
+      }
+    } catch (err) {
+      console.error('Network error adding tag:', err);
+      showToast('Network error', 'error');
+    }
+  };
+
+  const handleDeleteCompanyTractionTag = async (
+    selectedOption,
+    showToast,
+    switchOptions,
+    setSwitchOptions
+  ) => {
+    if (!selectedOption) {
+      showToast('Please select an option to delete.', 'error');
+      return;
+    }
+
+    try {
+      // 1. Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
+      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+      const { csrf_token } = await csrfRes.json();
+
+      // 2. POST request to delete tag
+      const res = await fetch(`${API_URL}/v1/company-traction/switch-options/delete`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ organizationName: organization, tag: selectedOption }),
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('🗑️ Company tag deleted:', selectedOption);
+        const optionsArray = Array.isArray(switchOptions) ? switchOptions : [];
+        const updatedOptions = optionsArray.filter(
+          (opt) => opt.toLowerCase() !== selectedOption.toLowerCase()
+        );
+        setSwitchOptions(updatedOptions);
+        showToast(`Deleted: ${selectedOption}`, 'success');
+      } else {
+        showToast(json.message || 'Failed to delete tag', 'error');
+        console.error('Error deleting company tag:', json.message);
+      }
+    } catch (err) {
+      console.error('Network error deleting company tag:', err);
+      showToast('Network error', 'error');
+    }
+  };
+
+
+
   return (
 
     <>
@@ -728,7 +821,7 @@ const AnnualPriorities = () => {
                   Delete
                 </button> */}
 
-                <button
+                {/* <button
                   className="pure-red2-btn w-1/2 mr-2"
                   onClick={() => {
                     if (!selectedOption) {
@@ -751,7 +844,15 @@ const AnnualPriorities = () => {
                   }}
                 >
                   Delete
+                </button> */}
+
+                <button
+                  className="pure-red2-btn w-1/2 mr-2"
+                  onClick={() => handleDeleteCompanyTractionTag(selectedOption, showToast, switchOptions, setSwitchOptions)}
+                >
+                  Delete
                 </button>
+
 
 
                 <button
@@ -843,27 +944,21 @@ const AnnualPriorities = () => {
                       showToast('Option cannot be empty', 'error');
                       return;
                     }
-                    // Safely handle switchOptions as an array
-                    const optionsArray = Array.isArray(switchOptions) ? switchOptions : [];
 
-                    const exists = optionsArray.some(
-                      (opt) => opt.toLowerCase() === trimmedOption.toLowerCase()
-                    );
+                    const optionsArray = Array.isArray(switchOptions) ? switchOptions : [];
+                    const exists = optionsArray.some(opt => opt.toLowerCase() === trimmedOption.toLowerCase());
 
                     if (exists) {
                       showToast(`Option "${trimmedOption}" already exists!`, 'error');
-                    } else {
-                      setSwitchOptions([...optionsArray, trimmedOption]);
-                      showToast(`Added: ${trimmedOption}`, 'success');
-                      setShowNewModal(false);
-                      setNewOption('');
+                      return;
                     }
+
+                    // Call function
+                    handleAddCompanyTractionTag(trimmedOption, showToast, setSwitchOptions, switchOptions, setNewOption, setShowNewModal);
                   }}
                 >
                   Add
                 </button>
-
-
 
                 <button
                   className="pure-red2-btn"

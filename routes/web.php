@@ -3841,6 +3841,69 @@ Route::post('/api/v1/company-traction/switch-options', function (Request $reques
     return response()->json($tags);
 });
 
+// ref: 
+Route::post('/api/v1/company-traction/switch-options/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $trimmedOption = trim($request->input('tag'));
+
+    if (!$organization || !$trimmedOption) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // Check if tag already exists for this organization
+    $exists = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $trimmedOption)
+        ->exists();
+
+    if ($exists) {
+        return response()->json(['message' => 'Tag already exists'], 409);
+    }
+
+    // Create new record
+    $record = CompanyTractionAnnualPrioritiesCollection::create([
+        'u_id' => Str::uuid(), // auto-generate unique ID
+        'organizationName' => $organization,
+        'tag' => $trimmedOption,
+        'companyTractionData' => [], // empty array
+        'statusFlag' => null,
+    ]);
+
+    return response()->json(['message' => 'Tag added successfully', 'record' => $record]);
+});
+
+
+// ref:
+Route::post('/api/v1/company-traction/switch-options/delete', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $tag = trim($request->input('tag'));
+
+    if (!$organization || !$tag) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // Find the record
+    $record = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Tag not found'], 404);
+    }
+
+    $record->delete();
+
+    return response()->json(['message' => 'Tag deleted successfully']);
+});
+
+
 
 // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
@@ -4279,6 +4342,67 @@ Route::post('/api/v1/department-traction/switch-options', function (Request $req
     return response()->json($tags);
 });
 
+
+//ref: 
+Route::post('/api/v1/department-traction/switch-options/add', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $trimmedOption = trim($request->input('tag'));
+
+    if (!$organization || !$trimmedOption) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // Check if tag already exists for this organization
+    $exists = DepartmentTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $trimmedOption)
+        ->exists();
+
+    if ($exists) {
+        return response()->json(['message' => 'Tag already exists'], 409);
+    }
+
+    // Create new record
+    $record = DepartmentTractionAnnualPrioritiesCollection::create([
+        'u_id' => Str::uuid(), // auto-generate unique ID
+        'organizationName' => $organization,
+        'tag' => $trimmedOption,
+        'departmentTractionData' => [], // empty array
+        'statusFlag' => null,
+    ]);
+
+    return response()->json(['message' => 'Tag added successfully', 'record' => $record]);
+});
+
+// ref: 
+Route::post('/api/v1/department-traction/switch-options/delete', function (Request $request) use ($API_secure) {
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $tag = trim($request->input('tag'));
+
+    if (!$organization || !$tag) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // Find the record
+    $record = DepartmentTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Tag not found'], 404);
+    }
+
+    $record->delete();
+
+    return response()->json(['message' => 'Tag deleted successfully']);
+});
 
 
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
