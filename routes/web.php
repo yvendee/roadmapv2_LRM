@@ -3793,14 +3793,18 @@ Route::post('/api/v1/company-traction/activity-logs/update', function (Request $
 });
 
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
-Route::get('/api/v1/company-traction/switch-options', function (Request $request) use ($API_secure) {
+Route::post('/api/v1/company-traction/switch-options', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
-    $organization = $request->query('organizationName');
+    $organization = $request->input('organizationName');
+
+    if (!$organization) {
+        return response()->json(['message' => 'organizationName is required.'], 400);
+    }
 
     $data = [
         'Chuck Gulledge Advisors, LLC' => ['2023', '2024', '2025', '2026'],
@@ -4200,14 +4204,19 @@ Route::post('/api/v1/department-traction/activity-logs/update', function (Reques
     ]);
 });
 
-Route::get('/api/v1/department-traction/switch-options', function (Request $request) use ($API_secure) {
+// ref:
+Route::post('/api/v1/department-traction/switch-options', function (Request $request) use ($API_secure) {
     if ($API_secure) {
         if (!$request->session()->get('logged_in')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     }
 
-    $organization = $request->query('organizationName');
+    $organization = $request->input('organizationName');
+
+    if (!$organization) {
+        return response()->json(['message' => 'organizationName is required.'], 400);
+    }
 
     $data = [
         'Chuck Gulledge Advisors, LLC' => ['2023', '2024', '2025', '2026'],
@@ -4217,6 +4226,7 @@ Route::get('/api/v1/department-traction/switch-options', function (Request $requ
 
     return response()->json($data[$organization] ?? []);
 });
+
 
 
 
