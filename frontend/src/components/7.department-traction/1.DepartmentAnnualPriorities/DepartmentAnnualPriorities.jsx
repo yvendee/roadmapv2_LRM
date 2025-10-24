@@ -32,6 +32,7 @@ const DepartmentAnnualPriorities = () => {
 
   const { switchOptions, setSwitchOptions, addSwitchOption, removeSwitchOption } = useSwitchOptionsStore();
 
+  const loadDepartmentAnnualPrioritiesFromAPI = useDepartmentAnnualPrioritiesStore((state) => state.loadDepartmentAnnualPrioritiesFromAPI);
 
   const [editedAnnualPriorities, setEditedAnnualPriorities] = useState([]);
 
@@ -464,6 +465,48 @@ const handleAddNewAnnualPriority = async () => {
     }
   };
 
+  const fetchDepartmentAnnualPriorities = async () => {
+    try {
+      const encodedOrg = encodeURIComponent(organization);
+  
+      const res = await fetch(
+        `${API_URL}/v1/department-traction/annual-priorities?organization=${encodedOrg}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        const departmentAnnualArr = json;
+        ENABLE_CONSOLE_LOGS &&
+          console.log('📥 Fetched Department Annual Priorities:', departmentAnnualArr);
+  
+        if (Array.isArray(departmentAnnualArr)) {
+          loadDepartmentAnnualPrioritiesFromAPI(departmentAnnualArr);
+          setCurrentOrder(departmentAnnualArr);
+        } else {
+          console.error(
+            `⚠️ No Department Annual Priorities found for organization: ${organization}`
+          );
+        }
+      } else if (res.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('Error:', json.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error('API error:', err);
+    }
+  };
+  
+
   const handleSetDepartmentTractionTable = async (
     selectedOption,
     showToast
@@ -500,6 +543,7 @@ const handleAddNewAnnualPriority = async () => {
       if (res.ok) {
         ENABLE_CONSOLE_LOGS && console.log('✅ Department data copied:', json);
         showToast(`Data copied successfully for "${selectedOption}"`, 'success');
+        fetchDepartmentAnnualPriorities();
       } else {
         showToast(json.message || 'Failed to copy data', 'error');
         console.error('❌ Copy failed:', json.message);
@@ -874,8 +918,7 @@ const handleAddNewAnnualPriority = async () => {
                   onClick={() => {
                     setSwitchModalOpen(false);
                     handleSetDepartmentTractionTable(selectedOption, showToast);
-                    const currentState = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
-                    setCurrentOrder(currentState);
+                    
                   }}
                 >
                   Set table
