@@ -828,7 +828,7 @@ const handleAddNewAnnualPriority = async () => {
                       return;
                     }
 
-                    handleDeleteCompanyTractionTag(
+                    handleDeleteDepartmentTractionTag(
                       selectedOption,
                       showToast,
                       setSwitchOptions,

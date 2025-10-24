@@ -848,7 +848,19 @@ const AnnualPriorities = () => {
 
                 <button
                   className="pure-red2-btn w-1/2 mr-2"
-                  onClick={() => handleDeleteCompanyTractionTag(selectedOption, showToast, switchOptions, setSwitchOptions)}
+                  onClick={() => {
+                    if (!selectedOption) {
+                      showToast('Please select an option to delete.', 'error');
+                      return;
+                    }
+
+                    handleDeleteCompanyTractionTag(
+                      selectedOption,
+                      showToast,
+                      setSwitchOptions,
+                      switchOptions
+                    );
+                  }}
                 >
                   Delete
                 </button>
