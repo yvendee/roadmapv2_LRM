@@ -836,12 +836,19 @@ const AnnualPriorities = () => {
                   setSelectedOption={setSelectedOption}
                 />
 
-                <button
+                {/* <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
                     console.log('Set table using:', selectedOption);
                     showToast(`Set table using: ${selectedOption}`, 'success');
                   }}
+                >
+                  Set table
+                </button> */}
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => handleCopyCompanyTractionData(selectedOption, showToast)}
                 >
                   Set table
                 </button>
@@ -958,7 +965,7 @@ const AnnualPriorities = () => {
 
               <div className="flex justify-end gap-2">
 
-                {/* <button
+                <button
                   className="pure-blue2-btn"
                   onClick={() => {
                     const trimmedOption = newOption.trim();
@@ -980,15 +987,7 @@ const AnnualPriorities = () => {
                   }}
                 >
                   Add
-                </button> */}
-
-                <button
-                  className="pure-blue2-btn whitespace-nowrap"
-                  onClick={() => handleCopyCompanyTractionData(selectedOption, showToast)}
-                >
-                  Set table
                 </button>
-
 
                 <button
                   className="pure-red2-btn"
