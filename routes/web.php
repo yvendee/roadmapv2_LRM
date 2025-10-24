@@ -61,6 +61,8 @@ use App\Models\MessagingLeftConversation;
 use App\Models\AdminPanelCompany;
 use App\Models\CompanyTractionActivityLog;
 use App\Models\DepartmentTractionActivityLog;
+use App\Models\CompanyTractionAnnualPrioritiesCollection;
+use App\Models\DepartmentTractionAnnualPrioritiesCollection;
 
 
 
@@ -3792,12 +3794,34 @@ Route::post('/api/v1/company-traction/activity-logs/update', function (Request $
     ]);
 });
 
+// // ref: frontend\src\components\6.company-traction\companyTraction.jsx
+// Route::post('/api/v1/company-traction/switch-options', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->input('organizationName');
+
+//     if (!$organization) {
+//         return response()->json(['message' => 'organizationName is required.'], 400);
+//     }
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => ['2023', '2024', '2025', '2026'],
+//         'Collins Credit Union' => ['2024', '2025'],
+//         'Test Skeleton Loading' => ['2025'],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::post('/api/v1/company-traction/switch-options', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->input('organizationName');
@@ -3806,14 +3830,17 @@ Route::post('/api/v1/company-traction/switch-options', function (Request $reques
         return response()->json(['message' => 'organizationName is required.'], 400);
     }
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => ['2023', '2024', '2025', '2026'],
-        'Collins Credit Union' => ['2024', '2025'],
-        'Test Skeleton Loading' => ['2025'],
-    ];
+    // Fetch all distinct tags for the given organization
+    $tags = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->pluck('tag')
+        ->filter() // remove nulls
+        ->unique()
+        ->values()
+        ->all();
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($tags);
 });
+
 
 // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::get('/api/v1/department-traction/annual-priorities', function (Request $request) use ($API_secure) {
@@ -4204,12 +4231,35 @@ Route::post('/api/v1/department-traction/activity-logs/update', function (Reques
     ]);
 });
 
-// ref:
+// // ref:
+// Route::post('/api/v1/department-traction/switch-options', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $organization = $request->input('organizationName');
+
+//     if (!$organization) {
+//         return response()->json(['message' => 'organizationName is required.'], 400);
+//     }
+
+//     $data = [
+//         'Chuck Gulledge Advisors, LLC' => ['2023', '2024', '2025', '2026'],
+//         'Collins Credit Union' => ['2024', '2025'],
+//         'Test Skeleton Loading' => ['2025'],
+//     ];
+
+//     return response()->json($data[$organization] ?? []);
+// });
+
+
+
+// ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 Route::post('/api/v1/department-traction/switch-options', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
     $organization = $request->input('organizationName');
@@ -4218,15 +4268,16 @@ Route::post('/api/v1/department-traction/switch-options', function (Request $req
         return response()->json(['message' => 'organizationName is required.'], 400);
     }
 
-    $data = [
-        'Chuck Gulledge Advisors, LLC' => ['2023', '2024', '2025', '2026'],
-        'Collins Credit Union' => ['2024', '2025'],
-        'Test Skeleton Loading' => ['2025'],
-    ];
+    // Fetch all distinct tags for the given organization
+    $tags = DepartmentTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->pluck('tag')
+        ->filter() // remove nulls
+        ->unique()
+        ->values()
+        ->all();
 
-    return response()->json($data[$organization] ?? []);
+    return response()->json($tags);
 });
-
 
 
 
