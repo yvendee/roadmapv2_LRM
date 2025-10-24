@@ -573,9 +573,6 @@ const AnnualPriorities = () => {
   };
   
 
-  
-
-
   return (
 
     <>
@@ -898,6 +895,8 @@ const AnnualPriorities = () => {
                   onClick={() => {
                     setSwitchModalOpen(false);
                     handleCopyCompanyTractionData(selectedOption, showToast);
+                    const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
+                    setAnnualPriorities(currentState); // rollback to store state
                   }}
                 >
                   Set table

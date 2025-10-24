@@ -874,6 +874,8 @@ const handleAddNewAnnualPriority = async () => {
                   onClick={() => {
                     setSwitchModalOpen(false);
                     handleSetDepartmentTractionTable(selectedOption, showToast);
+                    const currentState = useDepartmentAnnualPrioritiesStore.getState().departmentAnnualPriorities;
+                    setCurrentOrder(currentState);
                   }}
                 >
                   Set table
