@@ -18,6 +18,7 @@ const AnnualPriorities = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const organization = useLayoutSettingsStore((state) => state.organization);
+  const loadAnnualPrioritiesFromAPI = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
 
   const storeAnnualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
   const [annualPriorities, setAnnualPriorities] = useState([]);
@@ -481,6 +482,49 @@ const AnnualPriorities = () => {
     }
   };
 
+  const fetchAnnualPriorities = async () => {
+    try {
+      const encodedOrg = encodeURIComponent(organization);
+  
+      const res = await fetch(
+        `${API_URL}/v1/company-traction/annual-priorities?organization=${encodedOrg}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        const annualPrioritiesArr = json;
+        ENABLE_CONSOLE_LOGS &&
+          console.log('📥 Fetched Annual-Priorities data:', annualPrioritiesArr);
+  
+        if (Array.isArray(annualPrioritiesArr)) {
+          loadAnnualPrioritiesFromAPI(annualPrioritiesArr);
+          const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
+          setAnnualPriorities(currentState); // rollback to store state
+        } else {
+          console.error(
+            `⚠️ No Annual-Priorities found for organization: ${organization}`
+          );
+        }
+      } else if (res.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('Error:', json.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error('API error:', err);
+    }
+  };
+  
+
 
   const handleCopyCompanyTractionData = async (tag, showToast) => {
     try {
@@ -517,8 +561,6 @@ const AnnualPriorities = () => {
         ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
         showToast(`Successfully copied data from "${tag}"`, "success");
 
-        const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
-        setAnnualPriorities(currentState); // rollback to store state
       } else {
         console.error("❌ Copy failed:", json.message);
         showToast(json.message || "Failed to copy data.", "error");
@@ -898,6 +940,7 @@ const AnnualPriorities = () => {
                   onClick={() => {
                     setSwitchModalOpen(false);
                     handleCopyCompanyTractionData(selectedOption, showToast);
+                    fetchAnnualPriorities();
                   }}
                 >
                   Set table
