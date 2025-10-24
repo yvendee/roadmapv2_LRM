@@ -560,6 +560,7 @@ const AnnualPriorities = () => {
       if (res.ok) {
         ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
         showToast(`Successfully copied data from "${tag}"`, "success");
+        fetchAnnualPriorities();
 
       } else {
         console.error("❌ Copy failed:", json.message);
@@ -607,7 +608,7 @@ const AnnualPriorities = () => {
       if (res.ok) {
         ENABLE_CONSOLE_LOGS && console.log('✅ Copied table data:', json);
         showToast(`Copied table to: ${selectedOption}`, 'success');
-        fetchAnnualPriorities();
+        
       } else {
         showToast(json.message || 'Failed to copy data', 'error');
         console.error('❌ Copy failed:', json.message);
