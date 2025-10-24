@@ -4532,6 +4532,47 @@ Route::post('/api/v1/department-traction/annual-priorities/copy', function (Requ
     ]);
 });
 
+// ref:
+Route::post('/api/v1/department-traction/annual-priorities/copy-to-collection', function (Request $request) use ($API_secure) {
+
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $tag = $request->input('tag');
+
+    if (!$organization || !$tag) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // 🔍 Find source record from department_traction_annual_priorities
+    $source = DepartmentTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$source) {
+        return response()->json(['message' => 'No source data found for this organization.'], 404);
+    }
+
+    // 🔍 Find target record in department_traction_annual_priorities_collection
+    $target = DepartmentTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    if (!$target) {
+        return response()->json(['message' => 'No target record found for this tag and organization.'], 404);
+    }
+
+    // 🧠 Copy annualPrioritiesData → departmentTractionData
+    $target->departmentTractionData = $source->annualPrioritiesData ?? [];
+    $target->save();
+
+    return response()->json([
+        'message' => 'Data copied successfully to collection.',
+        'organizationName' => $organization,
+        'tag' => $tag,
+        'copiedData' => $target->departmentTractionData,
+    ]);
+});
 
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 // Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {

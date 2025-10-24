@@ -895,7 +895,10 @@ const AnnualPriorities = () => {
 
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
-                  onClick={() => handleCopyCompanyTractionData(selectedOption, showToast)}
+                  onClick={() => {
+                    setSwitchModalOpen(false);
+                    handleCopyCompanyTractionData(selectedOption, showToast);
+                  }}
                 >
                   Set table
                 </button>
@@ -913,6 +916,7 @@ const AnnualPriorities = () => {
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
+                    setSwitchModalOpen(false);
                     handleCopyCompanyTractionTable(selectedOption, showToast);
                   }}
                 >
