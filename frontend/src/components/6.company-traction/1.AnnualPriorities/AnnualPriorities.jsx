@@ -441,23 +441,18 @@ const AnnualPriorities = () => {
   };
 
   const handleDeleteCompanyTractionTag = async (
-    selectedOption,
+    tag,
     showToast,
-    switchOptions,
-    setSwitchOptions
+    setSwitchOptions,
+    switchOptions
   ) => {
-    if (!selectedOption) {
-      showToast('Please select an option to delete.', 'error');
-      return;
-    }
-
     try {
       // 1. Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
       if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
       const { csrf_token } = await csrfRes.json();
-
-      // 2. POST request to delete tag
+  
+      // 2. Make POST request to delete tag
       const res = await fetch(`${API_URL}/v1/company-traction/switch-options/delete`, {
         method: 'POST',
         headers: {
@@ -466,19 +461,16 @@ const AnnualPriorities = () => {
           'X-CSRF-TOKEN': csrf_token,
         },
         credentials: 'include',
-        body: JSON.stringify({ organizationName: organization, tag: selectedOption }),
+        body: JSON.stringify({ organizationName: organization, tag }),
       });
-
+  
       const json = await res.json();
-
+  
       if (res.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('🗑️ Company tag deleted:', selectedOption);
+        ENABLE_CONSOLE_LOGS && console.log('✅ Company tag deleted:', tag);
         const optionsArray = Array.isArray(switchOptions) ? switchOptions : [];
-        const updatedOptions = optionsArray.filter(
-          (opt) => opt.toLowerCase() !== selectedOption.toLowerCase()
-        );
-        setSwitchOptions(updatedOptions);
-        showToast(`Deleted: ${selectedOption}`, 'success');
+        setSwitchOptions(optionsArray.filter(opt => opt.toLowerCase() !== tag.toLowerCase()));
+        showToast(`Deleted: ${tag}`, 'success');
       } else {
         showToast(json.message || 'Failed to delete tag', 'error');
         console.error('Error deleting company tag:', json.message);
@@ -488,7 +480,7 @@ const AnnualPriorities = () => {
       showToast('Network error', 'error');
     }
   };
-
+  
 
 
   return (
