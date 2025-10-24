@@ -3903,6 +3903,51 @@ Route::post('/api/v1/company-traction/switch-options/delete', function (Request 
     return response()->json(['message' => 'Tag deleted successfully']);
 });
 
+// ref:
+Route::post('/api/v1/company-traction/annual-priorities/copy', function (Request $request) use ($API_secure) {
+
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $tag = $request->input('tag');
+
+    if (!$organization || !$tag) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // 🔍 Find source record from company_traction_annual_priorities_collection
+    $source = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    if (!$source) {
+        return response()->json(['message' => 'No record found for the given tag and organization.'], 404);
+    }
+
+    // 🧠 Find destination record in company_traction_annual_priorities
+    $destination = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$destination) {
+        return response()->json(['message' => 'Destination record not found for this organization.'], 404);
+    }
+
+    // 📝 Copy the data
+    $destination->annualPrioritiesData = $source->companyTractionData ?? [];
+    $destination->save();
+
+    return response()->json([
+        'message' => 'Data copied successfully.',
+        'organizationName' => $organization,
+        'tag' => $tag,
+        'copiedData' => $destination->annualPrioritiesData,
+    ]);
+});
+
+
+
+
 
 
 // ref: frontend\src\components\7.department-traction\departmentTraction.jsx

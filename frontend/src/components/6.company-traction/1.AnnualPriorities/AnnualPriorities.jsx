@@ -480,6 +480,52 @@ const AnnualPriorities = () => {
       showToast('Network error', 'error');
     }
   };
+
+
+  const handleCopyCompanyTractionData = async (tag, showToast) => {
+    try {
+      const organization = useLayoutSettingsStore.getState().organization;
+
+      if (!organization || !tag) {
+        showToast("Organization name or tag is missing.", "error");
+        return;
+      }
+
+      // 1️⃣ Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: "include",
+      });
+      if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
+
+      const { csrf_token } = await csrfRes.json();
+
+      // 2️⃣ Make POST request to copy data
+      const res = await fetch(`${API_URL}/v1/company-traction/annual-priorities/copy`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrf_token,
+        },
+        credentials: "include",
+        body: JSON.stringify({ organizationName: organization, tag }),
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
+        showToast(`Successfully copied data from "${tag}"`, "success");
+      } else {
+        console.error("❌ Copy failed:", json.message);
+        showToast(json.message || "Failed to copy data.", "error");
+      }
+    } catch (error) {
+      console.error("❌ Network error copying data:", error);
+      showToast("Network error while copying data.", "error");
+    }
+  };
+
   
 
 
@@ -797,7 +843,7 @@ const AnnualPriorities = () => {
                     showToast(`Set table using: ${selectedOption}`, 'success');
                   }}
                 >
-                  Paste
+                  Set table
                 </button>
 
                 <button
@@ -807,7 +853,7 @@ const AnnualPriorities = () => {
                     showToast(`Copy table to: ${selectedOption}`, 'success');
                   }}
                 >
-                  Copy
+                  Copy table
                 </button>
               </div>
 
@@ -911,46 +957,8 @@ const AnnualPriorities = () => {
               />
 
               <div className="flex justify-end gap-2">
+
                 {/* <button
-                  className="pure-blue2-btn"
-                  onClick={() => {
-                    console.log('Add:', newOption);
-                    showToast(`Added: ${newOption}`, 'success');
-                    // Close the new modal after adding if needed here
-                    setShowNewModal(false);
-                    setNewOption('');
-                  }}
-                >
-                  Add
-                </button> */}
-
-                
-                {/* <button
-                  className="pure-blue2-btn"
-                  onClick={() => {
-                    const trimmedOption = newOption.trim();
-                    if (!trimmedOption) {
-                      showToast('Option cannot be empty', 'error');
-                      return;
-                    }
-                    const exists = switchOptions.some(
-                      (opt) => opt.toLowerCase() === trimmedOption.toLowerCase()
-                    );
-
-                    if (exists) {
-                      showToast(`Option "${trimmedOption}" already exists!`, 'error');
-                    } else {
-                      setSwitchOptions((prev) => [...prev, trimmedOption]);
-                      showToast(`Added: ${trimmedOption}`, 'success');
-                      setShowNewModal(false);
-                      setNewOption('');
-                    }
-                  }}
-                >
-                  Add
-                </button> */}
-
-                <button
                   className="pure-blue2-btn"
                   onClick={() => {
                     const trimmedOption = newOption.trim();
@@ -972,7 +980,15 @@ const AnnualPriorities = () => {
                   }}
                 >
                   Add
+                </button> */}
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => handleCopyCompanyTractionData(selectedOption, showToast)}
+                >
+                  Set table
                 </button>
+
 
                 <button
                   className="pure-red2-btn"

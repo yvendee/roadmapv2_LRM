@@ -774,11 +774,21 @@ const handleAddNewAnnualPriority = async () => {
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
-                    console.log('Set Default:', selectedOption);
-                    showToast(`Set Default: ${selectedOption}`, 'success');
+                    console.log('Set table using:', selectedOption);
+                    showToast(`Set table using: ${selectedOption}`, 'success');
                   }}
                 >
-                  Set Default
+                  Set table
+                </button>
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => {
+                    console.log('Copy table to:', selectedOption);
+                    showToast(`Copy table to: ${selectedOption}`, 'success');
+                  }}
+                >
+                  Copy table
                 </button>
               </div>
 
