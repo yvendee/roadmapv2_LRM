@@ -516,6 +516,9 @@ const AnnualPriorities = () => {
       if (res.ok) {
         ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
         showToast(`Successfully copied data from "${tag}"`, "success");
+
+        const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
+        setAnnualPriorities(currentState); // rollback to store state
       } else {
         console.error("❌ Copy failed:", json.message);
         showToast(json.message || "Failed to copy data.", "error");
@@ -895,8 +898,6 @@ const AnnualPriorities = () => {
                   onClick={() => {
                     setSwitchModalOpen(false);
                     handleCopyCompanyTractionData(selectedOption, showToast);
-                    const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
-                    setAnnualPriorities(currentState); // rollback to store state
                   }}
                 >
                   Set table
