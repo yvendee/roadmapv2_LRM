@@ -3945,6 +3945,47 @@ Route::post('/api/v1/company-traction/annual-priorities/copy', function (Request
     ]);
 });
 
+// ref:
+Route::post('/api/v1/company-traction/annual-priorities/copy-to-collection', function (Request $request) use ($API_secure) {
+
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $tag = $request->input('tag');
+
+    if (!$organization || !$tag) {
+        return response()->json(['message' => 'organizationName and tag are required.'], 400);
+    }
+
+    // 🔍 1. Find the source record from company_traction_annual_priorities
+    $source = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$source) {
+        return response()->json(['message' => 'No source data found for this organization.'], 404);
+    }
+
+    // 🔍 2. Find the target record in company_traction_annual_priorities_collection
+    $target = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    if (!$target) {
+        return response()->json(['message' => 'No target record found for this tag and organization.'], 404);
+    }
+
+    // 🧠 3. Copy the annualPrioritiesData → companyTractionData
+    $target->companyTractionData = $source->annualPrioritiesData ?? [];
+    $target->save();
+
+    return response()->json([
+        'message' => 'Data copied successfully to collection.',
+        'organizationName' => $organization,
+        'tag' => $tag,
+        'copiedData' => $target->companyTractionData,
+    ]);
+});
 
 
 

@@ -526,6 +526,53 @@ const AnnualPriorities = () => {
     }
   };
 
+  const handleCopyCompanyTractionTable = async (
+    selectedOption,
+    showToast
+  ) => {
+    try {
+      if (!selectedOption) {
+        showToast('Please select an option first.', 'error');
+        return;
+      }
+  
+      // 1️⃣ Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
+      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+      const { csrf_token } = await csrfRes.json();
+  
+      // 2️⃣ Make POST request to Laravel route
+      const res = await fetch(`${API_URL}/v1/company-traction/annual-priorities/copy-to-collection`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          organizationName: organization,
+          tag: selectedOption,
+        }),
+      });
+  
+      const json = await res.json();
+  
+      // 3️⃣ Handle result
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS && console.log('✅ Copied table data:', json);
+        showToast(`Copied table to: ${selectedOption}`, 'success');
+      } else {
+        showToast(json.message || 'Failed to copy data', 'error');
+        console.error('❌ Copy failed:', json.message);
+      }
+    } catch (err) {
+      console.error('❌ Network error copying data:', err);
+      showToast('Network error', 'error');
+    }
+  };
+  
+
   
 
 
@@ -852,7 +899,7 @@ const AnnualPriorities = () => {
                 >
                   Set table
                 </button>
-
+{/* 
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
@@ -861,7 +908,17 @@ const AnnualPriorities = () => {
                   }}
                 >
                   Copy table
+                </button> */}
+
+                <button
+                  className="pure-blue2-btn whitespace-nowrap"
+                  onClick={() => {
+                    handleCopyCompanyTractionTable(selectedOption, showToast);
+                  }}
+                >
+                  Copy table
                 </button>
+
               </div>
 
               {/* Delete & New */}
