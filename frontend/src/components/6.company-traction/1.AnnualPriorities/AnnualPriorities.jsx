@@ -506,9 +506,9 @@ const AnnualPriorities = () => {
           console.log('📥 Fetched Annual-Priorities data:', annualPrioritiesArr);
   
         if (Array.isArray(annualPrioritiesArr)) {
-          loadAnnualPrioritiesFromAPI(annualPrioritiesArr);
-          const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
-          setAnnualPriorities(currentState); // rollback to store state
+          // loadAnnualPrioritiesFromAPI(annualPrioritiesArr);
+          // const currentState = useAnnualPrioritiesStore.getState().annualPriorities;
+          setAnnualPriorities(annualPrioritiesArr); // rollback to store state
         } else {
           console.error(
             `⚠️ No Annual-Priorities found for organization: ${organization}`
