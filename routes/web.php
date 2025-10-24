@@ -3007,76 +3007,76 @@ Route::post('/api/v1/growth-command-center/gcc-metrics/update', function (Reques
 //     $organization = $request->query('organization');
 
 //     // Mock data for multiple organizations
-//     $data = [
-//         'Chuck Gulledge Advisors, LLC' => [
-//             [
-//                 'id' => 1,
-//                 'description' => 'Systematize Coaching Framework (now called Momentum OS).',
-//                 'status' => '100.00%',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
-//                 'status' => '75.00%',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
-//                 'status' => '60.00%',
-//             ],
-//             [
-//                 'id' => 4,
-//                 'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
-//                 'status' => '45.00%',
-//             ],
-//         ],
+    // $data = [
+    //     'Chuck Gulledge Advisors, LLC' => [
+    //         [
+    //             'id' => 1,
+    //             'description' => 'Systematize Coaching Framework (now called Momentum OS).',
+    //             'status' => '100.00%',
+    //         ],
+    //         [
+    //             'id' => 2,
+    //             'description' => 'Centers on elite coach acquisition and building a high-performance culture, ensuring the team can execute the innovative solutions.',
+    //             'status' => '75.00%',
+    //         ],
+    //         [
+    //             'id' => 3,
+    //             'description' => 'Emphasizes structured processes and achieving 10/10 ratings, turning the talent and solutions into concrete results.',
+    //             'status' => '60.00%',
+    //         ],
+    //         [
+    //             'id' => 4,
+    //             'description' => 'Leverages strategic alliances and builds a referral engine to expand reach, which then cycles back to reinforce the brand promise.',
+    //             'status' => '45.00%',
+    //         ],
+    //     ],
 
-//         'Collins Credit Union' => [
-//             [
-//                 'id' => 1,
-//                 'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
-//                 'status' => '85.00%',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'description' => 'Streamline operations and reduce costs while maintaining quality.',
-//                 'status' => '90.00%',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'description' => 'Implement new technologies to drive efficiency and innovation.',
-//                 'status' => '60.00%',
-//             ],
-//             [
-//                 'id' => 4,
-//                 'description' => 'Entering new markets and increasing market share.',
-//                 'status' => '50.00%',
-//             ],
-//         ],
+    //     'Collins Credit Union' => [
+    //         [
+    //             'id' => 1,
+    //             'description' => 'Building an exceptional customer experience through tailored solutions and responsive service.',
+    //             'status' => '85.00%',
+    //         ],
+    //         [
+    //             'id' => 2,
+    //             'description' => 'Streamline operations and reduce costs while maintaining quality.',
+    //             'status' => '90.00%',
+    //         ],
+    //         [
+    //             'id' => 3,
+    //             'description' => 'Implement new technologies to drive efficiency and innovation.',
+    //             'status' => '60.00%',
+    //         ],
+    //         [
+    //             'id' => 4,
+    //             'description' => 'Entering new markets and increasing market share.',
+    //             'status' => '50.00%',
+    //         ],
+    //     ],
 
-//         'Test Skeleton Loading' => [
-//             [
-//                 'id' => 1,
-//                 'description' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 2,
-//                 'description' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 3,
-//                 'description' => '-',
-//                 'status' => '-',
-//             ],
-//             [
-//                 'id' => 4,
-//                 'description' => '-',
-//                 'status' => '-',
-//             ],
-//         ],
-//     ];
+    //     'Test Skeleton Loading' => [
+    //         [
+    //             'id' => 1,
+    //             'description' => '-',
+    //             'status' => '-',
+    //         ],
+    //         [
+    //             'id' => 2,
+    //             'description' => '-',
+    //             'status' => '-',
+    //         ],
+    //         [
+    //             'id' => 3,
+    //             'description' => '-',
+    //             'status' => '-',
+    //         ],
+    //         [
+    //             'id' => 4,
+    //             'description' => '-',
+    //             'status' => '-',
+    //         ],
+    //     ],
+    // ];
 
 
 //     // Return data for the requested organization or empty array
