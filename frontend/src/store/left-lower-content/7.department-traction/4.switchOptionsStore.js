@@ -1,8 +1,8 @@
 // frontend\src\store\left-lower-content\7.department-traction\4.switchOptionsStore.js
 import { create } from 'zustand';
 
-// Initial options (similar to your useState default)
-const initialSwitchOptions = ["2025"];
+// Initial options
+const initialSwitchOptions = [];
 
 const useSwitchOptionsStore = create((set) => ({
   switchOptions: initialSwitchOptions,

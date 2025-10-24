@@ -7,6 +7,7 @@ import DepartmentTractionTable from './2.DepartmentTraction/DepartmentTraction';
 import useDepartmentAnnualPrioritiesStore from '../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
 import useDepartmentTractionStore from '../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import useDepartmentActivityLogStore from '../../store/left-lower-content/7.department-traction/3.activityLogStore';
+import useSwitchOptionsStore from "../../store/left-lower-content/7.department-traction/4.switchOptionsStore";
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
@@ -19,6 +20,7 @@ const DepartmentTraction = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const organization = useLayoutSettingsStore((state) => state.organization);
+  const { setSwitchOptions } = useSwitchOptionsStore();
   const loadDepartmentAnnualPrioritiesFromAPI = useDepartmentAnnualPrioritiesStore((state) => state.loadDepartmentAnnualPrioritiesFromAPI);
   const setDepartmentTraction = useDepartmentTractionStore((state) => state.setDepartmentTraction);
   const setBaselineDepartmentTraction = useDepartmentTractionStore((state) => state.setBaselineDepartmentTraction);
@@ -158,6 +160,52 @@ const DepartmentTraction = () => {
     fetchDepartmentActivityLogs();
   }, [organization]);
   
+  // Fetch Company-Traction Switch Options
+  useEffect(() => {
+    const fetchSwitchOptions = async () => {
+      try {
+        // 1️⃣ Fetch CSRF token
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: "include",
+        });
+
+        if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
+        const { csrf_token } = await csrfRes.json();
+
+        // 2️⃣ Fetch switch options (POST request)
+        const res = await fetch(`${API_URL}/v1/department-traction/switch-options`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include", // Laravel session cookie
+          body: JSON.stringify({ organizationName: organization }),
+        });
+
+        const json = await res.json();
+
+        if (res.ok) {
+          ENABLE_CONSOLE_LOGS && console.log("📥 Fetched Switch Options:", json);
+          if (Array.isArray(json)) {
+            setSwitchOptions(json);
+          }
+        } else if (res.status === 401) {
+          navigate("/", { state: { loginError: "Session Expired" } });
+        } else {
+          console.error("Switch options fetch failed:", json.message);
+        }
+      } catch (err) {
+        console.error("Switch options fetch error:", err);
+      }
+    };
+
+    if (organization) {
+      fetchSwitchOptions();
+    }
+  }, [organization, setSwitchOptions, navigate]);
+
 
   return (
 
