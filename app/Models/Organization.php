@@ -454,6 +454,23 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
+            // 🆕 Company Traction Annual Priorities Collection
+            \App\Models\CompanyTractionAnnualPrioritiesCollection::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'tag' => "2025",
+                'companyTractionData' => [],
+                'statusFlag' => null,
+            ]);
+
+            // 🆕 Department Traction Annual Priorities Collection
+            \App\Models\DepartmentTractionAnnualPrioritiesCollection::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'tag' => "2025", 
+                'departmentTractionData' => [],
+                'statusFlag' => null,
+            ]);
 
         });
     }
