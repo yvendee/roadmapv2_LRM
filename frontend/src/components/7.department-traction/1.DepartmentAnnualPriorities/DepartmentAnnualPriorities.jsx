@@ -691,7 +691,7 @@ const handleAddNewAnnualPriority = async () => {
 
               {/* Delete & New */}
               <div className="flex justify-between mt-4">
-                <button
+                {/* <button
                   className="pure-red2-btn w-1/2 mr-2"
                   onClick={() => {
                     console.log('Delete:', selectedOption);
@@ -699,7 +699,33 @@ const handleAddNewAnnualPriority = async () => {
                   }}
                 >
                   Delete
+                </button> */}
+
+                <button
+                  className="pure-red2-btn w-1/2 mr-2"
+                  onClick={() => {
+                    if (!selectedOption) {
+                      showToast('Please select an option to delete.', 'error');
+                      return;
+                    }
+
+                    const optionsArray = Array.isArray(switchOptions) ? switchOptions : [];
+                    const updatedOptions = optionsArray.filter(
+                      (opt) => opt.toLowerCase() !== selectedOption.toLowerCase()
+                    );
+
+                    if (updatedOptions.length === optionsArray.length) {
+                      showToast(`Option "${selectedOption}" not found.`, 'error');
+                      return;
+                    }
+
+                    setSwitchOptions(updatedOptions);
+                    showToast(`Deleted: ${selectedOption}`, 'success');
+                  }}
+                >
+                  Delete
                 </button>
+
                 <button
                   className="pure-green2-btn w-1/2 ml-2"
                   onClick={() => setShowNewModal(true)}
