@@ -8553,7 +8553,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
     $authUser = AuthUser::where('email', $newItem['email'])->first();
     if ($authUser) {
         return response()->json([
-            'message' => 'Email already exists in auth table',
+            'message' => 'Email already exists',
         ], 409); // 409 Conflict
     }
 
