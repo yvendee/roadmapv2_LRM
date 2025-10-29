@@ -90,7 +90,8 @@ const AccountButton = () => {
         <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50">
           <div className="px-4 py-2 text-sm text-gray-900 dark:text-white font-semibold">
             {/* {user?.fullname ?? 'Unknown User'} {user?.role && `(as ${user.role})`} */}
-            {user?.fullname ?? 'Unknown User'} {user?.position && `(as ${user.position})`}
+            {/* {user?.fullname ?? 'Unknown User'} {user?.position && `(as ${user.position})`} */}
+            {user?.fullname ?? 'Unknown User'} {user?.role && `(as ${user.role})`}
           </div>
           <div className="border-t border-gray-200 dark:border-gray-600 my-1" />
 
