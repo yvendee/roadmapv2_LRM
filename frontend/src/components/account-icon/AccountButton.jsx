@@ -21,16 +21,53 @@ const AccountButton = () => {
   const [newPasswordInput, setNewPasswordInput] = useState('');
   const [feedbackMsg, setFeedbackMsg] = useState({ type: '', message: '' });
 
-  const HARDCODED_OLD_PASSWORD = 'admin123';
+  // const HARDCODED_OLD_PASSWORD = 'admin123';
 
-  const handleChangePassword = () => {
-    if (oldPasswordInput === HARDCODED_OLD_PASSWORD && newPasswordInput.trim()) {
-      setFeedbackMsg({ type: 'success', message: 'Password has been changed' });
-      console.log('Password changed:', { oldPasswordInput, newPasswordInput });
-    } else {
-      setFeedbackMsg({ type: 'error', message: 'Old password is wrong' });
+  // const handleChangePassword = () => {
+  //   if (oldPasswordInput === HARDCODED_OLD_PASSWORD && newPasswordInput.trim()) {
+  //     setFeedbackMsg({ type: 'success', message: 'Password has been changed' });
+  //     console.log('Password changed:', { oldPasswordInput, newPasswordInput });
+  //   } else {
+  //     setFeedbackMsg({ type: 'error', message: 'Old password is wrong' });
+  //   }
+  // };
+
+  const handleChangePassword = async () => {
+    if (!oldPasswordInput.trim() || !newPasswordInput.trim()) {
+      setFeedbackMsg({ type: 'error', message: 'Please fill both fields' });
+      return;
+    }
+  
+    try {
+      const response = await fetch(`${API_URL}/change-password`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          oldPassword: oldPasswordInput,
+          newPassword: newPasswordInput,
+          email: user.email,             // from loginStore
+          organization: user.organization, // from loginStore
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        setFeedbackMsg({ type: 'error', message: result.message || 'Error changing password' });
+        return;
+      }
+  
+      setFeedbackMsg({ type: 'success', message: result.message });
+      setOldPasswordInput('');
+      setNewPasswordInput('');
+    } catch (err) {
+      setFeedbackMsg({ type: 'error', message: 'Network error' });
     }
   };
+  
   
   const handleCloseModal = () => {
     setShowModal(false);

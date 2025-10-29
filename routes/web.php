@@ -431,6 +431,57 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
     ]);
 });
 
+// ref:
+Route::post('/api/change-password', function (Request $request) {
+    // Validate inputs
+    $validator = Validator::make($request->all(), [
+        'oldPassword' => 'required|string',
+        'newPassword' => 'required|string|min:6',
+        'email' => 'required|email',
+        'organization' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $email = $request->input('email');
+    $organization = $request->input('organization');
+    $oldPassword = $request->input('oldPassword');
+    $newPassword = $request->input('newPassword');
+
+    // Find user by email and organization
+    $user = AuthUser::where('email', $email)
+                    ->where('organization', $organization)
+                    ->first();
+
+    if (!$user) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not found',
+        ], 404);
+    }
+
+    // Check old password
+    if (!Hash::check($oldPassword, $user->passwordHash)) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Old password is incorrect',
+        ], 401);
+    }
+
+    // Update password
+    $user->passwordHash = Hash::make($newPassword);
+    $user->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Password updated successfully',
+    ]);
+});
 
 
 //
