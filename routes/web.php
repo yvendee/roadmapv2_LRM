@@ -432,8 +432,15 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
 });
 
 // ref: frontend\src\components\account-icon\AccountButton.jsx
-Route::post('/api/change-password', function (Request $request) {
-    // Validate inputs
+Route::post('/api/change-password', function (Request $request) use ($API_secure) {
+    // ✅ Secure API check
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    }
+
+    // ✅ Validate input
     $validator = Validator::make($request->all(), [
         'oldPassword' => 'required|string',
         'newPassword' => 'required|string|min:6',
@@ -443,7 +450,7 @@ Route::post('/api/change-password', function (Request $request) {
 
     if ($validator->fails()) {
         return response()->json([
-            'status' => 'error',
+            'message' => 'Validation error',
             'errors' => $validator->errors(),
         ], 422);
     }
@@ -453,35 +460,27 @@ Route::post('/api/change-password', function (Request $request) {
     $oldPassword = $request->input('oldPassword');
     $newPassword = $request->input('newPassword');
 
-    // Find user by email and organization
+    // ✅ Find user by email and organization
     $user = AuthUser::where('email', $email)
-                    ->where('organization', $organization)
-                    ->first();
+        ->where('organization', $organization)
+        ->first();
 
     if (!$user) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'User not found',
-        ], 404);
+        return response()->json(['message' => 'User not found'], 404);
     }
 
-    // Check old password
+    // ✅ Check old password
     if (!Hash::check($oldPassword, $user->passwordHash)) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Old password is incorrect',
-        ], 401);
+        return response()->json(['message' => 'Old password is incorrect'], 401);
     }
 
-    // Update password
+    // ✅ Update password
     $user->passwordHash = Hash::make($newPassword);
     $user->save();
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Password updated successfully',
-    ]);
+    return response()->json(['message' => 'Password changed successfully']);
 });
+
 
 
 //

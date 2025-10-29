@@ -39,12 +39,20 @@ const AccountButton = () => {
     }
   
     try {
+      // 1. Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
+      const { csrf_token } = await csrfRes.json();
+  
+      // 2. Send POST request to change password
       const response = await fetch(`${API_URL}/change-password`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrf_token,
         },
+        credentials: 'include',
         body: JSON.stringify({
           oldPassword: oldPasswordInput,
           newPassword: newPasswordInput,
@@ -64,9 +72,11 @@ const AccountButton = () => {
       setOldPasswordInput('');
       setNewPasswordInput('');
     } catch (err) {
+      console.error('❌ Change password request error:', err);
       setFeedbackMsg({ type: 'error', message: 'Network error' });
     }
   };
+  
   
   
   const handleCloseModal = () => {
