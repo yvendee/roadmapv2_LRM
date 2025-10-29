@@ -431,7 +431,7 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
     ]);
 });
 
-// ref:
+// ref: frontend\src\components\account-icon\AccountButton.jsx
 Route::post('/api/change-password', function (Request $request) {
     // Validate inputs
     $validator = Validator::make($request->all(), [
