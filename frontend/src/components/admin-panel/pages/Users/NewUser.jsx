@@ -260,16 +260,6 @@ export default function NewUser({ onCancel }) {
             />
             {errors.confirmPassword && <div className="error-text">{errors.confirmPassword}</div>}
           </div>
-          {/* <div className="form-group">
-            <label>Organization<span className="required">*</span></label>
-            <input
-              type="text"
-              className="form-input"
-              value={organization}
-              onChange={(e) => setOrganization(e.target.value)}
-            />
-            {errors.organization && <div className="error-text">{errors.organization}</div>}
-          </div> */}
 
           <div className="form-group">
             <label>

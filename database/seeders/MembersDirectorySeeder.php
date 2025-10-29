@@ -26,7 +26,7 @@ class MembersDirectorySeeder extends Seeder
                 'company' => 'Chuck Gulledge Advisors, LLC',
                 'email' => 'chuck.gulledge@gmail.com',
                 'department' => 'Admin',
-                'memberAccess' => 'Superadmin',
+                'memberAccess' => 'Leadership',
                 'canLogin' => 'Yes',
             ],
         ];
