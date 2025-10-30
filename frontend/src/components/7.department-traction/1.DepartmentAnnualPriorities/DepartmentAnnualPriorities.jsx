@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
 import useDepartmentAnnualPrioritiesStore, { initialDepartmentAnnualPriorities } from '../../../store/left-lower-content/7.department-traction/1.departmentAnnualPrioritiesStores';
+import useDepartmentTractionStore from '../../../store/left-lower-content/7.department-traction/2.departmentTractionStore';
 import useSwitchOptionsStore from '../../../store/left-lower-content/7.department-traction/4.switchOptionsStore';
 import CustomDropdown from '../../CustomDropdown/CustomDropdown';
 import API_URL from '../../../configs/config';
@@ -19,6 +20,9 @@ const DepartmentAnnualPriorities = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const organization = useLayoutSettingsStore((state) => state.organization);
+  const setDepartmentTraction = useDepartmentTractionStore((state) => state.setDepartmentTraction);
+  const setBaselineDepartmentTraction = useDepartmentTractionStore((state) => state.setBaselineDepartmentTraction);
+  
 
   const loggedUser = useLoginStore((state) => state.user);
 
@@ -505,6 +509,40 @@ const handleAddNewAnnualPriority = async () => {
       console.error('API error:', err);
     }
   };
+
+  const fetchDepartmentTractionTable = async () => {
+    try {
+      const encodedOrg = encodeURIComponent(organization);
+  
+      const res = await fetch(
+        `${API_URL}/v1/department-traction/traction-data?organization=${encodedOrg}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        ENABLE_CONSOLE_LOGS &&
+          console.log('📥 Fetched Department Traction Table:', json);
+        setDepartmentTraction(json);
+        setBaselineDepartmentTraction(json);
+      } else if (res.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('Fetch error:', json.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error('API error:', err);
+    }
+  };
+  
   
 
   const handleSetDepartmentTractionTable = async (
@@ -544,6 +582,7 @@ const handleAddNewAnnualPriority = async () => {
         ENABLE_CONSOLE_LOGS && console.log('✅ Department data copied:', json);
         showToast(`Data copied successfully for "${selectedOption}"`, 'success');
         fetchDepartmentAnnualPriorities();
+        fetchDepartmentTractionTable();
       } else {
         showToast(json.message || 'Failed to copy data', 'error');
         console.error('❌ Copy failed:', json.message);
