@@ -329,8 +329,6 @@ const AnnualPriorities = () => {
     setShowConfirmModal(false);
   };
 
-
-
   // Drag handlers:
   const handleDragStart = (e, id) => {
     setDraggedId(id);
@@ -524,7 +522,6 @@ const AnnualPriorities = () => {
     }
   };
   
-
 
   const handleCopyCompanyTractionData = async (tag, showToast) => {
     try {
