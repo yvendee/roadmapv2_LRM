@@ -4992,18 +4992,18 @@ Route::post('/api/v1/department-traction/annual-priorities/copy-to-collection', 
         return response()->json(['message' => 'No target record found for this tag and organization.'], 404);
     }
 
-    // 🧠 3. Copy the annualPrioritiesData → departmentTractionData
+    // 🧠 3. Copy annualPrioritiesData → departmentTractionData
     $target->departmentTractionData = $source->annualPrioritiesData ?? [];
     $target->save();
 
-    // 🔄 4. Update DepartmentTractionQuarterTableCollection from DepartmentTractionCompanyTraction
+    // 🔄 4. Update DepartmentTractionQuarterTableCollection using DepartmentTractionCompanyTraction
+    $companyTractionRecord = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
+
     $quarterRecord = DepartmentTractionQuarterTableCollection::where('organizationName', $organization)
         ->where('tag', $tag)
         ->first();
 
-    $companyTractionRecord = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
-
-    if ($quarterRecord && $companyTractionRecord) {
+    if ($companyTractionRecord && $quarterRecord) {
         $quarterRecord->departmentTractionData = $companyTractionRecord->departmentTractionData ?? [];
         $quarterRecord->save();
     }
@@ -5016,6 +5016,7 @@ Route::post('/api/v1/department-traction/annual-priorities/copy-to-collection', 
         'copiedQuarterData' => $quarterRecord->departmentTractionData ?? [],
     ]);
 });
+
 
 // // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
 // Route::get('/api/v1/department-traction/traction-data', function (Request $request) use ($API_secure) {
