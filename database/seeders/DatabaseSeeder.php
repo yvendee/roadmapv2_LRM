@@ -67,8 +67,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(DepartmentTractionActivityLogsSeeder::class);
         // $this->call(CompanyTractionAnnualPrioritiesCollectionSeeder::class);
         // $this->call(DepartmentTractionAnnualPrioritiesCollectionSeeder::class);
-        $this->call(CompanyTractionQuarterTableCollectionSeeder::class);
-        $this->call(DepartmentTractionQuarterTableCollectionSeeder::class);
+        // $this->call(CompanyTractionQuarterTableCollectionSeeder::class);
+        // $this->call(DepartmentTractionQuarterTableCollectionSeeder::class);
         
     }
 

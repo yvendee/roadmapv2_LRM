@@ -63,6 +63,7 @@ use App\Models\CompanyTractionActivityLog;
 use App\Models\DepartmentTractionActivityLog;
 use App\Models\CompanyTractionAnnualPrioritiesCollection;
 use App\Models\DepartmentTractionAnnualPrioritiesCollection;
+use App\Models\CompanyTractionQuarterTableCollection;
 
 
 
@@ -3891,7 +3892,41 @@ Route::post('/api/v1/company-traction/switch-options', function (Request $reques
     return response()->json($tags);
 });
 
-// ref: 
+// // ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
+// Route::post('/api/v1/company-traction/switch-options/add', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $organization = $request->input('organizationName');
+//     $trimmedOption = trim($request->input('tag'));
+
+//     if (!$organization || !$trimmedOption) {
+//         return response()->json(['message' => 'organizationName and tag are required.'], 400);
+//     }
+
+//     // Check if tag already exists for this organization
+//     $exists = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+//         ->where('tag', $trimmedOption)
+//         ->exists();
+
+//     if ($exists) {
+//         return response()->json(['message' => 'Tag already exists'], 409);
+//     }
+
+//     // Create new record
+//     $record = CompanyTractionAnnualPrioritiesCollection::create([
+//         'u_id' => Str::uuid(), // auto-generate unique ID
+//         'organizationName' => $organization,
+//         'tag' => $trimmedOption,
+//         'companyTractionData' => [], // empty array
+//         'statusFlag' => null,
+//     ]);
+
+//     return response()->json(['message' => 'Tag added successfully', 'record' => $record]);
+// });
+
+// ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/switch-options/add', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -3913,20 +3948,64 @@ Route::post('/api/v1/company-traction/switch-options/add', function (Request $re
         return response()->json(['message' => 'Tag already exists'], 409);
     }
 
-    // Create new record
-    $record = CompanyTractionAnnualPrioritiesCollection::create([
-        'u_id' => Str::uuid(), // auto-generate unique ID
+    // Generate a single UUID to be used in both records
+    $uuid = Str::uuid();
+
+    // Create new annual record
+    $annualRecord = CompanyTractionAnnualPrioritiesCollection::create([
+        'u_id' => $uuid,
         'organizationName' => $organization,
         'tag' => $trimmedOption,
         'companyTractionData' => [], // empty array
         'statusFlag' => null,
     ]);
 
-    return response()->json(['message' => 'Tag added successfully', 'record' => $record]);
+    // Create corresponding quarterly record with the same UUID
+    $quarterRecord = CompanyTractionQuarterTableCollection::create([
+        'u_id' => $uuid,
+        'organizationName' => $organization,
+        'tag' => $trimmedOption,
+        'companyTractionData' => [], // empty array
+        'statusFlag' => null,
+    ]);
+
+    return response()->json([
+        'message' => 'Tag added successfully',
+        'annualRecord' => $annualRecord,
+        'quarterRecord' => $quarterRecord,
+    ]);
 });
 
 
-// ref:
+// // ref:
+// Route::post('/api/v1/company-traction/switch-options/delete', function (Request $request) use ($API_secure) {
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $organization = $request->input('organizationName');
+//     $tag = trim($request->input('tag'));
+
+//     if (!$organization || !$tag) {
+//         return response()->json(['message' => 'organizationName and tag are required.'], 400);
+//     }
+
+//     // Find the record
+//     $record = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+//         ->where('tag', $tag)
+//         ->first();
+
+//     if (!$record) {
+//         return response()->json(['message' => 'Tag not found'], 404);
+//     }
+
+//     $record->delete();
+
+//     return response()->json(['message' => 'Tag deleted successfully']);
+// });
+
+
+// ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/switch-options/delete', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -3939,21 +4018,68 @@ Route::post('/api/v1/company-traction/switch-options/delete', function (Request 
         return response()->json(['message' => 'organizationName and tag are required.'], 400);
     }
 
-    // Find the record
-    $record = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+    // Find the annual record
+    $annualRecord = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
         ->where('tag', $tag)
         ->first();
 
-    if (!$record) {
+    if (!$annualRecord) {
         return response()->json(['message' => 'Tag not found'], 404);
     }
 
-    $record->delete();
+    // Delete the corresponding quarterly record with the same u_id
+    CompanyTractionQuarterTableCollection::where('u_id', $annualRecord->u_id)->delete();
 
-    return response()->json(['message' => 'Tag deleted successfully']);
+    // Delete the annual record
+    $annualRecord->delete();
+
+    return response()->json(['message' => 'Tag and corresponding quarterly record deleted successfully']);
 });
 
-// ref:
+
+// // ref:
+// Route::post('/api/v1/company-traction/annual-priorities/copy', function (Request $request) use ($API_secure) {
+
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $organization = $request->input('organizationName');
+//     $tag = $request->input('tag');
+
+//     if (!$organization || !$tag) {
+//         return response()->json(['message' => 'organizationName and tag are required.'], 400);
+//     }
+
+//     // 🔍 Find source record from company_traction_annual_priorities_collection
+//     $source = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+//         ->where('tag', $tag)
+//         ->first();
+
+//     if (!$source) {
+//         return response()->json(['message' => 'No record found for the given tag and organization.'], 404);
+//     }
+
+//     // 🧠 Find destination record in company_traction_annual_priorities
+//     $destination = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+//     if (!$destination) {
+//         return response()->json(['message' => 'Destination record not found for this organization.'], 404);
+//     }
+
+//     // 📝 Copy the data
+//     $destination->annualPrioritiesData = $source->companyTractionData ?? [];
+//     $destination->save();
+
+//     return response()->json([
+//         'message' => 'Data copied successfully.',
+//         'organizationName' => $organization,
+//         'tag' => $tag,
+//         'copiedData' => $destination->annualPrioritiesData,
+//     ]);
+// });
+
+// ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/copy', function (Request $request) use ($API_secure) {
 
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -3961,41 +4087,101 @@ Route::post('/api/v1/company-traction/annual-priorities/copy', function (Request
     }
 
     $organization = $request->input('organizationName');
-    $tag = $request->input('tag');
+    $tag = trim($request->input('tag'));
 
     if (!$organization || !$tag) {
         return response()->json(['message' => 'organizationName and tag are required.'], 400);
     }
 
-    // 🔍 Find source record from company_traction_annual_priorities_collection
+    // 🔍 Find source annual record
     $source = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
         ->where('tag', $tag)
         ->first();
 
     if (!$source) {
-        return response()->json(['message' => 'No record found for the given tag and organization.'], 404);
+        return response()->json(['message' => 'No annual record found for the given tag and organization.'], 404);
     }
 
-    // 🧠 Find destination record in company_traction_annual_priorities
+    // 🧠 Find destination in company_traction_annual_priorities
     $destination = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
 
     if (!$destination) {
         return response()->json(['message' => 'Destination record not found for this organization.'], 404);
     }
 
-    // 📝 Copy the data
+    // 📝 Copy annual data
     $destination->annualPrioritiesData = $source->companyTractionData ?? [];
     $destination->save();
+
+    // 🔄 Copy quarterly data to CompanyTractionCompanyTraction
+    $quarterRecord = CompanyTractionQuarterTableCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    if ($quarterRecord) {
+        $companyTractionRecord = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+
+        if ($companyTractionRecord) {
+            $companyTractionRecord->companyTractionData = $quarterRecord->companyTractionData ?? [];
+            $companyTractionRecord->save();
+        }
+    }
 
     return response()->json([
         'message' => 'Data copied successfully.',
         'organizationName' => $organization,
         'tag' => $tag,
-        'copiedData' => $destination->annualPrioritiesData,
+        'copiedAnnualData' => $destination->annualPrioritiesData,
+        'copiedQuarterData' => $companyTractionRecord->companyTractionData ?? [],
     ]);
 });
 
-// ref:
+
+
+// // ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
+// Route::post('/api/v1/company-traction/annual-priorities/copy-to-collection', function (Request $request) use ($API_secure) {
+
+//     if ($API_secure && !$request->session()->get('logged_in')) {
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     }
+
+//     $organization = $request->input('organizationName');
+//     $tag = $request->input('tag');
+
+//     if (!$organization || !$tag) {
+//         return response()->json(['message' => 'organizationName and tag are required.'], 400);
+//     }
+
+//     // 🔍 1. Find the source record from company_traction_annual_priorities
+//     $source = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+//     if (!$source) {
+//         return response()->json(['message' => 'No source data found for this organization.'], 404);
+//     }
+
+//     // 🔍 2. Find the target record in company_traction_annual_priorities_collection
+//     $target = CompanyTractionAnnualPrioritiesCollection::where('organizationName', $organization)
+//         ->where('tag', $tag)
+//         ->first();
+
+//     if (!$target) {
+//         return response()->json(['message' => 'No target record found for this tag and organization.'], 404);
+//     }
+
+//     // 🧠 3. Copy the annualPrioritiesData → companyTractionData
+//     $target->companyTractionData = $source->annualPrioritiesData ?? [];
+//     $target->save();
+
+//     return response()->json([
+//         'message' => 'Data copied successfully to collection.',
+//         'organizationName' => $organization,
+//         'tag' => $tag,
+//         'copiedData' => $target->companyTractionData,
+//     ]);
+// });
+
+
+// ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/copy-to-collection', function (Request $request) use ($API_secure) {
 
     if ($API_secure && !$request->session()->get('logged_in')) {
@@ -4003,7 +4189,7 @@ Route::post('/api/v1/company-traction/annual-priorities/copy-to-collection', fun
     }
 
     $organization = $request->input('organizationName');
-    $tag = $request->input('tag');
+    $tag = trim($request->input('tag'));
 
     if (!$organization || !$tag) {
         return response()->json(['message' => 'organizationName and tag are required.'], 400);
@@ -4029,16 +4215,26 @@ Route::post('/api/v1/company-traction/annual-priorities/copy-to-collection', fun
     $target->companyTractionData = $source->annualPrioritiesData ?? [];
     $target->save();
 
+    // 🔄 4. Update CompanyTractionQuarterTableCollection from CompanyTractionCompanyTraction
+    $quarterRecord = CompanyTractionQuarterTableCollection::where('organizationName', $organization)
+        ->where('tag', $tag)
+        ->first();
+
+    $companyTractionRecord = CompanyTractionCompanyTraction::where('organizationName', $organization)->first();
+
+    if ($quarterRecord && $companyTractionRecord) {
+        $quarterRecord->companyTractionData = $companyTractionRecord->companyTractionData ?? [];
+        $quarterRecord->save();
+    }
+
     return response()->json([
-        'message' => 'Data copied successfully to collection.',
+        'message' => 'Data copied successfully to collection and quarterly table.',
         'organizationName' => $organization,
         'tag' => $tag,
-        'copiedData' => $target->companyTractionData,
+        'copiedAnnualData' => $target->companyTractionData,
+        'copiedQuarterData' => $quarterRecord->companyTractionData ?? [],
     ]);
 });
-
-
-
 
 
 // ref: frontend\src\components\7.department-traction\departmentTraction.jsx
