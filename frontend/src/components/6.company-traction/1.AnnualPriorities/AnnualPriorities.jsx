@@ -4,6 +4,7 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt, faExchangeAlt  } from '@fortawesome/free-solid-svg-icons';
 import useAnnualPrioritiesStore, { initialAnnualPriorities } from '../../../store/left-lower-content/6.company-traction/1.annualPrioritiesStore';
+import useCompanyTractionStore from '../../../store/left-lower-content/6.company-traction/2.companyTractionStore';
 import CustomDropdown from '../../CustomDropdown/CustomDropdown';
 import useSwitchOptionsStore from '../../../store/left-lower-content/6.company-traction/4.switchOptionsStore';
 import ToastNotification from '../../../components/toast-notification/ToastNotification';
@@ -22,6 +23,9 @@ const AnnualPriorities = () => {
 
   const storeAnnualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
   const [annualPriorities, setAnnualPriorities] = useState([]);
+
+  const setCompanyTraction = useCompanyTractionStore((state) => state.setCompanyTraction);
+  const setBaselineCompanyTraction = useCompanyTractionStore((state) => state.setBaselineCompanyTraction);
 
   const { switchOptions, setSwitchOptions, addSwitchOption, removeSwitchOption } = useSwitchOptionsStore();
 
@@ -522,6 +526,42 @@ const AnnualPriorities = () => {
     }
   };
   
+  const fetchCompanyTractionTable = async () => {
+    try {
+      const encodedOrg = encodeURIComponent(organization);
+  
+      const res = await fetch(
+        `${API_URL}/v1/company-traction/traction-data?organization=${encodedOrg}`,
+        {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
+  
+      const json = await res.json();
+  
+      if (res.ok) {
+        const tractionData = json;
+        ENABLE_CONSOLE_LOGS &&
+          console.log('📥 Fetched Company Traction Table:', tractionData);
+  
+        setCompanyTraction(tractionData);
+        setBaselineCompanyTraction(tractionData);
+      } else if (res.status === 401) {
+        navigate('/', { state: { loginError: 'Session Expired' } });
+      } else {
+        console.error('Error:', json.message || 'Unknown error');
+      }
+    } catch (err) {
+      console.error('API error:', err);
+    }
+  };
+  
+  
 
   const handleCopyCompanyTractionData = async (tag, showToast) => {
     try {
@@ -558,6 +598,7 @@ const AnnualPriorities = () => {
         ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
         showToast(`Successfully copied data from "${tag}"`, "success");
         fetchAnnualPriorities();
+        fetchCompanyTractionTable();
 
       } else {
         console.error("❌ Copy failed:", json.message);
