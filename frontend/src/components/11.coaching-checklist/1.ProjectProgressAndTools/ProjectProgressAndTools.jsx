@@ -18,7 +18,8 @@ const ProjectProgressAndTools = () => {
         <div className="project-progress-box">
         <div className="box-title">
             <FontAwesomeIcon icon={faListCheck} className="box-icon" />
-            <span>Project Progress</span>
+            {/* <span>Project Progress</span> */}
+            <span>Coaching Progress</span>
         </div>
         <div className="progress-bar-container">
             <div className="progress-bar-bg">

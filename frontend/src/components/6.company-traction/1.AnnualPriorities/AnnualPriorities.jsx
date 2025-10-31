@@ -674,7 +674,7 @@ const AnnualPriorities = () => {
               >
                 <>
                 <FontAwesomeIcon icon={faExchangeAlt} className="mr-1" />
-                  Switch
+                Year
                 </>
                 
               </div>
@@ -983,7 +983,7 @@ const AnnualPriorities = () => {
                     
                   }}
                 >
-                  Set table
+                  View table
                 </button>
 {/* 
                 <button

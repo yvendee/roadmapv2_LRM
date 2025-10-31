@@ -284,12 +284,15 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
                   : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
               }`
             }
-            onMouseEnter={(e) => handleMouseEnter(e, 'Meetings')}
+            // onMouseEnter={(e) => handleMouseEnter(e, 'Meetings')}
+            onMouseEnter={(e) => handleMouseEnter(e, 'Session Notes')}
             onMouseLeave={handleMouseLeave}
             style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={faCalendar} />
-            {!collapsed && <span>Meetings</span>}
+            {/* {!collapsed && <span>Meetings</span>} */}
+            {!collapsed && <span>Session Notes</span>}
+            
           </NavLink>
         
           {/* Section: Coach's Corner */}
@@ -313,6 +316,24 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             <FontAwesomeIcon icon={faCheckCircle} />
             {!collapsed && <span>Coaching Checklist</span>}
           </NavLink>
+
+          <NavLink
+            to="/document-vault"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Document Vault')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+          >
+            <FontAwesomeIcon icon={faFolder} />
+            {!collapsed && <span>Document Vault</span>}
+          </NavLink>
+
 
           {isSuperAdmin && (
             <NavLink
@@ -435,13 +456,13 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             )}
 
             {/* Section: Document Vault */}
-            {!collapsed && (
+            {/* {!collapsed && (
               <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Document Vault</p>
-            )}
+            )} */}
 
           </div>
           
-          <NavLink
+          {/* <NavLink
             to="/document-vault"
             className={({ isActive }) =>
               `sidebar-item flex items-center gap-2 ${
@@ -456,7 +477,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
           >
             <FontAwesomeIcon icon={faFolder} />
             {!collapsed && <span>Document Vault</span>}
-          </NavLink>
+          </NavLink> */}
 
 
           {/* Section: Members */}

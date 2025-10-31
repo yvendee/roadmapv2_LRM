@@ -651,7 +651,7 @@ const handleAddNewAnnualPriority = async () => {
             >
               <>
               <FontAwesomeIcon icon={faExchangeAlt} className="mr-1" />
-                Switch
+                Year
               </>
               
             </div>
@@ -960,7 +960,7 @@ const handleAddNewAnnualPriority = async () => {
                     
                   }}
                 >
-                  Set table
+                  View table
                 </button>
 
 
