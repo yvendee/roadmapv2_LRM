@@ -10422,6 +10422,57 @@ Route::delete('/api/v1/admin-panel/users/delete', function (Request $request) us
     ]);
 });
 
+// // ref: frontend\src\components\admin-panel\pages\Users\EditUser.jsx
+// Route::post('/api/v1/admin-panel/users/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validated = $request->validate([
+//         'u_id' => 'required|string|exists:auth,u_id',
+//         'name' => 'required|string|max:255',
+//         'email' => 'required|email|max:255',
+//         'company' => 'required|string|max:255',
+//         'emailVerifiedAt' => 'nullable|string',
+//     ]);
+
+//     // Find user by u_id
+//     $user = AuthUser::where('u_id', $validated['u_id'])->first();
+
+//     if (!$user) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'User not found.',
+//         ], 404);
+//     }
+
+//     // Split name into firstName and lastName
+//     $nameParts = explode(' ', $validated['name'], 2);
+//     $firstName = $nameParts[0] ?? '';
+//     $lastName = $nameParts[1] ?? '';
+
+//     // Prepare status field
+//     $status = '';
+//     if (!empty($validated['emailVerifiedAt'])) {
+//         $status = 'verified , ' . $validated['emailVerifiedAt'];
+//     }
+
+//     // Update user details
+//     $user->firstName = $firstName;
+//     $user->lastName = $lastName;
+//     $user->email = $validated['email'];
+//     $user->organization = $validated['company'];
+//     $user->status = $status;
+//     $user->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'User updated successfully.',
+//     ]);
+// });
+
 // ref: frontend\src\components\admin-panel\pages\Users\EditUser.jsx
 Route::post('/api/v1/admin-panel/users/update', function (Request $request) use ($API_secure) {
     if ($API_secure) {
@@ -10436,9 +10487,11 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
         'email' => 'required|email|max:255',
         'company' => 'required|string|max:255',
         'emailVerifiedAt' => 'nullable|string',
+        // 'password' => 'nullable|string|min:6',
+        'password' => 'nullable|string',
+        
     ]);
 
-    // Find user by u_id
     $user = AuthUser::where('u_id', $validated['u_id'])->first();
 
     if (!$user) {
@@ -10448,23 +10501,26 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
         ], 404);
     }
 
-    // Split name into firstName and lastName
     $nameParts = explode(' ', $validated['name'], 2);
     $firstName = $nameParts[0] ?? '';
     $lastName = $nameParts[1] ?? '';
 
-    // Prepare status field
     $status = '';
     if (!empty($validated['emailVerifiedAt'])) {
         $status = 'verified , ' . $validated['emailVerifiedAt'];
     }
 
-    // Update user details
     $user->firstName = $firstName;
     $user->lastName = $lastName;
     $user->email = $validated['email'];
     $user->organization = $validated['company'];
     $user->status = $status;
+
+    // Only update password if provided
+    if (!empty($validated['password'])) {
+        $user->passwordHash = Hash::make($validated['password']);
+    }
+
     $user->save();
 
     return response()->json([

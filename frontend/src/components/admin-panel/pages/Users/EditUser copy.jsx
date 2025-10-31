@@ -12,9 +12,9 @@ export default function EditUser() {
   const [email, setEmail] = useState(selectedUser?.email || '');
   const [company, setCompany] = useState(selectedUser?.company || '');
   const [emailVerifiedAt, setEmailVerifiedAt] = useState(selectedUser?.emailVerifiedAt || '');
-  const [password, setPassword] = useState(''); // <-- NEW
 
   const [isSaving, setIsSaving] = useState(false);
+
   const [toast, setToast] = useState({
     message: '',
     status: '',
@@ -29,33 +29,21 @@ export default function EditUser() {
     setToast((prev) => ({ ...prev, isVisible: false }));
   };
 
+
   const handleSaveChanges = async () => {
     if (!name.trim() || !email.trim() || !company.trim()) {
       showToast('Please fill in all required fields.', 'error');
       return;
     }
-
+  
     setIsSaving(true);
-
+  
     try {
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: 'include',
       });
       const { csrf_token } = await csrfRes.json();
-
-      // Build request payload dynamically
-      const payload = {
-        u_id: selectedUser.u_id,
-        name,
-        email,
-        company,
-        emailVerifiedAt,
-      };
-
-      if (password.trim()) {
-        payload.password = password; // <-- Only include if provided
-      }
-
+  
       const res = await fetch(`${API_URL}/v1/admin-panel/users/update`, {
         method: 'POST',
         credentials: 'include',
@@ -64,15 +52,22 @@ export default function EditUser() {
           'X-CSRF-TOKEN': csrf_token,
           Accept: 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          u_id: selectedUser.u_id,  // send u_id instead of id
+          name,
+          email,
+          company,
+          emailVerifiedAt,
+        }),
       });
-
+  
       const data = await res.json();
-
+  
       if (!res.ok || data.status !== 'success') {
         throw new Error(data.message || 'Failed to update user.');
       }
-
+  
+      // Pass the full updated user object, including id, to updateUser so store updates correctly
       updateUser({
         id: selectedUser.id,
         u_id: selectedUser.u_id,
@@ -81,10 +76,9 @@ export default function EditUser() {
         company,
         emailVerifiedAt,
       });
-
+  
       ENABLE_CONSOLE_LOGS && console.log('User updated:', data);
       showToast('User updated successfully!', 'success');
-      setPassword(''); // clear after save
     } catch (error) {
       console.error('Save error:', error);
       showToast(`Error saving user: ${error.message}`, 'error');
@@ -92,13 +86,14 @@ export default function EditUser() {
       setTimeout(() => setIsSaving(false), 2000);
     }
   };
-
+  
   if (!selectedUser) {
     return <div className="p-6">No user selected for editing.</div>;
   }
 
   return (
     <div className="p-6 max-w-xl mx-auto">
+      {/* Form fields */}
       <div className="form-group mb-4">
         <label>
           Company<span className="required">*</span>
@@ -135,18 +130,6 @@ export default function EditUser() {
         />
       </div>
 
-      {/* NEW PASSWORD FIELD */}
-      <div className="form-group mb-4">
-        <label>Password (leave blank to keep current)</label>
-        <input
-          type="password"
-          className="form-input"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter new password"
-        />
-      </div>
-
       <div className="form-group mb-4">
         <label>Email Verified At</label>
         <input
@@ -171,6 +154,7 @@ export default function EditUser() {
         onClose={hideToast}
         status={toast.status}
       />
+
     </div>
   );
 }
