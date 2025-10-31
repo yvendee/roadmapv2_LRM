@@ -5004,7 +5004,7 @@ Route::post('/api/v1/department-traction/annual-priorities/copy-to-collection', 
     $companyTractionRecord = DepartmentTractionCompanyTraction::where('organizationName', $organization)->first();
 
     if ($quarterRecord && $companyTractionRecord) {
-        $quarterRecord->departmentTractionData = $companyTractionRecord->departmentTractionData ?? [];
+        $quarterRecord->departmentTractionData = $companyTractionRecord->companyTractionData ?? [];
         $quarterRecord->save();
     }
 
