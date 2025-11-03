@@ -29,6 +29,15 @@ const TopbarDropdown = () => {
   // if (loggedUser?.role !== 'superadmin') return null;
   if (loggedUser?.role !== 'superadmin') return <span>&nbsp;</span>;
 
+
+  const position = loggedUser?.position;
+  const hideTopBarDropdown = ['Admin', 'CEO', 'Internal'].includes(position);
+
+  if (hideTopBarDropdown) {
+    return null;
+  }
+
+
    // Fetch Company Traction User
    useEffect(() => {
     const fetchData = async () => {

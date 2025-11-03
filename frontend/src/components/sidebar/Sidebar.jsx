@@ -52,6 +52,8 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
   const loggedUser = useLoginStore((state) => state.user);
   const loggedSession = useLoginStore((state) => state.session_id);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
+  const position = loggedUser?.position;
+  const hideAdminPanel = ['Admin', 'CEO', 'Internal'].includes(position);
   // const isSuperAdmin = loggedUser?.role === 'superadmin';
   // ENABLE_CONSOLE_LOGS && console.log("Logged Email: ", loggedUser?.email);  
   // ENABLE_CONSOLE_LOGS && console.log("Logged Role: ",loggedUser?.role);   
@@ -520,7 +522,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
           </NavLink>
 
 
-          {isSuperAdmin && (
+          {isSuperAdmin && !hideAdminPanel && (
             <>
               {!collapsed && (
                 <p className="text-xs uppercase font-semibold text-gray-500 mt-4 px-2 mb-1">Admin</p>

@@ -6,11 +6,21 @@ import useLoginStore from '../../store/loginStore';
 
 const MessageButton = () => {
   const loggedUser = useLoginStore((state) => state.user);
+  const position = loggedUser?.position;
+  const hideMessageIcon = ['Admin', 'CEO', 'Internal'].includes(position);
   const navigate = useNavigate();
 
   // if (loggedUser?.role !== 'superadmin') {
   //   return null; // Don't render the button
   // }
+
+  // if (loggedUser?.role !== 'superadmin' || hideMessageIcon) {
+  //   return null;
+  // }
+
+  if (hideMessageIcon) {
+    return null;
+  }
 
   return (
     <button
