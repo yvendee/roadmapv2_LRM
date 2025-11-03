@@ -845,6 +845,26 @@ class Organization extends Model
                 'statusFlag' => null,
             ]);
 
+
+            
+            // 🆕 Company Traction Quarter Table Collection
+            \App\Models\CompanyTractionQuarterTableCollection::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'tag' => "2025",
+                'companyTractionData' => [],
+                'statusFlag' => null,
+            ]);
+
+            // 🆕 Department Traction Quarter Table Collection
+            \App\Models\DepartmentTractionQuarterTableCollection::create([
+                'u_id' => $organization->u_id,
+                'organizationName' => $organization->organizationName,
+                'tag' => "2025", 
+                'departmentTractionData' => [],
+                'statusFlag' => null,
+            ]);
+
         });
     }
 }
