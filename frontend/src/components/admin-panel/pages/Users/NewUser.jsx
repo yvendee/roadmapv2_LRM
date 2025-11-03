@@ -25,7 +25,7 @@ export default function NewUser({ onCancel }) {
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState({ message: '', status: '', isVisible: false });
 
-  const roleOptions = ['User', 'Testuser', 'Superadmin'];
+  const roleOptions = ['user', 'testuser', 'superadmin'];
 
   const positionOptions = [
     'Other',

@@ -52,7 +52,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
   const loggedUser = useLoginStore((state) => state.user);
   const loggedSession = useLoginStore((state) => state.session_id);
   const isSuperAdmin = loggedUser?.role === 'superadmin'; // Check if the user is a superadmin
-
+  // const isSuperAdmin = loggedUser?.role === 'superadmin';
   // ENABLE_CONSOLE_LOGS && console.log("Logged Email: ", loggedUser?.email);  
   // ENABLE_CONSOLE_LOGS && console.log("Logged Role: ",loggedUser?.role);   
   // ENABLE_CONSOLE_LOGS && console.log("Logged Group: ",loggedUser?.group);

@@ -9043,7 +9043,7 @@ Route::post('/api/v1/members-directory/add', function (Request $request) use ($A
         'email' => $newItem['email'],
         'organization' => $newItem['company'],
         'passwordHash' => Hash::make('Momentum2025!'),
-        'role' => 'User',
+        'role' => 'user',
         'group' => null,
         'position' => $newItem['memberAccess'],
         'status' => $newItem['canLogin'],
