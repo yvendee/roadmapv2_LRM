@@ -190,7 +190,15 @@ const StrategicDriversTable = () => {
   };
   
   const handleCellClick = (id, field) => {
-    if (loggedUser?.role === 'superadmin') {
+    // if (loggedUser?.role === 'superadmin') {
+    //   setEditingCell({ id, field });
+    // }
+    const position = loggedUser?.position;
+    const canEdit = 
+      loggedUser?.role === 'superadmin' || 
+      ['Admin', 'CEO', 'Internal'].includes(position);
+  
+    if (canEdit) {
       setEditingCell({ id, field });
     }
   };
@@ -398,7 +406,9 @@ const StrategicDriversTable = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="header-container">
         <h5 className="text-lg font-semibold always-black">Strategic Drivers</h5>
-        {loggedUser?.role === 'superadmin' && (
+        {/* {loggedUser?.role === 'superadmin' && ( */}
+        {(['superadmin'].includes(loggedUser?.role) || 
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
           <div className="flex gap-2">
             {editedDrivers.length > 0 && (
               <>
@@ -433,7 +443,11 @@ const StrategicDriversTable = () => {
               </>
             )}
 
-            {loggedUser?.role === 'superadmin' && !isSkeleton && (
+            {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+            {(
+            loggedUser?.role === 'superadmin' ||
+            ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+          ) && !isSkeleton && (
               <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
@@ -467,7 +481,11 @@ const StrategicDriversTable = () => {
                 <th className="border px-4 py-2 text-center">Delete</th>
               )} */}
 
-              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+              {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+              {(
+                loggedUser?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+              ) && !isSkeleton && (
                 <th className="border px-4 py-2 text-center print:hidden">Delete</th>
               )}
             </tr>
@@ -491,14 +509,22 @@ const StrategicDriversTable = () => {
                 //   className={`hover:bg-gray-50 ${loggedUser?.role === 'superadmin' ? 'cursor-move' : ''}`}
 
                 draggable={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.title !== '-' &&
                   driver.description !== '-' &&
                   driver.kpi !== '-' &&
                   driver.status !== '-'
                 }
                 onDragStart={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.title !== '-' &&
                   driver.description !== '-' &&
                   driver.kpi !== '-' &&
@@ -507,7 +533,11 @@ const StrategicDriversTable = () => {
                     : undefined
                 }
                 onDragOver={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.title !== '-' &&
                   driver.description !== '-' &&
                   driver.kpi !== '-' &&
@@ -516,7 +546,11 @@ const StrategicDriversTable = () => {
                     : undefined
                 }
                 onDragEnd={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.title !== '-' &&
                   driver.description !== '-' &&
                   driver.kpi !== '-' &&
@@ -525,7 +559,11 @@ const StrategicDriversTable = () => {
                     : undefined
                 }
                 className={`hover:bg-gray-50 ${
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.title !== '-' &&
                   driver.description !== '-' &&
                   driver.kpi !== '-' &&
@@ -736,7 +774,8 @@ const StrategicDriversTable = () => {
                   </td>
                 )} */}
 
-                {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+                {loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) && !isSkeleton && (
                   <td className="border px-4 py-3 text-center print:hidden">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}
