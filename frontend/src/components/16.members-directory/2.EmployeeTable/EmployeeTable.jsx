@@ -629,7 +629,7 @@ const EmployeeTable = () => {
                     >
                       <option value="Admin">Admin</option>
                       <option value="CEO">CEO</option>
-                      <option value="Internal Champion">Internal Champion</option>
+                      <option value="Internal">Internal Champion</option>
                       <option value="Leadership">Leadership</option>
                       <option value="Department Head ">Department Head </option>
                       <option value="Other">Other</option>

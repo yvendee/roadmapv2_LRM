@@ -149,7 +149,7 @@ const AccountButton = () => {
             Change Password
           </div>
 
-          {user?.role === 'superadmin' && (
+          {/* {user?.role === 'superadmin' && (
             <div
               className="dropdown-item"
               onClick={() => {
@@ -159,7 +159,7 @@ const AccountButton = () => {
             >
               Create User
             </div>
-          )}
+          )} */}
 
           {user?.role === 'superadmin' && (
             <div
