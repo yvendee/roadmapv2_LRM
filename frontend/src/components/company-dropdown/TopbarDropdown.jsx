@@ -37,7 +37,6 @@ const TopbarDropdown = () => {
     return null;
   }
 
-
    // Fetch Company Traction User
    useEffect(() => {
     const fetchData = async () => {
