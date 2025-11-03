@@ -632,7 +632,7 @@ const EmployeeTable = () => {
                       <option value="Internal Champion">Internal Champion</option>
                       <option value="Leadership">Leadership</option>
                       <option value="Department Head ">Department Head </option>
-                      <option value="User">User</option>
+                      <option value="Other">Other</option>
                     </select>
                   ) : (
                     driver.memberAccess

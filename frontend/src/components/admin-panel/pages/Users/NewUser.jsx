@@ -32,6 +32,8 @@ export default function NewUser({ onCancel }) {
     'Admin',
     'CEO',
     'Internal',
+    'Leadership',
+    'Department Head',
     'Manager',
     'HR',
     'Finance',
