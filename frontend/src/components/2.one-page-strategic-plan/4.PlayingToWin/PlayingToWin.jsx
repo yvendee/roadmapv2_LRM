@@ -407,7 +407,7 @@ const PlayingToWin = () => {
           <div className="modal-add-overlay" onClick={() => setShowAddModal(false)}>
             <div className="modal-add-box" onClick={(e) => e.stopPropagation()}>
               <div className="modal-add-title">Add Playing to Win Strategy</div>
-              <label className="modal-add-label">title</label>
+              <label className="modal-add-label">Title</label>
               <input
                 className="modal-add-input"
                 value={newPlayingToWin.title}
