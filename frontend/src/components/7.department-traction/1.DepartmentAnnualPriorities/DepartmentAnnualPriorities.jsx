@@ -225,9 +225,15 @@ const handleAddNewAnnualPriority = async () => {
 };
 
   
-
   const handleCellClick = (id, field) => {
-    if (loggedUser?.role === 'superadmin') {
+    // if (loggedUser?.role === 'superadmin') {
+    //   setEditingCell({ id, field });
+    // }
+    const canEdit =
+    loggedUser?.role === 'superadmin' ||
+    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position);
+
+    if (canEdit) {
       setEditingCell({ id, field });
     }
   };
@@ -641,7 +647,11 @@ const handleAddNewAnnualPriority = async () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
         <h5 className="text-lg font-semibold always-black">Department Annual Priorities</h5>
-        {loggedUser?.role === 'superadmin' && (
+        {/* {loggedUser?.role === 'superadmin' && ( */}
+        {(
+            loggedUser?.role === 'superadmin' ||
+            ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+          ) && (
           <div className="flex gap-2">
 
             {/* Switch Button */}
@@ -689,7 +699,11 @@ const handleAddNewAnnualPriority = async () => {
               </>
             )}
 
-            {loggedUser?.role === 'superadmin' && !isSkeleton && (
+            {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+            {(
+                loggedUser?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+              ) && !isSkeleton && (
               <button className="pure-blue-btn ml-2 print:hidden" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
@@ -717,7 +731,11 @@ const handleAddNewAnnualPriority = async () => {
               <th className="border px-4 py-2">#</th>
               <th className="border px-4 py-2 ">Description</th>
               <th className="border px-4 py-2"></th>
-              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+              {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+              {(
+                  loggedUser?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && !isSkeleton && (
                 <th className="border px-4 py-2 text-center print:hidden"></th>
               )}
             </tr>
@@ -728,33 +746,38 @@ const handleAddNewAnnualPriority = async () => {
               <tr key={driver.id}
 
                 draggable={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.description !== '-' &&
                   driver.status !== '-'
                 }
                 onDragStart={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.description !== '-' &&
                   driver.status !== '-'
                     ? (e) => handleDragStart(e, driver.id)
                     : undefined
                 }
                 onDragOver={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.description !== '-' &&
                   driver.status !== '-'
                     ? (e) => handleDragOver(e, driver.id)
                     : undefined
                 }
                 onDragEnd={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.description !== '-' &&
                   driver.status !== '-'
                     ? handleDragEnd
                     : undefined
                 }
                 className={`hover:bg-gray-50 ${
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.description !== '-' &&
                   driver.status !== '-'
                     ? 'cursor-move'
@@ -836,7 +859,11 @@ const handleAddNewAnnualPriority = async () => {
                 </td>
                 
                 {/* delete button */}
-                {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+                {(
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) && !isSkeleton && (
                   <td className="border px-4 py-3 text-center print:hidden">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}

@@ -949,7 +949,11 @@ const CompanyTraction = () => {
         </div>
 
         {/* Action Buttons */}
-        {isSuperAdmin && (
+        {/* {isSuperAdmin && ( */}
+        {(
+          isSuperAdmin ||
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+        ) && (
           <div className="flex gap-2">
 
             <div className="pure-blue-btn cursor-pointer flex items-center print:hidden" onClick={handleAddCompanyTractionClick}>
@@ -974,7 +978,11 @@ const CompanyTraction = () => {
             >
               {showCompleted ? 'Hide Completed Rows' : 'Show All Rows'}
             </div>
-            {loggedUser?.role === 'superadmin' && (
+            {/* {loggedUser?.role === 'superadmin' && ( */}
+            {(
+              loggedUser?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+            ) && (
               <div className="pure-gray-btn cursor-pointer" onClick={toggleActivityLog}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </div>
@@ -985,7 +993,10 @@ const CompanyTraction = () => {
       </div>
 
       {/* Saving & Discharge (Visible only for superadmin) */}
-      {isEditing && isSuperAdmin && (
+      {/* {isEditing && isSuperAdmin && ( */}
+      {isEditing && (
+        isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+      ) && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
             <div className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
@@ -1032,7 +1043,11 @@ const CompanyTraction = () => {
               {/* Who Dropdown */}
               <th className="border px-4 py-2">
                 Who
-                {isSuperAdmin && (
+                {/* {isSuperAdmin && ( */}
+                {(
+                  isSuperAdmin ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && (
                   <select className="block w-full mt-1 text-xs">
                     <option>All</option>
                     {/* Add other options here */}
@@ -1043,7 +1058,11 @@ const CompanyTraction = () => {
               {/* Collaborator Dropdown */}
               <th className="border px-4 py-2">
                 Collaborator
-                {isSuperAdmin && (
+                {/* {isSuperAdmin && ( */}
+                {(
+                  isSuperAdmin ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && (
                   <select className="block w-full mt-1 text-xs">
                     <option>All</option>
                     {/* Add other options here */}
@@ -1057,7 +1076,11 @@ const CompanyTraction = () => {
               {/* Progress Dropdown */}
               <th className="border px-4 py-2">
                 Progress
-                {isSuperAdmin && (
+                {/* {isSuperAdmin && ( */}
+                {(
+                  isSuperAdmin ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && (
                 <select className="block w-full mt-1 text-xs">
                   <option>All</option>
                   {/* Add other options here */}
@@ -1070,7 +1093,10 @@ const CompanyTraction = () => {
               <th className="border px-4 py-2">Due Date</th>
               <th className="border px-4 py-2">Rank</th>
               <th className="border px-4 py-2">Comments</th>
-              {isSuperAdmin && <th className="border px-4 py-2 print:hidden">Delete</th>}
+              {/* {isSuperAdmin && <th className="border px-4 py-2 print:hidden">Delete</th>} */}
+              {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
+                <th className="border px-4 py-2 print:hidden">Delete</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -1083,7 +1109,8 @@ const CompanyTraction = () => {
                       className="w-full text-xs"
                       value={row.who}
                       onChange={(e) => handleEditChange(e, row.id, 'who')}
-                      disabled={!isSuperAdmin}
+                      // disabled={!isSuperAdmin}
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                     >
                       {/* Default: show current selection */}
                       {!users.includes(row.who) && <option value={row.who}>{row.who}</option>}
@@ -1104,7 +1131,8 @@ const CompanyTraction = () => {
                       className="w-full text-xs"
                       value={row.collaborator}
                       onChange={(e) => handleEditChange(e, row.id, 'collaborator')}
-                      disabled={!isSuperAdmin}
+                      // disabled={!isSuperAdmin}
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                     >
                       {/* Ensure current collaborator is always shown, even if not in list */}
                       {!users.includes(row.collaborator) && (
@@ -1126,7 +1154,8 @@ const CompanyTraction = () => {
                       rows={3}  // number of visible lines
                       value={row.description}
                       onChange={(e) => handleDescriptionChange(e, row.id)}
-                      disabled={!isSuperAdmin} // Disable for non-superadmins
+                      // disabled={!isSuperAdmin} // Disable for non-superadmins
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                     />
                   </td>
 
@@ -1139,7 +1168,8 @@ const CompanyTraction = () => {
                         onChange={(e) => handleProgressChange(e, row.id)} // Handle change
                         onBlur={() => setEditingProgress(null)} // Hide dropdown when user clicks outside
                         autoFocus
-                        disabled={!isSuperAdmin} // Disable for non-superadmins
+                        // disabled={!isSuperAdmin} // Disable for non-superadmins
+                        disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                       >
                         {/* Create options for progress from 0% to 100% */}
                         {progressOptions.map((option) => (
@@ -1162,7 +1192,8 @@ const CompanyTraction = () => {
 
                   {/* Editable Annual Priority Column */}
                   <td className="border px-4 py-2">
-                    {isSuperAdmin ? (
+                    {/* {isSuperAdmin ? ( */}
+                    {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       <select
                         className="w-full text-xs"
                         value={row.annualPriority || ''}
@@ -1184,7 +1215,8 @@ const CompanyTraction = () => {
 
                   {/* <td className="border px-4 py-2">{row.dueDate}</td> */}
                   <td className="border px-4 py-2">
-                    {isSuperAdmin ? (
+                    {/* {isSuperAdmin ? ( */}
+                    {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       editingCell.rowId === row.id && editingCell.field === 'dueDate' ? (
                         <input
                           type="date"
@@ -1217,7 +1249,8 @@ const CompanyTraction = () => {
                         onChange={(e) => handleRankChange(e, row.id)}
                         onBlur={() => setEditingRank(null)}
                         autoFocus
-                        disabled={!isSuperAdmin}
+                        // disabled={!isSuperAdmin}
+                        disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                       >
                         <option value="">Please select</option>
                         <option value=""> </option>
@@ -1227,7 +1260,12 @@ const CompanyTraction = () => {
                       </select>
                     ) : (
                       <div
-                        onClick={() => isSuperAdmin && setEditingRank(row.id)}
+                        // onClick={() => isSuperAdmin && setEditingRank(row.id)}
+                        onClick={() => {
+                          if (isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) {
+                            setEditingRank(row.id);
+                          }
+                        }}                        
                         className={`inline-block px-4 py-1 rounded-full mt-2 text-xs font-medium text-white cursor-pointer ${getRankColor(row.rank)}`}
                       >
                         {row.rank || '—'}
@@ -1239,7 +1277,13 @@ const CompanyTraction = () => {
                   <FontAwesomeIcon
                     icon={faCommentDots}
                     className="text-gray-600 cursor-pointer"
-                    onClick={isSuperAdmin ? () => openModal(row) : undefined} // Only open modal if superadmin
+                    // onClick={isSuperAdmin ? () => openModal(row) : undefined} // Only open modal if superadmin
+                    onClick={
+                      isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                        ? () => openModal(row)
+                        : undefined
+                    }
+                    
                   />
                   {/* Conditionally render the number of comments if they exist */}
                   {row.comment && row.comment.length > 0 && (
@@ -1250,7 +1294,11 @@ const CompanyTraction = () => {
                   <td className="border px-4 py-2 text-center">
                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 cursor-pointer" />
                   </td> */}
-                  {isSuperAdmin && (
+                  {/* {isSuperAdmin && ( */}
+                  {(
+                    isSuperAdmin ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) && (
                     <td className="border px-4 py-2 text-center print:hidden">
                       <FontAwesomeIcon
                         icon={faTrashAlt}
