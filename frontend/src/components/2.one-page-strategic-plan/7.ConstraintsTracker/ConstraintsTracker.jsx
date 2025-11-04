@@ -70,6 +70,12 @@ const ConstraintsTracker = () => {
   //   setEditing({ rowId: null, field: null });
   // };
 
+  const formatLabel = (field) => {
+    // Insert space before capital letters, then capitalize the first letter
+    const spaced = field.replace(/([A-Z])/g, ' $1'); // e.g., "constraintTitle" → "constraint Title"
+    return spaced.charAt(0).toUpperCase() + spaced.slice(1); // Capitalize first letter
+  };
+
   const handleBlur = (id, field, value) => {
     const updated = constraintsTracker.map((item) =>
       item.id === id ? { ...item, [field]: value } : item
@@ -516,7 +522,8 @@ const ConstraintsTracker = () => {
             {/* { constraintTitle: '', description: '', owner: '', actions: '', status: ''} */}
             {['constraintTitle', 'description', 'owner', 'actions', 'status'].map((field) => (
               <div key={field}>
-              <label className="modal-add-label capitalize">{field}</label>
+              {/* <label className="modal-add-label capitalize">{field}</label> */}
+              <label className="modal-add-label">{formatLabel(field)}</label>
               {field === 'status' ? (
                 <select
                   className="modal-add-input"
