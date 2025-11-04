@@ -246,7 +246,11 @@ const ConstraintsTracker = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="flex justify-between items-center mb-4">
         <h5 className="text-md font-semibold text-green-700">Constraints Tracker</h5>
-        {user?.role === 'superadmin' && (
+        {/* {user?.role === 'superadmin' && ( */}
+        {(
+          user?.role === 'superadmin' ||
+          ['Admin', 'CEO', 'Internal'].includes(user?.position)
+        ) && (
           <div className="flex gap-2">
             {edited.length > 0 && (
               <>
@@ -273,7 +277,11 @@ const ConstraintsTracker = () => {
               </>
             )}
 
-            {user?.role === 'superadmin' && !hasRealData && (
+            {/* {user?.role === 'superadmin' && !hasRealData && ( */}
+            {(
+              user?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(user?.position)
+            ) && !hasRealData && (
               <button className="pure-blue-btn print:hidden" onClick={handleAddDecisionClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 
                 <>
@@ -306,7 +314,11 @@ const ConstraintsTracker = () => {
           <th className="border px-3 py-2">
             <div className="flex justify-center items-center">Status</div>
           </th>
-          {user?.role === 'superadmin' && !hasRealData && (
+          {/* {user?.role === 'superadmin' && !hasRealData && ( */}
+          {(
+            user?.role === 'superadmin' ||
+            ['Admin', 'CEO', 'Internal'].includes(user?.position)
+          ) && !hasRealData && (
             <th className="border px-3 py-2 print:hidden">
               <div className="flex justify-center items-center"></div>
             </th>
@@ -381,26 +393,78 @@ const ConstraintsTracker = () => {
                     />
                   )
                 ) : field === 'status' ? (
+                  // <span
+                  //   className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${
+                  //     item.status === 'Tracking' ? 'bg-green-600' :
+                  //     item.status === 'Behind' ? 'bg-yellow-500' :
+                  //     item.status === 'At Risk' ? 'bg-red-500' :
+                  //     item.status === 'Paused' ? 'bg-gray-500' :
+                  //     'bg-gray-300'
+                  //   } 
+                  //   ${user?.role === 'superadmin' ? 'cursor-pointer' : ''}`}
+                  //   onClick={() =>
+                  //     user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                  //   }
+                  // >
+                  //   {item.status}
+                  // </span>
                   <span
                     className={`px-3 py-1 rounded-full text-white text-xs font-semibold ${
-                      item.status === 'Tracking' ? 'bg-green-600' :
-                      item.status === 'Behind' ? 'bg-yellow-500' :
-                      item.status === 'At Risk' ? 'bg-red-500' :
-                      item.status === 'Paused' ? 'bg-gray-500' :
-                      'bg-gray-300'
-                    } ${user?.role === 'superadmin' ? 'cursor-pointer' : ''}`}
-                    onClick={() =>
-                      user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
-                    }
+                      item.status === 'Tracking'
+                        ? 'bg-green-600'
+                        : item.status === 'Behind'
+                        ? 'bg-yellow-500'
+                        : item.status === 'At Risk'
+                        ? 'bg-red-500'
+                        : item.status === 'Paused'
+                        ? 'bg-gray-500'
+                        : 'bg-gray-300'
+                    } ${
+                      user?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                        ? 'cursor-pointer'
+                        : ''
+                    }`}
+                    onClick={() => {
+                      const canEdit =
+                        user?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(user?.position);
+                      if (canEdit) {
+                        setEditing({ rowId: item.id, field });
+                      }
+                    }}
                   >
                     {item.status}
                   </span>
+
+
                 ) : (
+                  // <span
+                  //   className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
+                  //   onClick={() =>
+                  //     user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                  //   }
+                  // >
+                  //   {item[field] === '-' ? (
+                  //     <div className="skeleton w-full h-4"></div>
+                  //   ) : item[field] === null || item[field] === '' ? (
+                  //     <span className="italic text-gray-400">Empty</span>
+                  //   ) : (
+                  //     item[field]
+                  //   )}
+                  // </span>
                   <span
-                    className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
-                    onClick={() =>
-                      user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                    className={
+                      user?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                        ? 'cursor-pointer'
+                        : ''
                     }
+                    onClick={() => {
+                      const canEdit =
+                        user?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(user?.position);
+
+                      if (canEdit) {
+                        setEditing({ rowId: item.id, field });
+                      }
+                    }}
                   >
                     {item[field] === '-' ? (
                       <div className="skeleton w-full h-4"></div>
@@ -410,11 +474,25 @@ const ConstraintsTracker = () => {
                       item[field]
                     )}
                   </span>
+
                 )}
               </td>
             ))}
 
-            {user?.role === 'superadmin' && !hasRealData && (
+            {/* {user?.role === 'superadmin' && !hasRealData && (
+              <td className="border px-3 py-2 text-center print:hidden">
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  className="text-red-500 cursor-pointer hover:text-red-700"
+                  onClick={() => handleDelete(item.id)}
+                  title="Delete"
+                />
+              </td>
+            )} */}
+            {(
+              user?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(user?.position)
+            ) && !hasRealData && (
               <td className="border px-3 py-2 text-center print:hidden">
                 <FontAwesomeIcon
                   icon={faTrashAlt}
@@ -424,6 +502,7 @@ const ConstraintsTracker = () => {
                 />
               </td>
             )}
+
           </tr>
         ))}
 

@@ -262,7 +262,10 @@ const PlayingToWin = () => {
       <div className="playing-to-win">
         <div className="flex justify-between items-center mb-4">
           <h5 className="text-md font-semibold text-green-700">Playing to Win Strategy</h5>
-          {user?.role === 'superadmin' && (
+          {/* {user?.role === 'superadmin' && ( */}
+          {( user?.role === 'superadmin' ||
+            ['Admin', 'CEO', 'Internal'].includes(user?.position)
+          ) && (
             <div className="flex gap-2">
               {edited.length > 0 && (
                 <>
@@ -303,7 +306,11 @@ const PlayingToWin = () => {
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
               {/* {user?.role === 'superadmin' && !hasPlayingToWin && ( */}
-              {user?.role === 'superadmin' && !hasPlayingToWin && !localOrder.some(item => item.title === '-' || item.value === '-') && (
+              {/* {user?.role === 'superadmin' && !hasPlayingToWin && !localOrder.some(item => item.title === '-' || item.value === '-') && ( */}
+              {( user?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                ) && !hasPlayingToWin && !localOrder.some(item => item.title === '-' || item.value === '-') && (
+
                 <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
                     <div className="loader-bars">
@@ -328,12 +335,21 @@ const PlayingToWin = () => {
           {localOrder.map((item) => (
             <div key={item.id} 
               className="relative border rounded-md p-4 shadow-sm bg-white min-h-[100px]"
-              draggable={user?.role === 'superadmin' && item.value !== '-'}
+              // draggable={user?.role === 'superadmin' && item.value !== '-'}
+              draggable={
+                (
+                  user?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                ) && item.value !== '-'
+              }
               onDragStart={(e) => handleDragStart(e, item.id)}
               onDragOver={(e) => handleDragOver(e, item.id)}
               onDragEnd={handleDragEnd}
             >
-              {user?.role === 'superadmin' && item.value !== '-' &&  (
+              {/* {user?.role === 'superadmin' && item.value !== '-' &&  ( */}
+              {(user?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                ) && item.value !== '-' && (
                 <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700 print:hidden"
                   onClick={() => handleDelete(item.id)}
@@ -343,12 +359,32 @@ const PlayingToWin = () => {
                 </div>
               )}
               
-              <h6
+              {/* <h6
                 className={`text-sm font-semibold text-gray-800 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
                 onClick={() =>
                   user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'title', id: item.id })
                 }
+              > */}
+              <h6
+                className={`text-sm font-semibold text-gray-800 ${
+                  (
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                  ) && item.value !== '-'
+                    ? 'cursor-pointer'
+                    : ''
+                }`}
+                onClick={() => {
+                  const canEdit =
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position);
+
+                  if (canEdit && item.value !== '-') {
+                    setEditing({ field: 'title', id: item.id });
+                  }
+                }}
               >
+
                 {item.value === '-' ? (
                   <div className="skeleton w-16 h-5"></div>  // Skeleton for title if value is '-'
                 ) : editing.field === 'title' && editing.id === item.id ? (
@@ -363,12 +399,33 @@ const PlayingToWin = () => {
                 )}
               </h6>
 
-              <p
+              {/* <p
                 className={`text-sm text-gray-700 mt-1 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
                 onClick={() =>
                   user?.role === 'superadmin' && item.value !== '-' && setEditing({ field: 'value', id: item.id })
                 }
+              > */}
+              <p
+                className={`text-sm text-gray-700 mt-1 ${
+                  (
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                  ) && item.value !== '-'
+                    ? 'cursor-pointer'
+                    : ''
+                }`}
+                onClick={() => {
+                  const canEdit =
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position);
+
+                  if (canEdit && item.value !== '-') {
+                    setEditing({ field: 'value', id: item.id });
+                  }
+                }}
               >
+
+
                 {/* {editing.field === 'value' && editing.id === item.id ? (
                   <textarea
                     autoFocus

@@ -56,7 +56,15 @@ const FoundationsSection = () => {
   // }, [setFoundations]);
 
   const handleCellClick = (id, field) => {
-    if (loggedUser?.role === 'superadmin') {
+    // if (loggedUser?.role === 'superadmin') {
+    //   setEditingCell({ id, field });
+    // }
+    const position = loggedUser?.position;
+    const canEdit = 
+      loggedUser?.role === 'superadmin' || 
+      ['Admin', 'CEO', 'Internal'].includes(position);
+  
+    if (canEdit) {
       setEditingCell({ id, field });
     }
   };
@@ -379,7 +387,9 @@ const FoundationsSection = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="flex justify-between items-center mb-4">
         <h5 className="text-lg font-semibold always-black">Foundations</h5>
-        {loggedUser?.role === 'superadmin' && (
+        {/* {loggedUser?.role === 'superadmin' && ( */}
+        {(['superadmin'].includes(loggedUser?.role) || 
+            ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
           <div className="flex gap-2">
             {edited.length > 0 && (
               <>
@@ -463,12 +473,21 @@ const FoundationsSection = () => {
           return (
             <div key={item.id} 
               className="relative border rounded-md p-4 bg-white shadow-sm min-h-[160px]"
-              draggable={loggedUser?.role === 'superadmin' && !isPlaceholder}
+              // draggable={loggedUser?.role === 'superadmin' && !isPlaceholder}
+              draggable={
+                (
+                  loggedUser?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && !isPlaceholder
+              }
               onDragStart={(e) => handleDragStart(e, item.id)}
               onDragOver={(e) => handleDragOver(e, item.id)}
               onDragEnd={handleDragEnd}
             >
-              {loggedUser?.role === 'superadmin' && !isPlaceholder && (
+              {/* {loggedUser?.role === 'superadmin' && !isPlaceholder && ( */}
+              {( loggedUser?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+              ) && !isPlaceholder && (
                 <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700 print:hidden"
                   onClick={() => handleDeleteFoundation(item.id)}

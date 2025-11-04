@@ -245,7 +245,11 @@ const FourDecisions = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md mr-[15px]">
       <div className="flex justify-between items-center mb-4">
         <h5 className="text-md font-semibold text-green-700">4 Decisions</h5>
-        {user?.role === 'superadmin' && (
+        {/* {user?.role === 'superadmin' && ( */}
+        {(
+          user?.role === 'superadmin' ||
+          ['Admin', 'CEO', 'Internal'].includes(user?.position)
+        ) && (
           <div className="flex gap-2">
              {(edited.length > 0 || editing.rowId === 'header') && (
               <>
@@ -272,7 +276,11 @@ const FourDecisions = () => {
               </>
             )}
 
-            {user?.role === 'superadmin' && !hasRealData && (
+            {/* {user?.role === 'superadmin' && !hasRealData && ( */}
+            {(
+              user?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(user?.position)
+            ) && !hasRealData && (
               <button className="pure-blue-btn print:hidden" onClick={handleAddDecisionClick} disabled={loading}>
                 {loading ? <div className="loader-bars"><div></div><div></div><div></div></div> : 
                 <>
@@ -337,7 +345,11 @@ const FourDecisions = () => {
           <tr>
             {['header1', 'header2', 'header3', 'header4', 'header5', 'header6'].map((headerKey, index) => (
               <th key={headerKey} className="border px-3 py-2">
-                {user?.role === 'superadmin' ? (
+                {/* {user?.role === 'superadmin' ? ( */}
+                {(
+                  user?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                ) ? (
                   <input
                     className={`w-full border rounded p-1 text-sm ${index === 0 ? 'text-left' : 'text-center'}`}
                     value={fourDecisions[0]?.[headerKey] ?? ''}
@@ -365,7 +377,13 @@ const FourDecisions = () => {
               </th>
             ))}
 
-            {user?.role === 'superadmin' && !hasRealData && (
+            {/* {user?.role === 'superadmin' && !hasRealData && (
+              <th className="border px-3 py-2 print:hidden"></th>
+            )} */}
+            {(
+              user?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(user?.position)
+            ) && !hasRealData && (
               <th className="border px-3 py-2 print:hidden"></th>
             )}
           </tr>
@@ -392,19 +410,42 @@ const FourDecisions = () => {
                   ) : item[field] === '-' ? (
                     <div className="skeleton w-full h-4"></div>
                   ) : (
+                    // <span
+                    //   className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
+                    //   onClick={() =>
+                    //     user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                    //   }
+                    // >
+                    //   {item[field]}
+                    // </span>
                     <span
-                      className={user?.role === 'superadmin' ? 'cursor-pointer' : ''}
-                      onClick={() =>
-                        user?.role === 'superadmin' && setEditing({ rowId: item.id, field })
+                      className={
+                        user?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                          ? 'cursor-pointer'
+                          : ''
                       }
+                      onClick={() => {
+                        const canEdit =
+                          user?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(user?.position);
+
+                        if (canEdit) {
+                          setEditing({ rowId: item.id, field });
+                        }
+                      }}
                     >
                       {item[field]}
                     </span>
+
                   )}
                 </td>
               ))}
 
-              {user?.role === 'superadmin' && !hasRealData && (
+              {/* {user?.role === 'superadmin' */}
+              {(
+                user?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(user?.position)
+              )
+              && !hasRealData && (
                 <td className="border px-3 py-2 text-center print:hidden">
                   <FontAwesomeIcon
                     icon={faTrashAlt}

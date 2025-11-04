@@ -245,7 +245,10 @@ const ThreeYearOutlook = () => {
       <div className="three-year-outlook">
         <div className="flex justify-between items-center mb-4">
           <h5 className="text-md font-semibold text-green-700">3 Year Outlook</h5>
-          {user?.role === 'superadmin' && (
+          {/* {user?.role === 'superadmin' && ( */}
+          {( user?.role === 'superadmin' ||
+            ['Admin', 'CEO', 'Internal'].includes(user?.position)
+          ) && (
             <div className="flex gap-2">
               {edited.length > 0 && (
                 <>
@@ -297,7 +300,11 @@ const ThreeYearOutlook = () => {
               {/* <button className="pure-blue-btn" onClick={() => setShowAddModal(true)}>Add</button> */}
 
               {/* {user?.role === 'superadmin' && !hasPendingOutlook && ( */}
-              {user?.role === 'superadmin' && !hasPendingOutlook && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
+              {/* {user?.role === 'superadmin' && !hasPendingOutlook && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && ( */}
+              {( user?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(user?.position)
+              )
+              && !hasPendingOutlook && !storeOutlooks.some(item => item.title === '-' || item.value === '-') && (
 
                 <button className="pure-blue-btn print:hidden" onClick={handleAddOutlookClick} disabled={loading}>
                   {loading ? (
@@ -321,7 +328,12 @@ const ThreeYearOutlook = () => {
           {outlooks.map((item) => (
             <div key={item.id} className="relative border rounded-md p-4 shadow-sm bg-white min-h-[100px]">
               {/* {user?.role === 'superadmin' && item.value !== '-' &&  ( */}
-              { user?.role === 'superadmin' && (item.value === null || item.value !== '-') && (
+              {/* { user?.role === 'superadmin' && (item.value === null || item.value !== '-') && ( */}
+              {( user?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(user?.position)
+              )
+              && (item.value === null || item.value !== '-') && (
+
                 <div
                   className="absolute top-2 right-2 text-red-500 hover:text-red-700 print:hidden"
                   onClick={() => handleDelete(item.id)}
@@ -332,10 +344,27 @@ const ThreeYearOutlook = () => {
               )}
               
               <h6
-                className={`text-sm font-semibold text-gray-800 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
-                onClick={() =>
-                  user?.role === 'superadmin' && (item.value === null || item.value !== '-') && setEditing({ field: 'year', id: item.id })
-                }
+                // className={`text-sm font-semibold text-gray-800 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
+                // onClick={() =>
+                //   user?.role === 'superadmin' && (item.value === null || item.value !== '-') && setEditing({ field: 'year', id: item.id })
+                // }
+                  className={`text-sm font-semibold text-gray-800 ${
+                    (
+                      user?.role === 'superadmin' ||
+                      ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                    ) && item.value !== '-'
+                      ? 'cursor-pointer'
+                      : ''
+                  }`}
+                  onClick={() => {
+                    if (
+                      (user?.role === 'superadmin' ||
+                        ['Admin', 'CEO', 'Internal'].includes(user?.position)) &&
+                      (item.value === null || item.value !== '-')
+                    ) {
+                      setEditing({ field: 'year', id: item.id });
+                    }
+                  }}                
               >
                 {item.value === '-' ? (
                   <div className="skeleton w-16 h-5"></div>  // Skeleton for year if value is '-'
@@ -351,14 +380,55 @@ const ThreeYearOutlook = () => {
                 )}
               </h6>
 
-              <p
+              {/* <p
                 className={`text-sm text-gray-700 mt-1 ${user?.role === 'superadmin' && item.value !== '-' ? 'cursor-pointer' : ''}`}
                 onClick={() =>
                   user?.role === 'superadmin' && (item.value === null || item.value !== '-') && setEditing({ field: 'value', id: item.id })
                   // user?.role === 'superadmin' && setEditing({ field: 'value', id: item.id })
-
                 }
+              > */}
+
+              {/* <p
+                className={`text-sm text-gray-700 mt-1 ${
+                  (
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                  ) && item.value !== '-'
+                    ? 'cursor-pointer'
+                    : ''
+                }`}
+                onClick={() => {
+                  if (
+                    (user?.role === 'superadmin' ||
+                      ['Admin', 'CEO', 'Internal'].includes(user?.position)) &&
+                    (item.value === null || item.value !== '-')
+                  ) {
+                    setEditing({ field: 'value', id: item.id });
+                  }
+                }}
+              > */}
+
+              <p
+                className={`text-sm text-gray-700 mt-1 ${
+                  (
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position)
+                  ) && item.value !== '-'
+                    ? 'cursor-pointer'
+                    : ''
+                }`}
+                onClick={() => {
+                  const canEdit =
+                    user?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(user?.position);
+
+                  if (canEdit && item.value !== '-') {
+                    setEditing({ field: 'value', id: item.id });
+                  }
+                }}
               >
+
+
                 {/* {editing.field === 'value' && editing.id === item.id ? (
                   <textarea
                     autoFocus
