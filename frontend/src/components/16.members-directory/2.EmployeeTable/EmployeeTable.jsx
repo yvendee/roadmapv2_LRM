@@ -182,8 +182,18 @@ const EmployeeTable = () => {
   
   
 
+  // const handleCellClick = (id, field) => {
+  //   if (loggedUser?.role === 'superadmin') {
+  //     setEditingCell({ id, field });
+  //   }
+  // };
+
   const handleCellClick = (id, field) => {
-    if (loggedUser?.role === 'superadmin') {
+    const canEdit =
+      loggedUser?.role === 'superadmin' ||
+      ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position);
+  
+    if (canEdit) {
       setEditingCell({ id, field });
     }
   };
@@ -393,7 +403,11 @@ const EmployeeTable = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
         <h5 className="text-lg font-semibold always-black">Members Directory</h5>
-        {loggedUser?.role === 'superadmin' && (
+        {/* {loggedUser?.role === 'superadmin' && ( */}
+        {(
+          loggedUser?.role === 'superadmin' ||
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+        ) && (
           <div className="flex gap-2">
 
             {isEditing && <>
@@ -428,7 +442,11 @@ const EmployeeTable = () => {
               </>
             }
 
-            {loggedUser?.role === 'superadmin' && !isSkeleton && (
+            {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+            {(
+              loggedUser?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+            ) && !isSkeleton && (
               <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
@@ -461,7 +479,11 @@ const EmployeeTable = () => {
               <th className="border px-4 py-2 ">Department</th>
               <th className="border px-4 py-2 ">Member Access</th>
               <th className="border px-4 py-2 ">Can Login</th>
-              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+              {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+              {(
+                loggedUser?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+              ) && !isSkeleton && (
                 <th className="border px-4 py-2 text-center"></th>
               )}
             </tr>
@@ -471,7 +493,11 @@ const EmployeeTable = () => {
             {currentOrder.map(driver => (
               <tr key={driver.id}
                 draggable={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.fullname !== '-' &&
                   driver.company !== '-' &&
                   driver.email !== '-' &&
@@ -480,7 +506,11 @@ const EmployeeTable = () => {
                   driver.canLogin !== '-'
                 }
                 onDragStart={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.fullname !== '-' &&
                   driver.company !== '-' &&
                   driver.email !== '-' &&
@@ -491,7 +521,11 @@ const EmployeeTable = () => {
                     : undefined
                 }
                 onDragOver={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.fullname !== '-' &&
                   driver.company !== '-' &&
                   driver.email !== '-' &&
@@ -502,7 +536,11 @@ const EmployeeTable = () => {
                     : undefined
                 }
                 onDragEnd={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.fullname !== '-' &&
                   driver.company !== '-' &&
                   driver.email !== '-' &&
@@ -513,7 +551,11 @@ const EmployeeTable = () => {
                     : undefined
                 }
                 className={`hover:bg-gray-50 ${
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.fullname !== '-' &&
                   driver.company !== '-' &&
                   driver.email !== '-' &&
@@ -664,7 +706,11 @@ const EmployeeTable = () => {
 
 
                 {/* delete button */}
-                {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+                {(
+                  loggedUser?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && !isSkeleton && (
                   <td className="border px-4 py-3 text-center">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}

@@ -172,11 +172,22 @@ const DocumentVaultTable = () => {
   };
 
     
+  // const handleCellClick = (id, field) => {
+  //   if (loggedUser?.role === 'superadmin') {
+  //     setEditingCell({ id, field });
+  //   }
+  // };
+
   const handleCellClick = (id, field) => {
-    if (loggedUser?.role === 'superadmin') {
+    const canEdit =
+      loggedUser?.role === 'superadmin' ||
+      ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position);
+  
+    if (canEdit) {
       setEditingCell({ id, field });
     }
   };
+  
 
   const handleInputBlur = (id, field, value) => {
     updateDocumentVaultTableField(id, field, value);
@@ -413,7 +424,9 @@ const DocumentVaultTable = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
         <h5 className="text-lg font-semibold always-black">Document Vault</h5>
-        {loggedUser?.role === 'superadmin' && (
+        {/* {loggedUser?.role === 'superadmin' && ( */}
+        {(['superadmin'].includes(loggedUser?.role) || 
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
           <div className="flex gap-2">
 
             {isEditing && <>
@@ -448,7 +461,11 @@ const DocumentVaultTable = () => {
               </>
             }
 
-            {loggedUser?.role === 'superadmin' && !isSkeleton && (
+            {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+            {(
+              loggedUser?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+            ) && !isSkeleton && (
               <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
@@ -481,7 +498,11 @@ const DocumentVaultTable = () => {
               <th className="border px-4 py-2 "></th> {/*<--- view link button -->}*/}
               <th className="border px-4 py-2 "></th> {/*<--- upload button -->}*/}
               <th className="border px-4 py-2 "></th> {/*<--- view pdf button -->}*/}
-              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+              {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+              {(
+                loggedUser?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+              ) && !isSkeleton && (
                 <th className="border px-4 py-2 text-center"></th>
               )}
             </tr>
@@ -491,7 +512,11 @@ const DocumentVaultTable = () => {
             {currentOrder.map(driver => (
               <tr key={driver.id}
                 draggable={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.projectName !== '-' &&
                   driver.date !== '-' &&
                   driver.link !== '-' &&
@@ -500,7 +525,11 @@ const DocumentVaultTable = () => {
                   driver.pdflink !== '-'
                 }
                 onDragStart={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.projectName !== '-' &&
                   driver.date !== '-' &&
                   driver.link !== '-' &&
@@ -511,7 +540,11 @@ const DocumentVaultTable = () => {
                     : undefined
                 }
                 onDragOver={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.projectName !== '-' &&
                   driver.date !== '-' &&
                   driver.link !== '-' &&
@@ -522,7 +555,11 @@ const DocumentVaultTable = () => {
                     : undefined
                 }
                 onDragEnd={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.projectName !== '-' &&
                   driver.date !== '-' &&
                   driver.link !== '-' &&
@@ -533,7 +570,11 @@ const DocumentVaultTable = () => {
                     : undefined
                 }
                 className={`hover:bg-gray-50 ${
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  (
+                    loggedUser?.role === 'superadmin' ||
+                    ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                  ) &&
                   driver.projectName !== '-' &&
                   driver.date !== '-' &&
                   driver.link !== '-' &&
@@ -731,7 +772,11 @@ const DocumentVaultTable = () => {
                 </td> */}
 
                 {/* delete button */}
-                {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+                {(
+                  loggedUser?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && !isSkeleton && (
                   <td className="border px-4 py-3 text-center">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}
