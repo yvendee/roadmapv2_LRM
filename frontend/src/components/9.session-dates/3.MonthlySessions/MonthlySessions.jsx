@@ -391,7 +391,10 @@ const MonthlySessions = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container flex justify-between items-center">
         <h5 className="text-lg font-semibold always-black">Monthly Sessions</h5>
-        {isSuper && !localSessions.some(session => !session.status || session.status === "-") && (
+        {/* {isSuper && !localSessions.some(session => !session.status || session.status === "-") && ( */}
+        {(
+          isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+        ) && !localSessions.some(session => !session.status || session.status === "-") && (
           <div className="flex gap-2">
             {isEditing && (
               <>
@@ -474,7 +477,8 @@ const MonthlySessions = () => {
               return (
                 <tr key={idx} className="hover:bg-gray-50">
                   <td className="border px-4 py-3">
-                    {isSuper ? (
+                    {/* {isSuper ? ( */}
+                    {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       <select
                         value={session.status}
                         onChange={(e) => handleFieldChange(idx, 'status', e.target.value)}
@@ -493,7 +497,8 @@ const MonthlySessions = () => {
                   </td>
 
                   <td className="border px-4 py-3">
-                    {isSuper ? (
+                    {/* {isSuper ? ( */}
+                    {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       <select
                         value={session.quarter}
                         onChange={(e) => handleFieldChange(idx, 'quarter', e.target.value)}
@@ -512,7 +517,8 @@ const MonthlySessions = () => {
                   </td>
 
                   <td className="border px-4 py-3">
-                    {isSuper ? (
+                    {/* {isSuper ? ( */}
+                    {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       <input
                         type="date"
                         value={session.meetingDate}
@@ -529,7 +535,8 @@ const MonthlySessions = () => {
                     <div className="flex items-center gap-2">
                       {renderLink(session.agenda)}
 
-                      {isSuper && (
+                      {/* {isSuper && ( */}
+                      {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
                         <>
                           {/* Upload Button */}
                           <button 
@@ -603,7 +610,8 @@ const MonthlySessions = () => {
                     <div className="flex items-center gap-2">
                       {renderLink(session.recap)}
 
-                      {isSuper && (
+                      {/* {isSuper && ( */}
+                      {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
                         <>
                           {/* Upload Button */}
                           <button 
@@ -674,9 +682,12 @@ const MonthlySessions = () => {
                   </td>
 
                   <td className="border px-4 py-3 text-center">
-                    {isSuper && (
+                    {/* {isSuper && (
                       <td className="border px-4 py-3 text-center">
-                      {isSuper && (
+                      {isSuper && ( */}
+                    {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
+                      <td className="border px-4 py-3 text-center">
+                        {(isSuper || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) && (
                         <button
                           className="w-10 h-10 flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded"
                           onClick={() => {

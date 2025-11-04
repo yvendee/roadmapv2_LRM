@@ -355,7 +355,11 @@ const WhoWhatWhenTable = () => {
     <div className="mt-6 p-4 bg-white rounded-lg shadow-md ml-[5px] mr-[5px] always-black">
       <div className="header-container">
         <h5 className="text-lg font-semibold always-black">Who What When</h5>
-        {loggedUser?.role === 'superadmin' && (
+        {/* {loggedUser?.role === 'superadmin' && ( */}
+        {(
+          loggedUser?.role === 'superadmin' ||
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+        ) && (
           <div className="flex gap-2">
 
             {isEditing && <>
@@ -390,7 +394,11 @@ const WhoWhatWhenTable = () => {
               </>
             }
 
-            {loggedUser?.role === 'superadmin' && !isSkeleton && (
+            {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+            {(
+              loggedUser?.role === 'superadmin' ||
+              ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+            ) && !isSkeleton && (
               <button className="pure-blue-btn ml-2" onClick={handleAddDriverClick} disabled={loading}>
                 {loading ? (
                   <div className="loader-bars">
@@ -422,7 +430,11 @@ const WhoWhatWhenTable = () => {
               <th className="border px-4 py-2 ">When (Deadline)</th>
               <th className="border px-4 py-2 ">Comments and Challenges</th>
               <th className="border px-4 py-2"></th>
-              {loggedUser?.role === 'superadmin' && !isSkeleton && (
+              {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+              {(
+                loggedUser?.role === 'superadmin' ||
+                ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+              ) && !isSkeleton && (
                 <th className="border px-4 py-2 text-center"></th>
               )}
             </tr>
@@ -433,7 +445,8 @@ const WhoWhatWhenTable = () => {
               <tr key={driver.id}
 
                 draggable={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.date !== '-' &&
                   driver.who !== '-' &&
                   driver.what !== '-' &&
@@ -442,7 +455,8 @@ const WhoWhatWhenTable = () => {
                   driver.status !== '-'
                 }
                 onDragStart={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.date !== '-' &&
                   driver.who !== '-' &&
                   driver.what !== '-' &&
@@ -453,7 +467,8 @@ const WhoWhatWhenTable = () => {
                     : undefined
                 }
                 onDragOver={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.date !== '-' &&
                   driver.who !== '-' &&
                   driver.what !== '-' &&
@@ -464,7 +479,8 @@ const WhoWhatWhenTable = () => {
                     : undefined
                 }
                 onDragEnd={
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.date !== '-' &&
                   driver.who !== '-' &&
                   driver.what !== '-' &&
@@ -475,7 +491,8 @@ const WhoWhatWhenTable = () => {
                     : undefined
                 }
                 className={`hover:bg-gray-50 ${
-                  loggedUser?.role === 'superadmin' &&
+                  // loggedUser?.role === 'superadmin' &&
+                  loggedUser?.role === 'superadmin' || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position) &&
                   driver.date !== '-' &&
                   driver.who !== '-' &&
                   driver.what !== '-' &&
@@ -646,7 +663,11 @@ const WhoWhatWhenTable = () => {
                 </td>
                 
                 {/* delete button */}
-                {loggedUser?.role === 'superadmin' && !isSkeleton && (
+                {/* {loggedUser?.role === 'superadmin' && !isSkeleton && ( */}
+                {(
+                  loggedUser?.role === 'superadmin' ||
+                  ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                ) && !isSkeleton && (
                   <td className="border px-4 py-3 text-center">
                     <div
                       onClick={() => handleDeleteDriver(driver.id)}
