@@ -818,12 +818,15 @@ const EmployeeTable = () => {
               }
             >
               <option value="">Select Department</option>
-              {MembersDepartmentsTable.map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
-                </option>
-              ))}
+              {MembersDepartmentsTable
+                .filter((d) => d.name && d.name !== '-') // prevent blanks or skeleton placeholders
+                .map((d) => (
+                  <option key={d.id} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
             </select>
+
 
 
             <label className="modal-add-label">Member Access</label>
