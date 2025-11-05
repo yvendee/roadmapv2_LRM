@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useMembersDepartmentsStore, { initialEmployeeList } from '../../../store/left-lower-content/16.members-directory/1.membersDirectoryStore';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
+// import useMembersDepartmentsStore from '../../../store/left-lower-content/15.members-departments/1.membersDepartmentsStore';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './EmployeeTable.css';
@@ -16,6 +17,8 @@ const EmployeeTable = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const [emailError, setEmailError] = useState('');
+  // const { MembersDepartmentsTable } = useMembersDepartmentsStore();
+
 
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
@@ -795,13 +798,33 @@ const EmployeeTable = () => {
             />
 
 
-            <label className="modal-add-label">Department</label>
+            {/* <label className="modal-add-label">Department</label>
             <textarea
               className="modal-add-input"
               rows="1"
               value={newMembersDepartmentsTable.department}
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, department: e.target.value })}
-            />
+            /> */}
+
+            <label className="modal-add-label">Department</label>
+            <select
+              className="modal-add-input"
+              value={newMembersDepartmentsTable.department}
+              onChange={(e) =>
+                setNewMembersDepartmentsTable({
+                  ...newMembersDepartmentsTable,
+                  department: e.target.value,
+                })
+              }
+            >
+              <option value="">Select Department</option>
+              {MembersDepartmentsTable.map((dept) => (
+                <option key={dept.id} value={dept.name}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+
 
             <label className="modal-add-label">Member Access</label>
             <select
