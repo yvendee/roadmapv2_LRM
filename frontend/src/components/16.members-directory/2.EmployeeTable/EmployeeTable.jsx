@@ -35,6 +35,7 @@ const EmployeeTable = () => {
   const { MembersDepartmentsTable, setMembersDepartments } = useMembersDepartmentsStore();
 
 
+  // Subscribe to the store: this will re-render when data is fetched
   const departmentsList = useMembersDepartmentsStore(
     (state) => state.MembersDepartmentsTable
   );
@@ -810,26 +811,26 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, department: e.target.value })}
             /> */}
 
-          <label className="modal-add-label">Department</label>
-          <select
-            className="modal-add-input"
-            value={newMembersDepartmentsTable.department}
-            onChange={(e) =>
-              setNewMembersDepartmentsTable({
-                ...newMembersDepartmentsTable,
-                department: e.target.value,
-              })
-            }
-          >
-            <option value="">Select Department</option>
-            {departmentsList
-              .filter((d) => d.name && d.name !== '-') // remove placeholders
-              .map((d) => (
-                <option key={d.id} value={d.name}>
-                  {d.name}
-                </option>
-              ))}
-          </select>
+      <label className="modal-add-label">Department</label>
+      <select
+        className="modal-add-input"
+        value={newMembersDepartmentsTable.department}
+        onChange={(e) =>
+          setNewMembersDepartmentsTable({
+            ...newMembersDepartmentsTable,
+            department: e.target.value,
+          })
+        }
+      >
+        <option value="">Select Department</option>
+        {departmentsList
+          .filter((d) => d.name && d.name !== '-') // remove placeholders
+          .map((d) => (
+            <option key={d.id} value={d.name}>
+              {d.name}
+            </option>
+          ))}
+      </select>
 
 
 
