@@ -22,6 +22,8 @@ const Login = () => {
   const [loginError, setLoginError] = useState(location.state?.loginError || '');
   const [isLoading, setIsLoading] = useState(false);
 
+  let firstCompany = null
+
   // ✅ Load saved credentials on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
@@ -98,7 +100,7 @@ const Login = () => {
           }
 
 
-          let firstCompany = null; 
+          // let firstCompany = null; 
           
           try {
 
@@ -117,7 +119,7 @@ const Login = () => {
 
             ENABLE_CONSOLE_LOGS &&  console.log('Fetched Company List: ',companies);
 
-            const firstCompany = companies[0];
+            firstCompany = companies[0];
           
             // ✅ Update store
             useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
