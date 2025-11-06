@@ -44,8 +44,27 @@ const CompanyTraction = () => {
     rank: '',
   });
 
-
+  const canEditRow = (row) => {
+    if (!loggedUser) return false;
   
+    const loggedFirst = loggedUser?.fullname?.split(' ')[0]?.toLowerCase();
+    const collabFirst = row?.collaborator?.split(' ')[0]?.toLowerCase();
+  
+    // Superadmin and Admins always editable
+    if (
+      loggedUser?.role === 'superadmin' ||
+      ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+    ) {
+      return true;
+    }
+  
+    // Leadership users: can only edit rows where collaborator matches
+    if (loggedUser?.position === 'Leadership' && loggedFirst === collabFirst) {
+      return true;
+    }
+  
+    return false;
+  };
   
 
   const addCompanyTraction = useCompanyTractionStore((state) => state.addCompanyTraction);
@@ -217,81 +236,7 @@ const CompanyTraction = () => {
     return 'just now';
   };
 
-  
-  // const handleAddComment = () => {
-  //   setIsEditing(true); // Mark as edited
-  //   if (newComment && selectedItem) {
-  //     const updatedCompanyTraction = { ...companyTraction };
-  
-  //     const newCommentData = {
-  //       author: loggedUser?.fullname || 'Anonymous',
-  //       message: newComment,
-  //       posted: new Date().toISOString(), // Save full timestamp
-  //     };
-  
-  //     updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
-  //       item.id === selectedItem.id
-  //         ? { ...item, comment: [...item.comment, newCommentData] }
-  //         : item
-  //     );
 
-  //     addActivityLog(`Comment added to Company Traction: ${selectedItem.description}`);
-
-  
-  //     setCompanyTraction(updatedCompanyTraction);
-  //     localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
-  //     setNewComment('');
-  //     setCommentModalOpen(false);
-  //   }
-  // };
-  
-
-  // const handleDeleteComment = (itemId, commentIndex) => {
-  //   setIsEditing(true); // Mark as edited
-  //   const updatedCompanyTraction = { ...companyTraction };
-  //   updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].map(item =>
-  //     item.id === itemId
-  //       ? {
-  //           ...item,
-  //           comment: item.comment.filter((_, index) => index !== commentIndex),
-  //         }
-  //       : item
-  //   );
-  
-  //   setCompanyTraction(updatedCompanyTraction);
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
-  
-  //   // Also update the selectedItem to reflect the changes in the modal
-  //   const updatedSelectedItem = {
-  //     ...selectedItem,
-  //     comment: selectedItem.comment.filter((_, index) => index !== commentIndex),
-  //   };
-
-  //   addActivityLog(`Comment delete to Company Traction: ${selectedItem.description}`);
-
-  //   setSelectedItem(updatedSelectedItem);
-  // };
-  
-  // const handleDeleteRow = (rowId) => {
-
-  //   setIsEditing(true); // Mark as edited
-
-  //   // Create a copy of the current company traction data
-  //   const updatedCompanyTraction = { ...companyTraction };
-    
-  //   // Remove the row with the matching rowId from the active quarter
-  //   updatedCompanyTraction[activeQuarter] = updatedCompanyTraction[activeQuarter].filter(item => item.id !== rowId);
-    
-  //   // Update the state with the new company traction data
-  //   setCompanyTraction(updatedCompanyTraction);
-    
-  //   // Update localStorage to persist changes
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedCompanyTraction));
-
-  //   addActivityLog(`Company traction deleted with description: ${row.description}`);
-
-  // };
-  
   const handleAddComment = () => {
     setIsEditing(true); // Mark as edited
     if (newComment?.trim() && selectedItem) {
@@ -379,19 +324,6 @@ const CompanyTraction = () => {
   };
 
 
-  // const handleEditChange = (e, rowId, field) => {
-
-  //   setIsEditing(true); 
-  //   const value = e.target.value;
-  
-  //   // Update the store
-  //   updateCompanyTractionField(activeQuarter, rowId, field, value);
-  
-  //   // Get latest store data and persist it
-  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  // };
-
   const handleEditChange = (e, rowId, field) => {
     const newValue = e.target.value;
   
@@ -439,18 +371,6 @@ const CompanyTraction = () => {
   };
   
 
-  // const handleProgressChange = (e, rowId) => {
-  //   const value = e.target.value;
-  
-  //   // Update the store
-  //   updateCompanyTractionField(activeQuarter, rowId, 'progress', value);
-  
-  //   // Optional: persist to localStorage
-  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  
-  //   setIsEditing(true); // Mark as edited
-  // };
 
   const handleProgressChange = (e, rowId) => {
     const newValue = e.target.value;
@@ -497,16 +417,6 @@ const CompanyTraction = () => {
   };
 
 
-  // const handleDueDateChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   updateCompanyTractionField(activeQuarter, rowId, 'dueDate', value);
-  
-  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  
-  //   setIsEditing(true);
-  // };
-
   const handleDueDateChange = (e, rowId) => {
     const newValue = e.target.value;
     setIsEditing(true);
@@ -531,16 +441,6 @@ const CompanyTraction = () => {
   };
   
   
-  // const handleDescriptionChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setDescription(value); // keep UI controlled
-  //   updateCompanyTractionField(activeQuarter, rowId, 'description', value);
-  
-  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  
-  //   setIsEditing(true);
-  // };
 
   const handleDescriptionChange = (e, rowId) => {
     const newValue = e.target.value;
@@ -567,16 +467,6 @@ const CompanyTraction = () => {
   };
   
   
-  // const handleAnnualPriorityChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setAnnualPriority(value); // keep UI controlled
-  //   updateCompanyTractionField(activeQuarter, rowId, 'annualPriority', value);
-  
-  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  
-  //   setIsEditing(true);
-  // };
 
   const handleAnnualPriorityChange = (e, rowId) => {
     const newValue = e.target.value;
@@ -604,16 +494,6 @@ const CompanyTraction = () => {
   };
   
   
-  // const handleRankChange = (e, rowId) => {
-  //   const value = e.target.value;
-  //   setRank(value); // keep UI controlled
-  //   updateCompanyTractionField(activeQuarter, rowId, 'rank', value);
-  
-  //   const updatedData = useCompanyTractionStore.getState().companyTraction;
-  //   localStorage.setItem('companyTractionData', JSON.stringify(updatedData));
-  
-  //   setIsEditing(true);
-  // };
 
   const handleRankChange = (e, rowId) => {
     const newValue = e.target.value;
@@ -1110,7 +990,9 @@ const CompanyTraction = () => {
                       value={row.who}
                       onChange={(e) => handleEditChange(e, row.id, 'who')}
                       // disabled={!isSuperAdmin}
-                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      disabled={!canEditRow(row)}
+
                     >
                       {/* Default: show current selection */}
                       {!users.includes(row.who) && <option value={row.who}>{row.who}</option>}
@@ -1131,8 +1013,10 @@ const CompanyTraction = () => {
                       className="w-full text-xs"
                       value={row.collaborator}
                       onChange={(e) => handleEditChange(e, row.id, 'collaborator')}
-                      // disabled={!isSuperAdmin}
-                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      // disabled={!isSuperAdmin}    
+                      // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      disabled={!canEditRow(row)}
+
                     >
                       {/* Ensure current collaborator is always shown, even if not in list */}
                       {!users.includes(row.collaborator) && (
@@ -1147,6 +1031,7 @@ const CompanyTraction = () => {
                       ))}
                     </select>
                   </td>
+
                   {/* Editable Description Column */}
                   <td className="border px-4 py-2">
                     <textarea
@@ -1155,7 +1040,9 @@ const CompanyTraction = () => {
                       value={row.description}
                       onChange={(e) => handleDescriptionChange(e, row.id)}
                       // disabled={!isSuperAdmin} // Disable for non-superadmins
-                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      disabled={!canEditRow(row)}
+
                     />
                   </td>
 
@@ -1169,7 +1056,9 @@ const CompanyTraction = () => {
                         onBlur={() => setEditingProgress(null)} // Hide dropdown when user clicks outside
                         autoFocus
                         // disabled={!isSuperAdmin} // Disable for non-superadmins
-                        disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        //disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        disabled={!canEditRow(row)}
+
                       >
                         {/* Create options for progress from 0% to 100% */}
                         {progressOptions.map((option) => (
@@ -1250,7 +1139,8 @@ const CompanyTraction = () => {
                         onBlur={() => setEditingRank(null)}
                         autoFocus
                         // disabled={!isSuperAdmin}
-                        disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        //disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        disabled={!canEditRow(row)}
                       >
                         <option value="">Please select</option>
                         <option value=""> </option>
@@ -1295,7 +1185,7 @@ const CompanyTraction = () => {
                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 cursor-pointer" />
                   </td> */}
                   {/* {isSuperAdmin && ( */}
-                  {(
+                  {/* {(
                     isSuperAdmin ||
                     ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
                   ) && (
@@ -1306,7 +1196,18 @@ const CompanyTraction = () => {
                         onClick={() => handleDeleteRow(row.id)}  // Pass the row's ID to handleDeleteRow
                       />
                     </td>
+                  )} */}
+
+                  {canEditRow(row) && (
+                    <td className="border px-4 py-2 text-center print:hidden">
+                      <FontAwesomeIcon
+                        icon={faTrashAlt}
+                        className="text-red-600 cursor-pointer"
+                        onClick={() => handleDeleteRow(row.id)}
+                      />
+                    </td>
                   )}
+
 
                 </tr>
               ))

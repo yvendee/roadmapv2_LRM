@@ -810,15 +810,6 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, company: e.target.value })}
             />
 
-            {/* <label className="modal-add-label">Email</label>
-            <textarea
-              className="modal-add-input"
-              rows="1"
-              value={newMembersDepartmentsTable.email}
-              onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, email: e.target.value })}
-            /> */}
-
-
             <label className="modal-add-label">Email</label>
             <textarea
               className="modal-add-input"
@@ -838,35 +829,26 @@ const EmployeeTable = () => {
               }}
             />
 
-
-            {/* <label className="modal-add-label">Department</label>
-            <textarea
+            <label className="modal-add-label">Department</label>
+            <select
               className="modal-add-input"
-              rows="1"
               value={newMembersDepartmentsTable.department}
-              onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, department: e.target.value })}
-            /> */}
-
-          <label className="modal-add-label">Department</label>
-          <select
-            className="modal-add-input"
-            value={newMembersDepartmentsTable.department}
-            onChange={(e) =>
-              setNewMembersDepartmentsTable({
-                ...newMembersDepartmentsTable,
-                department: e.target.value,
-              })
-            }
-          >
-            <option value="">Select Department</option>
-            {departmentList
-              .filter((dept) => dept.name && dept.name !== '-')
-              .map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
-                </option>
-              ))}
-          </select>
+              onChange={(e) =>
+                setNewMembersDepartmentsTable({
+                  ...newMembersDepartmentsTable,
+                  department: e.target.value,
+                })
+              }
+            >
+              <option value="">Select Department</option>
+              {departmentList
+                .filter((dept) => dept.name && dept.name !== '-')
+                .map((dept) => (
+                  <option key={dept.id} value={dept.name}>
+                    {dept.name}
+                  </option>
+                ))}
+            </select>
 
             <label className="modal-add-label">Member Access</label>
             <select
