@@ -990,9 +990,7 @@ const CompanyTraction = () => {
                       value={row.who}
                       onChange={(e) => handleEditChange(e, row.id, 'who')}
                       // disabled={!isSuperAdmin}
-                      // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
-                      disabled={!canEditRow(row)}
-
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                     >
                       {/* Default: show current selection */}
                       {!users.includes(row.who) && <option value={row.who}>{row.who}</option>}
@@ -1014,9 +1012,7 @@ const CompanyTraction = () => {
                       value={row.collaborator}
                       onChange={(e) => handleEditChange(e, row.id, 'collaborator')}
                       // disabled={!isSuperAdmin}    
-                      // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
-                      disabled={!canEditRow(row)}
-
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                     >
                       {/* Ensure current collaborator is always shown, even if not in list */}
                       {!users.includes(row.collaborator) && (
@@ -1042,7 +1038,6 @@ const CompanyTraction = () => {
                       // disabled={!isSuperAdmin} // Disable for non-superadmins
                       // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
                       disabled={!canEditRow(row)}
-
                     />
                   </td>
 
@@ -1069,7 +1064,10 @@ const CompanyTraction = () => {
                       </select>
                     ) : (
                       <div
-                        onClick={() => setEditingProgress(row.id)} // When clicked, enable editing
+                        // onClick={() => setEditingProgress(row.id)} // When clicked, enable editing
+                        onClick={() => {
+                          if (canEditRow(row)) setEditingProgress(row.id); // Only allow editable rows
+                        }}
                         className={`inline-block px-3 py-1 rounded-full mt-2 text-xs font-medium text-white cursor-pointer ${getProgressColor(
                           row.progress
                         )}`}
