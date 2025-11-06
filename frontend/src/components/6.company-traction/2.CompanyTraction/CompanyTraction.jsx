@@ -874,7 +874,7 @@ const CompanyTraction = () => {
 
       {/* Saving & Discharge (Visible only for superadmin) */}
       {/* {isEditing && isSuperAdmin && ( */}
-      {isEditing && (
+      {/* {isEditing && (
         isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
       ) && (
         <div className="flex justify-between items-center mb-4">
@@ -913,7 +913,46 @@ const CompanyTraction = () => {
             </div>
           </div>
         </div>
+      )} */}
+
+      {isEditing && canEditRow(editingRow) && (
+        <div className="flex justify-between items-center mb-4">
+          <div className="ml-auto flex space-x-4">
+            {/* Save Changes Button */}
+            <div className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
+              {loadingSave ? (
+                <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faSave} className="mr-1" />
+                  Save Changes
+                </>
+              )}
+            </div>
+
+            {/* Discard Changes Button */}
+            <div className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
+              {loadingDischarge ? (
+                <div className="loader-bars">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
+                  Discard
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       )}
+
 
       {/* Table */}
       <div className="overflow-x-auto">
@@ -1217,11 +1256,12 @@ const CompanyTraction = () => {
                     icon={faCommentDots}
                     className="text-gray-600 cursor-pointer"
                     // onClick={isSuperAdmin ? () => openModal(row) : undefined} // Only open modal if superadmin
-                    onClick={
-                      isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
-                        ? () => openModal(row)
-                        : undefined
-                    }
+                    // onClick={
+                    //   isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                    //     ? () => openModal(row)
+                    //     : undefined
+                    // }
+                    onClick={canEditRow(row) ? () => openModal(row) : undefined}
                     
                   />
                   {/* Conditionally render the number of comments if they exist */}
@@ -1229,6 +1269,8 @@ const CompanyTraction = () => {
                     <label> ({row.comment.length})</label>  // Display the number of comments
                   )}
                 </td>
+
+
                   {/* 
                   <td className="border px-4 py-2 text-center">
                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 cursor-pointer" />
