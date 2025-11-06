@@ -44,11 +44,32 @@ const CompanyTraction = () => {
     rank: '',
   });
 
+  // const canEditRow = (row) => {
+  //   if (!loggedUser) return false;
+  
+  //   const loggedFirst = loggedUser?.fullname?.split(' ')[0]?.toLowerCase();
+  //   const collabFirst = row?.collaborator?.split(' ')[0]?.toLowerCase();
+  
+  //   // Superadmin and Admins always editable
+  //   if (
+  //     loggedUser?.role === 'superadmin' ||
+  //     ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+  //   ) {
+  //     return true;
+  //   }
+  
+  //   // Leadership users: can only edit rows where collaborator matches
+  //   if (loggedUser?.position === 'Leadership' && loggedFirst === collabFirst) {
+  //     return true;
+  //   }
+  
+  //   return false;
+  // };
+
   const canEditRow = (row) => {
     if (!loggedUser) return false;
   
-    const loggedFirst = loggedUser?.fullname?.split(' ')[0]?.toLowerCase();
-    const collabFirst = row?.collaborator?.split(' ')[0]?.toLowerCase();
+    const loggedFirstName = loggedUser?.fullname?.split(' ')[0]?.toLowerCase();
   
     // Superadmin and Admins always editable
     if (
@@ -58,13 +79,23 @@ const CompanyTraction = () => {
       return true;
     }
   
-    // Leadership users: can only edit rows where collaborator matches
-    if (loggedUser?.position === 'Leadership' && loggedFirst === collabFirst) {
-      return true;
+    // Leadership users: editable if first name matches row.who or any collaborator
+    if (loggedUser?.position === 'Leadership') {
+      const rowWhoFirstName = row?.who?.split(' ')[0]?.toLowerCase();
+      const collaborators = row?.collaborator
+        ? row.collaborator
+            .split(',')
+            .map((c) => c.trim().split(' ')[0].toLowerCase())
+        : [];
+  
+      if (rowWhoFirstName === loggedFirstName || collaborators.includes(loggedFirstName)) {
+        return true;
+      }
     }
   
     return false;
   };
+  
   
 
   const addCompanyTraction = useCompanyTractionStore((state) => state.addCompanyTraction);

@@ -42,6 +42,36 @@ const DepartmentTractionTable = () => {
     rank: '',
   });
 
+  const canEditRow = (row) => {
+    if (!loggedUser) return false;
+  
+    const loggedFirstName = loggedUser?.fullname?.split(' ')[0]?.toLowerCase();
+  
+    // Superadmin and Admins always editable
+    if (
+      loggedUser?.role === 'superadmin' ||
+      ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+    ) {
+      return true;
+    }
+  
+    // Leadership users: editable if first name matches row.who or any collaborator
+    if (loggedUser?.position === 'Leadership') {
+      const rowWhoFirstName = row?.who?.split(' ')[0]?.toLowerCase();
+      const collaborators = row?.collaborator
+        ? row.collaborator
+            .split(',')
+            .map((c) => c.trim().split(' ')[0].toLowerCase())
+        : [];
+  
+      if (rowWhoFirstName === loggedFirstName || collaborators.includes(loggedFirstName)) {
+        return true;
+      }
+    }
+  
+    return false;
+  };
+
 
   const addDepartmentTraction = useDepartmentTractionStore((state) => state.addDepartmentTraction);
 
@@ -1050,7 +1080,7 @@ const DepartmentTractionTable = () => {
       {/* Saving & Discharge (Visible only for superadmin) */}
       {/* {isEditing && isSuperAdmin && ( */}
       {isEditing && (
-        isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+        isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership'].includes(loggedUser?.position)
       ) && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
@@ -1216,7 +1246,8 @@ const DepartmentTractionTable = () => {
                       value={row.description}
                       onChange={(e) => handleDescriptionChange(e, row.id)}
                       // disabled={!isSuperAdmin} // Disable for non-superadmins
-                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      disabled={!canEditRow(row)}
                     />
                   </td>
 
@@ -1231,7 +1262,8 @@ const DepartmentTractionTable = () => {
                         onBlur={() => setEditingProgress(null)} // Hide dropdown when user clicks outside
                         autoFocus
                         // disabled={!isSuperAdmin} // Disable for non-superadmins
-                        disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        // disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        disabled={!canEditRow(row)}
                       >
                         {/* Create options for progress from 0% to 100% */}
                         {progressOptions.map((option) => (
@@ -1242,7 +1274,10 @@ const DepartmentTractionTable = () => {
                       </select>
                     ) : (
                       <div
-                        onClick={() => setEditingProgress(row.id)} // When clicked, enable editing
+                        // onClick={() => setEditingProgress(row.id)} // When clicked, enable editing
+                        onClick={() => {
+                          if (canEditRow(row)) setEditingProgress(row.id); // Only allow editable rows
+                        }}
                         className={`inline-block px-3 py-1 rounded-full mt-2 text-xs font-medium text-white cursor-pointer ${getProgressColor(
                           row.progress
                         )}`}
@@ -1265,8 +1300,7 @@ const DepartmentTractionTable = () => {
                   </td> */}
 
                   {/* Editable Annual Priority Column */}
-                  <td className="border px-4 py-2">
-                    {/* {isSuperAdmin ? ( */}
+                  {/* <td className="border px-4 py-2">
                     {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       <select
                         className="w-full text-xs"
@@ -1283,14 +1317,61 @@ const DepartmentTractionTable = () => {
                     ) : (
                       <span className="text-xs">{row.annualPriority}</span>
                     )}
+                  </td> */}
+
+                  {/* Editable Annual Priority Column */}
+                  <td className="border px-4 py-2">
+                    {canEditRow(row) ? (
+                      <select
+                        className="w-full text-xs"
+                        value={row.annualPriority || ''}
+                        onChange={(e) => handleAnnualPriorityChange(e, row.id)}
+                        autoFocus
+                      >
+                        <option value="">{row.annualPriority || 'Select Annual Priority'}</option>
+                        {annualPriorities.map((priority) => (
+                          <option key={priority.id} value={priority.description}>
+                            {priority.description}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span className="text-xs">{row.annualPriority}</span>
+                    )}
                   </td>
 
 
 
                   {/* <td className="border px-4 py-2">{row.dueDate}</td> */}
-                  <td className="border px-4 py-2">
-                    {/* {isSuperAdmin ? ( */}
+                  {/* <td className="border px-4 py-2">
                     {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
+                      editingCell.rowId === row.id && editingCell.field === 'dueDate' ? (
+                        <input
+                          type="date"
+                          className="w-full text-xs"
+                          value={row.dueDate !== 'Click to set date' ? row.dueDate : ''}
+                          onChange={(e) => handleDueDateChange(e, row.id)}
+                          onBlur={() => setEditingCell({ rowId: null, field: null })}
+                          autoFocus
+                        />
+                      ) : (
+                        <div
+                          className={`cursor-pointer text-xs ${
+                            row.dueDate === 'Click to set date' ? 'text-gray-400 italic' : ''
+                          }`}
+                          onClick={() => setEditingCell({ rowId: row.id, field: 'dueDate' })}
+                        >
+                          {row.dueDate}
+                        </div>
+                      )
+                    ) : (
+                      <div className="text-xs">{row.dueDate}</div>
+                    )}
+                  </td> */}
+
+
+                  <td className="border px-4 py-2">
+                    {canEditRow(row) ? (
                       editingCell.rowId === row.id && editingCell.field === 'dueDate' ? (
                         <input
                           type="date"
@@ -1315,6 +1396,7 @@ const DepartmentTractionTable = () => {
                     )}
                   </td>
 
+
                   {/* Editable Rank Column with Circle and Conditional Colors */}
                   {/* <td className="border px-4 py-2">
                     <input
@@ -1336,7 +1418,8 @@ const DepartmentTractionTable = () => {
                         onBlur={() => setEditingRank(null)}
                         autoFocus
                         // disabled={!isSuperAdmin}
-                        disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        //disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                        disabled={!canEditRow(row)}
                       >
                         <option value="">Please select</option>
                         <option value=""> </option>
@@ -1347,11 +1430,12 @@ const DepartmentTractionTable = () => {
                     ) : (
                       <div
                         // onClick={() => isSuperAdmin && setEditingRank(row.id)}
-                        onClick={() => {
-                          if (isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) {
-                            setEditingRank(row.id);
-                          }
-                        }}  
+                        // onClick={() => {
+                        //   if (isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) {
+                        //     setEditingRank(row.id);
+                        //   }
+                        // }} 
+                        onClick={() => canEditRow(row) && setEditingRank(row.id)}  
                         className={`inline-block px-4 py-1 rounded-full mt-2 text-xs font-medium text-white cursor-pointer ${getRankColor(row.rank)}`}
                       >
                         {row.rank || '—'}
@@ -1364,11 +1448,12 @@ const DepartmentTractionTable = () => {
                     icon={faCommentDots}
                     className="text-gray-600 cursor-pointer"
                     // onClick={isSuperAdmin ? () => openModal(row) : undefined} // Only open modal if superadmin
-                    onClick={
-                      isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
-                        ? () => openModal(row)
-                        : undefined
-                    }
+                    // onClick={
+                    //   isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+                    //     ? () => openModal(row)
+                    //     : undefined
+                    // }
+                    onClick={canEditRow(row) ? () => openModal(row) : undefined}
                   />
                   {/* Conditionally render the number of comments if they exist */}
                   {row.comment && row.comment.length > 0 && (
@@ -1380,7 +1465,7 @@ const DepartmentTractionTable = () => {
                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600 cursor-pointer" />
                   </td> */}
                   {/* {isSuperAdmin && ( */}
-                  {(
+                  {/* {(
                     isSuperAdmin ||
                     ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
                   ) && (
@@ -1389,6 +1474,16 @@ const DepartmentTractionTable = () => {
                         icon={faTrashAlt}
                         className="text-red-600 cursor-pointer"
                         onClick={() => handleDeleteRow(row.id)}  // Pass the row's ID to handleDeleteRow
+                      />
+                    </td>
+                  )} */}
+
+                  {canEditRow(row) && (
+                    <td className="border px-4 py-2 text-center print:hidden">
+                      <FontAwesomeIcon
+                        icon={faTrashAlt}
+                        className="text-red-600 cursor-pointer"
+                        onClick={() => handleDeleteRow(row.id)}
                       />
                     </td>
                   )}
