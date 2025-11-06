@@ -915,7 +915,7 @@ const CompanyTraction = () => {
         </div>
       )} */}
 
-      {isEditing && canEditRow(editingRow) && (
+      {isEditing && canEditRow(editingCell) && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
             {/* Save Changes Button */}
@@ -952,6 +952,7 @@ const CompanyTraction = () => {
           </div>
         </div>
       )}
+
 
 
       {/* Table */}
