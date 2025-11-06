@@ -1144,7 +1144,6 @@ const CompanyTraction = () => {
                         className="w-full text-xs"
                         value={row.annualPriority || ''}
                         onChange={(e) => handleAnnualPriorityChange(e, row.id)}
-                        onBlur={() => setEditingAnnualPriority(null)} // optional: hide dropdown on blur
                         autoFocus
                       >
                         <option value="">{row.annualPriority || 'Select Annual Priority'}</option>
