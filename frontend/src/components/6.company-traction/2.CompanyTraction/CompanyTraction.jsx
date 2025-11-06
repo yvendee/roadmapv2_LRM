@@ -74,7 +74,7 @@ const CompanyTraction = () => {
     // Superadmin and Admins always editable
     if (
       loggedUser?.role === 'superadmin' ||
-      ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+      ['Admin', 'CEO', 'Internal', 'Department Head'].includes(loggedUser?.position)
     ) {
       return true;
     }
@@ -863,7 +863,7 @@ const CompanyTraction = () => {
         {/* {isSuperAdmin && ( */}
         {(
           isSuperAdmin ||
-          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+          ['Admin', 'CEO', 'Internal', 'Department Head'].includes(loggedUser?.position)
         ) && (
           <div className="flex gap-2">
 
