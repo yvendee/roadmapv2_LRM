@@ -717,7 +717,7 @@ const EmployeeTable = () => {
                       <option value="CEO">CEO</option>
                       <option value="Internal">Internal Champion</option>
                       <option value="Leadership">Leadership</option>
-                      <option value="Department Head ">Department Head </option>
+                      <option value="Department Head ">Department Head</option>
                       <option value="Other">Other</option>
                     </select>
                   ) : (
@@ -874,9 +874,12 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, memberAccess: e.target.value })}
               className="modal-add-input"
             >
-              <option value="Leadership">Leadership</option>
               <option value="Admin">Admin</option>
-              <option value="User">User</option>
+              <option value="CEO">CEO</option>
+              <option value="Internal">Internal</option>
+              <option value="Leadership">Leadership</option>
+              <option value="Department Head">Department Head</option>
+              <option value="User">Other</option>
             </select>
 
             <label className="modal-add-label">Can Login</label>
