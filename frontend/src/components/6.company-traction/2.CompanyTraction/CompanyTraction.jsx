@@ -1078,8 +1078,7 @@ const CompanyTraction = () => {
                   </td>
 
                   {/* Editable Annual Priority Column */}
-                  <td className="border px-4 py-2">
-                    {/* {isSuperAdmin ? ( */}
+                  {/* <td className="border px-4 py-2">
                     {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       <select
                         className="w-full text-xs"
@@ -1096,13 +1095,35 @@ const CompanyTraction = () => {
                     ) : (
                       <span className="text-xs">{row.annualPriority}</span>
                     )}
+                  </td> */}
+
+                  {/* Editable Annual Priority Column */}
+                  <td className="border px-4 py-2">
+                    {canEditRow(row) ? (
+                      <select
+                        className="w-full text-xs"
+                        value={row.annualPriority || ''}
+                        onChange={(e) => handleAnnualPriorityChange(e, row.id)}
+                        onBlur={() => setEditingAnnualPriority(null)} // optional: hide dropdown on blur
+                        autoFocus
+                      >
+                        <option value="">{row.annualPriority || 'Select Annual Priority'}</option>
+                        {annualPriorities.map((priority) => (
+                          <option key={priority.id} value={priority.description}>
+                            {priority.description}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span className="text-xs">{row.annualPriority}</span>
+                    )}
                   </td>
 
 
 
+
                   {/* <td className="border px-4 py-2">{row.dueDate}</td> */}
-                  <td className="border px-4 py-2">
-                    {/* {isSuperAdmin ? ( */}
+                  {/* <td className="border px-4 py-2">
                     {(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) ? (
                       editingCell.rowId === row.id && editingCell.field === 'dueDate' ? (
                         <input
@@ -1126,7 +1147,36 @@ const CompanyTraction = () => {
                     ) : (
                       <div className="text-xs">{row.dueDate}</div>
                     )}
+                  </td> */}
+
+                  <td className="border px-4 py-2">
+                    {canEditRow(row) ? (
+                      editingCell.rowId === row.id && editingCell.field === 'dueDate' ? (
+                        <input
+                          type="date"
+                          className="w-full text-xs"
+                          value={row.dueDate !== 'Click to set date' ? row.dueDate : ''}
+                          onChange={(e) => handleDueDateChange(e, row.id)}
+                          onBlur={() => setEditingCell({ rowId: null, field: null })}
+                          autoFocus
+                        />
+                      ) : (
+                        <div
+                          className={`cursor-pointer text-xs ${
+                            row.dueDate === 'Click to set date' ? 'text-gray-400 italic' : ''
+                          }`}
+                          onClick={() => setEditingCell({ rowId: row.id, field: 'dueDate' })}
+                        >
+                          {row.dueDate}
+                        </div>
+                      )
+                    ) : (
+                      <div className="text-xs">{row.dueDate}</div>
+                    )}
                   </td>
+
+
+
                   {/* Editable Rank Column with Oblong and Conditional Colors */}
                   <td className="border px-4 py-2">
                     {editingRank === row.id ? (
@@ -1149,11 +1199,12 @@ const CompanyTraction = () => {
                     ) : (
                       <div
                         // onClick={() => isSuperAdmin && setEditingRank(row.id)}
-                        onClick={() => {
-                          if (isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) {
-                            setEditingRank(row.id);
-                          }
-                        }}                        
+                        // onClick={() => {
+                        //   if (isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)) {
+                        //     setEditingRank(row.id);
+                        //   }
+                        // }}
+                        onClick={() => canEditRow(row) && setEditingRank(row.id)}                      
                         className={`inline-block px-4 py-1 rounded-full mt-2 text-xs font-medium text-white cursor-pointer ${getRankColor(row.rank)}`}
                       >
                         {row.rank || '—'}
