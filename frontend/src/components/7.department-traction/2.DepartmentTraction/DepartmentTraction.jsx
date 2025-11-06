@@ -1038,7 +1038,7 @@ const DepartmentTractionTable = () => {
         {/* {isSuperAdmin && ( */}
         {(
           isSuperAdmin ||
-          ['Admin', 'CEO', 'Internal', 'Department Head'].includes(loggedUser?.position)
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
         ) && (
           <div className="flex gap-2">
             <div className="pure-blue-btn cursor-pointer flex items-center print:hidden" onClick={handleAddNewTractionClick}>
@@ -1080,7 +1080,7 @@ const DepartmentTractionTable = () => {
       {/* Saving & Discharge (Visible only for superadmin) */}
       {/* {isEditing && isSuperAdmin && ( */}
       {isEditing && (
-        isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership'].includes(loggedUser?.position)
+        isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership','Department Head'].includes(loggedUser?.position)
       ) && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">

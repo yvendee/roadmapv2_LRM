@@ -863,7 +863,7 @@ const CompanyTraction = () => {
         {/* {isSuperAdmin && ( */}
         {(
           isSuperAdmin ||
-          ['Admin', 'CEO', 'Internal', 'Department Head'].includes(loggedUser?.position)
+          ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
         ) && (
           <div className="flex gap-2">
 
@@ -906,7 +906,7 @@ const CompanyTraction = () => {
       {/* Saving & Discharge (Visible only for superadmin) */}
       {/* {isEditing && isSuperAdmin && ( */}
       {isEditing && (
-        isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership'].includes(loggedUser?.position)
+        isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership','Department Head'].includes(loggedUser?.position)
       ) && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
