@@ -1329,7 +1329,7 @@ const DepartmentTractionTable = () => {
                         autoFocus
                       >
                         <option value="">{row.annualPriority || 'Select Annual Priority'}</option>
-                        {annualPriorities.map((priority) => (
+                        {departmentAnnualPriorities.map((priority) => (
                           <option key={priority.id} value={priority.description}>
                             {priority.description}
                           </option>
