@@ -76,6 +76,44 @@ const EmployeeTable = () => {
   }, [MembersDepartmentsTable]);
 
 
+    // Fetch Members-Departments Data
+    useEffect(() => {
+      const localData = localStorage.getItem('NewMembersDepartmentsTableData');
+      if (!localData) {
+        const encodedOrg = encodeURIComponent(organization);
+  
+        fetch(`${API_URL}/v1/members-departments?organization=${encodedOrg}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        })
+          .then(async (res) => {
+            const json = await res.json();
+            if (res.ok) {
+              const departmentsArr = json;
+              ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Members-Departments data:', departmentsArr);
+              if (Array.isArray(departmentsArr)) {
+                setMembersDepartments(departmentsArr);
+                setBaselineMembersDepartmentsTable(departmentsArr);
+              } else {
+                console.error(`⚠️ No Members-Departments data found for organization: ${organization}`);
+              }
+            } else if (res.status === 401) {
+              navigate('/', { state: { loginError: 'Session Expired' } });
+            } else {
+              console.error('Error:', json.message);
+            }
+          })
+          .catch((err) => {
+            console.error('API error:', err);
+          });
+      }
+    }, [organization]);
+  
+    
 
   // Load from localStorage if available
   useEffect(() => {
