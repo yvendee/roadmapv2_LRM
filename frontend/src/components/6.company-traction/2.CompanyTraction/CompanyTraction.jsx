@@ -874,8 +874,8 @@ const CompanyTraction = () => {
 
       {/* Saving & Discharge (Visible only for superadmin) */}
       {/* {isEditing && isSuperAdmin && ( */}
-      {/* {isEditing && (
-        isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position)
+      {isEditing && (
+        isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership'].includes(loggedUser?.position)
       ) && (
         <div className="flex justify-between items-center mb-4">
           <div className="ml-auto flex space-x-4">
@@ -913,46 +913,7 @@ const CompanyTraction = () => {
             </div>
           </div>
         </div>
-      )} */}
-
-      {isEditing && canEditRow(editingCell) && (
-        <div className="flex justify-between items-center mb-4">
-          <div className="ml-auto flex space-x-4">
-            {/* Save Changes Button */}
-            <div className="pure-green-btn print:hidden" onClick={handleSaveChanges}>
-              {loadingSave ? (
-                <div className="loader-bars">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              ) : (
-                <>
-                  <FontAwesomeIcon icon={faSave} className="mr-1" />
-                  Save Changes
-                </>
-              )}
-            </div>
-
-            {/* Discard Changes Button */}
-            <div className="pure-red-btn print:hidden" onClick={handleDischargeChanges}>
-              {loadingDischarge ? (
-                <div className="loader-bars">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              ) : (
-                <>
-                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" />
-                  Discard
-                </>
-              )}
-            </div>
-          </div>
-        </div>
       )}
-
 
 
       {/* Table */}
