@@ -19,6 +19,11 @@ const EmployeeTable = () => {
   const [emailError, setEmailError] = useState('');
   // const { MembersDepartmentsTable } = useMembersDepartmentsStore();
 
+   // ✅ pull data from store outside JSX
+   const membersDepartmentsList = useMembersDepartmentsStore(
+    (state) => state.MembersDepartmentsTable
+  );
+
 
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
@@ -806,28 +811,26 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, department: e.target.value })}
             /> */}
 
-          <label className="modal-add-label">Department</label>
-          <select
-            className="modal-add-input"
-            value={newMembersDepartmentsTable.department}
-            onChange={(e) =>
-              setNewMembersDepartmentsTable({
-                ...newMembersDepartmentsTable,
-                department: e.target.value,
-              })
-            }
-          >
-            <option value="">Select Department</option>
-            {useMembersDepartmentsStore((state) =>
-              state.MembersDepartmentsTable.filter(
-                (dept) => dept.name && dept.name !== '-'
-              ).map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
-                </option>
-              ))
-            )}
-          </select>
+<label className="modal-add-label">Department</label>
+      <select
+        className="modal-add-input"
+        value={newMembersDepartmentsTable.department}
+        onChange={(e) =>
+          setNewMembersDepartmentsTable({
+            ...newMembersDepartmentsTable,
+            department: e.target.value,
+          })
+        }
+      >
+        <option value="">Select Department</option>
+        {membersDepartmentsList
+          .filter((dept) => dept.name && dept.name !== '-')
+          .map((dept) => (
+            <option key={dept.id} value={dept.name}>
+              {dept.name}
+            </option>
+          ))}
+      </select>
 
             <label className="modal-add-label">Member Access</label>
             <select
