@@ -4,25 +4,22 @@ import useLoginStore from '../../../store/loginStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faPlus, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import useMembersDepartmentsStore, { initialEmployeeList } from '../../../store/left-lower-content/16.members-directory/1.membersDirectoryStore';
+import useDeptStore from '../../../store/left-lower-content/15.members-departments/1.membersDepartmentsStore';
 import { useLayoutSettingsStore } from '../../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
-// import useMembersDepartmentsStore from '../../../store/left-lower-content/15.members-departments/1.membersDepartmentsStore';
+import { useNavigate } from 'react-router-dom';
 import API_URL from '../../../configs/config';
 import { ENABLE_CONSOLE_LOGS } from '../../../configs/config';
 import './EmployeeTable.css';
 
 const EmployeeTable = () => {
+  const navigate = useNavigate();
   const organization = useLayoutSettingsStore.getState().organization;
   const [loading, setLoading] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [editingCell, setEditingCell] = useState({ id: null, field: null });
   const [emailError, setEmailError] = useState('');
-  // const { MembersDepartmentsTable } = useMembersDepartmentsStore();
 
-   // ✅ pull data from store outside JSX
-   const membersDepartmentsList = useMembersDepartmentsStore(
-    (state) => state.MembersDepartmentsTable
-  );
 
 
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -38,8 +35,7 @@ const EmployeeTable = () => {
   const updateMembersDepartmentsTableField = useMembersDepartmentsStore((state) => state.updateMembersDepartmentsTableField);
   const pushMembersDepartmentsTableField = useMembersDepartmentsStore((state) => state.pushMembersDepartmentsTableField);
   const { MembersDepartmentsTable, setMembersDepartments } = useMembersDepartmentsStore();
-
-
+  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -57,6 +53,45 @@ const EmployeeTable = () => {
   const [draggedId, setDraggedId] = useState(null);
 
   const [isEditing, setIsEditing] = useState(false);
+
+  const departmentList = useDeptStore((state) => state.MembersDepartmentsTable);
+
+  // ✅ Fetch departments if not already loaded
+  useEffect(() => {
+    const organization = useLayoutSettingsStore.getState().organization;
+    const { MembersDepartmentsTable, setMembersDepartments, setBaselineMembersDepartmentsTable } = useDeptStore.getState();
+
+    // Skip if already loaded
+    if (MembersDepartmentsTable && MembersDepartmentsTable.some((d) => d.name !== '-')) return;
+
+    const encodedOrg = encodeURIComponent(organization);
+    fetch(`${API_URL}/v1/members-departments?organization=${encodedOrg}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok) {
+          const departmentsArr = json;
+          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Members-Departments data (EmployeeTable):', departmentsArr);
+          if (Array.isArray(departmentsArr)) {
+            useDeptStore.getState().setMembersDepartments(departmentsArr);
+            useDeptStore.getState().setBaselineMembersDepartmentsTable(departmentsArr);
+          }
+        } else if (res.status === 401) {
+          navigate('/', { state: { loginError: 'Session Expired' } });
+        } else {
+          console.error('Error:', json.message);
+        }
+      })
+      .catch((err) => {
+        console.error('API error (EmployeeTable Departments):', err);
+      });
+  }, []);
 
 
   async function fetchCsrfToken() {
@@ -76,44 +111,7 @@ const EmployeeTable = () => {
   }, [MembersDepartmentsTable]);
 
 
-    // Fetch Members-Departments Data
-    useEffect(() => {
-      const localData = localStorage.getItem('NewMembersDepartmentsTableData');
-      if (!localData) {
-        const encodedOrg = encodeURIComponent(organization);
-  
-        fetch(`${API_URL}/v1/members-departments?organization=${encodedOrg}`, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        })
-          .then(async (res) => {
-            const json = await res.json();
-            if (res.ok) {
-              const departmentsArr = json;
-              ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Members-Departments data:', departmentsArr);
-              if (Array.isArray(departmentsArr)) {
-                setMembersDepartments(departmentsArr);
-                setBaselineMembersDepartmentsTable(departmentsArr);
-              } else {
-                console.error(`⚠️ No Members-Departments data found for organization: ${organization}`);
-              }
-            } else if (res.status === 401) {
-              navigate('/', { state: { loginError: 'Session Expired' } });
-            } else {
-              console.error('Error:', json.message);
-            }
-          })
-          .catch((err) => {
-            console.error('API error:', err);
-          });
-      }
-    }, [organization]);
-  
-    
+
 
   // Load from localStorage if available
   useEffect(() => {
@@ -849,26 +847,26 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, department: e.target.value })}
             /> */}
 
-<label className="modal-add-label">Department</label>
-      <select
-        className="modal-add-input"
-        value={newMembersDepartmentsTable.department}
-        onChange={(e) =>
-          setNewMembersDepartmentsTable({
-            ...newMembersDepartmentsTable,
-            department: e.target.value,
-          })
-        }
-      >
-        <option value="">Select Department</option>
-        {membersDepartmentsList
-          .filter((dept) => dept.name && dept.name !== '-')
-          .map((dept) => (
-            <option key={dept.id} value={dept.name}>
-              {dept.name}
-            </option>
-          ))}
-      </select>
+          <label className="modal-add-label">Department</label>
+          <select
+            className="modal-add-input"
+            value={newMembersDepartmentsTable.department}
+            onChange={(e) =>
+              setNewMembersDepartmentsTable({
+                ...newMembersDepartmentsTable,
+                department: e.target.value,
+              })
+            }
+          >
+            <option value="">Select Department</option>
+            {departmentList
+              .filter((dept) => dept.name && dept.name !== '-')
+              .map((dept) => (
+                <option key={dept.id} value={dept.name}>
+                  {dept.name}
+                </option>
+              ))}
+          </select>
 
             <label className="modal-add-label">Member Access</label>
             <select
