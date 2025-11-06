@@ -806,25 +806,28 @@ const EmployeeTable = () => {
               onChange={(e) => setNewMembersDepartmentsTable({ ...newMembersDepartmentsTable, department: e.target.value })}
             /> */}
 
-            <label className="modal-add-label">Department</label>
-            <select
-              className="modal-add-input"
-              value={newMembersDepartmentsTable.department}
-              onChange={(e) =>
-                setNewMembersDepartmentsTable({
-                  ...newMembersDepartmentsTable,
-                  department: e.target.value,
-                })
-              }
-            >
-              <option value="">Select Department</option>
-              {MembersDepartmentsTable.map((dept) => (
+          <label className="modal-add-label">Department</label>
+          <select
+            className="modal-add-input"
+            value={newMembersDepartmentsTable.department}
+            onChange={(e) =>
+              setNewMembersDepartmentsTable({
+                ...newMembersDepartmentsTable,
+                department: e.target.value,
+              })
+            }
+          >
+            <option value="">Select Department</option>
+            {useMembersDepartmentsStore((state) =>
+              state.MembersDepartmentsTable.filter(
+                (dept) => dept.name && dept.name !== '-'
+              ).map((dept) => (
                 <option key={dept.id} value={dept.name}>
                   {dept.name}
                 </option>
-              ))}
-            </select>
-
+              ))
+            )}
+          </select>
 
             <label className="modal-add-label">Member Access</label>
             <select
