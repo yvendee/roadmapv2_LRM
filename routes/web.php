@@ -440,6 +440,34 @@ Route::post('/api/v1/organization-uid', function (Request $request) use ($API_se
     ]);
 });
 
+// ref:
+Route::post('/api/v1/organization-association', function (Request $request) {
+    $email = $request->input('email');
+
+    // 🔎 Find organization association by email
+    $orgAssoc = OrganizationAssociation::where('email', $email)->first();
+
+    // 🧩 If found, return organizationList; otherwise, return []
+    $organizationList = $orgAssoc ? $orgAssoc->organizationList : [];
+
+    return response()->json([
+        'status' => 'success',
+        'email' => $email,
+        'organizationAssociation' => $organizationList,
+    ]);
+});
+
+// {
+//     "status": "success",
+//     "email": "maricar@chuckgulledge.com",
+//     "organizationAssociation": [
+//       "Chuck Gulledge Advisors, LLC",
+//       "eDoc Innovation"
+//     ]
+// }
+  
+
+
 // ref: frontend\src\components\account-icon\AccountButton.jsx
 Route::post('/api/change-password', function (Request $request) use ($API_secure) {
     // ✅ Secure API check
