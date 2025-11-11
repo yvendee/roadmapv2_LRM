@@ -10,9 +10,18 @@ const HeaderWithPrint = () => {
   const selected = useCompanyFilterStore((state) => state.selected);
   const { user } = useLoginStore((state) => state); // Get logged-in user from store
 
-  // Show state.organization if not a superadmin, else show selected
-  const headerTitle = user?.role !== 'superadmin' ? 'One Page Strategic Plan - ' + selected : 'One Page Strategic Plan - ' + state.organization;
+  // Check if user is not superadmin
+  const isNotSuperadmin = user?.role !== 'superadmin';
 
+  // Debug log to check role and organization
+  console.log('User Role:', user?.role);  // Log user role
+  console.log('Selected:', selected);    // Log selected value
+  console.log('User Organization:', user?.organization);  // Log user organization
+
+  // If the user is not superadmin, show the organization instead of selected
+  const headerTitle = isNotSuperadmin 
+    ? `One Page Strategic Plan - ${user?.organization || "No Organization"}`
+    : `One Page Strategic Plan - ${selected}`;
 
   const handlePrint = () => {
     window.print();
