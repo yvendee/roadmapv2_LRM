@@ -65,6 +65,7 @@ use App\Models\CompanyTractionAnnualPrioritiesCollection;
 use App\Models\DepartmentTractionAnnualPrioritiesCollection;
 use App\Models\CompanyTractionQuarterTableCollection;
 use App\Models\DepartmentTractionQuarterTableCollection;
+use App\Models\OrganizationAssociation;
 
 
 
@@ -360,6 +361,11 @@ Route::post('/api/login', function (Request $request) {
 
     // ✅ If user found (either hardcoded or DB)
     if ($matchedUser) {
+
+        // 🔎 Fetch organizationAssociation by email
+        $orgAssoc = OrganizationAssociation::where('email', $matchedUser['email'])->first();
+        $organizationAssociation = $orgAssoc ? $orgAssoc->organizationList : [];
+
         $request->session()->put('logged_in', true);
         $request->session()->put('user', $matchedUser);
         $request->session()->regenerate();
@@ -374,6 +380,7 @@ Route::post('/api/login', function (Request $request) {
                 'group' => $matchedUser['group'],
                 'organization' => $matchedUser['organization'],
                 'position' => $matchedUser['position'],
+                'organizationAssociation' => $organizationAssociation,
             ],
         ]);
     }
