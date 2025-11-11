@@ -312,6 +312,7 @@ const Login = () => {
     }
   }, []);
 
+ 
   const handleLogin = async (e) => {
     e.preventDefault();
   
@@ -356,9 +357,6 @@ const Login = () => {
           setSessionId(data.session_id);
           setLoginError('');
   
-          // Debugging: log the user object after setting it in state
-          ENABLE_CONSOLE_LOGS && console.log('User after setting in state:', data.user);
-  
           // ✅ Save or clear localStorage based on checkbox
           if (rememberMe) {
             localStorage.setItem('rememberedEmail', email);
@@ -368,10 +366,10 @@ const Login = () => {
             localStorage.removeItem('rememberedPassword');
           }
   
-          // ✅ Step 1: Fetch Company Options
-          let companies = []; // Declare the companies array here to avoid ReferenceError
+          let companies = [];
   
           try {
+            // Fetching companies
             const companyRes = await fetch(`${API_URL}/v1/company-options`, {
               credentials: 'include',
               headers: {
@@ -381,7 +379,6 @@ const Login = () => {
             });
   
             if (!companyRes.ok) throw new Error('Company fetch failed');
-  
             companies = await companyRes.json();
   
             ENABLE_CONSOLE_LOGS && console.log('Fetched Company List: ', companies);
@@ -389,32 +386,24 @@ const Login = () => {
           } catch (error) {
             console.error('Company fetch error:', error);
             setLoginError('Failed to fetch company options');
-            return; // Stop further execution if companies fetch fails
+            return; // Stop if there’s an error
           }
   
-          // Ensure that companies are available before proceeding
           if (companies.length === 0) {
             throw new Error('No companies available');
           }
   
-          // Access the user data directly from the store
-          const user = useLoginStore.getState().user; // Access the user directly from Zustand store
+          const user = useLoginStore.getState().user; // Accessing the user directly from Zustand
   
-          // Check if user is not a superadmin, use user?.organization if true
           firstCompany = user?.role !== 'superadmin' && user?.organization ? user?.organization : companies[0];
   
-          // Debugging: log firstCompany value before proceeding
-          console.log('First Company:', firstCompany);
-  
-          // Ensure firstCompany is valid before continuing
           if (!firstCompany) {
             throw new Error('First company is not valid');
           }
   
-          // ✅ Update store with company data
           useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
   
-          // ✅ Step 2: Fetch Layout Toggles for selected company
+          // Fetching layout toggles for the selected company
           setTimeout(async () => {
             const toggleRes = await fetch(
               `${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`
@@ -427,11 +416,14 @@ const Login = () => {
                 organization: toggleJson.organization,
                 unique_id: toggleJson.unique_id,
               });
-              ENABLE_CONSOLE_LOGS && console.log('Fetched toggles', ' for ', firstCompany, ':', toggleJson.toggles);
+              ENABLE_CONSOLE_LOGS && console.log('Fetched toggles for', firstCompany, ':', toggleJson.toggles);
             } else {
               console.error('Toggle fetch error:', toggleJson.message);
             }
           }, 500); // Delay before fetching layout toggles
+  
+          // **Redirect to Home Page after successful login**
+          navigate('/home'); // Navigate to home after a successful login
   
         } else {
           setLoginError(data.message || 'Login failed');
@@ -444,6 +436,7 @@ const Login = () => {
       }
     }, 100);
   };
+  
   
   
   // Add a useEffect to monitor the user data after login and set up conditional fetching
