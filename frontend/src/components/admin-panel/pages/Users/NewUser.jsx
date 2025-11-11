@@ -27,40 +27,12 @@ export default function NewUser({ onCancel }) {
   const roleOptions = ['user', 'testuser', 'superadmin'];
 
   const positionOptions = [
-    'Other',
-    'Admin',
-    'CEO',
-    'Internal',
-    'Leadership',
-    'Department Head',
-    'Manager',
-    'HR',
-    'Finance',
-    'Accounting',
-    'Sales',
-    'Marketing',
-    'Support',
-    'CustomerService',
-    'Developer',
-    'Engineer',
-    'Designer',
-    'QA',
-    'ProductManager',
-    'ProjectManager',
-    'BusinessAnalyst',
-    'IT',
-    'Security',
-    'Legal',
-    'Operations',
-    'Consultant',
-    'Intern',
-    'Trainer',
-    'Recruiter',
-    'ExecutiveAssistant',
-    'DataAnalyst',
-    'SystemAdmin',
+    'Other', 'Admin', 'CEO', 'Internal', 'Leadership', 'Department Head', 'Manager', 'HR', 'Finance', 'Accounting',
+    'Sales', 'Marketing', 'Support', 'CustomerService', 'Developer', 'Engineer', 'Designer', 'QA', 'ProductManager',
+    'ProjectManager', 'BusinessAnalyst', 'IT', 'Security', 'Legal', 'Operations', 'Consultant', 'Intern', 'Trainer',
+    'Recruiter', 'ExecutiveAssistant', 'DataAnalyst', 'SystemAdmin',
   ];
-  
+
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
   };
@@ -288,51 +260,6 @@ export default function NewUser({ onCancel }) {
           </div>
         </div>
 
-        {/* Associated Organization - Multi-select dropdown with pills */}
-        <div className="form-group">
-  <label>Associated Organization</label>
-  <div className="pill-container">
-    {/* Render selected organizations as pills */}
-    {associatedOrg.map((org, idx) => (
-      <span key={idx} className="pill">
-        {org}
-        <button
-          type="button"
-          onClick={() => handleRemoveOrg(org)}
-          className="pill-remove"
-        >
-          &times;
-        </button>
-      </span>
-    ))}
-  </div>
-
-  {/* Dropdown to select organizations */}
-  <select
-    className="form-input"
-    value={organization} // value is for single selection appearance
-    onChange={(e) => {
-      const selectedOrgName = e.target.value;
-      if (!associatedOrg.includes(selectedOrgName)) {
-        setAssociatedOrg([...associatedOrg, selectedOrgName]); // Add if not already selected
-      }
-    }}
-  >
-    <option value="">-- Select an Organization --</option>
-    {/* Map through options to create dropdown items */}
-    {(options || []).map((org, idx) => (
-      <option key={idx} value={org}>
-        {org}
-      </option>
-    ))}
-  </select>
-
-  <small className="text-gray-500">
-    Leave empty for no association (default: [])
-  </small>
-</div>
-
-
         <div className="row-two">
           <div className="form-group">
             <label>Role <span className="required">*</span></label>
@@ -341,10 +268,10 @@ export default function NewUser({ onCancel }) {
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >
-              <option value="">-- Select Role --</option>
-              {roleOptions.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
+              <option value="">Select Role</option>
+              {roleOptions.map((r, index) => (
+                <option key={index} value={r}>
+                  {r}
                 </option>
               ))}
             </select>
@@ -358,10 +285,10 @@ export default function NewUser({ onCancel }) {
               value={position}
               onChange={(e) => setPosition(e.target.value)}
             >
-              <option value="">-- Select Position --</option>
-              {positionOptions.map((option, idx) => (
-                <option key={idx} value={option}>
-                  {option}
+              <option value="">Select Position</option>
+              {positionOptions.map((p, index) => (
+                <option key={index} value={p}>
+                  {p}
                 </option>
               ))}
             </select>
@@ -369,23 +296,60 @@ export default function NewUser({ onCancel }) {
           </div>
         </div>
 
-        <div className="action-buttons mt-6">
+        <div className="form-group">
+          <label>Group <span className="required">*</span></label>
+          <input
+            type="text"
+            className="form-input"
+            value={group}
+            onChange={(e) => setGroup(e.target.value)}
+          />
+          {errors.group && <div className="error-text">{errors.group}</div>}
+        </div>
+
+        <div className="form-group">
+          <label>Associated Organizations</label>
+          <select
+            multiple
+            className="form-input"
+            value={associatedOrg}
+            onChange={(e) => setAssociatedOrg([...e.target.selectedOptions].map(option => option.value))}
+          >
+            {options.map((org, index) => (
+              <option key={index} value={org}>
+                {org}
+              </option>
+            ))}
+          </select>
+          {errors.associatedOrg && <div className="error-text">{errors.associatedOrg}</div>}
+        </div>
+
+        <div className="form-actions">
           <button
-            className="save-btn"
+            type="button"
+            className="btn btn-secondary"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
             onClick={handleCreate}
             disabled={isSaving}
           >
             {isSaving ? 'Creating...' : 'Create'}
           </button>
         </div>
-      </div>
 
-      <ToastNotification
-        message={toast.message}
-        status={toast.status}
-        isVisible={toast.isVisible}
-        onClose={hideToast}
-      />
+        {toast.isVisible && (
+          <ToastNotification
+            message={toast.message}
+            status={toast.status}
+            onClose={hideToast}
+          />
+        )}
+      </div>
     </div>
   );
 }
