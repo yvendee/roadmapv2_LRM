@@ -314,7 +314,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError('Please enter a valid email address');
@@ -323,21 +323,21 @@ const Login = () => {
     } else {
       setEmailError('');
     }
-
+  
     if (!password) {
       setLoginError('Password is required');
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     setTimeout(async () => {
       try {
         const csrfRes = await fetch(`${API_URL}/csrf-token`, {
           credentials: 'include',
         });
         const { csrf_token } = await csrfRes.json();
-
+  
         const response = await fetch(`${API_URL}/login`, {
           method: 'POST',
           headers: {
@@ -347,15 +347,15 @@ const Login = () => {
           credentials: 'include',
           body: JSON.stringify({ email, password }),
         });
-
+  
         const data = await response.json();
         ENABLE_CONSOLE_LOGS && console.log('Login API Response:', data);
-
+  
         if (response.ok && data.status === 'success') {
           setUser(data.user);
           setSessionId(data.session_id);
           setLoginError('');
-
+  
           // ✅ Save or clear localStorage based on checkbox
           if (rememberMe) {
             localStorage.setItem('rememberedEmail', email);
@@ -364,7 +364,7 @@ const Login = () => {
             localStorage.removeItem('rememberedEmail');
             localStorage.removeItem('rememberedPassword');
           }
-
+  
           try {
             // ✅ Step 1: Fetch Company Options
             const companyRes = await fetch(`${API_URL}/v1/company-options`, {
@@ -374,38 +374,46 @@ const Login = () => {
                 'Content-Type': 'application/json',
               },
             });
-          
+  
             if (!companyRes.ok) throw new Error('Company fetch failed');
-          
+  
             const companies = await companyRes.json();
             ENABLE_CONSOLE_LOGS && console.log('Fetched Company List: ', companies);
-
-            // firstCompany = companies[0];
+  
             // Check if user is not a superadmin, use user?.organization if true
             firstCompany = user?.role !== 'superadmin' ? user?.organization : companies[0];
-
+  
+            // ✅ Ensure firstCompany is valid before continuing
+            if (!firstCompany) {
+              throw new Error('First company is not valid');
+            }
+  
             // ✅ Update store
             useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
-
+  
             // ✅ Step 2: Fetch Layout Toggles for selected company
-            const toggleRes = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`);
-            const toggleJson = await toggleRes.json();
-          
-            if (toggleJson.status === 'success') {
-              useLayoutSettingsStore.setState({
-                toggles: toggleJson.toggles,
-                organization: toggleJson.organization,
-                unique_id: toggleJson.unique_id,
-              });
-              ENABLE_CONSOLE_LOGS && console.log('Fetched toggles', ' for ', firstCompany, ':', toggleJson.toggles);
-            } else {
-              console.error('Toggle fetch error:', toggleJson.message);
-            }
-          
+            setTimeout(async () => {
+              const toggleRes = await fetch(
+                `${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`
+              );
+              const toggleJson = await toggleRes.json();
+  
+              if (toggleJson.status === 'success') {
+                useLayoutSettingsStore.setState({
+                  toggles: toggleJson.toggles,
+                  organization: toggleJson.organization,
+                  unique_id: toggleJson.unique_id,
+                });
+                ENABLE_CONSOLE_LOGS && console.log('Fetched toggles', ' for ', firstCompany, ':', toggleJson.toggles);
+              } else {
+                console.error('Toggle fetch error:', toggleJson.message);
+              }
+            }, 500); // Delay before fetching layout toggles
+  
           } catch (error) {
             console.error('Post-login fetch error:', error);
           }
-
+  
           // ✅ Step 3: Fetch Company Traction Users using the selected organization
           try {
             const tractionUserRes = await fetch(
@@ -418,14 +426,14 @@ const Login = () => {
                 },
               }
             );
-
+  
             if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
-
+  
             const tractionUsers = await tractionUserRes.json();
             ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
-
+  
             const firstUser = tractionUsers[0] || null;
-
+  
             // ✅ Update Zustand store
             useCompanyTractionUserStore.setState({
               users: tractionUsers,
@@ -434,9 +442,9 @@ const Login = () => {
           } catch (error) {
             console.error('Error fetching traction users:', error);
           }
-
+  
           navigate('/home');
-          
+  
         } else {
           setLoginError(data.message || 'Login failed');
         }
@@ -448,6 +456,7 @@ const Login = () => {
       }
     }, 100);
   };
+  
 
   // ✅ Handle uncheck logic immediately
   const handleRememberToggle = () => {
