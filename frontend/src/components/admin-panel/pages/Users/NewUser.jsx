@@ -303,7 +303,7 @@ export default function NewUser({ onCancel }) {
           </div>
           <select
             className="form-input"
-            multiple
+            // multiple
             value={associatedOrg}
             onChange={(e) => {
               const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
