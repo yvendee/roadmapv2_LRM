@@ -1,5 +1,3 @@
-// frontend/src/components/admin-panel/pages/Users/NewUser.jsx
-
 import React, { useEffect, useState } from 'react';
 import './NewUser.css';
 import useUserStore from '../../../../store/admin-panel/users/userStore';
@@ -20,11 +18,7 @@ export default function NewUser({ onCancel }) {
   const [role, setRole] = useState('');
   const [position, setPosition] = useState('');
   const [group, setGroup] = useState('');
-  const [organizationList, setOrganizationList] = useState([]);
-
-  // ✅ Associated Organization
-  const companyOptions = useCompanyFilterStore((state) => state.companies); // all companies
-  const [associatedOrg, setAssociatedOrg] = useState([]); // default empty array
+  const [associatedOrg, setAssociatedOrg] = useState([]); // New: default to an empty array
 
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
@@ -33,14 +27,47 @@ export default function NewUser({ onCancel }) {
   const roleOptions = ['user', 'testuser', 'superadmin'];
 
   const positionOptions = [
-    'Other','Admin','CEO','Internal','Leadership','Department Head','Manager','HR','Finance','Accounting',
-    'Sales','Marketing','Support','CustomerService','Developer','Engineer','Designer','QA','ProductManager',
-    'ProjectManager','BusinessAnalyst','IT','Security','Legal','Operations','Consultant','Intern','Trainer',
-    'Recruiter','ExecutiveAssistant','DataAnalyst','SystemAdmin',
+    'Other',
+    'Admin',
+    'CEO',
+    'Internal',
+    'Leadership',
+    'Department Head',
+    'Manager',
+    'HR',
+    'Finance',
+    'Accounting',
+    'Sales',
+    'Marketing',
+    'Support',
+    'CustomerService',
+    'Developer',
+    'Engineer',
+    'Designer',
+    'QA',
+    'ProductManager',
+    'ProjectManager',
+    'BusinessAnalyst',
+    'IT',
+    'Security',
+    'Legal',
+    'Operations',
+    'Consultant',
+    'Intern',
+    'Trainer',
+    'Recruiter',
+    'ExecutiveAssistant',
+    'DataAnalyst',
+    'SystemAdmin',
   ];
+  
+  const showToast = (message, status) => {
+    setToast({ message, status, isVisible: true });
+  };
 
-  const showToast = (message, status) => setToast({ message, status, isVisible: true });
-  const hideToast = () => setToast((prev) => ({ ...prev, isVisible: false }));
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
 
   const validate = () => {
     const newErrors = {};
@@ -77,7 +104,7 @@ export default function NewUser({ onCancel }) {
         role,
         position,
         group,
-        organizationAssociation: associatedOrg.length ? associatedOrg : [], // default []
+        associatedOrganization: associatedOrg.length > 0 ? associatedOrg : [], // New: handle associated organization
       };
 
       ENABLE_CONSOLE_LOGS && console.log('Creating user with payload:', payload);
@@ -99,10 +126,10 @@ export default function NewUser({ onCancel }) {
         throw new Error(data.message || 'Create user failed');
       }
 
-      // Format new user for store
+      // Format the new user for the store shape
       const newUser = {
-        id: Date.now(),
-        u_id: data.user?.u_id || '',
+        id: Date.now(), // temporary ID (replace with server-provided ID if available)
+        u_id: data.user?.u_id || '', // use server value if returned
         company: payload.organization,
         name: `${payload.firstName} ${payload.lastName}`,
         email: payload.email,
@@ -110,13 +137,13 @@ export default function NewUser({ onCancel }) {
         role: payload.role,
         position: payload.position,
         group: payload.group,
-        organizationAssociation: payload.organizationAssociation,
       };
 
+      // Optionally: add the newly created user to the store
       setUsers([...users, newUser]);
       showToast('User created successfully!', 'success');
 
-      // Reset form
+      // Reset form (or optionally call onCancel)
       setFirstName('');
       setLastName('');
       setEmail('');
@@ -126,7 +153,7 @@ export default function NewUser({ onCancel }) {
       setRole('');
       setPosition('');
       setGroup('');
-      setAssociatedOrg([]); // reset associated organization
+      setAssociatedOrg([]); // Reset associated organizations
       setErrors({});
     } catch (error) {
       console.error('Create error:', error);
@@ -139,7 +166,10 @@ export default function NewUser({ onCancel }) {
   useEffect(() => {
     const fetchOrganizations = async () => {
       try {
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
+        const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+          credentials: 'include',
+        });
+
         const { csrf_token } = await csrfRes.json();
 
         const res = await fetch(`${API_URL}/v1/company-options`, {
@@ -160,7 +190,7 @@ export default function NewUser({ onCancel }) {
             options: data,
             selected: data[0],
           });
-          setOrganization(data[0]);
+          setOrganization(data[0]); // Default selected
         } else {
           console.warn('No organizations found');
         }
@@ -175,7 +205,6 @@ export default function NewUser({ onCancel }) {
   return (
     <div className="new-user-container p-6 max-w-2xl mx-auto">
       <div className="new-user-form">
-
         <div className="row-two">
           <div className="form-group">
             <label>First Name<span className="required">*</span></label>
@@ -241,7 +270,7 @@ export default function NewUser({ onCancel }) {
               value={organization}
               onChange={(e) => {
                 setOrganization(e.target.value);
-                setSelected(e.target.value);
+                setSelected(e.target.value); // update Zustand store
               }}
             >
               {options.map((org, index) => (
@@ -254,27 +283,25 @@ export default function NewUser({ onCancel }) {
           </div>
         </div>
 
-        {/* ✅ Associated Organization */}
-        <div className="row-single">
-          <div className="form-group">
-            <label>Associated Organization</label>
-            <select
-              className="form-input"
-              multiple
-              value={associatedOrg}
-              onChange={(e) => {
-                const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                setAssociatedOrg(selectedOptions);
-              }}
-            >
-              {companyOptions.map((org, idx) => (
-                <option key={idx} value={org}>
-                  {org}
-                </option>
-              ))}
-            </select>
-            <small className="hint">Hold Ctrl (Windows) or Cmd (Mac) to select multiple</small>
-          </div>
+        {/* New: Associated Organization */}
+        <div className="form-group">
+          <label>Associated Organization</label>
+          <select
+            className="form-input"
+            multiple
+            value={associatedOrg}
+            onChange={(e) => {
+              const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+              setAssociatedOrg(selectedOptions);
+            }}
+          >
+            {(options || []).map((org, idx) => (
+              <option key={idx} value={org}>
+                {org}
+              </option>
+            ))}
+          </select>
+          <small className="text-gray-500">Leave empty for no association (default: [])</small>
         </div>
 
         <div className="row-two">
@@ -287,7 +314,9 @@ export default function NewUser({ onCancel }) {
             >
               <option value="">-- Select Role --</option>
               {roleOptions.map((option, idx) => (
-                <option key={idx} value={option}>{option}</option>
+                <option key={idx} value={option}>
+                  {option}
+                </option>
               ))}
             </select>
             {errors.role && <div className="error-text">{errors.role}</div>}
@@ -302,28 +331,12 @@ export default function NewUser({ onCancel }) {
             >
               <option value="">-- Select Position --</option>
               {positionOptions.map((option, idx) => (
-                <option key={idx} value={option}>{option}</option>
+                <option key={idx} value={option}>
+                  {option}
+                </option>
               ))}
             </select>
             {errors.position && <div className="error-text">{errors.position}</div>}
-          </div>
-        </div>
-
-        <div className="row-single">
-          <div className="form-group">
-            <label>Group <span className="required">*</span></label>
-            <select
-              className="form-input"
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-            >
-              <option value="">-- Select Group --</option>
-              <option value="No group">No group</option>
-              {options.map((org, idx) => (
-                <option key={idx} value={org}>{org}</option>
-              ))}
-            </select>
-            {errors.group && <div className="error-text">{errors.group}</div>}
           </div>
         </div>
 
@@ -336,7 +349,6 @@ export default function NewUser({ onCancel }) {
             {isSaving ? 'Creating...' : 'Create'}
           </button>
         </div>
-
       </div>
 
       <ToastNotification
@@ -345,7 +357,6 @@ export default function NewUser({ onCancel }) {
         isVisible={toast.isVisible}
         onClose={hideToast}
       />
-
     </div>
   );
 }
