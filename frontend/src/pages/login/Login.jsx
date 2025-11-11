@@ -368,95 +368,49 @@ const Login = () => {
             localStorage.removeItem('rememberedPassword');
           }
   
-          try {
-            // ✅ Step 1: Fetch Company Options
-            const companyRes = await fetch(`${API_URL}/v1/company-options`, {
-              credentials: 'include',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-            });
+          // Wait until `user` data is fully set
+          const user = useLoginStore.getState().user; // Access the user directly from Zustand store
   
-            if (!companyRes.ok) throw new Error('Company fetch failed');
+          // Debugging: log values before setting firstCompany
+          const userRole = user?.role;
+          const userOrganization = user?.organization;
+          console.log('User Role:', userRole);
+          console.log('User Organization:', userOrganization);
+          console.log('Companies List:', companies);
   
-            const companies = await companyRes.json();
-            ENABLE_CONSOLE_LOGS && console.log('Fetched Company List: ', companies);
+          // Check if user is not a superadmin, use user?.organization if true
+          firstCompany = userRole !== 'superadmin' && userOrganization ? userOrganization : companies[0];
   
-            // Debugging: log values before setting firstCompany
-            const userRole = user?.role;
-            const userOrganization = user?.organization;
-            console.log('User Role:', userRole);
-            console.log('User Organization:', userOrganization);
-            console.log('Companies List:', companies);
+          // Debugging: log firstCompany value before proceeding
+          console.log('First Company:', firstCompany);
   
-            // Check if user is not a superadmin, use user?.organization if true
-            firstCompany = userRole !== 'superadmin' && userOrganization ? userOrganization : companies[0];
-  
-            // Debugging: log firstCompany value before proceeding
-            console.log('First Company:', firstCompany);
-  
-            // Ensure firstCompany is valid before continuing
-            if (!firstCompany) {
-              throw new Error('First company is not valid');
-            }
-  
-            // ✅ Update store
-            useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
-  
-            // ✅ Step 2: Fetch Layout Toggles for selected company
-            setTimeout(async () => {
-              const toggleRes = await fetch(
-                `${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`
-              );
-              const toggleJson = await toggleRes.json();
-  
-              if (toggleJson.status === 'success') {
-                useLayoutSettingsStore.setState({
-                  toggles: toggleJson.toggles,
-                  organization: toggleJson.organization,
-                  unique_id: toggleJson.unique_id,
-                });
-                ENABLE_CONSOLE_LOGS && console.log('Fetched toggles', ' for ', firstCompany, ':', toggleJson.toggles);
-              } else {
-                console.error('Toggle fetch error:', toggleJson.message);
-              }
-            }, 500); // Delay before fetching layout toggles
-  
-          } catch (error) {
-            console.error('Post-login fetch error:', error);
+          // Ensure firstCompany is valid before continuing
+          if (!firstCompany) {
+            throw new Error('First company is not valid');
           }
   
-          // ✅ Step 3: Fetch Company Traction Users using the selected organization
-          try {
-            const tractionUserRes = await fetch(
-              `${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(firstCompany)}`,
-              {
-                credentials: 'include',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                },
-              }
+          // ✅ Update store
+          useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
+  
+          // ✅ Step 2: Fetch Layout Toggles for selected company
+          setTimeout(async () => {
+            const toggleRes = await fetch(
+              `${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`
             );
+            const toggleJson = await toggleRes.json();
   
-            if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+            if (toggleJson.status === 'success') {
+              useLayoutSettingsStore.setState({
+                toggles: toggleJson.toggles,
+                organization: toggleJson.organization,
+                unique_id: toggleJson.unique_id,
+              });
+              ENABLE_CONSOLE_LOGS && console.log('Fetched toggles', ' for ', firstCompany, ':', toggleJson.toggles);
+            } else {
+              console.error('Toggle fetch error:', toggleJson.message);
+            }
+          }, 500); // Delay before fetching layout toggles
   
-            const tractionUsers = await tractionUserRes.json();
-            ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
-  
-            const firstUser = tractionUsers[0] || null;
-  
-            // ✅ Update Zustand store
-            useCompanyTractionUserStore.setState({
-              users: tractionUsers,
-              selectedUser: firstUser,
-            });
-          } catch (error) {
-            console.error('Error fetching traction users:', error);
-          }
-  
-          navigate('/home');
         } else {
           setLoginError(data.message || 'Login failed');
         }
@@ -468,6 +422,18 @@ const Login = () => {
       }
     }, 100);
   };
+  
+  // Add a useEffect to monitor the user data after login and set up conditional fetching
+  useEffect(() => {
+    const user = useLoginStore.getState().user;
+  
+    if (user?.role && user?.organization) {
+      console.log('User Role:', user.role);
+      console.log('User Organization:', user.organization);
+    } else {
+      console.error('User data not found or incomplete');
+    }
+  }, [useLoginStore.getState().user]); // Re-run effect if the user changes
   
   
 
