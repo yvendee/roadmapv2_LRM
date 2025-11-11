@@ -68,3 +68,32 @@
     cursor: not-allowed;
   }
   
+
+  .pill-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .pill {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+  }
+  
+  .pill-remove {
+    margin-left: 5px;
+    background: transparent;
+    border: none;
+    color: #ff0000;
+    cursor: pointer;
+  }
+  
+  .pill-remove:hover {
+    color: #cc0000;
+  }
+  

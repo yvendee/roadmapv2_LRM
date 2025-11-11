@@ -18,7 +18,7 @@ export default function NewUser({ onCancel }) {
   const [role, setRole] = useState('');
   const [position, setPosition] = useState('');
   const [group, setGroup] = useState('');
-  const [associatedOrg, setAssociatedOrg] = useState([]); // New: default to an empty array
+  const [associatedOrg, setAssociatedOrg] = useState([]); // Associated organization state
 
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
@@ -104,7 +104,7 @@ export default function NewUser({ onCancel }) {
         role,
         position,
         group,
-        associatedOrganization: associatedOrg.length > 0 ? associatedOrg : [], // New: handle associated organization
+        associatedOrganization: associatedOrg.length > 0 ? associatedOrg : [], // Sending the associated organization
       };
 
       ENABLE_CONSOLE_LOGS && console.log('Creating user with payload:', payload);
@@ -139,11 +139,10 @@ export default function NewUser({ onCancel }) {
         group: payload.group,
       };
 
-      // Optionally: add the newly created user to the store
       setUsers([...users, newUser]);
       showToast('User created successfully!', 'success');
 
-      // Reset form (or optionally call onCancel)
+      // Reset form
       setFirstName('');
       setLastName('');
       setEmail('');
@@ -201,6 +200,10 @@ export default function NewUser({ onCancel }) {
 
     fetchOrganizations();
   }, []);
+
+  const handleRemoveOrg = (org) => {
+    setAssociatedOrg(associatedOrg.filter((item) => item !== org));
+  };
 
   return (
     <div className="new-user-container p-6 max-w-2xl mx-auto">
@@ -279,13 +282,25 @@ export default function NewUser({ onCancel }) {
                 </option>
               ))}
             </select>
-            {errors.organization && <div className="error-text">{errors.organization}</div>}
+            {errors.organization && (
+              <div className="error-text">{errors.organization}</div>
+            )}
           </div>
         </div>
 
-        {/* New: Associated Organization */}
+        {/* Associated Organization - Multi-select dropdown with pills */}
         <div className="form-group">
           <label>Associated Organization</label>
+          <div className="pill-container">
+            {associatedOrg.map((org, idx) => (
+              <span key={idx} className="pill">
+                {org}
+                <button type="button" onClick={() => handleRemoveOrg(org)} className="pill-remove">
+                  &times;
+                </button>
+              </span>
+            ))}
+          </div>
           <select
             className="form-input"
             multiple
