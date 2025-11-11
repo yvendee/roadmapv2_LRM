@@ -352,9 +352,12 @@ const Login = () => {
         ENABLE_CONSOLE_LOGS && console.log('Login API Response:', data);
   
         if (response.ok && data.status === 'success') {
-          setUser(data.user);
+          setUser(data.user); // Set user state
           setSessionId(data.session_id);
           setLoginError('');
+  
+          // Debugging: log the user object after setting it in state
+          ENABLE_CONSOLE_LOGS && console.log('User after setting in state:', data.user);
   
           // ✅ Save or clear localStorage based on checkbox
           if (rememberMe) {
@@ -381,12 +384,14 @@ const Login = () => {
             ENABLE_CONSOLE_LOGS && console.log('Fetched Company List: ', companies);
   
             // Debugging: log values before setting firstCompany
-            console.log('User Role:', user?.role);
-            console.log('User Organization:', user?.organization);
+            const userRole = user?.role;
+            const userOrganization = user?.organization;
+            console.log('User Role:', userRole);
+            console.log('User Organization:', userOrganization);
             console.log('Companies List:', companies);
   
             // Check if user is not a superadmin, use user?.organization if true
-            firstCompany = user?.role !== 'superadmin' ? user?.organization : companies[0];
+            firstCompany = userRole !== 'superadmin' && userOrganization ? userOrganization : companies[0];
   
             // Debugging: log firstCompany value before proceeding
             console.log('First Company:', firstCompany);
@@ -452,7 +457,6 @@ const Login = () => {
           }
   
           navigate('/home');
-  
         } else {
           setLoginError(data.message || 'Login failed');
         }
@@ -464,6 +468,7 @@ const Login = () => {
       }
     }, 100);
   };
+  
   
 
   // ✅ Handle uncheck logic immediately
