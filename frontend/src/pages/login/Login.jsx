@@ -368,18 +368,40 @@ const Login = () => {
             localStorage.removeItem('rememberedPassword');
           }
   
-          // Wait until `user` data is fully set
+          // ✅ Step 1: Fetch Company Options
+          let companies = []; // Declare the companies array here to avoid ReferenceError
+  
+          try {
+            const companyRes = await fetch(`${API_URL}/v1/company-options`, {
+              credentials: 'include',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            });
+  
+            if (!companyRes.ok) throw new Error('Company fetch failed');
+  
+            companies = await companyRes.json();
+  
+            ENABLE_CONSOLE_LOGS && console.log('Fetched Company List: ', companies);
+  
+          } catch (error) {
+            console.error('Company fetch error:', error);
+            setLoginError('Failed to fetch company options');
+            return; // Stop further execution if companies fetch fails
+          }
+  
+          // Ensure that companies are available before proceeding
+          if (companies.length === 0) {
+            throw new Error('No companies available');
+          }
+  
+          // Access the user data directly from the store
           const user = useLoginStore.getState().user; // Access the user directly from Zustand store
   
-          // Debugging: log values before setting firstCompany
-          const userRole = user?.role;
-          const userOrganization = user?.organization;
-          console.log('User Role:', userRole);
-          console.log('User Organization:', userOrganization);
-          console.log('Companies List:', companies);
-  
           // Check if user is not a superadmin, use user?.organization if true
-          firstCompany = userRole !== 'superadmin' && userOrganization ? userOrganization : companies[0];
+          firstCompany = user?.role !== 'superadmin' && user?.organization ? user?.organization : companies[0];
   
           // Debugging: log firstCompany value before proceeding
           console.log('First Company:', firstCompany);
@@ -389,7 +411,7 @@ const Login = () => {
             throw new Error('First company is not valid');
           }
   
-          // ✅ Update store
+          // ✅ Update store with company data
           useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
   
           // ✅ Step 2: Fetch Layout Toggles for selected company
@@ -422,6 +444,7 @@ const Login = () => {
       }
     }, 100);
   };
+  
   
   // Add a useEffect to monitor the user data after login and set up conditional fetching
   useEffect(() => {
