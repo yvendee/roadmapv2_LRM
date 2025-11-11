@@ -119,10 +119,15 @@ const Login = () => {
 
             ENABLE_CONSOLE_LOGS &&  console.log('Fetched Company List: ',companies);
 
-            firstCompany = companies[0];
-          
+            // firstCompany = companies[0];
+            const { user } = useLoginStore((state) => state); // Get logged-in user from store
+
+             // Check if user is not a superadmin, use user?.organization if true
+            firstCompany = user?.role !== 'superadmin' ? user?.organization : companies[0];
+
             // ✅ Update store
             useCompanyFilterStore.setState({ options: companies, selected: firstCompany });
+          
           
             // ✅ Step 2: Fetch Layout Toggles for selected company
             const toggleRes = await fetch(`${API_URL}/v1/get-layout-toggles?organization=${encodeURIComponent(firstCompany)}`);
