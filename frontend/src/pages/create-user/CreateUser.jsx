@@ -56,66 +56,7 @@ const CreateUser = () => {
     setErrors({});
   };
 
-  // const handleCreate = () => {
-  //   const fullname = `${firstName.trim()} ${lastName.trim()}`.trim();
-  
-  //   const newErrors = {};
-  
-  //   if (!/^[A-Za-z]+$/.test(firstName)) {
-  //     newErrors.firstName = 'First name must contain only letters';
-  //   }
-  //   if (!/^[A-Za-z]+$/.test(lastName)) {
-  //     newErrors.lastName = 'Last name must contain only letters';
-  //   }
-  //   if (!emailRegex.test(email)) {
-  //     newErrors.email = 'Invalid email format';
-  //   }
-  //   if (!password) {
-  //     newErrors.password = 'Password is required';
-  //   }
-  //   if (password !== confirmPassword) {
-  //     newErrors.confirmPassword = 'Passwords do not match';
-  //   }
-  //   if (!organization) {
-  //     newErrors.organization = 'Organization is required';
-  //   }
-  //   if (!role) {
-  //     newErrors.role = 'Role is required';
-  //   }
-  //   if (!position) {
-  //     newErrors.position = 'Position is required';
-  //   }
-  //   if (!group) {
-  //     newErrors.group = 'Group is required';
-  //   }
-  
-  //   if (Object.keys(newErrors).length > 0) {
-  //     setErrors(newErrors);
-  //     setFeedback({ type: '', message: '' });
-  //     return;
-  //   }
-  
-  //   setLoading(true); // 🔒 disable buttons
-  
-  //   const formData = {
-  //     email,
-  //     password,
-  //     fullname,
-  //     organization,
-  //     role,
-  //     position,
-  //     group,
-  //   };
-  
-  //   console.log('Created User:', formData);
-  
-  //   setFeedback({ type: 'success', message: 'User has been created!' });
-  
-  //   setTimeout(() => {
-  //     resetForm(); // clear inputs
-  //     setLoading(false); // 🔓 re-enable buttons
-  //   }, 5000);
-  // };
+
 
   const handleCreate = async () => {
     const fullname = `${firstName.trim()} ${lastName.trim()}`.trim();

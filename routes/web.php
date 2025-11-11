@@ -10565,54 +10565,119 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
 });
 
 
-// ref: frontend\src\components\admin-panel\pages\Users\NewUser.jsx
-Route::post('/api/v1/admin-panel/users/create', function (Request $request) {
-    // ✅ Check if email already exists in the auth table
-    $existingUser = AuthUser::where('email', $request->input('email'))->first();
+// // ref: frontend\src\components\admin-panel\pages\Users\NewUser.jsx
+// Route::post('/api/v1/admin-panel/users/create', function (Request $request) {
+//     // ✅ Check if email already exists in the auth table
+//     $existingUser = AuthUser::where('email', $request->input('email'))->first();
 
-    if ($existingUser) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Email already exists',
-        ], 409); // 409 Conflict
-    }
+//     if ($existingUser) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'Email already exists',
+//         ], 409); // 409 Conflict
+//     }
 
-    // ✅ Validate other fields (no need to check for unique email again)
-    $validator = Validator::make($request->all(), [
-        'firstName' => 'required|string',
-        'lastName' => 'required|string',
-        'email' => 'required|email',
-        'password' => 'required|string|min:6',
-        'role' => 'required|string',
-    ]);
+//     // ✅ Validate other fields (no need to check for unique email again)
+//     $validator = Validator::make($request->all(), [
+//         'firstName' => 'required|string',
+//         'lastName' => 'required|string',
+//         'email' => 'required|email',
+//         'password' => 'required|string|min:6',
+//         'role' => 'required|string',
+//     ]);
 
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => 'error',
-            'errors' => $validator->errors(),
-        ], 422);
-    }
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'status' => 'error',
+//             'errors' => $validator->errors(),
+//         ], 422);
+//     }
 
-    // ✅ Generate u_id (UUID or custom string)
-    $u_id = (string) Str::uuid();
+//     // ✅ Generate u_id (UUID or custom string)
+//     $u_id = (string) Str::uuid();
 
-    // ✅ Create the user
-    $user = AuthUser::create([
-        'u_id' => $u_id,
-        'firstName' => $request->input('firstName'),
-        'lastName' => $request->input('lastName'),
-        'email' => $request->input('email'),
-        'organization' => $request->input('organization'),
-        'passwordHash' => Hash::make($request->input('password')),
-        'role' => $request->input('role'),
-        'group' => $request->input('group'),
-        'position' => $request->input('position'),
-        'status' => 'inactive',
-    ]);
+//     // ✅ Create the user
+//     $user = AuthUser::create([
+//         'u_id' => $u_id,
+//         'firstName' => $request->input('firstName'),
+//         'lastName' => $request->input('lastName'),
+//         'email' => $request->input('email'),
+//         'organization' => $request->input('organization'),
+//         'passwordHash' => Hash::make($request->input('password')),
+//         'role' => $request->input('role'),
+//         'group' => $request->input('group'),
+//         'position' => $request->input('position'),
+//         'status' => 'inactive',
+//     ]);
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'User created successfully',
-        'user' => $user,
-    ]);
-});
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'User created successfully',
+//         'user' => $user,
+//     ]);
+// });
+
+ // ref: 
+ Route::post('/api/v1/admin-panel/users/create', function (Request $request) {
+     // ✅ Check if email already exists
+     $existingUser = AuthUser::where('email', $request->input('email'))->first();
+ 
+     if ($existingUser) {
+         return response()->json([
+             'status' => 'error',
+             'message' => 'Email already exists',
+         ], 409);
+     }
+ 
+     // ✅ Validate fields
+     $validator = Validator::make($request->all(), [
+         'firstName' => 'required|string',
+         'lastName'  => 'required|string',
+         'email'     => 'required|email',
+         'password'  => 'required|string|min:6',
+         'role'      => 'required|string',
+         'organizationAssociation' => 'nullable|array',
+         'organizationAssociation.*' => 'string',
+     ]);
+ 
+     if ($validator->fails()) {
+         return response()->json([
+             'status' => 'error',
+             'errors' => $validator->errors(),
+         ], 422);
+     }
+ 
+     // ✅ Generate u_id
+     $u_id = (string) Str::uuid();
+ 
+     // ✅ Create the user
+     $user = AuthUser::create([
+         'u_id'        => $u_id,
+         'firstName'   => $request->input('firstName'),
+         'lastName'    => $request->input('lastName'),
+         'email'       => $request->input('email'),
+         'organization'=> $request->input('organization'),
+         'passwordHash'=> Hash::make($request->input('password')),
+         'role'        => $request->input('role'),
+         'group'       => $request->input('group'),
+         'position'    => $request->input('position'),
+         'status'      => 'inactive',
+     ]);
+ 
+     // ✅ Handle associated organizations (default to empty array if nothing selected)
+     $orgList = $request->input('organizationAssociation', []); // default: []
+ 
+     OrganizationAssociation::create([
+         'u_id'             => $u_id,
+         'email'            => $request->input('email'),
+         'organizationList' => $orgList,
+         'statusFlag'       => null,
+     ]);
+ 
+     return response()->json([
+         'status'  => 'success',
+         'message' => 'User created successfully',
+         'user'    => $user,
+     ]);
+ });
+ 
