@@ -14,6 +14,8 @@ const Login = () => {
   const location = useLocation();
   const setUser = useLoginStore((state) => state.setUser);
   const setSessionId = useLoginStore((state) => state.setSessionId);
+  const { user } = useLoginStore((state) => state); // Get logged-in user from store
+
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -120,8 +122,6 @@ const Login = () => {
             ENABLE_CONSOLE_LOGS &&  console.log('Fetched Company List: ',companies);
 
             // firstCompany = companies[0];
-            const { user } = useLoginStore((state) => state); // Get logged-in user from store
-
              // Check if user is not a superadmin, use user?.organization if true
             firstCompany = user?.role !== 'superadmin' ? user?.organization : companies[0];
 
