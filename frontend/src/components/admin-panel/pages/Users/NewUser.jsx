@@ -290,34 +290,48 @@ export default function NewUser({ onCancel }) {
 
         {/* Associated Organization - Multi-select dropdown with pills */}
         <div className="form-group">
-          <label>Associated Organization</label>
-          <div className="pill-container">
-            {associatedOrg.map((org, idx) => (
-              <span key={idx} className="pill">
-                {org}
-                <button type="button" onClick={() => handleRemoveOrg(org)} className="pill-remove">
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
-          <select
-            className="form-input"
-            // multiple
-            value={associatedOrg}
-            onChange={(e) => {
-              const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-              setAssociatedOrg(selectedOptions);
-            }}
-          >
-            {(options || []).map((org, idx) => (
-              <option key={idx} value={org}>
-                {org}
-              </option>
-            ))}
-          </select>
-          <small className="text-gray-500">Leave empty for no association (default: [])</small>
-        </div>
+  <label>Associated Organization</label>
+  <div className="pill-container">
+    {/* Render selected organizations as pills */}
+    {associatedOrg.map((org, idx) => (
+      <span key={idx} className="pill">
+        {org}
+        <button
+          type="button"
+          onClick={() => handleRemoveOrg(org)}
+          className="pill-remove"
+        >
+          &times;
+        </button>
+      </span>
+    ))}
+  </div>
+
+  {/* Dropdown to select organizations */}
+  <select
+    className="form-input"
+    value={organization} // value is for single selection appearance
+    onChange={(e) => {
+      const selectedOrgName = e.target.value;
+      if (!associatedOrg.includes(selectedOrgName)) {
+        setAssociatedOrg([...associatedOrg, selectedOrgName]); // Add if not already selected
+      }
+    }}
+  >
+    <option value="">-- Select an Organization --</option>
+    {/* Map through options to create dropdown items */}
+    {(options || []).map((org, idx) => (
+      <option key={idx} value={org}>
+        {org}
+      </option>
+    ))}
+  </select>
+
+  <small className="text-gray-500">
+    Leave empty for no association (default: [])
+  </small>
+</div>
+
 
         <div className="row-two">
           <div className="form-group">
