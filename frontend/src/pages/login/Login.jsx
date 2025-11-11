@@ -380,10 +380,18 @@ const Login = () => {
             const companies = await companyRes.json();
             ENABLE_CONSOLE_LOGS && console.log('Fetched Company List: ', companies);
   
+            // Debugging: log values before setting firstCompany
+            console.log('User Role:', user?.role);
+            console.log('User Organization:', user?.organization);
+            console.log('Companies List:', companies);
+  
             // Check if user is not a superadmin, use user?.organization if true
             firstCompany = user?.role !== 'superadmin' ? user?.organization : companies[0];
   
-            // ✅ Ensure firstCompany is valid before continuing
+            // Debugging: log firstCompany value before proceeding
+            console.log('First Company:', firstCompany);
+  
+            // Ensure firstCompany is valid before continuing
             if (!firstCompany) {
               throw new Error('First company is not valid');
             }
