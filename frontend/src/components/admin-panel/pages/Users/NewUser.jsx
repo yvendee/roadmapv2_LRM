@@ -289,48 +289,53 @@ export default function NewUser({ onCancel }) {
           </div>
         </div>
 
-        {/* Associated Organization - Multi-select dropdown with pills */}
-        <div className="form-group">
-          <label>Associated Organization</label>
-          <div className="pill-container">
-            {/* Render selected organizations as pills */}
-            {associatedOrg.map((org, idx) => (
-              <span key={idx} className="pill">
-                {org}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveOrg(org)}
-                  className="pill-remove"
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
+{/* Associated Organization - Multi-select dropdown with pills */}
+<div className="form-group">
+  <label>Associated Organization</label>
 
-          {/* Dropdown to select organizations */}
-          <select
-            className="form-input"
-            value={organization} // value is for single selection appearance
-            onChange={(e) => {
-              const selectedOrgName = e.target.value;
-              if (!associatedOrg.includes(selectedOrgName)) {
-                setAssociatedOrg([...associatedOrg, selectedOrgName]); // Add if not already selected
-              }
-            }}
-          >
-            <option value="">-- Select an Organization --</option>
-            {(options || []).map((org, idx) => (
-              <option key={idx} value={org}>
-                {org}
-              </option>
-            ))}
-          </select>
+  {/* Render selected organizations as pills */}
+  <div className="pill-container">
+    {associatedOrg.map((org, idx) => (
+      <span key={idx} className="pill">
+        {org}
+        <button
+          type="button"
+          onClick={() => handleRemoveOrg(org)}
+          className="pill-remove"
+        >
+          &times;
+        </button>
+      </span>
+    ))}
+  </div>
 
-          <small className="text-gray-500">
-            Leave empty for no association (default: [])
-          </small>
-        </div>
+  {/* Dropdown to select organizations */}
+  <select
+    className="form-input"
+    value="" // always reset to placeholder after selection
+    onChange={(e) => {
+      const selectedOrg = e.target.value;
+      if (selectedOrg && !associatedOrg.includes(selectedOrg)) {
+        setAssociatedOrg([...associatedOrg, selectedOrg]);
+      }
+      e.target.value = ""; // reset dropdown after selection
+    }}
+  >
+    <option value="">-- Select an Organization --</option>
+    {options
+      .filter((org) => !associatedOrg.includes(org)) // hide already selected orgs
+      .map((org, idx) => (
+        <option key={idx} value={org}>
+          {org}
+        </option>
+      ))}
+  </select>
+
+  <small className="text-gray-500">
+    Leave empty for no association (default: [])
+  </small>
+</div>
+
 
         <div className="row-two">
           <div className="form-group">
