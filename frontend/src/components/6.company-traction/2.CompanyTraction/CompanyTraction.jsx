@@ -1497,17 +1497,17 @@ const CompanyTraction = () => {
 
                 {/* Buttons */}
                 <div className="flex justify-end mt-6 space-x-3">
+                <button
+                    className="pure-blue2-btn px-4 py-1 rounded"
+                    onClick={handleAddNewTraction}
+                  >
+                    Add
+                  </button>
                   <button
                     className="pure-red2-btn px-4 py-1 rounded"
                     onClick={() => setAddTractionModalOpen(false)}
                   >
                     Close
-                  </button>
-                  <button
-                    className="pure-blue2-btn px-4 py-1 rounded"
-                    onClick={handleAddNewTraction}
-                  >
-                    Add
                   </button>
                 </div>
               </div>
