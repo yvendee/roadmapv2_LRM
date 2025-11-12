@@ -31,6 +31,11 @@ const CompanyTraction = () => {
 
   const rawAddActivityLog = useActivityLogStore((state) => state.addActivityLog);
 
+  // const [activeQuarter, setActiveQuarter] = useState('Q2');
+  const [activeQuarter, setActiveQuarter] = useState(() => {
+    return localStorage.getItem('activeQuarter') || 'Q1';
+  });
+
   // const companyTraction = useCompanyTractionStore((state) => state.companyTraction);
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
@@ -140,10 +145,7 @@ const CompanyTraction = () => {
   };
   
 
-  // const [activeQuarter, setActiveQuarter] = useState('Q2');
-  const [activeQuarter, setActiveQuarter] = useState(() => {
-    return localStorage.getItem('activeQuarter') || 'Q1';
-  });
+
 
   // useEffect(() => {
   //   localStorage.setItem('activeQuarter', activeQuarter);

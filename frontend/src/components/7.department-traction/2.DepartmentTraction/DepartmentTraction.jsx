@@ -29,7 +29,11 @@ const DepartmentTractionTable = () => {
 
   const rawAddActivityLog = useActivityLogStore((state) => state.addActivityLog);
 
-
+  // const [activeQuarter, setActiveQuarter] = useState('Q2');
+  const [activeQuarter, setActiveQuarter] = useState(() => {
+    return localStorage.getItem('activeQuarter') || 'Q1';
+  });
+  
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
     annualPriority: '',
@@ -121,10 +125,6 @@ const DepartmentTractionTable = () => {
   const [loadingDischarge, setLoadingDischarge] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  // const [activeQuarter, setActiveQuarter] = useState('Q2');
-  const [activeQuarter, setActiveQuarter] = useState(() => {
-    return localStorage.getItem('activeQuarter') || 'Q1';
-  });
 
   // useEffect(() => {
   //   localStorage.setItem('activeQuarter', activeQuarter);
