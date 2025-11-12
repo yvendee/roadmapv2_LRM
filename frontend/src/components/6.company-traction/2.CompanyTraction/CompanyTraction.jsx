@@ -1408,7 +1408,8 @@ const CompanyTraction = () => {
                   <label>Quarter:</label>
                   <select
                     className="w-full border px-2 py-1 rounded"
-                    value={form.quarter}
+                    // value={form.quarter}
+                    value={form.quarter || activeQuarter} 
                     onChange={(e) => setForm({ ...form, quarter: e.target.value })}
                   >
                     <option value="Q1">Q1</option>
