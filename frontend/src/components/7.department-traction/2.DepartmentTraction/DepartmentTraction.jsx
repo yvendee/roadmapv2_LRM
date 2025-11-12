@@ -33,7 +33,7 @@ const DepartmentTractionTable = () => {
   const [addTractionModalOpen, setAddTractionModalOpen] = useState(false);
   const [form, setForm] = useState({
     annualPriority: '',
-    quarter: 'Q1',
+    quarter: activeQuarter,
     who: '',
     collaborator: '',
     progress: '0%',
