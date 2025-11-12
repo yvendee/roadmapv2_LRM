@@ -10659,7 +10659,7 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
          'organization'=> $request->input('organization'),
          'passwordHash'=> Hash::make($request->input('password')),
          'role'        => $request->input('role'),
-         'group'       => $request->input('group'),
+         'group'       => 'no-group',
          'position'    => $request->input('position'),
          'status'      => 'inactive',
      ]);

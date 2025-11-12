@@ -17,7 +17,7 @@ export default function NewUser({ onCancel }) {
   const [organization, setOrganization] = useState('');
   const [role, setRole] = useState('');
   const [position, setPosition] = useState('');
-  const [group, setGroup] = useState('');
+  // const [group, setGroup] = useState('');
   const [associatedOrg, setAssociatedOrg] = useState([]); // Associated organization state
 
   const [errors, setErrors] = useState({});
@@ -79,7 +79,6 @@ export default function NewUser({ onCancel }) {
     if (!organization) newErrors.organization = 'Organization required';
     if (!role) newErrors.role = 'Role required';
     if (!position) newErrors.position = 'Position required';
-    if (!group) newErrors.group = 'Group required';
     return newErrors;
   };
 
@@ -104,7 +103,6 @@ export default function NewUser({ onCancel }) {
         organization,
         role,
         position,
-        group,
         associatedOrganization: associatedOrg.length > 0 ? associatedOrg : [], // Sending the associated organization
       };
 
@@ -131,14 +129,15 @@ export default function NewUser({ onCancel }) {
       const newUser = {
         id: Date.now(), // temporary ID (replace with server-provided ID if available)
         u_id: data.user?.u_id || '', // use server value if returned
-        company: payload.organization,
+        company: payload.organization, // main organization
+        associationOrganization: payload.associationOrganization || '', // <-- add this
         name: `${payload.firstName} ${payload.lastName}`,
         email: payload.email,
         emailVerifiedAt: data.user?.emailVerifiedAt || '',
         role: payload.role,
         position: payload.position,
-        group: payload.group,
       };
+      
 
       setUsers([...users, newUser]);
       showToast('User created successfully!', 'success');
@@ -152,7 +151,7 @@ export default function NewUser({ onCancel }) {
       setOrganization('');
       setRole('');
       setPosition('');
-      setGroup('');
+      // setGroup('');
       setAssociatedOrg([]); // Reset associated organizations
       setErrors({});
     } catch (error) {
