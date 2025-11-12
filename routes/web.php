@@ -10508,24 +10508,88 @@ Route::delete('/api/v1/admin-panel/users/delete', function (Request $request) us
 //     ]);
 // });
 
-// ref: frontend\src\components\admin-panel\pages\Users\EditUser.jsx
+// // ref: frontend\src\components\admin-panel\pages\Users\EditUser.jsx
+// Route::post('/api/v1/admin-panel/users/update', function (Request $request) use ($API_secure) {
+//     if ($API_secure) {
+//         if (!$request->session()->get('logged_in')) {
+//             return response()->json(['message' => 'Unauthorized'], 401);
+//         }
+//     }
+
+//     $validated = $request->validate([
+//         'u_id' => 'required|string|exists:auth,u_id',
+//         'name' => 'required|string|max:255',
+//         'email' => 'required|email|max:255',
+//         'company' => 'required|string|max:255',
+//         'emailVerifiedAt' => 'nullable|string',
+//         // 'password' => 'nullable|string|min:6',
+//         'password' => 'nullable|string',
+        
+//     ]);
+
+//     $user = AuthUser::where('u_id', $validated['u_id'])->first();
+
+//     if (!$user) {
+//         return response()->json([
+//             'status' => 'error',
+//             'message' => 'User not found.',
+//         ], 404);
+//     }
+
+//     $nameParts = explode(' ', $validated['name'], 2);
+//     $firstName = $nameParts[0] ?? '';
+//     $lastName = $nameParts[1] ?? '';
+
+//     $status = '';
+//     if (!empty($validated['emailVerifiedAt'])) {
+//         $status = 'verified , ' . $validated['emailVerifiedAt'];
+//     }
+
+//     $user->firstName = $firstName;
+//     $user->lastName = $lastName;
+//     $user->email = $validated['email'];
+//     $user->organization = $validated['company'];
+//     $user->status = $status;
+
+//     // Only update password if provided
+//     if (!empty($validated['password'])) {
+//         $user->passwordHash = Hash::make($validated['password']);
+//     }
+
+//     $user->save();
+
+//     return response()->json([
+//         'status' => 'success',
+//         'message' => 'User updated successfully.',
+//     ]);
+// });
+
+
+// ref:
 Route::post('/api/v1/admin-panel/users/update', function (Request $request) use ($API_secure) {
-    if ($API_secure) {
-        if (!$request->session()->get('logged_in')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $validated = $request->validate([
+    $validator = Validator::make($request->all(), [
         'u_id' => 'required|string|exists:auth,u_id',
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
         'company' => 'required|string|max:255',
         'emailVerifiedAt' => 'nullable|string',
-        // 'password' => 'nullable|string|min:6',
         'password' => 'nullable|string',
-        
+        'associatedOrganization' => 'nullable|array',
+        'associatedOrganization.*' => 'string',
     ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $validated = $validator->validated();
 
     $user = AuthUser::where('u_id', $validated['u_id'])->first();
 
@@ -10551,12 +10615,21 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
     $user->organization = $validated['company'];
     $user->status = $status;
 
-    // Only update password if provided
     if (!empty($validated['password'])) {
         $user->passwordHash = Hash::make($validated['password']);
     }
 
     $user->save();
+
+    // Update associated organizations
+    $orgList = $validated['associatedOrganization'] ?? [];
+
+    $orgAssoc = OrganizationAssociation::firstOrNew(['u_id' => $user->u_id]);
+    $orgAssoc->u_id = $user->u_id;
+    $orgAssoc->email = $user->email;
+    $orgAssoc->organizationList = $orgList;
+    $orgAssoc->statusFlag = null;
+    $orgAssoc->save();
 
     return response()->json([
         'status' => 'success',

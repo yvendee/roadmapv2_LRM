@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './EditUser.css';
 import useUserStore from '../../../../store/admin-panel/users/userStore';
 import ToastNotification from '../../../../components/toast-notification/ToastNotification';
@@ -12,10 +12,7 @@ export default function EditUser() {
   const [email, setEmail] = useState(selectedUser?.email || '');
   const [company, setCompany] = useState(selectedUser?.company || '');
   const [emailVerifiedAt, setEmailVerifiedAt] = useState(selectedUser?.emailVerifiedAt || '');
-  const [password, setPassword] = useState('');
-  const [associatedOrganizations, setAssociatedOrganizations] = useState([]);
-  const [availableOrganizations, setAvailableOrganizations] = useState([]);
-  const [selectedOrgToAdd, setSelectedOrgToAdd] = useState('');
+  const [password, setPassword] = useState(''); // <-- NEW
 
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState({
@@ -24,60 +21,12 @@ export default function EditUser() {
     isVisible: false,
   });
 
-  useEffect(() => {
-    // Initialize associated organizations from selectedUser
-    setAssociatedOrganizations(selectedUser?.associatedOrganization || []);
-
-    // Fetch organizations from backend
-    const fetchOrganizations = async () => {
-      try {
-        const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
-        const { csrf_token } = await csrfRes.json();
-
-        const res = await fetch(`${API_URL}/v1/company-options`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            Accept: 'application/json',
-            'X-CSRF-TOKEN': csrf_token,
-          },
-        });
-
-        if (!res.ok) throw new Error('Failed to fetch organizations');
-
-        const data = await res.json();
-
-        if (Array.isArray(data) && data.length > 0) {
-          setAvailableOrganizations(data); // Set dynamic options
-        } else {
-          console.warn('No organizations found');
-          setAvailableOrganizations([]);
-        }
-      } catch (error) {
-        console.error('Error fetching organization options:', error);
-        setAvailableOrganizations([]);
-      }
-    };
-
-    fetchOrganizations();
-  }, [selectedUser]);
-
   const showToast = (message, status) => {
     setToast({ message, status, isVisible: true });
   };
 
   const hideToast = () => {
     setToast((prev) => ({ ...prev, isVisible: false }));
-  };
-
-  const handleAddOrganization = () => {
-    if (!selectedOrgToAdd || associatedOrganizations.includes(selectedOrgToAdd)) return;
-    setAssociatedOrganizations([...associatedOrganizations, selectedOrgToAdd]);
-    setSelectedOrgToAdd('');
-  };
-
-  const handleRemoveOrganization = (org) => {
-    setAssociatedOrganizations(associatedOrganizations.filter((o) => o !== org));
   };
 
   const handleSaveChanges = async () => {
@@ -89,19 +38,23 @@ export default function EditUser() {
     setIsSaving(true);
 
     try {
-      const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+        credentials: 'include',
+      });
       const { csrf_token } = await csrfRes.json();
 
+      // Build request payload dynamically
       const payload = {
         u_id: selectedUser.u_id,
         name,
         email,
         company,
         emailVerifiedAt,
-        associatedOrganization: associatedOrganizations,
       };
 
-      if (password.trim()) payload.password = password;
+      if (password.trim()) {
+        payload.password = password; // <-- Only include if provided
+      }
 
       const res = await fetch(`${API_URL}/v1/admin-panel/users/update`, {
         method: 'POST',
@@ -127,12 +80,11 @@ export default function EditUser() {
         email,
         company,
         emailVerifiedAt,
-        associatedOrganization: associatedOrganizations,
       });
 
       ENABLE_CONSOLE_LOGS && console.log('User updated:', data);
       showToast('User updated successfully!', 'success');
-      setPassword('');
+      setPassword(''); // clear after save
     } catch (error) {
       console.error('Save error:', error);
       showToast(`Error saving user: ${error.message}`, 'error');
@@ -141,11 +93,12 @@ export default function EditUser() {
     }
   };
 
-  if (!selectedUser) return <div className="p-6">No user selected for editing.</div>;
+  if (!selectedUser) {
+    return <div className="p-6">No user selected for editing.</div>;
+  }
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      {/* Company */}
       <div className="form-group mb-4">
         <label>
           Company<span className="required">*</span>
@@ -158,7 +111,6 @@ export default function EditUser() {
         />
       </div>
 
-      {/* Name */}
       <div className="form-group mb-4">
         <label>
           Name<span className="required">*</span>
@@ -171,7 +123,6 @@ export default function EditUser() {
         />
       </div>
 
-      {/* Email */}
       <div className="form-group mb-4">
         <label>
           Email<span className="required">*</span>
@@ -184,7 +135,7 @@ export default function EditUser() {
         />
       </div>
 
-      {/* Password */}
+      {/* NEW PASSWORD FIELD */}
       <div className="form-group mb-4">
         <label>Password (leave blank to keep current)</label>
         <input
@@ -196,7 +147,6 @@ export default function EditUser() {
         />
       </div>
 
-      {/* Email Verified */}
       <div className="form-group mb-4">
         <label>Email Verified At</label>
         <input
@@ -207,41 +157,11 @@ export default function EditUser() {
         />
       </div>
 
-      {/* Associated Organizations */}
-      <div className="form-group mb-4">
-        <label>Associated Organizations</label>
-        <div className="pill-container">
-          {associatedOrganizations.map((org) => (
-            <div className="pill" key={org}>
-              {org}
-              <button type="button" className="pill-remove-btn" onClick={() => handleRemoveOrganization(org)}>
-                &times;
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="flex mt-2 gap-2">
-          <select
-            className="form-input"
-            value={selectedOrgToAdd}
-            onChange={(e) => setSelectedOrgToAdd(e.target.value)}
-          >
-            <option value="">Select organization</option>
-            {availableOrganizations
-              .filter((org) => !associatedOrganizations.includes(org))
-              .map((org) => (
-                <option key={org} value={org}>
-                  {org}
-                </option>
-              ))}
-          </select>
-          <button className="save-btn" type="button" onClick={handleAddOrganization}>
-            Add
-          </button>
-        </div>
-      </div>
-
-      <button className="save-btn mt-4" onClick={handleSaveChanges} disabled={isSaving}>
+      <button
+        className="save-btn"
+        onClick={handleSaveChanges}
+        disabled={isSaving}
+      >
         {isSaving ? <div className="spinner"></div> : 'Save Changes'}
       </button>
 
