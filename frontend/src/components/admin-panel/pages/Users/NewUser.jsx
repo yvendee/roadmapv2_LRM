@@ -300,7 +300,7 @@ export default function NewUser({ onCancel }) {
         {org}
         <button
           type="button"
-          onClick={() => handleRemoveOrg(org)}
+          onClick={() => setAssociatedOrg(associatedOrg.filter(item => item !== org))}
           className="pill-remove"
         >
           &times;
@@ -335,6 +335,7 @@ export default function NewUser({ onCancel }) {
     Leave empty for no association (default: [])
   </small>
 </div>
+
 
 
         <div className="row-two">
