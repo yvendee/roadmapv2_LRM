@@ -66,16 +66,28 @@ const TopbarDropdown = () => {
     fetchOrganizationAssociation();
   }, [loggedUser, loggedUserEmail, setOptions, setSelected]);
 
-  // 🛑 If not superadmin and no organization list available, don't render
+  // // 🛑 If not superadmin and no organization list available, don't render
+  // if (loggedUser?.role !== 'superadmin') {
+  //   if (!orgListLoaded || !options || options.length === 0) {
+  //     return null;
+  //   }
+  // }
+
+  // 🛑 If not superadmin and no organization list available, render a placeholder
   if (loggedUser?.role !== 'superadmin') {
     if (!orgListLoaded || !options || options.length === 0) {
-      return null;
+      return (
+        <div className="w-full h-12 bg-white dark:bg-gray-800">
+          {/* You can add any placeholder content here */}
+        </div>
+      );
     }
   }
 
-  if (hideTopBarDropdown) {
-    return null;
-  }
+
+  // if (hideTopBarDropdown) {
+  //   return null;
+  // }
 
   const handleSelect = async (option) => {
     ENABLE_CONSOLE_LOGS && console.log('Selected company filter:', option);
