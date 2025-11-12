@@ -10565,7 +10565,7 @@ Route::delete('/api/v1/admin-panel/users/delete', function (Request $request) us
 // });
 
 
-// ref:
+// ref: frontend\src\components\admin-panel\pages\Users\EditUser.jsx
 Route::post('/api/v1/admin-panel/users/update', function (Request $request) use ($API_secure) {
     if ($API_secure && !$request->session()->get('logged_in')) {
         return response()->json(['message' => 'Unauthorized'], 401);
@@ -10690,7 +10690,7 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
 //     ]);
 // });
 
- // ref: 
+ // ref: frontend\src\components\admin-panel\pages\Users\NewUser.jsx
  Route::post('/api/v1/admin-panel/users/create', function (Request $request) {
      // ✅ Check if email already exists
      $existingUser = AuthUser::where('email', $request->input('email'))->first();
