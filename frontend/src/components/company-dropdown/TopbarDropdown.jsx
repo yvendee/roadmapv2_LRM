@@ -66,110 +66,28 @@ const TopbarDropdown = () => {
     fetchOrganizationAssociation();
   }, [loggedUser, loggedUserEmail, setOptions, setSelected]);
 
-  // 🛑 If not superadmin and no organization list available, render a placeholder or blank space
+  // // 🛑 If not superadmin and no organization list available, don't render
+  // if (loggedUser?.role !== 'superadmin') {
+  //   if (!orgListLoaded || !options || options.length === 0) {
+  //     return null;
+  //   }
+  // }
+
+  // 🛑 If not superadmin and no organization list available, render a placeholder
   if (loggedUser?.role !== 'superadmin') {
-    if (!orgListLoaded) {
-      // Still loading, show nothing or a loader here
-      return null;
-    } else if (options.length === 0) {
-      // If the organization list is empty, render blank space
-      return <div className="w-full h-12 bg-white dark:bg-gray-800" />;
-    } else if (options.length > 0) {
-      // If there are organizations, render the dropdown
+    if (!orgListLoaded || !options || options.length === 0) {
       return (
-        <div ref={dropdownRef} className="relative flex items-center space-x-2 w-auto">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
-            Company Filter:
-          </label>
-
-          <div
-            className="relative bg-white dark:bg-gray-800 border dark:border-gray-600 px-3 py-2 rounded cursor-pointer text-sm text-gray-800 dark:text-gray-100 flex justify-between items-center whitespace-nowrap"
-            onClick={toggleDropdown}
-          >
-            {selected}
-            <span className="mx-1">&nbsp;</span>
-            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
-          </div>
-
-          {loading && (
-            <div className="loader-balls">
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          )}
-
-          {isOpen && (
-            <ul
-              className="company-dropdown-scroll absolute top-10 left-[95px] z-10 mt-1 max-h-100 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow text-sm"
-              onMouseEnter={(e) => (e.currentTarget.style.overflowY = 'auto')}
-              onMouseLeave={(e) => (e.currentTarget.style.overflowY = 'hidden')}
-              style={{ minWidth: '100%' }}
-            >
-              {options.map((option) => (
-                <li
-                  key={option}
-                  onClick={() => handleSelect(option)}
-                  className="dropdown-item"
-                >
-                  {option}
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="w-full h-12 bg-white dark:bg-gray-800">
+          {/* You can add any placeholder content here */}
         </div>
       );
     }
-  } else {
-    // For superadmin, always render the dropdown regardless of organization list
-    return (
-      <div ref={dropdownRef} className="relative flex items-center space-x-2 w-auto">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
-          Company Filter:
-        </label>
-
-        <div
-          className="relative bg-white dark:bg-gray-800 border dark:border-gray-600 px-3 py-2 rounded cursor-pointer text-sm text-gray-800 dark:text-gray-100 flex justify-between items-center whitespace-nowrap"
-          onClick={toggleDropdown}
-        >
-          {selected}
-          <span className="mx-1">&nbsp;</span>
-          <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
-        </div>
-
-        {loading && (
-          <div className="loader-balls">
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        )}
-
-        {isOpen && (
-          <ul
-            className="company-dropdown-scroll absolute top-10 left-[95px] z-10 mt-1 max-h-100 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow text-sm"
-            onMouseEnter={(e) => (e.currentTarget.style.overflowY = 'auto')}
-            onMouseLeave={(e) => (e.currentTarget.style.overflowY = 'hidden')}
-            style={{ minWidth: '100%' }}
-          >
-            {options.map((option) => (
-              <li
-                key={option}
-                onClick={() => handleSelect(option)}
-                className="dropdown-item"
-              >
-                {option}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    );
   }
 
-  const toggleDropdown = () => {
-    setIsOpen((prev) => !prev);
-  };
+
+  // if (hideTopBarDropdown) {
+  //   return null;
+  // }
 
   const handleSelect = async (option) => {
     ENABLE_CONSOLE_LOGS && console.log('Selected company filter:', option);
@@ -233,6 +151,10 @@ const TopbarDropdown = () => {
     }, 1000);
   };
 
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -244,7 +166,49 @@ const TopbarDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  return null; // Return null if there is no condition to render
+  return (
+    <div ref={dropdownRef} className="relative flex items-center space-x-2 w-auto">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+        Company Filter:
+      </label>
+
+      <div
+        className="relative bg-white dark:bg-gray-800 border dark:border-gray-600 px-3 py-2 rounded cursor-pointer text-sm text-gray-800 dark:text-gray-100 flex justify-between items-center whitespace-nowrap"
+        onClick={toggleDropdown}
+      >
+        {selected}
+        <span className="mx-1">&nbsp;</span>
+        <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+      </div>
+
+      {loading && (
+        <div className="loader-balls">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      )}
+
+      {isOpen && (
+        <ul
+          className="company-dropdown-scroll absolute top-10 left-[95px] z-10 mt-1 max-h-100 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow text-sm"
+          onMouseEnter={(e) => (e.currentTarget.style.overflowY = 'auto')}
+          onMouseLeave={(e) => (e.currentTarget.style.overflowY = 'hidden')}
+          style={{ minWidth: '100%' }}
+        >
+          {options.map((option) => (
+            <li
+              key={option}
+              onClick={() => handleSelect(option)}
+              className="dropdown-item"
+            >
+              {option}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default TopbarDropdown;
