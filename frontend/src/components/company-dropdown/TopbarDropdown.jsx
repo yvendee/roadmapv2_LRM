@@ -66,7 +66,7 @@ const TopbarDropdown = () => {
     fetchOrganizationAssociation();
   }, [loggedUser, loggedUserEmail, setOptions, setSelected]);
 
-  // 🛑 If not superadmin and no organization list available, render a placeholder
+  // 🛑 If not superadmin and no organization list available, render a placeholder or blank space
   if (loggedUser?.role !== 'superadmin') {
     if (!orgListLoaded) {
       // Still loading, show nothing or a loader here
@@ -120,6 +120,51 @@ const TopbarDropdown = () => {
         </div>
       );
     }
+  } else {
+    // For superadmin, always render the dropdown regardless of organization list
+    return (
+      <div ref={dropdownRef} className="relative flex items-center space-x-2 w-auto">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+          Company Filter:
+        </label>
+
+        <div
+          className="relative bg-white dark:bg-gray-800 border dark:border-gray-600 px-3 py-2 rounded cursor-pointer text-sm text-gray-800 dark:text-gray-100 flex justify-between items-center whitespace-nowrap"
+          onClick={toggleDropdown}
+        >
+          {selected}
+          <span className="mx-1">&nbsp;</span>
+          <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+        </div>
+
+        {loading && (
+          <div className="loader-balls">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        )}
+
+        {isOpen && (
+          <ul
+            className="company-dropdown-scroll absolute top-10 left-[95px] z-10 mt-1 max-h-100 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded shadow text-sm"
+            onMouseEnter={(e) => (e.currentTarget.style.overflowY = 'auto')}
+            onMouseLeave={(e) => (e.currentTarget.style.overflowY = 'hidden')}
+            style={{ minWidth: '100%' }}
+          >
+            {options.map((option) => (
+              <li
+                key={option}
+                onClick={() => handleSelect(option)}
+                className="dropdown-item"
+              >
+                {option}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
   }
 
   const toggleDropdown = () => {
