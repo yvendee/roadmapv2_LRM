@@ -10665,7 +10665,7 @@ Route::post('/api/v1/admin-panel/users/update', function (Request $request) use 
      ]);
  
      // ✅ Handle associated organizations (default to empty array if nothing selected)
-     $orgList = $request->input('organizationAssociation', []); // default: []
+     $orgList = $request->input('associatedOrganization', []); // default: []
  
      OrganizationAssociation::create([
          'u_id'             => $u_id,
