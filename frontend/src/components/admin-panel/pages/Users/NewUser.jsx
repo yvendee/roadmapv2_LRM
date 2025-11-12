@@ -84,6 +84,7 @@ export default function NewUser({ onCancel }) {
   };
 
   const handleCreate = async () => {
+    console.log("✅ handleCreate fired");
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
