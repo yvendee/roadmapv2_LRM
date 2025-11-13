@@ -19,10 +19,10 @@ const ThreeMetricCards = () => {
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin';
 
-  const position = loggedUser?.position?.toLowerCase();
+  
   const canEdit =
     loggedUser?.role === 'superadmin' ||
-    ['ceo', 'leadership', 'internal', 'department head'].includes(position);
+    ['Admin', 'CEO', 'Leadership', 'Internal', 'Department Head'].includes(loggedUser?.position);
 
   const metrics = useMetricStore((state) => state.metrics);
   const updateMetric = useMetricStore((state) => state.updateMetric);
