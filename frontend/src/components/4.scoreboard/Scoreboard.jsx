@@ -82,39 +82,44 @@ const Scoreboard = () => {
   //     });
   // }, [organization]);
 
-  // Company-Traction-Cards (Local Calculation)
-  // Company-Traction-Cards (Local Calculation)
-  useEffect(() => {
-    const companyTraction = useCompanyTractionStore.getState().companyTraction; // ✅ correct store
-    const setQuarters = useCompanyTractionCardsStore.getState().setQuarters;   // from 2.companyTractionCardsStore
+// Company-Traction-Cards (Local Calculation)
+useEffect(() => {
+  // ✅ Safely get Zustand store states
+  const tractionState = useCompanyTractionStore.getState();
+  const cardsState = useCompanyTractionCardsStore.getState();
 
-    // Helper to compute average progress per quarter
-    const calculateAveragePercent = (quarterData) => {
-      if (!quarterData || quarterData.length === 0) return 0;
+  const companyTraction = tractionState?.companyTraction || {};
+  const setQuarters = cardsState?.setQuarters;
 
-      const validProgress = quarterData
-        .map((item) => parseFloat(item.progress)) // e.g. "60%" → 60
-        .filter((p) => !isNaN(p));
+  // ✅ Helper: compute average safely
+  const calculateAveragePercent = (quarterData = []) => {
+    if (!Array.isArray(quarterData) || quarterData.length === 0) return 0;
 
-      if (validProgress.length === 0) return 0;
+    const validProgress = quarterData
+      .map((item) => parseFloat(item.progress))
+      .filter((p) => !isNaN(p));
 
-      const sum = validProgress.reduce((acc, val) => acc + val, 0);
-      return Math.round(sum / validProgress.length);
-    };
+    if (validProgress.length === 0) return 0;
 
-    // Compute for all quarters
-    const newPercents = [
-      { label: 'Q1', percent: calculateAveragePercent(companyTraction.Q1) },
-      { label: 'Q2', percent: calculateAveragePercent(companyTraction.Q2) },
-      { label: 'Q3', percent: calculateAveragePercent(companyTraction.Q3) },
-      { label: 'Q4', percent: calculateAveragePercent(companyTraction.Q4) },
-    ];
+    const sum = validProgress.reduce((acc, val) => acc + val, 0);
+    return Math.round(sum / validProgress.length);
+  };
 
-    ENABLE_CONSOLE_LOGS && console.log('📊 Calculated Company Traction Percents:', newPercents);
+  // ✅ Safely handle missing quarters
+  const newPercents = [
+    { label: 'Q1', percent: calculateAveragePercent(companyTraction.Q1 || []) },
+    { label: 'Q2', percent: calculateAveragePercent(companyTraction.Q2 || []) },
+    { label: 'Q3', percent: calculateAveragePercent(companyTraction.Q3 || []) },
+    { label: 'Q4', percent: calculateAveragePercent(companyTraction.Q4 || []) },
+  ];
 
-    // Save computed values to companyTractionCardsStore
+  ENABLE_CONSOLE_LOGS && console.log('📊 Calculated Company Traction Percents:', newPercents);
+
+  // ✅ Update cards store only if setter exists
+  if (typeof setQuarters === 'function') {
     setQuarters(newPercents);
-  }, [organization]);
+  }
+}, [organization]);
 
 
   // Project-Progress
