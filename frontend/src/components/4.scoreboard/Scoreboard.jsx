@@ -53,32 +53,66 @@ const Scoreboard = () => {
   }, [organization]);
 
   // Company-Traction-Cards
-  useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  // useEffect(() => {
+  //   const encodedOrg = encodeURIComponent(organization);
 
-    fetch(`${API_URL}/v1/scoreboard/company-traction-cards?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Company Traction Cards:', json);
-          setQuarters(json);
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('❌ Server error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('❌ Fetch error:', err);
-      });
+  //   fetch(`${API_URL}/v1/scoreboard/company-traction-cards?organization=${encodedOrg}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
+  //   })
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Company Traction Cards:', json);
+  //         setQuarters(json);
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('❌ Server error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('❌ Fetch error:', err);
+  //     });
+  // }, [organization]);
+
+  // Company-Traction-Cards (Local Calculation)
+  useEffect(() => {
+    const companyTraction = useCompanyTractionTableStore.getState().companyTraction; // <-- from companyTractionStore
+    const setQuarters = useCompanyTractionCardsStore.getState().setQuarters;         // <-- from companyTractionCardsStore
+
+    // Helper to compute average progress per quarter
+    const calculateAveragePercent = (quarterData) => {
+      if (!quarterData || quarterData.length === 0) return 0;
+
+      const validProgress = quarterData
+        .map((item) => parseFloat(item.progress))
+        .filter((p) => !isNaN(p));
+
+      if (validProgress.length === 0) return 0;
+
+      const sum = validProgress.reduce((acc, val) => acc + val, 0);
+      return Math.round(sum / validProgress.length);
+    };
+
+    // Compute for Q1–Q4
+    const newPercents = [
+      { label: 'Q1', percent: calculateAveragePercent(companyTraction.Q1) },
+      { label: 'Q2', percent: calculateAveragePercent(companyTraction.Q2) },
+      { label: 'Q3', percent: calculateAveragePercent(companyTraction.Q3) },
+      { label: 'Q4', percent: calculateAveragePercent(companyTraction.Q4) },
+    ];
+
+    ENABLE_CONSOLE_LOGS && console.log('📊 Calculated Company Traction Percents:', newPercents);
+
+    // Save computed values to companyTractionCardsStore
+    setQuarters(newPercents);
   }, [organization]);
+
 
   // Project-Progress
   useEffect(() => {
