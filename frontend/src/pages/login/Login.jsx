@@ -421,6 +421,37 @@ const Login = () => {
               console.error('Toggle fetch error:', toggleJson.message);
             }
           }, 500); // Delay before fetching layout toggles
+
+
+          // ✅ Step 3: Fetch Company Traction Users using the selected organization
+          try {
+            const tractionUserRes = await fetch(
+              `${API_URL}/v1/company-traction-users?organizationName=${encodeURIComponent(firstCompany)}`,
+              {
+                credentials: 'include',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+
+            if (!tractionUserRes.ok) throw new Error('Traction users fetch failed');
+
+            const tractionUsers = await tractionUserRes.json();
+
+            ENABLE_CONSOLE_LOGS && console.log('Fetched Traction Users:', tractionUsers);
+
+            const firstUser = tractionUsers[0] || null;
+
+            // ✅ Update Zustand store
+            useCompanyTractionUserStore.setState({
+              users: tractionUsers,
+              selectedUser: firstUser,
+            });
+          } catch (error) {
+            console.error('Error fetching traction users:', error);
+          }
   
           // **Redirect to Home Page after successful login**
           navigate('/home'); // Navigate to home after a successful login
