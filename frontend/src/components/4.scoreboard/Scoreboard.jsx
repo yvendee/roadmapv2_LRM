@@ -9,6 +9,7 @@ import useAnnualPrioritiesStore from '../../store/left-lower-content/4.scoreboar
 import useCompanyTractionStore from '../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
 import useProjectProgressStore from '../../store/left-lower-content/4.scoreboard/3.projectProgressCardStore';
 // import useUserStore from '../../store/userStore';
+import useCompanyTractionCardsStore from '../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
 
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
