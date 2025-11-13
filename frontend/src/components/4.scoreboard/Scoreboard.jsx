@@ -9,7 +9,9 @@ import useAnnualPrioritiesStore from '../../store/left-lower-content/4.scoreboar
 import useCompanyTractionStore from '../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
 import useProjectProgressStore from '../../store/left-lower-content/4.scoreboard/3.projectProgressCardStore';
 // import useUserStore from '../../store/userStore';
+// Store for the circular cards (Scoreboard)
 import useCompanyTractionCardsStore from '../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
+import useCompanyTractionTableStore from '../../store/left-lower-content/6.company-traction/2.companyTractionStore';
 
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
@@ -82,21 +84,20 @@ const Scoreboard = () => {
   //     });
   // }, [organization]);
 
-// Company-Traction-Cards (Local Calculation)
+// 🧠 Company-Traction-Cards (Reactive Calculation)
 useEffect(() => {
-  // ✅ Safely get Zustand store states
-  const tractionState = useCompanyTractionStore.getState();
-  const cardsState = useCompanyTractionCardsStore.getState();
+  const companyTraction = useCompanyTractionTableStore((state) => state.companyTraction);
+  const setQuarters = useCompanyTractionCardsStore((state) => state.setQuarters);
 
-  const companyTraction = tractionState?.companyTraction || {};
-  const setQuarters = cardsState?.setQuarters;
-
-  // ✅ Helper: compute average safely
   const calculateAveragePercent = (quarterData = []) => {
     if (!Array.isArray(quarterData) || quarterData.length === 0) return 0;
 
     const validProgress = quarterData
-      .map((item) => parseFloat(item.progress))
+      .map((item) => {
+        if (!item?.progress) return 0;
+        const num = parseFloat(item.progress.toString().replace('%', '').trim());
+        return isNaN(num) ? 0 : num;
+      })
       .filter((p) => !isNaN(p));
 
     if (validProgress.length === 0) return 0;
@@ -105,22 +106,16 @@ useEffect(() => {
     return Math.round(sum / validProgress.length);
   };
 
-  // ✅ Safely handle missing quarters
   const newPercents = [
-    { label: 'Q1', percent: calculateAveragePercent(companyTraction.Q1 || []) },
-    { label: 'Q2', percent: calculateAveragePercent(companyTraction.Q2 || []) },
-    { label: 'Q3', percent: calculateAveragePercent(companyTraction.Q3 || []) },
-    { label: 'Q4', percent: calculateAveragePercent(companyTraction.Q4 || []) },
+    { label: 'Q1', percent: calculateAveragePercent(companyTraction?.Q1 || []) },
+    { label: 'Q2', percent: calculateAveragePercent(companyTraction?.Q2 || []) },
+    { label: 'Q3', percent: calculateAveragePercent(companyTraction?.Q3 || []) },
+    { label: 'Q4', percent: calculateAveragePercent(companyTraction?.Q4 || []) },
   ];
 
-  ENABLE_CONSOLE_LOGS && console.log('📊 Calculated Company Traction Percents:', newPercents);
-
-  // ✅ Update cards store only if setter exists
-  if (typeof setQuarters === 'function') {
-    setQuarters(newPercents);
-  }
-}, [organization]);
-
+  ENABLE_CONSOLE_LOGS && console.log('📊 Recalculated Company Traction Percents:', newPercents);
+  setQuarters(newPercents);
+}, [organization, useCompanyTractionTableStore((state) => state.companyTraction)]);
 
   // Project-Progress
   useEffect(() => {
