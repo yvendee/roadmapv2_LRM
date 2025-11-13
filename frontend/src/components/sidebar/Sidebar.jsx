@@ -167,7 +167,7 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             {!collapsed && <span>Traction Progress</span>}
           </NavLink>
 
-          {isSuperAdmin && (
+          {/* {isSuperAdmin && (
             <NavLink
             to="/growth-command-center"
             className={({ isActive }) =>
@@ -184,7 +184,24 @@ const Sidebar = ({ collapsed, onShowTooltip, onHideTooltip}) => {
             <FontAwesomeIcon icon={faBuilding} />
             {!collapsed && <span>Growth Command Center</span>}
             </NavLink>
-          )}
+          )} */}
+
+          <NavLink
+            to="/growth-command-center"
+            className={({ isActive }) =>
+              `sidebar-item flex items-center gap-2 ${
+                isActive
+                  ? 'bg-blue-700 text-white dark:bg-blue-400 dark:text-gray-900'
+                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700'
+              }`
+            }
+            onMouseEnter={(e) => handleMouseEnter(e, 'Growth Command Center')}
+            onMouseLeave={handleMouseLeave}
+            style={{ position: 'relative' }}
+            >
+            <FontAwesomeIcon icon={faBuilding} />
+            {!collapsed && <span>Growth Command Center</span>}
+          </NavLink>
 
           <NavLink
             to="/company-traction"
