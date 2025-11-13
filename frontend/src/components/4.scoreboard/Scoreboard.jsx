@@ -9,6 +9,7 @@ import useAnnualPrioritiesStore from '../../store/left-lower-content/4.scoreboar
 import useCompanyTractionStore from '../../store/left-lower-content/4.scoreboard/2.companyTractionCardsStore';
 import useProjectProgressStore from '../../store/left-lower-content/4.scoreboard/3.projectProgressCardStore';
 // import useUserStore from '../../store/userStore';
+
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
@@ -81,16 +82,17 @@ const Scoreboard = () => {
   // }, [organization]);
 
   // Company-Traction-Cards (Local Calculation)
+  // Company-Traction-Cards (Local Calculation)
   useEffect(() => {
-    const companyTraction = useCompanyTractionTableStore.getState().companyTraction; // <-- from companyTractionStore
-    const setQuarters = useCompanyTractionCardsStore.getState().setQuarters;         // <-- from companyTractionCardsStore
+    const companyTraction = useCompanyTractionStore.getState().companyTraction; // ✅ correct store
+    const setQuarters = useCompanyTractionCardsStore.getState().setQuarters;   // from 2.companyTractionCardsStore
 
     // Helper to compute average progress per quarter
     const calculateAveragePercent = (quarterData) => {
       if (!quarterData || quarterData.length === 0) return 0;
 
       const validProgress = quarterData
-        .map((item) => parseFloat(item.progress))
+        .map((item) => parseFloat(item.progress)) // e.g. "60%" → 60
         .filter((p) => !isNaN(p));
 
       if (validProgress.length === 0) return 0;
@@ -99,7 +101,7 @@ const Scoreboard = () => {
       return Math.round(sum / validProgress.length);
     };
 
-    // Compute for Q1–Q4
+    // Compute for all quarters
     const newPercents = [
       { label: 'Q1', percent: calculateAveragePercent(companyTraction.Q1) },
       { label: 'Q2', percent: calculateAveragePercent(companyTraction.Q2) },
