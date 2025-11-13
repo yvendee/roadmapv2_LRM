@@ -19,6 +19,11 @@ const ThreeMetricCards = () => {
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin';
 
+  const canEdit =
+  loggedUser?.role === 'superadmin' ||
+  ['CEO', 'Leadership', 'Internal', 'Department Head'].includes(loggedUser?.position);
+
+
   const metrics = useMetricStore((state) => state.metrics);
   const updateMetric = useMetricStore((state) => state.updateMetric);
   const setMetrics = useMetricStore((state) => state.setMetrics);
@@ -179,7 +184,8 @@ const ThreeMetricCards = () => {
             <label>Annual Goal</label>
             <input
               type="number"
-              disabled={!isSuperAdmin}
+              // disabled={!isSuperAdmin}
+              disabled={!canEdit}
               value={metric.annualGoal}
               onChange={(e) => {
                 const newAnnualGoal = Number(e.target.value) || 0;
@@ -195,7 +201,8 @@ const ThreeMetricCards = () => {
             <label>Current</label>
             <input
               type="number"
-              disabled={!isSuperAdmin}
+              // disabled={!isSuperAdmin}
+              disabled={!canEdit}
               value={metric.current}
               onChange={(e) => {
                 const newCurrent = Number(e.target.value) || 0;
@@ -232,7 +239,8 @@ const ThreeMetricCards = () => {
                   <tr key={i}>
                     <td>{viewMode === 'Monthly' ? data.month : data.quarter}</td>
                     <td>
-                      {isSuperAdmin ? (
+                      {/* {isSuperAdmin ? ( */}
+                      {canEdit ? (
                         <input
                           type="number"
                           style={{ width: '80px' }} // 👈 max 6 digits, fixed width
@@ -251,7 +259,8 @@ const ThreeMetricCards = () => {
                       )}
                     </td>
                     <td>
-                      {isSuperAdmin ? (
+                      {/* {isSuperAdmin ? ( */}
+                      {canEdit ? (
                         <input
                           type="number"
                           style={{ width: '80px' }} // 👈 max 6 digits, fixed width

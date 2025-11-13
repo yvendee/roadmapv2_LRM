@@ -30,6 +30,8 @@ const AnnualPriorities = () => {
   const { switchOptions, setSwitchOptions, addSwitchOption, removeSwitchOption } = useSwitchOptionsStore();
 
   const loggedUser = useLoginStore((state) => state.user);
+
+
   // const annualPriorities = useAnnualPrioritiesStore((state) => state.annualPriorities);
   // const setAnnualPriorities = useAnnualPrioritiesStore((state) => state.setAnnualPriorities);
   const updateAnnualPrioritiesField = useAnnualPrioritiesStore((state) => state.updateAnnualPrioritiesField);
