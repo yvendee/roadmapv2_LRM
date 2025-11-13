@@ -19,10 +19,10 @@ const ThreeMetricCards = () => {
   const loggedUser = useLoginStore((state) => state.user);
   const isSuperAdmin = loggedUser?.role === 'superadmin';
 
+  const position = loggedUser?.position?.toLowerCase();
   const canEdit =
-  loggedUser?.role === 'superadmin' ||
-  ['CEO', 'Leadership', 'Internal', 'Department Head'].includes(loggedUser?.position);
-
+    loggedUser?.role === 'superadmin' ||
+    ['ceo', 'leadership', 'internal', 'department head'].includes(position);
 
   const metrics = useMetricStore((state) => state.metrics);
   const updateMetric = useMetricStore((state) => state.updateMetric);
@@ -127,7 +127,8 @@ const ThreeMetricCards = () => {
 
   return (
     <div className="metrics-container always-black">
-      {isSuperAdmin && hasEdits && (
+      {/* {isSuperAdmin && hasEdits && ( */}
+      {canEdit && hasEdits && (
         <div className="metrics-actions" style={{ textAlign: 'right', marginBottom: '8px', width: '100%' }}>
           <button className="pure-green-btn" onClick={handleSave}>
             {loadingSave ? (
