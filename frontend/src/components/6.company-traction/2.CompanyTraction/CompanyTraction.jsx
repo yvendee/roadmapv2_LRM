@@ -1024,7 +1024,7 @@ const CompanyTraction = () => {
                       value={row.who}
                       onChange={(e) => handleEditChange(e, row.id, 'who')}
                       // disabled={!isSuperAdmin}
-                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership'].includes(loggedUser?.position))}
                     >
                       {/* Default: show current selection */}
                       {!users.includes(row.who) && <option value={row.who}>{row.who}</option>}
@@ -1046,7 +1046,7 @@ const CompanyTraction = () => {
                       value={row.collaborator}
                       onChange={(e) => handleEditChange(e, row.id, 'collaborator')}
                       // disabled={!isSuperAdmin}    
-                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal'].includes(loggedUser?.position))}
+                      disabled={!(isSuperAdmin || ['Admin', 'CEO', 'Internal', 'Leadership'].includes(loggedUser?.position))}
                     >
                       {/* Ensure current collaborator is always shown, even if not in list */}
                       {!users.includes(row.collaborator) && (
