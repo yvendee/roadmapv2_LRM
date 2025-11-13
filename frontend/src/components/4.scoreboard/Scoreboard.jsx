@@ -27,6 +27,9 @@ const Scoreboard = () => {
   const setQuarters = useCompanyTractionStore((state) => state.setQuarters);
   const updateProgress = useProjectProgressStore((state) => state.updateProgress);
 
+  const companyTraction = useCompanyTractionTableStore((state) => state.companyTraction);
+  const setQuartersCard= useCompanyTractionCardsStore((state) => state.setQuarters);
+
 
   // Annual-Priorities
   useEffect(() => {
@@ -86,9 +89,7 @@ const Scoreboard = () => {
 
 // 🧠 Company-Traction-Cards (Reactive Calculation)
 useEffect(() => {
-  const companyTraction = useCompanyTractionTableStore((state) => state.companyTraction);
-  const setQuarters = useCompanyTractionCardsStore((state) => state.setQuarters);
-
+ 
   const calculateAveragePercent = (quarterData = []) => {
     if (!Array.isArray(quarterData) || quarterData.length === 0) return 0;
 
@@ -114,7 +115,7 @@ useEffect(() => {
   ];
 
   ENABLE_CONSOLE_LOGS && console.log('📊 Recalculated Company Traction Percents:', newPercents);
-  setQuarters(newPercents);
+  setQuartersCard(newPercents);
 }, [organization, useCompanyTractionTableStore((state) => state.companyTraction)]);
 
   // Project-Progress
