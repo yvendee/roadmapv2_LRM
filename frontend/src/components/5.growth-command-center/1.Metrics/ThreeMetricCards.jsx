@@ -24,6 +24,9 @@ const ThreeMetricCards = () => {
     loggedUser?.role === 'superadmin' ||
     ['Admin', 'CEO', 'Leadership', 'Internal', 'Department Head'].includes(loggedUser?.position);
 
+
+  const [editingTitleIndex, setEditingTitleIndex] = useState(null);
+
   const metrics = useMetricStore((state) => state.metrics);
   const updateMetric = useMetricStore((state) => state.updateMetric);
   const setMetrics = useMetricStore((state) => state.setMetrics);
@@ -34,6 +37,8 @@ const ThreeMetricCards = () => {
 
   const [loadingSave, setLoadingSave] = useState(false);
   const [loadingDischarge, setLoadingDischarge] = useState(false);
+
+
 
   useEffect(() => {
     setEditedMetrics(metrics);
