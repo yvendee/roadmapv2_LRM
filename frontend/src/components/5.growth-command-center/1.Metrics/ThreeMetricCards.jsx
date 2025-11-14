@@ -164,16 +164,31 @@ const ThreeMetricCards = () => {
       {editedMetrics.map((metric, idx) => (
         <div className="metric-card" key={idx}>
           {/* <div className="metric-header">{metric.title}</div> */}
+
           {canEdit ? (
-            <input
-              className="mmetric-header"
-              type="text"
-              value={metric.title}
-              onChange={(e) => handleFieldChange(idx, 'title', e.target.value)}
-            />
-          ) : (
-            <div className="metric-header">{metric.title}</div>
-          )}
+  editingTitleIndex === idx ? (
+    <input
+      autoFocus
+      className="metric-header-input"
+      type="text"
+      value={metric.title}
+      onChange={(e) => handleFieldChange(idx, 'title', e.target.value)}
+      onBlur={() => setEditingTitleIndex(null)}
+    />
+  ) : (
+    <div
+      className="metric-header"
+      onClick={() => setEditingTitleIndex(idx)}
+      style={{ cursor: 'pointer' }}
+    >
+      {metric.title}
+    </div>
+  )
+) : (
+  <div className="metric-header">{metric.title}</div>
+)}
+
+
 
           <svg width="100" height="60" viewBox="0 0 36 18" className="semi-circle">
             <path d="M2,18 A16,16 0 0,1 34,18" fill="none" stroke="#ccc" strokeWidth="3" />

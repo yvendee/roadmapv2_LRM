@@ -156,3 +156,16 @@ tbody td {
         transform: scaleY(1);
     }
 }
+
+
+
+.metric-header-input {
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: white;
+    outline: none;
+  }
+  
