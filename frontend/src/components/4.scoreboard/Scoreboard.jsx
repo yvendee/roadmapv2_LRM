@@ -148,12 +148,6 @@ const Scoreboard = () => {
 
   // Project-Progress (Calculated from Company Traction Table Q1→Q4)
   useEffect(() => {
-    const companyTraction = useCompanyTractionTableStore(
-      (state) => state.companyTraction
-    );
-    const updateProgress = useProjectProgressStore(
-      (state) => state.updateProgress
-    );
 
     if (!companyTraction) return;
 
