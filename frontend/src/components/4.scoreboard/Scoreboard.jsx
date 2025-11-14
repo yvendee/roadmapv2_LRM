@@ -87,113 +87,108 @@ const Scoreboard = () => {
   //     });
   // }, [organization]);
 
-// 🧠 Company-Traction-Cards (Reactive Calculation)
-useEffect(() => {
- 
-  const calculateAveragePercent = (quarterData = []) => {
-    if (!Array.isArray(quarterData) || quarterData.length === 0) return 0;
-
-    const validProgress = quarterData
-      .map((item) => {
-        if (!item?.progress) return 0;
-        const num = parseFloat(item.progress.toString().replace('%', '').trim());
-        return isNaN(num) ? 0 : num;
-      })
-      .filter((p) => !isNaN(p));
-
-    if (validProgress.length === 0) return 0;
-
-    const sum = validProgress.reduce((acc, val) => acc + val, 0);
-    return Math.round(sum / validProgress.length);
-  };
-
-  const newPercents = [
-    { label: 'Q1', percent: calculateAveragePercent(companyTraction?.Q1 || []) },
-    { label: 'Q2', percent: calculateAveragePercent(companyTraction?.Q2 || []) },
-    { label: 'Q3', percent: calculateAveragePercent(companyTraction?.Q3 || []) },
-    { label: 'Q4', percent: calculateAveragePercent(companyTraction?.Q4 || []) },
-  ];
-
-  ENABLE_CONSOLE_LOGS && console.log('📊 Recalculated Company Traction Percents:', newPercents);
-  setQuartersCard(newPercents);
-}, [organization, useCompanyTractionTableStore((state) => state.companyTraction)]);
-
-  // Project-Progress
+  // 🧠 Company-Traction-Cards (Reactive Calculation)
   useEffect(() => {
-    const encodedOrg = encodeURIComponent(organization);
+  
+    const calculateAveragePercent = (quarterData = []) => {
+      if (!Array.isArray(quarterData) || quarterData.length === 0) return 0;
 
-    fetch(`${API_URL}/v1/scoreboard/project-progress?organization=${encodedOrg}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        if (res.ok) {
-          ENABLE_CONSOLE_LOGS && console.log('📥 Project Progress fetched:', json);
-          updateProgress(json); 
-        } else if (res.status === 401) {
-          navigate('/', { state: { loginError: 'Session Expired' } });
-        } else {
-          console.error('❌ Server error:', json.message);
-        }
-      })
-      .catch((err) => {
-        console.error('❌ Fetch error:', err);
-      });
-  }, [organization]);
+      const validProgress = quarterData
+        .map((item) => {
+          if (!item?.progress) return 0;
+          const num = parseFloat(item.progress.toString().replace('%', '').trim());
+          return isNaN(num) ? 0 : num;
+        })
+        .filter((p) => !isNaN(p));
 
+      if (validProgress.length === 0) return 0;
+
+      const sum = validProgress.reduce((acc, val) => acc + val, 0);
+      return Math.round(sum / validProgress.length);
+    };
+
+    const newPercents = [
+      { label: 'Q1', percent: calculateAveragePercent(companyTraction?.Q1 || []) },
+      { label: 'Q2', percent: calculateAveragePercent(companyTraction?.Q2 || []) },
+      { label: 'Q3', percent: calculateAveragePercent(companyTraction?.Q3 || []) },
+      { label: 'Q4', percent: calculateAveragePercent(companyTraction?.Q4 || []) },
+    ];
+
+    ENABLE_CONSOLE_LOGS && console.log('📊 Recalculated Company Traction Percents:', newPercents);
+    setQuartersCard(newPercents);
+  }, [organization, useCompanyTractionTableStore((state) => state.companyTraction)]);
+
+  // // Project-Progress
   // useEffect(() => {
-  //   fetch('/api/mock-response4')
-  //     .then((res) => res.json())
-  //     .then((json) => setUser(json.data));
-  // }, [setUser]);
+  //   const encodedOrg = encodeURIComponent(organization);
 
-  // useEffect(() => {
-  //   fetch(`${API_URL}/mock-response3`, {
+  //   fetch(`${API_URL}/v1/scoreboard/project-progress?organization=${encodedOrg}`, {
   //     method: 'GET',
   //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //   }
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials: 'include',
   //   })
-  //   .then(async (res) => {
-  //     const json = await res.json();
-  //     if (res.ok) {
-  //       setUser(json.data);
-  //     } else if (res.status === 401) {
-  //       // Redirect to login page with error message
-  //       // navigate('/', { state: { loginError: json.message || 'Unauthorized' } });
-  //       navigate('/', { state: {loginError: 'Session Expired'} });
-  //     } else {
-  //       setError(json.message || 'Failed to fetch user data');
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error('API error:', err);
-  //     setError('Something went wrong.');
-  //   });
-  // }, [setUser]);
+  //     .then(async (res) => {
+  //       const json = await res.json();
+  //       if (res.ok) {
+  //         ENABLE_CONSOLE_LOGS && console.log('📥 Project Progress fetched:', json);
+  //         updateProgress(json); 
+  //       } else if (res.status === 401) {
+  //         navigate('/', { state: { loginError: 'Session Expired' } });
+  //       } else {
+  //         console.error('❌ Server error:', json.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('❌ Fetch error:', err);
+  //     });
+  // }, [organization]);
+
+  // Project-Progress (Calculated from Company Traction Table Q1→Q4)
+  useEffect(() => {
+    const companyTraction = useCompanyTractionTableStore(
+      (state) => state.companyTraction
+    );
+    const updateProgress = useProjectProgressStore(
+      (state) => state.updateProgress
+    );
+
+    if (!companyTraction) return;
+
+    // Extract all quarters safely
+    const Q1 = Array.isArray(companyTraction.Q1) ? companyTraction.Q1 : [];
+    const Q2 = Array.isArray(companyTraction.Q2) ? companyTraction.Q2 : [];
+    const Q3 = Array.isArray(companyTraction.Q3) ? companyTraction.Q3 : [];
+    const Q4 = Array.isArray(companyTraction.Q4) ? companyTraction.Q4 : [];
+
+    const allItems = [...Q1, ...Q2, ...Q3, ...Q4];
+
+    // Total items
+    const total = allItems.length;
+
+    // Completed items (progress === 100%)
+    const completed = allItems.filter((item) => {
+      if (!item?.progress) return false;
+      const num = parseFloat(item.progress.replace('%', '').trim());
+      return num === 100;
+    }).length;
+
+    ENABLE_CONSOLE_LOGS &&
+      console.log("📦 Calculated Project Progress (Q1→Q4):", {
+        completed,
+        total,
+      });
+
+    updateProgress({ completed, total });
+  }, [
+    organization,
+    useCompanyTractionTableStore((state) => state.companyTraction)
+  ]);
+
 
   return (
-    // <div>
-    //   <h2 className="text-xl font-bold mb-4">Scoreboard</h2>
-    //   {error ? (
-    //     <p className="text-red-500">{error}</p>
-    //   ) : user ? (
-    //     <table className="table-auto border-collapse border border-gray-400">
-    //       <tbody>
-    //         <tr><td className="border p-2">Name</td><td className="border p-2">{user.name}</td></tr>
-    //         <tr><td className="border p-2">Email</td><td className="border p-2">{user.email}</td></tr>
-    //       </tbody>
-    //     </table>
-    //   ) : (
-    //     <p>Loading...</p>
-    //   )}
-    // </div>
 
     <div className="main-content-view">
       <ScoreBoardHeader />
