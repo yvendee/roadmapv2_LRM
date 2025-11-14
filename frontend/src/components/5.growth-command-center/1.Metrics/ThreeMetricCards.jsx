@@ -166,7 +166,7 @@ const ThreeMetricCards = () => {
           {/* <div className="metric-header">{metric.title}</div> */}
           {canEdit ? (
             <input
-              className="metric-header-input"
+              className="mmetric-header"
               type="text"
               value={metric.title}
               onChange={(e) => handleFieldChange(idx, 'title', e.target.value)}
