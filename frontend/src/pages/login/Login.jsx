@@ -5,6 +5,8 @@ import useLoginStore from '../../store/loginStore';
 import { useCompanyFilterStore } from '../../store/layout/companyFilterStore';
 import { useLayoutSettingsStore } from '../../store/left-lower-content/0.layout-settings/layoutSettingsStore';
 import { useCompanyTractionUserStore } from '../../store/layout/companyTractionUserStore';
+import useCompanyTractionStore from '../../store/left-lower-content/6.company-traction/2.companyTractionStore';
+import useMembersDepartmentsStore from '../../store/left-lower-content/16.members-directory/1.membersDirectoryStore';
 import API_URL from '../../configs/config';
 import { ENABLE_CONSOLE_LOGS} from '../../configs/config';
 import './Login.css';
@@ -283,6 +285,15 @@ const Login = () => {
   const setSessionId = useLoginStore((state) => state.setSessionId);
   const { user } = useLoginStore((state) => state); // Get logged-in user from store
 
+
+  const setCompanyTraction = useCompanyTractionStore((state) => state.setCompanyTraction);
+  const setBaselineCompanyTraction = useCompanyTractionStore((state) => state.setBaselineCompanyTraction);
+
+
+  const setMembersDepartments = useMembersDepartmentsStore((state) => state.setMembersDepartments);
+  const setBaselineMembersDirectoryTable = useMembersDepartmentsStore((state) => state.setBaselineMembersDirectoryTable)
+
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -452,6 +463,86 @@ const Login = () => {
           } catch (error) {
             console.error('Error fetching traction users:', error);
           }
+
+          // Step 4:
+          // ✅ Fetch Company Traction Table (Async Template Method)
+          try {
+            const encodedOrg = encodeURIComponent(firstCompany);
+
+            const res = await fetch(
+              `${API_URL}/v1/company-traction/traction-data?organization=${encodedOrg}`,
+              {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+
+            const json = await res.json();
+
+            if (!res.ok) {
+              if (res.status === 401) {
+                navigate('/', { state: { loginError: 'Session Expired' } });
+              } else {
+                console.error('Fetch error:', json.message);
+              }
+              return;
+            }
+
+            ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Company Traction Table:', json);
+
+            setCompanyTraction(json);
+            setBaselineCompanyTraction(json);
+          } catch (error) {
+            console.error('API error:', error);
+          }
+
+          // Step 5:
+          // ✅ Fetch Members Directory (Async Template Method)
+          try {
+            const encodedOrg = encodeURIComponent(firstCompany);
+
+            const res = await fetch(
+              `${API_URL}/v1/members-directory?organization=${encodedOrg}`,
+              {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+
+            const json = await res.json();
+
+            if (!res.ok) {
+              if (res.status === 401) {
+                navigate('/', { state: { loginError: 'Session Expired' } });
+              } else {
+                console.error('Error:', json.message);
+              }
+              return;
+            }
+
+            if (Array.isArray(json)) {
+              setMembersDepartments(json);
+              setBaselineMembersDirectoryTable(json);
+              ENABLE_CONSOLE_LOGS && console.log('📥 Fetched Members Directory:', json);
+            } else {
+              console.error(`⚠️ No Members Directory found for organization: ${organization}`);
+            }
+          } catch (error) {
+            console.error('API error:', error);
+          }
+
+
+
+
+
   
           // **Redirect to Home Page after successful login**
           navigate('/home'); // Navigate to home after a successful login
