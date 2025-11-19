@@ -3172,6 +3172,35 @@ Route::post('/api/v1/growth-command-center/gcc-metrics/update', function (Reques
 //     return response()->json($data[$organization] ?? []);
 // });
 
+
+// ref:
+Route::get('/api/v1/company-traction/annual-priorities/status', function (Request $request) use ($API_secure) {
+
+    if ($API_secure) {
+        if (!$request->session()->get('logged_in')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $user = $request->session()->get('user');
+    }
+
+    $organization = $request->query('organization');
+
+    if (!$organization) {
+        return response()->json(['message' => 'Missing organization parameter'], 400);
+    }
+
+    $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json([]);
+    }
+
+    return response()->json([
+        'statusFlag' => $record->statusFlag ?? ""
+    ]);
+});
+
+
 // ref: frontend\src\components\6.company-traction\companyTraction.jsx
 Route::get('/api/v1/company-traction/annual-priorities', function (Request $request) use ($API_secure) {
 
@@ -3196,6 +3225,33 @@ Route::get('/api/v1/company-traction/annual-priorities', function (Request $requ
 
     return response()->json($record->annualPrioritiesData ?? []);
 });
+
+
+// ref:
+Route::post('/api/v1/company-traction/annual-priorities/status/update', function (Request $request) use ($API_secure) {
+
+    if ($API_secure && !$request->session()->get('logged_in')) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $organization = $request->input('organizationName');
+    $newStatus = $request->input('statusFlag');
+
+    $record = CompanyTractionAnnualPriority::where('organizationName', $organization)->first();
+
+    if (!$record) {
+        return response()->json(['message' => 'Record not found'], 404);
+    }
+
+    $record->statusFlag = $newStatus;
+    $record->save();
+
+    return response()->json([
+        'message' => 'Status flag updated successfully',
+        'statusFlag' => $record->statusFlag,
+    ]);
+});
+
 
 // ref: frontend\src\components\6.company-traction\1.AnnualPriorities\AnnualPriorities.jsx
 Route::post('/api/v1/company-traction/annual-priorities/update', function (Request $request) use ($API_secure) {

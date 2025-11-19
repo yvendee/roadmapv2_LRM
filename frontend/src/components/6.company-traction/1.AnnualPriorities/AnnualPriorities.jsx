@@ -573,24 +573,95 @@ const AnnualPriorities = () => {
   
   
 
+  // const handleCopyCompanyTractionData = async (tag, showToast) => {
+  //   try {
+  //     const organization = useLayoutSettingsStore.getState().organization;
+
+  //     if (!organization || !tag) {
+  //       showToast("Organization name or tag is missing.", "error");
+  //       return;
+  //     }
+
+  //     // 1️⃣ Get CSRF token
+  //     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //       credentials: "include",
+  //     });
+  //     if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
+
+  //     const { csrf_token } = await csrfRes.json();
+
+  //     // 2️⃣ Make POST request to copy data
+  //     const res = await fetch(`${API_URL}/v1/company-traction/annual-priorities/copy`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         "X-CSRF-TOKEN": csrf_token,
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({ organizationName: organization, tag }),
+  //     });
+
+  //     const json = await res.json();
+
+  //     if (res.ok) {
+  //       ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
+  //       showToast(`Successfully copied data from "${tag}"`, "success");
+  //       fetchAnnualPriorities();
+  //       fetchCompanyTractionTable();
+
+  //     } else {
+  //       console.error("❌ Copy failed:", json.message);
+  //       showToast(json.message || "Failed to copy data.", "error");
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Network error copying data:", error);
+  //     showToast("Network error while copying data.", "error");
+  //   }
+  // };
+
+
   const handleCopyCompanyTractionData = async (tag, showToast) => {
     try {
       const organization = useLayoutSettingsStore.getState().organization;
-
+  
       if (!organization || !tag) {
         showToast("Organization name or tag is missing.", "error");
         return;
       }
-
+  
       // 1️⃣ Get CSRF token
       const csrfRes = await fetch(`${API_URL}/csrf-token`, {
         credentials: "include",
       });
       if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
-
+  
       const { csrf_token } = await csrfRes.json();
-
-      // 2️⃣ Make POST request to copy data
+  
+      // ⭐ NEW FETCH — Update statusFlag using tag
+      const statusRes = await fetch(`${API_URL}/v1/company-traction/annual-priorities/status/update`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrf_token,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          organizationName: organization,
+          statusFlag: tag,
+        }),
+      });
+  
+      const statusJson = await statusRes.json();
+  
+      if (!statusRes.ok) {
+        console.error("❌ Status update failed:", statusJson.message);
+        showToast(statusJson.message || "Failed to update status flag.", "error");
+        return;
+      }
+  
+      // 2️⃣ POST request to copy data
       const res = await fetch(`${API_URL}/v1/company-traction/annual-priorities/copy`, {
         method: "POST",
         headers: {
@@ -601,15 +672,14 @@ const AnnualPriorities = () => {
         credentials: "include",
         body: JSON.stringify({ organizationName: organization, tag }),
       });
-
+  
       const json = await res.json();
-
+  
       if (res.ok) {
         ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
         showToast(`Successfully copied data from "${tag}"`, "success");
         fetchAnnualPriorities();
         fetchCompanyTractionTable();
-
       } else {
         console.error("❌ Copy failed:", json.message);
         showToast(json.message || "Failed to copy data.", "error");
@@ -619,7 +689,8 @@ const AnnualPriorities = () => {
       showToast("Network error while copying data.", "error");
     }
   };
-
+  
+  
   const handleCopyCompanyTractionTable = async (
     selectedOption,
     showToast
@@ -996,16 +1067,6 @@ const AnnualPriorities = () => {
                   setSelectedOption={setSelectedOption}
                 />
 
-                {/* <button
-                  className="pure-blue2-btn whitespace-nowrap"
-                  onClick={() => {
-                    console.log('Set table using:', selectedOption);
-                    showToast(`Set table using: ${selectedOption}`, 'success');
-                  }}
-                >
-                  Set table
-                </button> */}
-
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
@@ -1016,16 +1077,6 @@ const AnnualPriorities = () => {
                 >
                   View table
                 </button>
-{/* 
-                <button
-                  className="pure-blue2-btn whitespace-nowrap"
-                  onClick={() => {
-                    console.log('Copy table to:', selectedOption);
-                    showToast(`Copy table to: ${selectedOption}`, 'success');
-                  }}
-                >
-                  Copy table
-                </button> */}
 
                 <button
                   className="pure-blue2-btn whitespace-nowrap"
