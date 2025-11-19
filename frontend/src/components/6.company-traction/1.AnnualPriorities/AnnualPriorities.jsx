@@ -621,12 +621,87 @@ const AnnualPriorities = () => {
   // };
 
 
-  const handleCopyCompanyTractionData = async (tag, showToast) => {
+  // const handleCopyCompanyTractionData = async (tag, showToast) => {
+  //   try {
+  //     const organization = useLayoutSettingsStore.getState().organization;
+  
+  //     if (!organization || !tag) {
+  //       showToast("Organization name or tag is missing.", "error");
+  //       return;
+  //     }
+  
+  //     // 1️⃣ Get CSRF token
+  //     const csrfRes = await fetch(`${API_URL}/csrf-token`, {
+  //       credentials: "include",
+  //     });
+  //     if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
+  
+  //     const { csrf_token } = await csrfRes.json();
+  
+  //     // ⭐ NEW FETCH — Update statusFlag using tag
+  //     const statusRes = await fetch(`${API_URL}/v1/company-traction/annual-priorities/status/update`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         "X-CSRF-TOKEN": csrf_token,
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({
+  //         organizationName: organization,
+  //         statusFlag: tag,
+  //       }),
+  //     });
+  
+  //     const statusJson = await statusRes.json();
+  
+  //     if (!statusRes.ok) {
+  //       console.error("❌ Status update failed:", statusJson.message);
+  //       showToast(statusJson.message || "Failed to update status flag.", "error");
+  //       return;
+  //     }
+  
+  //     // 2️⃣ POST request to copy data
+  //     const res = await fetch(`${API_URL}/v1/company-traction/annual-priorities/copy`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         "X-CSRF-TOKEN": csrf_token,
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({ organizationName: organization, tag }),
+  //     });
+  
+  //     const json = await res.json();
+  
+  //     if (res.ok) {
+  //       ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
+  //       showToast(`Successfully copied data from "${tag}"`, "success");
+  //       fetchAnnualPriorities();
+  //       fetchCompanyTractionTable();
+  //     } else {
+  //       console.error("❌ Copy failed:", json.message);
+  //       showToast(json.message || "Failed to copy data.", "error");
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Network error copying data:", error);
+  //     showToast("Network error while copying data.", "error");
+  //   }
+  // };
+  
+
+  const handleCopyCompanyTractionData = async (selectedOption, showToast) => {
     try {
       const organization = useLayoutSettingsStore.getState().organization;
   
-      if (!organization || !tag) {
-        showToast("Organization name or tag is missing.", "error");
+      if (!organization) {
+        showToast("Organization name is missing.", "error");
+        return;
+      }
+  
+      if (!selectedOption) {
+        showToast("Selected option is missing.", "error");
         return;
       }
   
@@ -635,62 +710,120 @@ const AnnualPriorities = () => {
         credentials: "include",
       });
       if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
-  
       const { csrf_token } = await csrfRes.json();
   
-      // ⭐ NEW FETCH — Update statusFlag using tag
-      const statusRes = await fetch(`${API_URL}/v1/company-traction/annual-priorities/status/update`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrf_token,
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          organizationName: organization,
-          statusFlag: tag,
-        }),
-      });
+      // ⭐ FIRST STEP → GET statusFlag FROM BACKEND
+      const statusRes = await fetch(
+        `${API_URL}/v1/company-traction/annual-priorities/status?organization=${organization}`,
+        { credentials: "include" }
+      );
   
       const statusJson = await statusRes.json();
+      const currentStatus = statusJson.statusFlag || ""; // ✅ separate variable
   
-      if (!statusRes.ok) {
-        console.error("❌ Status update failed:", statusJson.message);
-        showToast(statusJson.message || "Failed to update status flag.", "error");
+      if (!currentStatus) {
+        showToast("Status flag from backend is missing.", "error");
         return;
       }
   
-      // 2️⃣ POST request to copy data
-      const res = await fetch(`${API_URL}/v1/company-traction/annual-priorities/copy`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrf_token,
-        },
-        credentials: "include",
-        body: JSON.stringify({ organizationName: organization, tag }),
-      });
+      // ⭐ RUN handleCopyCompanyTractionTable LOGIC
+      const tableRes = await fetch(
+        `${API_URL}/v1/company-traction/annual-priorities/copy-to-collection`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            organizationName: organization,
+            tag: currentStatus,
+          }),
+        }
+      );
   
-      const json = await res.json();
+      const tableJson = await tableRes.json();
   
-      if (res.ok) {
-        ENABLE_CONSOLE_LOGS && console.log("✅ Copied Company Traction Data:", json);
-        showToast(`Successfully copied data from "${tag}"`, "success");
+      if (tableRes.ok) {
+        ENABLE_CONSOLE_LOGS &&
+          console.log("✅ Copied table data:", tableJson);
+        showToast(`Copied table to: ${currentStatus}`, "success");
+      } else {
+        showToast(tableJson.message || "Failed to copy table data", "error");
+        return;
+      }
+  
+      // ⭐ UPDATE statusFlag before copying data
+      const statusUpdateRes = await fetch(
+        `${API_URL}/v1/company-traction/annual-priorities/status/update`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            organizationName: organization,
+            statusFlag: selectedOption,
+          }),
+        }
+      );
+  
+      const statusUpdateJson = await statusUpdateRes.json();
+  
+      if (!statusUpdateRes.ok) {
+        showToast(
+          statusUpdateJson.message || "Failed to update status flag.",
+          "error"
+        );
+        return;
+      }
+  
+      // ⭐ COPY annual priorities data
+      const copyRes = await fetch(
+        `${API_URL}/v1/company-traction/annual-priorities/copy`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            organizationName: organization,
+            tag: selectedOption,
+          }),
+        }
+      );
+  
+      const copyJson = await copyRes.json();
+  
+      if (copyRes.ok) {
+        ENABLE_CONSOLE_LOGS &&
+          console.log("✅ Copied Company Traction Data:", copyJson);
+        showToast(
+          `Successfully copied data from "${selectedOption}"`,
+          "success"
+        );
+  
         fetchAnnualPriorities();
         fetchCompanyTractionTable();
       } else {
-        console.error("❌ Copy failed:", json.message);
-        showToast(json.message || "Failed to copy data.", "error");
+        showToast(copyJson.message || "Failed to copy annual priorities.", "error");
       }
     } catch (error) {
-      console.error("❌ Network error copying data:", error);
-      showToast("Network error while copying data.", "error");
+      console.error("❌ Network error:", error);
+      showToast("Network error.", "error");
     }
   };
   
   
+
   const handleCopyCompanyTractionTable = async (
     selectedOption,
     showToast
