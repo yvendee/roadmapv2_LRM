@@ -551,54 +551,171 @@ const handleAddNewAnnualPriority = async () => {
   
   
 
-  const handleSetDepartmentTractionTable = async (
-    selectedOption,
-    showToast
-  ) => {
+  // const handleSetDepartmentTractionTable = async (
+  //   selectedOption,
+  //   showToast
+  // ) => {
+  //   try {
+  //     if (!selectedOption) {
+  //       showToast('Please select an option first.', 'error');
+  //       return;
+  //     }
+  
+  //     // 1️⃣ Fetch CSRF token
+  //     const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
+  //     if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+  //     const { csrf_token } = await csrfRes.json();
+  
+  //     // 2️⃣ POST request to Laravel route
+  //     const res = await fetch(`${API_URL}/v1/department-traction/annual-priorities/copy`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json',
+  //         'X-CSRF-TOKEN': csrf_token,
+  //       },
+  //       credentials: 'include',
+  //       body: JSON.stringify({
+  //         organizationName: organization,
+  //         tag: selectedOption,
+  //       }),
+  //     });
+  
+  //     const json = await res.json();
+  
+  //     // 3️⃣ Handle responses
+  //     if (res.ok) {
+  //       ENABLE_CONSOLE_LOGS && console.log('✅ Department data copied:', json);
+  //       showToast(`Data copied successfully for "${selectedOption}"`, 'success');
+  //       fetchDepartmentAnnualPriorities();
+  //       fetchDepartmentTractionTable();
+  //     } else {
+  //       showToast(json.message || 'Failed to copy data', 'error');
+  //       console.error('❌ Copy failed:', json.message);
+  //     }
+  //   } catch (err) {
+  //     console.error('❌ Network error copying data:', err);
+  //     showToast('Network error', 'error');
+  //   }
+  // };
+  
+
+  const handleSetDepartmentTractionTable = async (selectedOption, showToast) => {
     try {
-      if (!selectedOption) {
-        showToast('Please select an option first.', 'error');
+      const organization = useLayoutSettingsStore.getState().organization;
+  
+      if (!organization) {
+        showToast("Organization name is missing.", "error");
         return;
       }
   
-      // 1️⃣ Fetch CSRF token
-      const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: 'include' });
-      if (!csrfRes.ok) throw new Error('Failed to fetch CSRF token');
+      if (!selectedOption) {
+        showToast("Please select an option first.", "error");
+        return;
+      }
+  
+      // 1️⃣ Get CSRF token
+      const csrfRes = await fetch(`${API_URL}/csrf-token`, { credentials: "include" });
+      if (!csrfRes.ok) throw new Error("Failed to fetch CSRF token");
       const { csrf_token } = await csrfRes.json();
   
-      // 2️⃣ POST request to Laravel route
-      const res = await fetch(`${API_URL}/v1/department-traction/annual-priorities/copy`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrf_token,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          organizationName: organization,
-          tag: selectedOption,
-        }),
-      });
+      // 2️⃣ Get current statusFlag from backend
+      const statusRes = await fetch(
+        `${API_URL}/v1/department-traction/annual-priorities/status?organization=${organization}`,
+        { credentials: "include" }
+      );
+      const statusJson = await statusRes.json();
+      const currentStatus = statusJson.statusFlag || "";
   
-      const json = await res.json();
+      if (!currentStatus) {
+        showToast("Status flag from backend is missing.", "error");
+        return;
+      }
   
-      // 3️⃣ Handle responses
-      if (res.ok) {
-        ENABLE_CONSOLE_LOGS && console.log('✅ Department data copied:', json);
-        showToast(`Data copied successfully for "${selectedOption}"`, 'success');
+      // 3️⃣ Copy table data to collection
+      const tableRes = await fetch(
+        `${API_URL}/v1/department-traction/annual-priorities/copy-to-collection`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            organizationName: organization,
+            tag: currentStatus,
+          }),
+        }
+      );
+      const tableJson = await tableRes.json();
+      if (tableRes.ok) {
+        ENABLE_CONSOLE_LOGS && console.log("✅ Department table copied:", tableJson);
+        showToast(`Copied table to: ${currentStatus}`, "success");
+      } else {
+        showToast(tableJson.message || "Failed to copy table data", "error");
+        return;
+      }
+  
+      // 4️⃣ Update statusFlag before copying annual priorities
+      const statusUpdateRes = await fetch(
+        `${API_URL}/v1/department-traction/annual-priorities/status/update`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            organizationName: organization,
+            statusFlag: selectedOption,
+          }),
+        }
+      );
+      const statusUpdateJson = await statusUpdateRes.json();
+      if (!statusUpdateRes.ok) {
+        showToast(statusUpdateJson.message || "Failed to update status flag.", "error");
+        return;
+      }
+  
+      // 5️⃣ Copy annual priorities data
+      const copyRes = await fetch(
+        `${API_URL}/v1/department-traction/annual-priorities/copy`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrf_token,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            organizationName: organization,
+            tag: selectedOption,
+          }),
+        }
+      );
+      const copyJson = await copyRes.json();
+      if (copyRes.ok) {
+        ENABLE_CONSOLE_LOGS && console.log("✅ Department data copied:", copyJson);
+        showToast(`Successfully copied data from "${selectedOption}"`, "success");
+  
         fetchDepartmentAnnualPriorities();
         fetchDepartmentTractionTable();
       } else {
-        showToast(json.message || 'Failed to copy data', 'error');
-        console.error('❌ Copy failed:', json.message);
+        showToast(copyJson.message || "Failed to copy annual priorities.", "error");
       }
-    } catch (err) {
-      console.error('❌ Network error copying data:', err);
-      showToast('Network error', 'error');
+  
+    } catch (error) {
+      console.error("❌ Network error:", error);
+      showToast("Network error.", "error");
     }
   };
   
+
   const handleCopyDepartmentTractionTable = async (selectedOption, showToast) => {
     try {
       if (!selectedOption) {
@@ -994,22 +1111,12 @@ const handleAddNewAnnualPriority = async () => {
                 {/* <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
-                    console.log('Copy table to:', selectedOption);
-                    showToast(`Copy table to: ${selectedOption}`, 'success');
-                  }}
-                >
-                  Copy table
-                </button> */}
-
-                <button
-                  className="pure-blue2-btn whitespace-nowrap"
-                  onClick={() => {
                     setSwitchModalOpen(false);
                     handleCopyDepartmentTractionTable(selectedOption, showToast);
                   }}
                 >
                   Copy table
-                </button>
+                </button> */}
 
               </div>
 
