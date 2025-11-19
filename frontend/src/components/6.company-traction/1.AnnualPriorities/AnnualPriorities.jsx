@@ -1211,7 +1211,7 @@ const AnnualPriorities = () => {
                   View table
                 </button>
 
-                <button
+                {/* <button
                   className="pure-blue2-btn whitespace-nowrap"
                   onClick={() => {
                     setSwitchModalOpen(false);
@@ -1219,7 +1219,7 @@ const AnnualPriorities = () => {
                   }}
                 >
                   Copy table
-                </button>
+                </button> */}
 
               </div>
 
